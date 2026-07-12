@@ -9,150 +9,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
-
-body{
-background:#07111f;
-color:white;
-min-height:100vh;
-padding-bottom:100px;
-overflow-x:hidden;
-}
-
-body::before{
-content:"◬";
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-font-size:500px;
-color:rgba(212,175,55,.04);
-z-index:-1;
-pointer-events:none;
-}
-
-/* HEADER */
-header{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-padding:20px 8%;
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:rgba(0,0,0,.75);
-backdrop-filter:blur(10px);
-z-index:1000;
-}
-
-.logo{
-font-size:30px;
-font-weight:700;
-color:#d4af37;
-}
-
-header nav a{
-color:white;
-text-decoration:none;
-margin-left:20px;
-transition:.3s;
-}
-
-header nav a:hover{
-color:#d4af37;
-}
-
-/* HERO */
-.hero{
-height:45vh;
-display:flex;
-justify-content:center;
-align-items:center;
-text-align:center;
-padding:20px;
-background:
-linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
-url("1517026394531.jpeg");
-background-size:cover;
-background-position:center;
-background-color:#0b1728;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;overflow-x:hidden;}
+body::before{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.04);z-index:-1;pointer-events:none;}
+header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
+.logo{font-size:30px;font-weight:700;color:#d4af37;}
+header nav a{color:white;text-decoration:none;margin-left:20px;transition:.3s;}
+header nav a:hover{color:#d4af37;}
+.hero{height:45vh;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;background:linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-color:#0b1728;}
 .hero h1{font-size:55px;}
 .hero p{margin-top:15px;color:#ddd;}
-
-/* LOGIN SECTION */
 section{padding:80px 10%;}
 .title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:40px;}
-
-.login-box{
-max-width:500px;
-margin:auto;
-background:#142238;
-padding:45px;
-border-radius:20px;
-box-shadow:0 20px 50px rgba(0,0,0,.5);
-border:1px solid rgba(212,175,55,.25);
-}
-
+.login-box{max-width:500px;margin:auto;background:#142238;padding:45px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.25);}
 .input-group{display:flex;flex-direction:column;margin-bottom:25px;}
 label{color:#d4af37;margin-bottom:8px;font-weight:500;}
-input{
-width:100%;
-background:#08111f;
-border:1px solid #39485f;
-padding:15px;
-border-radius:10px;
-color:white;
-outline:none;
-font-size:15px;
-}
+input{width:100%;background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;outline:none;font-size:15px;}
 input:focus{border-color:#d4af37;}
-
-/* BUTTON */
-.btn{
-display:block;
-width:220px;
-margin:30px auto 0;
-padding:15px;
-border:none;
-border-radius:40px;
-background:#d4af37;
-color:#111;
-font-weight:bold;
-cursor:pointer;
-transition:.3s;
-text-decoration:none;
-text-align:center;
-font-size:16px;
-}
+.btn{display:block;width:220px;margin:30px auto 0;padding:15px;border:none;border-radius:40px;background:#d4af37;color:#111;font-weight:bold;cursor:pointer;transition:.3s;text-decoration:none;text-align:center;font-size:16px;}
 .btn:hover{transform:translateY(-5px);background:#f1ca52;}
 .btn:disabled{opacity:.6;cursor:not-allowed;}
-
-/* STATUS */
 #statusMessage{text-align:center;margin-top:25px;font-weight:600;color:#d4af37;min-height:24px;}
-
-/* EXTRA CARDS */
 .info{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;margin-top:40px;}
 .card{background:#142238;padding:25px;border-radius:15px;border:1px solid rgba(212,175,55,.15);transition:.3s;}
 .card:hover{transform:translateY(-8px);border-color:#d4af37;}
 .card h3{color:#d4af37;margin-bottom:10px;}
 .card p{color:#ddd;line-height:1.7;}
-
-/* FOOTER */
 footer{background:#020509;padding:35px;text-align:center;color:#999;}
-
-@media(max-width:700px){
-.hero h1{font-size:35px;}
-header nav{display:none;}
-.login-box{padding:25px;}
-}
+@media(max-width:700px){.hero h1{font-size:35px;}header nav{display:none;}.login-box{padding:25px;}}
 </style>
 </head>
 
@@ -235,16 +119,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// YOUR FIREBASE CONFIG - FIXED appId
+// YOUR FIREBASE CONFIG - UPDATED
 const firebaseConfig = {
-apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
-authDomain: "mansonry-family-fraternity.firebaseapp.com",
-databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
-projectId: "mansonry-family-fraternity",
-storageBucket: "mansonry-family-fraternity.firebasestorage.app",
-messagingSenderId: "964415179161",
-appId: "1:964415179161:web:c8fd1a777542932d7c6b08", // FIXED: was c6c08
-measurementId: "G-Q8LC74ZFXN"
+  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+  authDomain: "mansonry-family-fraternity.firebaseapp.com",
+  databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mansonry-family-fraternity",
+  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
+  messagingSenderId: "964415179161",
+  appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
+  measurementId: "G-Q8LC74ZFXN"
 };
 
 const app = initializeApp(firebaseConfig);

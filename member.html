@@ -276,12 +276,7 @@ setTimeout(() => {toast.classList.remove('show');}, 3000);
 }
 
 // REALTIME SYNC: Get total members count
-const usersRef = ref(database, "users");
-onValue(usersRef, (snapshot) => {
-const data = snapshot.val();
-const count = data? Object.keys(data).length : 0;
-document.getElementById('totalMembers').textContent = count;
-});
+
 
 // LOGOUT
 document.querySelector(".logout").addEventListener("click",(e)=>{
@@ -319,6 +314,27 @@ setTimeout(()=>{window.location.href="login.html";},1000);
     <span class="nav-label">Laws</span>
   </a>
 </nav>
+<script>
+// Count up animation for 780+
+function animateCount(el, end) {
+  let start = 0;
+  let duration = 1500;
+  let stepTime = Math.abs(Math.floor(duration / end));
+  let timer = setInterval(() => {
+    start += 10;
+    if(start >= end) {
+      el.textContent = end + "+";
+      clearInterval(timer);
+    } else {
+      el.textContent = start + "+";
+    }
+  }, stepTime);
+}
 
+document.addEventListener('DOMContentLoaded', () => {
+  const memberCount = document.querySelector('.stat-card h2');
+  animateCount(memberCount, 780);
+});
+</script>
 </body>
 </html>

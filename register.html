@@ -21,12 +21,27 @@ section{padding:80px 10%;}
 .title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:40px;}
 .register-box{max-width:850px;margin:auto;background:#142238;padding:45px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.2);}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
-.input-group{display:flex;flex-direction:column;}
+.input-group{display:flex;flex-direction:column;position:relative;}
 label{margin-bottom:8px;color:#d4af37;}
 input,select,textarea{background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;outline:none;}
 input:focus,select:focus,textarea:focus{border-color:#d4af37;}
 textarea{height:130px;resize:none;}
 .full{grid-column:1/-1;}
+
+/* PASSWORD TOGGLE */
+.password-wrapper{position:relative;display:flex;align-items:center;}
+.password-wrapper input{width:100%;padding-right:50px;}
+.toggle-password{
+position:absolute;
+right:15px;
+cursor:pointer;
+font-size:18px;
+color:#999;
+user-select:none;
+transition:.3s;
+}
+.toggle-password:hover{color:#d4af37;}
+
 .btn{margin-top:30px;display:block;width:220px;padding:15px;margin-left:auto;margin-right:auto;border:none;border-radius:40px;background:#d4af37;color:#111;font-weight:bold;cursor:pointer;transition:.3s;}
 .btn:hover{transform:translateY(-5px);background:#f1ca52;}
 .btn:disabled{opacity:.6;cursor:not-allowed;}
@@ -110,15 +125,21 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 </select>
 </div>
 
-<!-- PASSWORD FIELDS -->
+<!-- PASSWORD FIELDS WITH TOGGLE -->
 <div class="input-group">
 <label>Create Password</label>
+<div class="password-wrapper">
 <input id="password" type="password" placeholder="Min 6 characters" required minlength="6">
+<span class="toggle-password" data-target="password">☐</span>
+</div>
 </div>
 
 <div class="input-group">
 <label>Confirm Password</label>
+<div class="password-wrapper">
 <input id="confirmPassword" type="password" placeholder="Re-enter password" required minlength="6">
+<span class="toggle-password" data-target="confirmPassword">☐</span>
+</div>
 </div>
 
 <div class="input-group full">
@@ -172,7 +193,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// Firebase Configuration - UPDATED
+// Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -194,6 +215,22 @@ const form = document.getElementById("registrationForm");
 const button = document.getElementById("submitBtn");
 const statusMessage = document.getElementById("statusMessage");
 const box = document.querySelector(".register-box");
+
+// PASSWORD SHOW/HIDE TOGGLE WITH BOX
+document.querySelectorAll('.toggle-password').forEach(icon => {
+    icon.addEventListener('click', () => {
+        const targetId = icon.getAttribute('data-target');
+        const input = document.getElementById(targetId);
+        
+        if(input.type === 'password'){
+            input.type = 'text';
+            icon.textContent = '☑️'; // checked box = visible
+        } else {
+            input.type = 'password';
+            icon.textContent = '☐'; // empty box = hidden
+        }
+    });
+});
 
 // Form Submit
 form.addEventListener("submit", async (event) => {

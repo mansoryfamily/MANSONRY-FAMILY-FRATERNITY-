@@ -110,7 +110,7 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 </select>
 </div>
 
-<!-- NEW PASSWORD FIELDS -->
+<!-- PASSWORD FIELDS -->
 <div class="input-group">
 <label>Create Password</label>
 <input id="password" type="password" placeholder="Min 6 characters" required minlength="6">
@@ -172,16 +172,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// Firebase Configuration
+// Firebase Configuration - UPDATED
 const firebaseConfig = {
-    apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
-    authDomain: "mansonry-family-fraternity.firebaseapp.com",
-    databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "mansonry-family-fraternity",
-    storageBucket: "mansonry-family-fraternity.firebasestorage.app",
-    messagingSenderId: "964415179161",
-    appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
-    measurementId: "G-Q8LC74ZFXN"
+  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+  authDomain: "mansonry-family-fraternity.firebaseapp.com",
+  databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mansonry-family-fraternity",
+  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
+  messagingSenderId: "964415179161",
+  appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
+  measurementId: "G-Q8LC74ZFXN"
 };
 
 // Initialize Firebase
@@ -244,7 +244,7 @@ form.addEventListener("submit", async (event) => {
             age: age,
             interest: interest,
             message: message,
-            status: "pending", // admin can change to "active" later
+            status: "pending",
             role: "member",
             timestamp: new Date().toISOString()
         };

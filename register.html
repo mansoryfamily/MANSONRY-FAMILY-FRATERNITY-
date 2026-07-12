@@ -11,41 +11,162 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-/* ... your same CSS ... */
+
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
 font-family:'Poppins',sans-serif;
 }
-body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;}
-body::before{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.04);z-index:-1;pointer-events:none;}
-header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
-.logo{font-size:30px;font-weight:700;color:#d4af37;}
-.hero{height:45vh;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-color:#0b1728;}
+
+body{
+background:#07111f;
+color:white;
+min-height:100vh;
+padding-bottom:100px;
+}
+
+body::before{
+content:"◬";
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:500px;
+color:rgba(212,175,55,.04);
+z-index:-1;
+pointer-events:none;
+}
+
+/* HEADER */
+header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+padding:20px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(10px);
+z-index:1000;
+}
+
+.logo{
+font-size:30px;
+font-weight:700;
+color:#d4af37;
+}
+
+/* HERO */
+.hero{
+height:45vh;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
+background:
+linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)),
+url("1517026394531.jpeg");
+background-size:cover;
+background-position:center;
+background-color:#0b1728;
+}
+
 .hero h1{font-size:55px;}
 .hero p{margin-top:15px;color:#ddd;}
+
+/* SECTIONS */
 section{padding:80px 10%;}
 .title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:40px;}
-.register-box{max-width:850px;margin:auto;background:#142238;padding:45px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.2);}
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
+
+/* FORM */
+.register-box{
+max-width:850px;
+margin:auto;
+background:#142238;
+padding:45px;
+border-radius:20px;
+box-shadow:0 20px 50px rgba(0,0,0,.5);
+border:1px solid rgba(212,175,55,.2);
+}
+
+.form-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+}
+
 .input-group{display:flex;flex-direction:column;}
 label{margin-bottom:8px;color:#d4af37;}
-input,select,textarea{background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;outline:none;}
+input,select,textarea{
+background:#08111f;
+border:1px solid #39485f;
+padding:15px;
+border-radius:10px;
+color:white;
+outline:none;
+}
 input:focus,select:focus,textarea:focus{border-color:#d4af37;}
 textarea{height:130px;resize:none;}
 .full{grid-column:1/-1;}
-.btn{margin-top:30px;display:block;width:220px;padding:15px;margin-left:auto;margin-right:auto;border:none;border-radius:40px;background:#d4af37;color:#111;font-weight:bold;cursor:pointer;transition:.3s;}
+
+/* BUTTON */
+.btn{
+margin-top:30px;
+display:block;
+width:220px;
+padding:15px;
+margin-left:auto;
+margin-right:auto;
+border:none;
+border-radius:40px;
+background:#d4af37;
+color:#111;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
 .btn:hover{transform:translateY(-5px);background:#f1ca52;}
 .btn:disabled{opacity:.6;cursor:not-allowed;}
-.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
-.card{background:#142238;padding:25px;border-radius:15px;border:1px solid rgba(212,175,55,.15);transition:.3s;}
+
+/* INFO CARDS */
+.info{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+}
+
+.card{
+background:#142238;
+padding:25px;
+border-radius:15px;
+border:1px solid rgba(212,175,55,.15);
+transition:.3s;
+}
 .card:hover{transform:translateY(-8px);border-color:#d4af37;}
 .card h3{color:#d4af37;margin-bottom:10px;}
 .card p{color:#ddd;line-height:1.7;}
-#statusMessage{text-align:center;margin-top:25px;font-weight:600;color:#d4af37;}
+
+/* STATUS MESSAGE */
+#statusMessage{
+text-align:center;
+margin-top:25px;
+font-weight:600;
+color:#d4af37;
+min-height:24px;
+}
+
+/* FOOTER */
 footer{background:#020509;padding:35px;text-align:center;color:#999;}
-@media(max-width:700px){.hero h1{font-size:35px;}.register-box{padding:25px;}}
+
+@media(max-width:700px){
+.hero h1{font-size:35px;}
+.register-box{padding:25px;}
+}
+
 </style>
 
 </head>
@@ -68,19 +189,23 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 
 <div class="register-box">
 <form id="registrationForm">
+
 <div class="form-grid">
 <div class="input-group">
 <label>Full Name</label>
 <input id="fullName" type="text" placeholder="Enter your full name" required>
 </div>
+
 <div class="input-group">
 <label>Email Address</label>
 <input id="email" type="email" placeholder="Enter your email" required>
 </div>
+
 <div class="input-group">
 <label>Phone Number</label>
 <input id="phone" type="tel" placeholder="Enter phone number" required>
 </div>
+
 <div class="input-group">
 <label>Country</label>
 <select id="country" required>
@@ -91,6 +216,7 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 <option>Other</option>
 </select>
 </div>
+
 <div class="input-group">
 <label>Age Group</label>
 <select id="age" required>
@@ -101,6 +227,7 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 <option>60+</option>
 </select>
 </div>
+
 <div class="input-group">
 <label>Area of Interest</label>
 <select id="interest" required>
@@ -111,6 +238,7 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 <option>Personal Development</option>
 </select>
 </div>
+
 <div class="input-group full">
 <label>Message</label>
 <textarea id="message" placeholder="Tell us why you would like to join our brotherhood" required></textarea>
@@ -125,6 +253,7 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 </div>
 
 <p id="statusMessage"></p>
+
 </form>
 </div>
 </section>
@@ -132,15 +261,26 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 <section>
 <h2 class="title">Before You Apply</h2>
 <div class="info">
-<div class="card"><h3>Character & Integrity</h3><p>We welcome men of good character who value honesty, respect, and responsibility in all areas of life.</p></div>
-<div class="card"><h3>Growth & Learning</h3><p>Membership is a journey of self-improvement. You will be guided and mentored every step of the way by your Lodge Director.</p></div>
-<div class="card"><h3>Support & Opportunity</h3><p>Once registered, members gain access to brotherhood support, mentorship, and business empowerment opportunities.</p></div>
+<div class="card">
+<h3>Character & Integrity</h3>
+<p>We welcome men of good character who value honesty, respect, and responsibility in all areas of life.</p>
+</div>
+<div class="card">
+<h3>Growth & Learning</h3>
+<p>Membership is a journey of self-improvement. You will be guided and mentored every step of the way by your Lodge Director.</p>
+</div>
+<div class="card">
+<h3>Support & Opportunity</h3>
+<p>Once registered, members gain access to brotherhood support, mentorship, and business empowerment opportunities.</p>
+</div>
 </div>
 </section>
 
 <footer>
-<h2 style="color:#d4af37;">Freemasonry Heritage</h2><br>
-<p>Building men of character for a stronger tomorrow.</p><br>
+<h2 style="color:#d4af37;">Freemasonry Heritage</h2>
+<br>
+<p>Building men of character for a stronger tomorrow.</p>
+<br>
 <p>© 2026 Freemasonry Heritage</p>
 </footer>
 
@@ -194,13 +334,13 @@ form.addEventListener("submit", async (event) => {
         await set(registrationRef, registration);
 
         statusMessage.style.color = "#4cff88";
-        statusMessage.textContent = "✓ Registration submitted successfully. Redirecting...";
+        statusMessage.textContent = "✓ Registration submitted successfully. Redirecting to dashboard...";
 
         form.reset();
 
-        // REDIRECT AFTER 2 SECONDS
+        // FIXED: Redirect to dashboard after 2 seconds
         setTimeout(() => {
-            window.location.href = "dashboard.html"; 
+            window.location.href = "dashboard.html";
         }, 2000);
 
     } catch (error) {
@@ -217,6 +357,7 @@ window.addEventListener("load", () => {
     box.style.opacity = "0";
     box.style.transform = "translateY(40px)";
     box.style.transition = "all 1s ease";
+
     requestAnimationFrame(() => {
         box.style.opacity = "1";
         box.style.transform = "translateY(0)";

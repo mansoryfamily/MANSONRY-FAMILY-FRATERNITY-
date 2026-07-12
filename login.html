@@ -58,14 +58,7 @@ z-index:1000;
 header nav a{color:white;text-decoration:none;margin-left:20px;transition:.3s;}
 header nav a:hover{color:#d4af37;}
 
-.hero{
-height:45vh;
-display:flex;
-justify-content:center;
-align-items:center;
-text-align:center;
-padding:20px;
-}
+.hero{height:45vh;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;}
 .hero h1{font-size:55px;}
 .hero p{margin-top:15px;color:#ddd;}
 
@@ -98,13 +91,7 @@ font-size:15px;
 input:focus{border-color:#d4af37;}
 
 /* REMEMBER ME + FORGOT */
-.options{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:25px;
-font-size:14px;
-}
+.options{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;font-size:14px;}
 .remember{display:flex;align-items:center;gap:8px;}
 .remember input{width:16px;height:16px;accent-color:#d4af37;}
 .forgot{color:#d4af37;text-decoration:none;font-weight:500;transition:.3s;}
@@ -131,8 +118,6 @@ box-shadow:0 5px 20px rgba(212,175,55,.3);
 .btn:hover{transform:translateY(-5px);background:linear-gradient(135deg,#f1ca52,#d4af37);}
 .btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
 
-#statusMessage{text-align:center;margin-top:25px;font-weight:600;color:#d4af37;min-height:24px;}
-
 .info{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;margin-top:40px;}
 .card{background:rgba(20,34,56,.7);backdrop-filter:blur(15px);padding:25px;border-radius:15px;border:1px solid rgba(212,175,55,.15);transition:.3s;}
 .card:hover{transform:translateY(-8px);border-color:#d4af37;}
@@ -141,16 +126,51 @@ box-shadow:0 5px 20px rgba(212,175,55,.3);
 
 footer{background:#020509;padding:35px;text-align:center;color:#999;}
 
+/* TOAST NOTIFICATION - CENTER */
+.toast{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%) scale(0.8);
+background:rgba(20,34,56,.95);
+backdrop-filter:blur(20px);
+padding:25px 35px;
+border-radius:15px;
+border:2px solid #d4af37;
+box-shadow:0 20px 60px rgba(212,175,55,.4);
+z-index:9999;
+opacity:0;
+transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+text-align:center;
+min-width:300px;
+max-width:90%;
+}
+.toast.show{
+opacity:1;
+transform:translate(-50%,-50%) scale(1);
+}
+.toast.success{border-color:#4cff88;box-shadow:0 20px 60px rgba(76,255,136,.3);}
+.toast.error{border-color:#ff5555;box-shadow:0 20px 60px rgba(255,85,85,.3);}
+.toast .icon{font-size:40px;margin-bottom:10px;display:block;}
+.toast .message{font-size:16px;font-weight:600;color:#fff;}
+
 @media(max-width:700px){
 .hero h1{font-size:35px;}
 header nav{display:none;}
 .login-box{padding:25px;}
 .options{flex-direction:column;gap:15px;align-items:flex-start;}
+.toast{min-width:280px;}
 }
 </style>
 </head>
 
 <body>
+
+<!-- TOAST CONTAINER -->
+<div id="toast" class="toast">
+<span class="icon" id="toastIcon"></span>
+<span class="message" id="toastMessage"></span>
+</div>
 
 <header>
 <div class="logo">Freemasonry Heritage</div>
@@ -193,8 +213,6 @@ header nav{display:none;}
 
 <button class="btn" id="loginBtn" type="submit">Login</button>
 
-<p id="statusMessage"></p>
-
 </form>
 </div>
 </section>
@@ -222,7 +240,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// YOUR FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -240,16 +257,28 @@ const database = getDatabase(app);
 
 const loginForm = document.getElementById("loginForm");
 const loginBtn = document.getElementById("loginBtn");
-const status = document.getElementById("statusMessage");
 const rememberMe = document.getElementById("rememberMe");
 const forgotBtn = document.getElementById("forgotPassword");
+const toast = document.getElementById("toast");
+const toastIcon = document.getElementById("toastIcon");
+const toastMessage = document.getElementById("toastMessage");
+
+// TOAST FUNCTION
+function showToast(type, message){
+toast.className = `toast ${type} show`;
+toastIcon.textContent = type === 'success' ? '✓' : '✕';
+toastMessage.textContent = message;
+
+setTimeout(() => {
+toast.classList.remove('show');
+}, 3000);
+}
 
 // LOGIN WITH REMEMBER ME
 loginForm.addEventListener("submit", async(e) => {
 e.preventDefault();
 loginBtn.disabled = true;
 loginBtn.textContent = "Logging in...";
-status.textContent = "";
 
 const email = document.getElementById("email").value.trim();
 const password = document.getElementById("password").value;
@@ -273,26 +302,25 @@ action: "login"
 // REALTIME SYNC: Update lastLogin
 await set(ref(database, "users/" + user.uid + "/lastLogin"), serverTimestamp());
 
-status.style.color = "#4cff88";
-status.textContent = "✓ Login successful. Redirecting to dashboard...";
+showToast('success', 'Login Successful! Redirecting...');
+loginBtn.textContent = "Success";
 
 setTimeout(() => {
 window.location.href = "dashboard.html";
-}, 1200);
+}, 1500);
 
 }
 catch(error){
 console.error(error);
-status.style.color = "#ff5555";
-if(error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password'){
-status.textContent = "Invalid email or password.";
-} else if(error.code === 'auth/too-many-requests'){
-status.textContent = "Too many attempts. Try again later.";
-} else {
-status.textContent = "Login failed: " + error.message;
-}
 loginBtn.disabled = false;
 loginBtn.textContent = "Login";
+
+if(error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential'){
+showToast('error', 'Invalid Email or Password');
+} else if(error.code === 'auth/too-many-requests'){
+showToast('error', 'Too many attempts. Try again later.');
+} else {
+showToast('error', 'Login Failed: ' + error.message);
 }
 });
 
@@ -302,18 +330,15 @@ e.preventDefault();
 const email = document.getElementById("email").value.trim();
 
 if(!email){
-status.style.color = "#f1ca52";
-status.textContent = "Please enter your email first.";
+showToast('error', 'Please enter your email first');
 return;
 }
 
 try{
 await sendPasswordResetEmail(auth, email);
-status.style.color = "#4cff88";
-status.textContent = "✓ Password reset email sent. Check your inbox.";
+showToast('success', 'Password reset email sent!');
 } catch(error){
-status.style.color = "#ff5555";
-status.textContent = "Failed to send reset email: " + error.message;
+showToast('error', 'Failed to send reset email');
 }
 });
 

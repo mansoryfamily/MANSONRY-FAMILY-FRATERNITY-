@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freemasonry | Membership Requirements</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{
+background:#07111f;
+color:white;
+min-height:100vh;
+padding-bottom:100px;
+}
+body::before{
+content:"";
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:
+linear-gradient(rgba(7,17,31,.88), rgba(7,17,31,.95)),
+url("photo-1766054910220-3aae7d880d6d.jpeg");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+z-index:-2;
+}
+body::after{
+content:"◬";
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:400px;
+color:rgba(212,175,55,.04);
+z-index:-1;
+pointer-events:none;
+}
+
+/* HEADER */
+header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+padding:20px 8%;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(15px);
+display:flex;
+justify-content:space-between;
+align-items:center;
+z-index:1000;
+}
+.logo{font-size:28px;font-weight:700;color:#d4af37;}
+.logout{
+background:#d4af37;
+color:#111;
+padding:10px 25px;
+border-radius:30px;
+text-decoration:none;
+font-weight:600;
+transition:.3s;
+}
+.logout:hover{background:#f1ca52;transform:translateY(-2px);}
+
+/* DASHBOARD */
+.dashboard{padding:130px 8% 50px;}
+.welcome{text-align:center;margin-bottom:40px;}
+.welcome h1{font-size:42px;color:#d4af37;}
+.welcome p{color:#ccc;margin-top:10px;max-width:700px;margin-left:auto;margin-right:auto;line-height:1.8;}
+
+/* REQUIREMENTS CARD */
+.requirements-card{
+max-width:900px;
+margin:auto;
+background:linear-gradient(145deg, #142238, #0b1728);
+border-radius:25px;
+padding:40px;
+border:1px solid rgba(212,175,55,.25);
+box-shadow:0 20px 50px rgba(0,0,0,.5);
+}
+.requirements-card h2{font-size:28px;color:#d4af37;text-align:center;margin-bottom:10px;}
+.requirements-card > p{text-align:center;color:#ddd;margin-bottom:30px;line-height:1.8;}
+
+.requirement-item{
+background:#08111f;
+padding:20px 25px;
+border-radius:15px;
+margin-bottom:18px;
+border-left:4px solid #d4af37;
+display:flex;
+justify-content:space-between;
+align-items:center;
+transition:.3s;
+}
+.requirement-item:hover{transform:translateX(5px);border-color:#f1ca52;}
+.requirement-item .info h3{font-size:18px;color:#fff;margin-bottom:6px;}
+.requirement-item .info p{font-size:14px;color:#aaa;line-height:1.6;}
+.requirement-item .price{font-size:22px;font-weight:700;color:#d4af37;white-space:nowrap;margin-left:20px;}
+
+.note-box{
+background:rgba(212,175,55,.08);
+border:1px solid rgba(212,175,55,.25);
+border-radius:15px;
+padding:25px;
+margin-top:30px;
+}
+.note-box h3{color:#d4af37;margin-bottom:12px;font-size:18px;}
+.note-box p{color:#ddd;line-height:1.8;font-size:15px;}
+
+/* WHY JOIN SECTION */
+.why-join{
+margin-top:50px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+}
+.benefit-card{
+background:#142238;
+padding:30px;
+border-radius:18px;
+border:1px solid rgba(212,175,55,.15);
+transition:.3s;
+text-align:center;
+}
+.benefit-card:hover{transform:translateY(-8px);border-color:#d4af37;}
+.benefit-card .icon{font-size:40px;margin-bottom:15px;}
+.benefit-card h3{color:#d4af37;margin-bottom:12px;}
+.benefit-card p{color:#ddd;line-height:1.7;font-size:14px;}
+
+/* BOTTOM NAVIGATION */
+.bottom-nav{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(20,34,56,.95);
+backdrop-filter:blur(15px);
+padding:12px;
+border-radius:50px;
+display:flex;
+gap:10px;
+border:1px solid rgba(212,175,55,.3);
+box-shadow:0 15px 40px rgba(0,0,0,.5);
+z-index:2000;
+}
+.bottom-nav a{
+text-decoration:none;
+color:white;
+padding:12px 22px;
+border-radius:35px;
+font-size:14px;
+font-weight:600;
+transition:.3s;
+white-space:nowrap;
+}
+.bottom-nav a:hover,
+.bottom-nav .active{
+background:#d4af37;
+color:#111;
+}
+
+@media(max-width:800px){
+.welcome h1{font-size:32px;}
+.requirements-card{padding:25px;}
+.requirement-item{flex-direction:column;align-items:flex-start;gap:10px;}
+.requirement-item .price{margin-left:0;font-size:20px;}
+.bottom-nav{width:95%;justify-content:center;overflow-x:auto;}
+.bottom-nav a{padding:10px 14px;font-size:12px;}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">Freemasonry Heritage</div>
+<a href="#" class="logout">Logout</a>
+</header>
+
+<main class="dashboard">
+<div class="welcome">
+<h1>Begin Your Journey With Us</h1>
+<p>Joining Freemasonry Heritage Fraternity is more than membership. It is a sacred path of brotherhood, honor, growth, and purpose. Here, you will find men of integrity who uplift one another and serve with pride.</p>
+</div>
+
+<section class="requirements-card" id="requirementsCard">
+<h2>Membership Requirements</h2>
+<p>Your initiation is a process of transformation. You may complete each step in stages as guided by your Lodge Director.</p>
+
+<div id="requirementsList">
+<!-- Requirements load here from Firebase -->
+</div>
+
+<div class="note-box">
+<h3>Important Note</h3>
+<p>It is not a must to pay all requirements at once. The fraternity initiation is a process done in steps. Once you register, your Lodge Director will guide you to the next stage. Each process is conducted on different days of the week to give you time to prepare. We walk with you every step of the way.</p>
+</div>
+</section>
+
+<section class="why-join">
+<div class="benefit-card"><div class="icon">◬</div><h3>Brotherhood</h3><p>Become part of a lifelong network of men who support, protect, and elevate each other in business and life.</p></div>
+<div class="benefit-card"><div class="icon">⚖</div><h3>Honor & Integrity</h3><p>Walk a path built on truth, respect, and discipline. Grow into a better version of yourself.</p></div>
+<div class="benefit-card"><div class="icon">★</div><h3>Opportunity</h3><p>Access mentorship, leadership roles, and connections that open doors across the country.</p></div>
+</section>
+</main>
+
+<!-- Firebase Script with Realtime Sync -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+// YOUR FIREBASE CONFIG - INJECTED
+const firebaseConfig = {
+  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+  authDomain: "mansonry-family-fraternity.firebaseapp.com",
+  databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mansonry-family-fraternity",
+  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
+  messagingSenderId: "964415179161",
+  appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
+  measurementId: "G-Q8LC74ZFXN"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+const requirementsList = document.getElementById("requirementsList");
+
+// Check if user is logged in, then load requirements in real-time
+onAuthStateChanged(auth, (user) => {
+if(!user){
+window.location.href = "login.html";
+return;
+}
+
+// REALTIME SYNC: Load requirements from Firebase
+const reqRef = ref(database, "requirements");
+onValue(reqRef, (snapshot) => {
+if(snapshot.exists()){
+const reqData = snapshot.val();
+renderRequirements(reqData);
+} else {
+// Default requirements if nothing in Firebase yet
+renderRequirements([
+{title: "1. Initiation Fee", desc: "The official fee to begin your path into the fraternity", price: "sh 9,000"},
+{title: "2. Gown / Uniform", desc: "Your official regalia for ceremonies and lodge gatherings", price: "sh 12,000"},
+{title: "3. Camel Blood", desc: "Used in the sacred initiation and blessing ceremony", price: "sh 8,000"},
+{title: "4. Transport Fee", desc: "We send one of our members to pick you up", price: "sh 2,500"},
+{title: "5. Registration Fee", desc: "Official entry into our records and member portal", price: "sh 18,000"}
+]);
+}
+});
+});
+
+// Function to render requirements from Firebase
+function renderRequirements(data){
+requirementsList.innerHTML = "";
+data.forEach((item) => {
+requirementsList.innerHTML += `
+<div class="requirement-item">
+<div class="info">
+<h3>${item.title}</h3>
+<p>${item.desc}</p>
+</div>
+<div class="price">${item.price}</div>
+</div>
+`;
+});
+}
+
+// Logout
+document.querySelector(".logout").addEventListener("click",(e)=>{
+e.preventDefault();
+signOut(auth).then(()=>{
+window.location.href="login.html";
+});
+</script>
+
+<nav class="bottom-nav">
+<a href="dashboard.html">Home</a>
+<a href="requirements.html" class="active">Requirements</a>
+<a href="application.html">Application</a>
+<a href="help.html">Help Line</a>
+<a href="member.html">Member</a>
+</nav>
+
+</body>
+</html>

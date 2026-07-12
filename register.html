@@ -2,171 +2,42 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Freemasonry | Membership Registration</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
-
-body{
-background:#07111f;
-color:white;
-min-height:100vh;
-padding-bottom:100px;
-}
-
-body::before{
-content:"◬";
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-font-size:500px;
-color:rgba(212,175,55,.04);
-z-index:-1;
-pointer-events:none;
-}
-
-/* HEADER */
-header{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-padding:20px 8%;
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:rgba(0,0,0,.75);
-backdrop-filter:blur(10px);
-z-index:1000;
-}
-
-.logo{
-font-size:30px;
-font-weight:700;
-color:#d4af37;
-}
-
-/* HERO */
-.hero{
-height:45vh;
-display:flex;
-justify-content:center;
-align-items:center;
-text-align:center;
-padding:20px;
-background:
-linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)),
-url("1517026394531.jpeg");
-background-size:cover;
-background-position:center;
-background-color:#0b1728;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;}
+body::before{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.04);z-index:-1;pointer-events:none;}
+header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
+.logo{font-size:30px;font-weight:700;color:#d4af37;}
+.hero{height:45vh;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-color:#0b1728;}
 .hero h1{font-size:55px;}
 .hero p{margin-top:15px;color:#ddd;}
-
-/* SECTIONS */
 section{padding:80px 10%;}
 .title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:40px;}
-
-/* FORM */
-.register-box{
-max-width:850px;
-margin:auto;
-background:#142238;
-padding:45px;
-border-radius:20px;
-box-shadow:0 20px 50px rgba(0,0,0,.5);
-border:1px solid rgba(212,175,55,.2);
-}
-
-.form-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:25px;
-}
-
+.register-box{max-width:850px;margin:auto;background:#142238;padding:45px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.2);}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
 .input-group{display:flex;flex-direction:column;}
 label{margin-bottom:8px;color:#d4af37;}
-input,select,textarea{
-background:#08111f;
-border:1px solid #39485f;
-padding:15px;
-border-radius:10px;
-color:white;
-outline:none;
-}
+input,select,textarea{background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;outline:none;}
 input:focus,select:focus,textarea:focus{border-color:#d4af37;}
 textarea{height:130px;resize:none;}
 .full{grid-column:1/-1;}
-
-/* BUTTON */
-.btn{
-margin-top:30px;
-display:block;
-width:220px;
-padding:15px;
-margin-left:auto;
-margin-right:auto;
-border:none;
-border-radius:40px;
-background:#d4af37;
-color:#111;
-font-weight:bold;
-cursor:pointer;
-transition:.3s;
-}
+.btn{margin-top:30px;display:block;width:220px;padding:15px;margin-left:auto;margin-right:auto;border:none;border-radius:40px;background:#d4af37;color:#111;font-weight:bold;cursor:pointer;transition:.3s;}
 .btn:hover{transform:translateY(-5px);background:#f1ca52;}
 .btn:disabled{opacity:.6;cursor:not-allowed;}
-
-/* INFO CARDS */
-.info{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:25px;
-}
-
-.card{
-background:#142238;
-padding:25px;
-border-radius:15px;
-border:1px solid rgba(212,175,55,.15);
-transition:.3s;
-}
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
+.card{background:#142238;padding:25px;border-radius:15px;border:1px solid rgba(212,175,55,.15);transition:.3s;}
 .card:hover{transform:translateY(-8px);border-color:#d4af37;}
 .card h3{color:#d4af37;margin-bottom:10px;}
 .card p{color:#ddd;line-height:1.7;}
-
-/* STATUS MESSAGE */
-#statusMessage{
-text-align:center;
-margin-top:25px;
-font-weight:600;
-color:#d4af37;
-min-height:24px;
-}
-
-/* FOOTER */
+#statusMessage{text-align:center;margin-top:25px;font-weight:600;color:#d4af37;min-height:24px;}
 footer{background:#020509;padding:35px;text-align:center;color:#999;}
-
-@media(max-width:700px){
-.hero h1{font-size:35px;}
-.register-box{padding:25px;}
-}
-
+@media(max-width:700px){.hero h1{font-size:35px;}.register-box{padding:25px;}}
 </style>
 
 </head>
@@ -239,6 +110,17 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 </select>
 </div>
 
+<!-- NEW PASSWORD FIELDS -->
+<div class="input-group">
+<label>Create Password</label>
+<input id="password" type="password" placeholder="Min 6 characters" required minlength="6">
+</div>
+
+<div class="input-group">
+<label>Confirm Password</label>
+<input id="confirmPassword" type="password" placeholder="Re-enter password" required minlength="6">
+</div>
+
 <div class="input-group full">
 <label>Message</label>
 <textarea id="message" placeholder="Tell us why you would like to join our brotherhood" required></textarea>
@@ -284,10 +166,11 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 <p>© 2026 Freemasonry Heritage</p>
 </footer>
 
-<!-- FIREBASE REALTIME DATABASE -->
+<!-- FIREBASE AUTH + REALTIME DATABASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -303,6 +186,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const database = getDatabase(app);
 
 // Get Elements
@@ -315,38 +199,78 @@ const box = document.querySelector(".register-box");
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
     button.disabled = true;
-    button.textContent = "Submitting...";
+    button.textContent = "Creating Account...";
+    statusMessage.textContent = "";
 
-    const registration = {
-        fullName: document.getElementById("fullName").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        phone: document.getElementById("phone").value.trim(),
-        country: document.getElementById("country").value,
-        age: document.getElementById("age").value,
-        interest: document.getElementById("interest").value,
-        message: document.getElementById("message").value.trim(),
-        status: "pending",
-        timestamp: new Date().toISOString()
-    };
+    const fullName = document.getElementById("fullName").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const country = document.getElementById("country").value;
+    const age = document.getElementById("age").value;
+    const interest = document.getElementById("interest").value;
+    const message = document.getElementById("message").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    // 1. Validate passwords match
+    if(password !== confirmPassword){
+        statusMessage.style.color = "#ff5555";
+        statusMessage.textContent = "Passwords do not match.";
+        button.disabled = false;
+        button.textContent = "Submit Registration";
+        return;
+    }
+
+    if(password.length < 6){
+        statusMessage.style.color = "#ff5555";
+        statusMessage.textContent = "Password must be at least 6 characters.";
+        button.disabled = false;
+        button.textContent = "Submit Registration";
+        return;
+    }
 
     try {
-        const registrationRef = push(ref(database, "registrations"));
-        await set(registrationRef, registration);
+        // 2. Create Firebase Auth User
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // 3. Save user data to /users/{uid}
+        const userData = {
+            uid: user.uid,
+            fullName: fullName,
+            email: email,
+            phone: phone,
+            country: country,
+            age: age,
+            interest: interest,
+            message: message,
+            status: "pending", // admin can change to "active" later
+            role: "member",
+            timestamp: new Date().toISOString()
+        };
+
+        await set(ref(database, "users/" + user.uid), userData);
 
         statusMessage.style.color = "#4cff88";
-        statusMessage.textContent = "✓ Registration submitted successfully. Redirecting to dashboard...";
+        statusMessage.textContent = "✓ Account created successfully. Redirecting to dashboard...";
 
         form.reset();
 
-        // FIXED: Redirect to dashboard after 2 seconds
+        // 4. Redirect to dashboard
         setTimeout(() => {
             window.location.href = "dashboard.html";
-        }, 2000);
+        }, 1500);
 
     } catch (error) {
-        console.error("Firebase Error:", error);
+        console.error("Firebase Error:", error.code, error.message);
         statusMessage.style.color = "#ff5555";
-        statusMessage.textContent = "Registration failed. Please try again.";
+        
+        if(error.code === 'auth/email-already-in-use'){
+            statusMessage.textContent = "This email is already registered. Please login.";
+        } else {
+            statusMessage.textContent = `Registration failed: ${error.message}`;
+        }
+        
         button.disabled = false;
         button.textContent = "Submit Registration";
     }
@@ -357,7 +281,6 @@ window.addEventListener("load", () => {
     box.style.opacity = "0";
     box.style.transform = "translateY(40px)";
     box.style.transition = "all 1s ease";
-
     requestAnimationFrame(() => {
         box.style.opacity = "1";
         box.style.transform = "translateY(0)";

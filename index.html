@@ -9,7 +9,6 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-
 <style>
 
 *{
@@ -20,7 +19,6 @@ font-family:'Poppins',sans-serif;
 scroll-behavior:smooth;
 }
 
-
 body{
 
 background:#07111f;
@@ -29,7 +27,6 @@ overflow-x:hidden;
 padding-bottom:90px;
 
 }
-
 
 body::before{
 
@@ -49,6 +46,7 @@ img{
     max-width:100%;
     height:auto;
     display:block;
+    border-radius:18px;
 }
 
 /* HEADER */
@@ -69,7 +67,6 @@ z-index:1000;
 
 }
 
-
 .logo{
 
 font-size:30px;
@@ -77,7 +74,6 @@ font-weight:700;
 color:#d4af37;
 
 }
-
 
 header nav a{
 
@@ -89,14 +85,11 @@ transition:.3s;
 
 }
 
-
 header nav a:hover{
 
 color:#d4af37;
 
 }
-
-
 
 /* HERO */
 
@@ -116,13 +109,12 @@ rgba(0,0,0,.65),
 rgba(0,0,0,.65)
 ),
 
-url("https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1600&q=80");
+url("images.jpeg");
 
 background-size:cover;
 background-position:center;
 
 }
-
 
 .hero h1{
 
@@ -130,7 +122,6 @@ font-size:60px;
 margin-bottom:20px;
 
 }
-
 
 .hero p{
 
@@ -140,7 +131,6 @@ line-height:1.8;
 color:#ddd;
 
 }
-
 
 /* BUTTONS */
 
@@ -163,7 +153,6 @@ border:1px solid rgba(212,175,55,.25);
 
 }
 
-
 .bottom-nav a{
 
 display:flex;
@@ -180,7 +169,6 @@ white-space:nowrap;
 
 }
 
-
 .bottom-nav a.active{
 
 background:#d4af37;
@@ -188,13 +176,11 @@ color:#111;
 
 }
 
-
 .btn:hover{
 
 transform:translateY(-5px);
 
 }
-
 
 .join-btn{
 
@@ -205,15 +191,12 @@ color:#d4af37;
 
 }
 
-
 .join-btn:hover{
 
 background:#d4af37;
 color:#111;
 
 }
-
-
 
 /* GENERAL */
 
@@ -222,7 +205,6 @@ section{
 padding:100px 10%;
 
 }
-
 
 .title{
 
@@ -243,7 +225,6 @@ width:100%;
 
 }
 
-
 .history{
 
 display:grid;
@@ -252,7 +233,6 @@ gap:40px;
 align-items:center;
 
 }
-
 
 @media(max-width:900px){
 
@@ -264,13 +244,11 @@ grid-template-columns:1fr;
 
 }
 
-
 section{
 
 padding:80px 5%;
 
 }
-
 
 .hero h1{
 
@@ -291,7 +269,6 @@ max-width:1100px;
 margin:40px auto 0;
 
 }
-
 
 .card{
 
@@ -316,7 +293,6 @@ min-height:190px;
 
 }
 
-
 .card:hover{
 
 transform:translateY(-10px);
@@ -328,7 +304,6 @@ box-shadow:
 
 }
 
-
 .card h3{
 
 color:#d4af37;
@@ -338,7 +313,6 @@ font-size:22px;
 margin-bottom:15px;
 
 }
-
 
 .card p{
 
@@ -350,8 +324,6 @@ font-size:15px;
 
 }
 
-
-
 @media(max-width:900px){
 
 .info{
@@ -360,15 +332,11 @@ grid-template-columns:1fr;
 
 }
 
-
 }
-
 
 /* BOTTOM NAV */
 
 /* Professional Bottom Navigation */
-
-.b/* FIXED NEXT PAGE CARD */
 
 .bottom-nav{
 
@@ -397,7 +365,6 @@ border:1px solid rgba(212,175,55,.35);
 
 }
 
-
 .bottom-nav a{
 
 display:flex;
@@ -423,7 +390,6 @@ transition:.3s;
 
 }
 
-
 .bottom-nav a:hover{
 
 transform:translateY(-5px);
@@ -432,14 +398,11 @@ background:#f0c84b;
 
 }
 
-
 .bottom-nav span{
 
 font-size:20px;
 
 }
-}
-
 
 /* FOOTER */
 
@@ -452,12 +415,7 @@ color:#999;
 
 }
 
-
-
 /* MOBILE */
-
-
-
 
 header nav{
 
@@ -465,17 +423,20 @@ display:none;
 
 }
 
-
-
-
-
 .btn{
 
 display:block;
 margin:20px auto;
-
+padding:14px 35px;
+background:#d4af37;
+color:#111;
+border-radius:40px;
+text-decoration:none;
+font-weight:700;
+transition:.3s;
+border:none;
+cursor:pointer;
 }
-
 
 .join-btn{
 
@@ -483,23 +444,19 @@ margin-left:0;
 
 }
 
-
 }
 
 </style>
 
 </head>
 
-
 <body>
-
 
 <header>
 
 <div class="logo">
-Freemasonry
+Freemasonry Heritage
 </div>
-
 
 <nav>
 
@@ -512,43 +469,35 @@ Freemasonry
 <a href="#values">Values</a>
 
 <a href="membership.html" class="btn join-btn">
-🤝 Join / Learn More
+🤝 Join Our Brotherhood
 </a>
 
 <a href="#gallery">Gallery</a>
 
 </nav>
 
-
 </header>
-
-
 
 <section class="hero" id="home">
 
 <div>
 
 <h1>
-A Journey Through Freemasonry History
+A Journey Through Freemasonry Heritage
 </h1>
 
-
 <p>
-An educational demonstration exploring the origins,
-development, global spread, and historical presence of
-Freemasonry.
+Discover the legacy of honor, brotherhood, and purpose. For centuries, Freemasonry has guided men to become leaders of integrity, 
+builders of community, and pillars of strength for one another.
 </p>
 
-
 <a href="#origin" class="btn">
-Explore History
+Explore Our Heritage
 </a>
-
 
 <a href="#membership" class="btn join-btn">
-Membership Overview
+Begin Your Journey
 </a>
-
 
 </div>
 
@@ -559,28 +508,24 @@ Membership Overview
 <section id="origin">
 
 <h2 class="title">
-How Freemasonry Started
+The Foundation of Our Brotherhood
 </h2>
-
 
 <div class="history">
 
-<img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80">
-
+<img src="images.jpeg">
 
 <div>
 
 <p style="line-height:2;color:#ddd;">
 
-Modern Freemasonry is generally traced to the early 18th century.
-In 1717, four London lodges formed the first Grand Lodge,
-creating a formal structure for organized modern Freemasonry.
+Our tradition is rooted in centuries of wisdom, discipline, and unity. 
+In 1717, four London lodges united to form the first Grand Lodge, establishing a formal path for men of character to walk together.
 
 <br><br>
 
-The movement drew inspiration from medieval stonemason traditions,
-but developed into a fraternity focused on moral philosophy,
-friendship, charity and personal improvement.
+From the craft of builders, we inherited symbols of structure and strength. Today, Freemasonry Heritage Fraternity stands as a brotherhood 
+dedicated to moral growth, mutual support, and service to humanity.
 
 </p>
 
@@ -589,85 +534,68 @@ friendship, charity and personal improvement.
 </div>
 
 </section>
-
-
 
 <!-- FOUNDERS -->
 
 <section>
 
 <h2 class="title">
-Who Started Modern Freemasonry?
+The Pillars That Built Us
 </h2>
-
 
 <div class="grid">
 
-
 <div class="card">
 
 <h3>
-The Four London Lodges
+Unity in Purpose
 </h3>
 
 <p>
-In 1717, four London lodges joined together to create the first
-Grand Lodge of England. This event is widely associated with the
-beginning of organized modern Freemasonry.
+When four lodges came together, they created more than an organization. They created a lifelong bond. We continue that tradition today by 
+standing together as one family.
 </p>
 
 </div>
 
-
-
 <div class="card">
 
 <h3>
-Early Leaders
+Leadership & Vision
 </h3>
 
 <p>
-Early figures such as John Theophilus Desaguliers contributed to
-the development of Masonic writings, organization and public structure.
+Our early leaders built a structure based on integrity, education, and respect. Their vision guides us to raise men who lead with honor in 
+every area of life.
 </p>
 
 </div>
 
-
-
 <div class="card">
 
 <h3>
-Historical Roots
+Timeless Principles
 </h3>
 
 <p>
-Freemasonry used traditions from medieval craft guilds as symbols
-for personal growth, discipline and moral improvement.
+We use the tools of the builder as symbols for building character. Discipline, truth, and brotherly love remain the foundation of every member.
 </p>
 
 </div>
-
 
 </div>
 
 </section>
 
-
-
-
 <!-- SPREAD -->
 
 <section>
 
-
 <h2 class="title">
-How Freemasonry Spread
+A Brotherhood Across the World
 </h2>
 
-
 <div class="timeline">
-
 
 <div>
 
@@ -676,13 +604,10 @@ How Freemasonry Spread
 </h3>
 
 <p>
-Lodges expanded across Europe and North America through travel,
-trade and social connections.
+Our values traveled across nations through men of principle, establishing lodges founded on trust, charity, and mutual uplift.
 </p>
 
 </div>
-
-
 
 <div>
 
@@ -691,96 +616,67 @@ trade and social connections.
 </h3>
 
 <p>
-Freemasonry reached parts of Africa, Asia and other regions through
-international communities and historical migration.
+Freemasonry reached Africa, Asia, and beyond. In every land, it became a place where men could grow together and serve their communities.
 </p>
 
 </div>
-
-
 
 <div>
 
 <h3>
-Modern Era
+Today
 </h3>
 
 <p>
-Today, Masonic organizations operate in many countries under
-different recognized jurisdictions.
+Freemasonry Heritage Fraternity continues this legacy. We are here to support you, guide you, and walk with you as you build a better future.
 </p>
 
 </div>
 
-
 </div>
 
 </section>
-
-
-
-
 
 <!-- KENYA -->
 
 <section id="kenya">
 
-
 <h2 class="title">
-How Freemasonry Reached Kenya
+Freemasonry Heritage in Kenya
 </h2>
-
-
 
 <div class="history">
 
-
-<img src="https://images.unsplash.com/photo-1523805009345-7448845a9e53?auto=format&fit=crop&w=1200&q=80">
-
-
+<img src="images.jpeg">
 
 <div>
 
-
 <p style="line-height:2;color:#ddd;">
 
-Freemasonry reached Kenya during the colonial period through
-British administrators, railway workers, merchants, professionals
-and other international communities living in East Africa.
+In Kenya, our fraternity was built by men who believed in progress, integrity, and community. From Nairobi to Mombasa, our lodges have 
+become homes of brotherhood where members support one another in business, family, and life.
 
 <br><br>
 
-As towns such as Nairobi and Mombasa developed, organized lodges
-were established within different Masonic jurisdictions.
+Here, you are not joining an organization. You are joining a family that will stand with you.
 
 </p>
 
-
 </div>
 
-
 </div>
-
 
 </section>
 
-
-
-
-
 <!-- KENYA LOCATIONS -->
-
 
 <section>
 
-
 <h2 class="title">
-Masonic Presence in Kenya
+Our Presence
 </h2>
 
-
 <div class="grid">
-
 
 <div class="card">
 
@@ -789,13 +685,10 @@ Nairobi
 </h3>
 
 <p>
-Historically one of the main centres associated with Masonic
-activity in Kenya.
+The heart of our operations. A place of meetings, mentorship, and brotherhood where leaders are made.
 </p>
 
 </div>
-
-
 
 <div class="card">
 
@@ -804,131 +697,98 @@ Mombasa
 </h3>
 
 <p>
-A coastal city connected with historical international communities
-and lodge development.
+A coastal hub of unity and service, connecting members across the region in purpose and support.
 </p>
 
 </div>
-
-
 
 <div class="card">
 
 <h3>
-Other Areas
+Nationwide
 </h3>
 
 <p>
-Other locations may have hosted meetings depending on historical
-development and jurisdiction.
+No matter where you are in Kenya, our Lodge Directors are ready to guide you through the process and welcome you home.
 </p>
 
 </div>
 
-
 </div>
 
 </section>
-
-
-
-
 
 <!-- LODGE ORGANIZATION -->
 
-
 <section>
 
-
 <h2 class="title">
-How Lodges Are Organized
+How We Support You
 </h2>
-
 
 <div class="grid">
 
-
 <div class="card">
 
 <h3>
-Local Lodge
+Your Local Lodge
 </h3>
 
 <p>
-The basic local unit where members meet for administration,
-education and traditional activities.
+This is your home. Here you will find guidance, training, and brothers who become family.
 </p>
 
 </div>
 
-
-
 <div class="card">
 
 <h3>
-Grand Lodge
+Lodge Leadership
 </h3>
 
 <p>
-A governing body responsible for supervising lodges within a
-recognized jurisdiction.
+Experienced directors walk with you step by step. From application to initiation, you will never walk alone.
 </p>
 
 </div>
 
-
-
 <div class="card">
 
 <h3>
-Lodge Officers
+Growth & Education
 </h3>
 
 <p>
-Leadership roles help manage meetings, administration and
-organizational responsibilities.
+We invest in your development as a man, a leader, and a provider for your community.
 </p>
 
 </div>
 
-
-
 <div class="card">
 
 <h3>
-Community Activities
+Business Empowerment
 </h3>
 
 <p>
-Many Masonic organizations have historical connections with
-charitable and community-support projects.
+Once fully registered, members qualify for our Business Grant to start or grow a business and transform their lives.
 </p>
 
 </div>
-
 
 </div>
 
 </section>
 
-
-
-
-
 <!-- VALUES -->
-
 
 <section id="values">
 
-
 <h2 class="title">
-Core Values Associated With Members
+Values That Define Us
 </h2>
 
-
-
 <div class="grid">
-
 
 <div class="card">
 
@@ -937,212 +797,166 @@ Integrity
 </h3>
 
 <p>
-Commitment to honesty, responsibility and ethical conduct.
+We do what is right, even when no one is watching. Your word becomes your bond.
 </p>
 
 </div>
-
-
 
 <div class="card">
 
 <h3>
-Respect
+Brotherhood
 </h3>
 
 <p>
-Promoting dignity, fairness and cooperation among people.
+We rise together. In times of joy and challenge, your brothers will stand beside you.
 </p>
 
 </div>
-
-
 
 <div class="card">
 
 <h3>
-Charity
+Service
 </h3>
 
 <p>
-Supporting humanitarian efforts and community service.
+True strength is in lifting others. We serve our families, communities, and nation.
 </p>
 
 </div>
-
-
 
 <div class="card">
 
 <h3>
-Self Improvement
+Growth
 </h3>
 
 <p>
-Encouraging learning, reflection and personal development.
+We are committed to your personal, financial, and spiritual development every step of the way.
 </p>
 
 </div>
-
 
 </div>
 
 </section>
-
-
-
-
 
 <!-- MEMBERSHIP -->
 
-
 <section id="membership">
 
-
 <h2 class="title">
-General Membership Overview
+Your Path to Membership
 </h2>
-
 
 <div class="grid">
 
-
 <div class="card">
 
 <h3>
-Personal Character
+Character First
 </h3>
 
 <p>
-Many Masonic traditions emphasize honesty, responsibility,
-respect and good conduct.
+We welcome men of good character, vision, and the desire to build a better life for themselves and others.
 </p>
 
 </div>
 
-
-
 <div class="card">
 
 <h3>
-Personal Development
+Guided Process
 </h3>
 
 <p>
-Focus on learning, reflection, leadership and improvement of
-character.
+Membership is a journey. Your Lodge Director will guide you through each step at your own pace.
 </p>
 
 </div>
 
-
-
 <div class="card">
 
 <h3>
-Local Requirements
+A Future Secured
 </h3>
 
 <p>
-Requirements vary between jurisdictions. Interested persons should
-consult recognized organizations for accurate information.
+Beyond brotherhood, you gain access to mentorship, opportunities, and financial empowerment through our member programs.
 </p>
 
 </div>
-
 
 </div>
 
 </section>
-
-
-
-
 
 <!-- SYMBOLS -->
 
-
 <section id="symbols">
 
-
 <h2 class="title">
-Public Symbols & Meanings
+Symbols of Strength
 </h2>
-
 
 <div class="grid">
 
-
 <div class="card">
 
 <h3>
-Square
+The Square
 </h3>
 
 <p>
-Often associated with fairness, morality and ethical conduct.
+A reminder to act with fairness and moral uprightness in all your dealings.
 </p>
 
 </div>
 
-
-
 <div class="card">
 
 <h3>
-Compasses
+The Compasses
 </h3>
 
 <p>
-Associated with balance, discipline and thoughtful decisions.
+Teaches balance, discipline, and keeping your life within due bounds.
 </p>
 
 </div>
 
-
-
 <div class="card">
 
 <h3>
-Level
+The Level
 </h3>
 
 <p>
-Represents equality and shared dignity.
+We meet on the level. Every brother is equal and valued.
 </p>
 
 </div>
 
-
-
 <div class="card">
 
 <h3>
-Plumb Rule
+The Plumb Rule
 </h3>
 
 <p>
-Associated with upright behaviour and principles.
+A call to live with honesty, truth, and straight conduct.
 </p>
 
 </div>
-
 
 </div>
 
 </section>
-
-
-
-
-
-
-
 
 </section><!-- ========================= -->
 <!-- FOOTER -->
 <!-- ========================= -->
-
 
 <footer>
 
@@ -1153,37 +967,30 @@ Freemasonry Heritage
 <br>
 
 <p>
-History • Philosophy • Architecture • Community • Tradition
+Brotherhood • Honor • Service • Growth • Legacy
 </p>
 
 <br>
 
 <p>
-This website is an educational demonstration only and is not an
-official website of any Grand Lodge or Masonic organization.
+Building men of character for a stronger tomorrow.
 </p>
 
 <br>
 
 <p>
-© 2026 Freemasonry 
+© 2026 Freemasonry Heritage
 </p>
 
 </footer>
-
-
-
-
 
 <!-- ========================= -->
 <!-- FIXED BOTTOM NAVIGATION -->
 <!-- ========================= -->
 
-
 <nav class="bottom-nav">
 
-<a href="history.html" class="active">
-
+<a href="application.html" class="active">
 
 BE A MEMBER
 
@@ -1191,28 +998,50 @@ BE A MEMBER
 
 </nav>
 
-
-
-
-
 <!-- ========================= -->
-<!-- JAVASCRIPT -->
+<!-- JAVASCRIPT + FIREBASE -->
 <!-- ========================= -->
 
+<script type="module">
 
-<script>
+// Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+// Your Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+  authDomain: "mansonry-family-fraternity.firebaseapp.com",
+  databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mansonry-family-fraternity",
+  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
+  messagingSenderId: "964415179161",
+  appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
+  measurementId: "G-Q8LC74ZFXN"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+// Example: Sync live data from Firebase
+// You can store site content, member count, announcements etc in /site
+const siteRef = ref(database, 'site');
+onValue(siteRef, (snapshot) => {
+  const data = snapshot.val();
+  if(data){
+    console.log("Live data loaded:", data);
+    // Example: document.getElementById('memberCount').innerText = data.memberCount;
+  }
+});
 
 // Card reveal animation
 
 const cards = document.querySelectorAll(".card");
 
-
 const observer = new IntersectionObserver((entries)=>{
 
-
 entries.forEach(entry=>{
-
 
 if(entry.isIntersecting){
 
@@ -1221,18 +1050,13 @@ entry.target.style.transform="translateY(0)";
 
 }
 
-
 });
-
 
 },{
 threshold:0.2
 });
 
-
-
 cards.forEach(card=>{
-
 
 card.style.opacity="0";
 
@@ -1240,34 +1064,17 @@ card.style.transform="translateY(40px)";
 
 card.style.transition="all .8s ease";
 
-
 observer.observe(card);
 
-
 });
-
-
-
-
-
-// Bottom navigation active state
-
-
-
-
-
-
 
 // Smooth scrolling fallback
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
 
-
 anchor.addEventListener("click",function(e){
 
-
 const target=document.querySelector(this.getAttribute("href"));
-
 
 if(target){
 
@@ -1281,16 +1088,10 @@ behavior:"smooth"
 
 }
 
-
 });
-
-
-});
-
 
 </script>
 
-
 </body>
 
-  </html>
+</html>

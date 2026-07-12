@@ -10,174 +10,48 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{
-background:#07111f;
-color:white;
-min-height:100vh;
-padding-bottom:100px;
-overflow-x:hidden;
-}
-body::before{
-content:"";
-position:fixed;
-top:0;left:0;width:100%;height:100%;
-background:
-linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),
-url("1517026394531.jpeg");
-background-size:cover;
-background-position:center;
-background-attachment:fixed;
-z-index:-2;
-}
-body::after{
-content:"◬";
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-font-size:500px;
-color:rgba(212,175,55,.04);
-z-index:-1;
-pointer-events:none;
-}
-
-header{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-padding:20px 8%;
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:rgba(0,0,0,.75);
-backdrop-filter:blur(10px);
-z-index:1000;
-}
+body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;overflow-x:hidden;}
+body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-attachment:fixed;z-index:-2;}
+body::after{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.04);z-index:-1;pointer-events:none;}
+header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
 .logo{font-size:30px;font-weight:700;color:#d4af37;}
-header nav a{color:white;text-decoration:none;margin-left:20px;transition:.3s;}
-header nav a:hover{color:#d4af37;}
-
 .hero{height:45vh;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;}
-.hero h1{font-size:55px;}
-.hero p{margin-top:15px;color:#ddd;}
-
+.hero h1{font-size:55px;color:#d4af37;}
 section{padding:80px 10%;}
 .title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:40px;}
-
-.login-box{
-max-width:500px;
-margin:auto;
-background:rgba(20,34,56,.8);
-backdrop-filter:blur(20px);
-padding:45px;
-border-radius:20px;
-box-shadow:0 20px 50px rgba(0,0,0,.5);
-border:1px solid rgba(212,175,55,.25);
-}
-
+.login-box{max-width:500px;margin:auto;background:rgba(20,34,56,.8);backdrop-filter:blur(20px);padding:45px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.25);}
 .input-group{display:flex;flex-direction:column;margin-bottom:20px;}
 label{color:#d4af37;margin-bottom:8px;font-weight:500;}
-input{
-width:100%;
-background:#08111f;
-border:1px solid #39485f;
-padding:15px;
-border-radius:10px;
-color:white;
-outline:none;
-font-size:15px;
-}
+input{width:100%;background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;outline:none;font-size:15px;}
 input:focus{border-color:#d4af37;}
-
-/* REMEMBER ME + FORGOT */
 .options{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;font-size:14px;}
 .remember{display:flex;align-items:center;gap:8px;}
 .remember input{width:16px;height:16px;accent-color:#d4af37;}
 .forgot{color:#d4af37;text-decoration:none;font-weight:500;transition:.3s;}
 .forgot:hover{color:#f1ca52;text-decoration:underline;}
-
-/* BUTTON */
-.btn{
-display:block;
-width:220px;
-margin:30px auto 0;
-padding:15px;
-border:none;
-border-radius:40px;
-background:linear-gradient(135deg,#d4af37,#b8941f);
-color:#111;
-font-weight:bold;
-cursor:pointer;
-transition:.3s;
-text-decoration:none;
-text-align:center;
-font-size:16px;
-box-shadow:0 5px 20px rgba(212,175,55,.3);
-}
-.btn:hover{transform:translateY(-5px);background:linear-gradient(135deg,#f1ca52,#d4af37);}
+.btn{display:block;width:220px;margin:30px auto 0;padding:15px;border:none;border-radius:40px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:bold;cursor:pointer;transition:.3s;font-size:16px;box-shadow:0 5px 20px rgba(212,175,55,.3);}
+.btn:hover{transform:translateY(-5px);}
 .btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
 
-.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;margin-top:40px;}
-.card{background:rgba(20,34,56,.7);backdrop-filter:blur(15px);padding:25px;border-radius:15px;border:1px solid rgba(212,175,55,.15);transition:.3s;}
-.card:hover{transform:translateY(-8px);border-color:#d4af37;}
-.card h3{color:#d4af37;margin-bottom:10px;}
-.card p{color:#ddd;line-height:1.7;}
-
-footer{background:#020509;padding:35px;text-align:center;color:#999;}
-
-/* TOAST NOTIFICATION - CENTER */
-.toast{
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%) scale(0.8);
-background:rgba(20,34,56,.95);
-backdrop-filter:blur(20px);
-padding:25px 35px;
-border-radius:15px;
-border:2px solid #d4af37;
-box-shadow:0 20px 60px rgba(212,175,55,.4);
-z-index:9999;
-opacity:0;
-transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-text-align:center;
-min-width:300px;
-max-width:90%;
-}
-.toast.show{
-opacity:1;
-transform:translate(-50%,-50%) scale(1);
-}
+/* TOAST */
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);backdrop-filter:blur(20px);padding:30px 40px;border-radius:18px;border:2px solid #d4af37;box-shadow:0 20px 60px rgba(212,175,55,.4);z-index:9999;opacity:0;transition:all.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);text-align:center;min-width:320px;}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
 .toast.success{border-color:#4cff88;box-shadow:0 20px 60px rgba(76,255,136,.3);}
 .toast.error{border-color:#ff5555;box-shadow:0 20px 60px rgba(255,85,85,.3);}
-.toast .icon{font-size:40px;margin-bottom:10px;display:block;}
-.toast .message{font-size:16px;font-weight:600;color:#fff;}
+.toast .icon{font-size:45px;margin-bottom:12px;display:block;}
+.toast .message{font-size:17px;font-weight:600;color:#fff;}
 
-@media(max-width:700px){
-.hero h1{font-size:35px;}
-header nav{display:none;}
-.login-box{padding:25px;}
-.options{flex-direction:column;gap:15px;align-items:flex-start;}
-.toast{min-width:280px;}
-}
+@media(max-width:700px){.hero h1{font-size:35px;}.login-box{padding:25px;}.toast{min-width:280px;}}
 </style>
 </head>
 
 <body>
 
-<!-- TOAST CONTAINER -->
-<div id="toast" class="toast">
-<span class="icon" id="toastIcon"></span>
-<span class="message" id="toastMessage"></span>
-</div>
+<!-- TOAST -->
+<div id="toast" class="toast"><span class="icon" id="toastIcon"></span><span class="message" id="toastMessage"></span></div>
 
 <header>
 <div class="logo">Freemasonry Heritage</div>
-<nav>
-<a href="index.html">Home</a>
-<a href="history.html">History</a>
-</nav>
 </header>
 
 <section class="hero">
@@ -217,29 +91,12 @@ header nav{display:none;}
 </div>
 </section>
 
-<section>
-<h2 class="title">Member Access Information</h2>
-<div class="info">
-<div class="card"><h3>Secure Login</h3><p>Member accounts are authenticated securely through Firebase Authentication with full data protection.</p></div>
-<div class="card"><h3>Member Records</h3><p>Your profile and activity are synchronized in real-time with our secure Firebase Realtime Database.</p></div>
-<div class="card"><h3>Account Protection</h3><p>Never share your password. Your account credentials remain private and secure at all times.</p></div>
-</div>
-</section>
-
-<footer>
-<h2 style="color:#d4af37;">Freemasonry Heritage</h2>
-<br>
-<p>Building men of character for a stronger tomorrow.</p>
-<br>
-<p>© 2026 Freemasonry Heritage</p>
-</footer>
-
-<!-- FIREBASE AUTH + REALTIME DATABASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+// YOUR FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -259,28 +116,26 @@ const loginForm = document.getElementById("loginForm");
 const loginBtn = document.getElementById("loginBtn");
 const rememberMe = document.getElementById("rememberMe");
 const forgotBtn = document.getElementById("forgotPassword");
+
+// TOAST ELEMENTS
 const toast = document.getElementById("toast");
 const toastIcon = document.getElementById("toastIcon");
 const toastMessage = document.getElementById("toastMessage");
 
-// TOAST FUNCTION
 function showToast(type, message){
 toast.className = `toast ${type} show`;
 toastIcon.textContent = type === 'success' ? '✓' : '✕';
 toastMessage.textContent = message;
-
-setTimeout(() => {
-toast.classList.remove('show');
-}, 3000);
+setTimeout(() => {toast.classList.remove('show');}, 3500);
 }
 
-// LOGIN WITH REMEMBER ME
+// LOGIN WITH TOAST
 loginForm.addEventListener("submit", async(e) => {
 e.preventDefault();
 loginBtn.disabled = true;
 loginBtn.textContent = "Logging in...";
 
-const email = document.getElementById("email").value.trim();
+const email = document.getElementById("email").value.trim().toLowerCase();
 const password = document.getElementById("password").value;
 
 // Set persistence based on "Remember Me"
@@ -302,43 +157,48 @@ action: "login"
 // REALTIME SYNC: Update lastLogin
 await set(ref(database, "users/" + user.uid + "/lastLogin"), serverTimestamp());
 
-showToast('success', 'Login Successful! Redirecting...');
-loginBtn.textContent = "Success";
-
+showToast('success','Login Successful! Redirecting...');
 setTimeout(() => {
 window.location.href = "dashboard.html";
 }, 1500);
 
 }
 catch(error){
-console.error(error);
 loginBtn.disabled = false;
 loginBtn.textContent = "Login";
+console.error(error.code);
 
-if(error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential'){
-showToast('error', 'Invalid Email or Password');
+if(error.code === 'auth/user-not-found'){
+showToast('error','No account found with this email');
+} else if(error.code === 'auth/wrong-password'){
+showToast('error','Incorrect password. Please try again');
+} else if(error.code === 'auth/invalid-email'){
+showToast('error','Invalid email format');
 } else if(error.code === 'auth/too-many-requests'){
-showToast('error', 'Too many attempts. Try again later.');
+showToast('error','Too many failed attempts. Try again later');
+} else if(error.code === 'auth/network-request-failed'){
+showToast('error','No internet connection');
 } else {
-showToast('error', 'Login Failed: ' + error.message);
+showToast('error','Login failed: ' + error.message);
+}
 }
 });
 
-// FORGOT PASSWORD
+// FORGOT PASSWORD WITH TOAST
 forgotBtn.addEventListener("click", async(e) => {
 e.preventDefault();
 const email = document.getElementById("email").value.trim();
 
 if(!email){
-showToast('error', 'Please enter your email first');
+showToast('error','Please enter your email first');
 return;
 }
 
 try{
 await sendPasswordResetEmail(auth, email);
-showToast('success', 'Password reset email sent!');
+showToast('success','Password reset email sent. Check inbox');
 } catch(error){
-showToast('error', 'Failed to send reset email');
+showToast('error','Failed to send reset email');
 }
 });
 

@@ -117,7 +117,7 @@ const loginBtn = document.getElementById("loginBtn");
 const rememberMe = document.getElementById("rememberMe");
 const forgotBtn = document.getElementById("forgotPassword");
 
-// TOAST ELEMENTS
+// TOAST
 const toast = document.getElementById("toast");
 const toastIcon = document.getElementById("toastIcon");
 const toastMessage = document.getElementById("toastMessage");
@@ -129,7 +129,7 @@ toastMessage.textContent = message;
 setTimeout(() => {toast.classList.remove('show');}, 3500);
 }
 
-// LOGIN WITH TOAST
+// LOGIN
 loginForm.addEventListener("submit", async(e) => {
 e.preventDefault();
 loginBtn.disabled = true;
@@ -137,8 +137,6 @@ loginBtn.textContent = "Logging in...";
 
 const email = document.getElementById("email").value.trim().toLowerCase();
 const password = document.getElementById("password").value;
-
-// Set persistence based on "Remember Me"
 const persistence = rememberMe.checked ? browserLocalPersistence : browserSessionPersistence;
 
 try{
@@ -146,21 +144,21 @@ await setPersistence(auth, persistence);
 const result = await signInWithEmailAndPassword(auth, email, password);
 const user = result.user;
 
-// REALTIME SYNC: Log login
-await set(ref(database, "login_logs/" + user.uid + "/" + Date.now()), {
-uid: user.uid,
-email: user.email,
-time: serverTimestamp(),
-action: "login"
-});
-
-// REALTIME SYNC: Update lastLogin
-await set(ref(database, "users/" + user.uid + "/lastLogin"), serverTimestamp());
-
 showToast('success','Login Successful! Redirecting...');
-setTimeout(() => {
+
+// WAIT FOR FIREBASE WRITES TO COMPLETE BEFORE REDIRECT
+await Promise.all([
+  set(ref(database, "login_logs/" + user.uid + "/" + Date.now()), {
+    uid: user.uid,
+    email: user.email,
+    time: serverTimestamp(),
+    action: "login"
+  }),
+  set(ref(database, "users/" + user.uid + "/lastLogin"), serverTimestamp())
+]);
+
+// NOW REDIRECT
 window.location.href = "dashboard.html";
-}, 1500);
 
 }
 catch(error){
@@ -176,41 +174,19 @@ showToast('error','Incorrect password. Please try again');
 showToast('error','Invalid email format');
 } else if(error.code === 'auth/too-many-requests'){
 showToast('error','Too many failed attempts. Try again later');
-} else if(error.code === 'auth/network-request-failed'){
-showToast('error','No internet connection');
 } else {
 showToast('error','Login failed: ' + error.message);
 }
-}
 });
 
-// FORGOT PASSWORD WITH TOAST
+// FORGOT PASSWORD
 forgotBtn.addEventListener("click", async(e) => {
 e.preventDefault();
 const email = document.getElementById("email").value.trim();
-
-if(!email){
-showToast('error','Please enter your email first');
-return;
-}
-
-try{
-await sendPasswordResetEmail(auth, email);
-showToast('success','Password reset email sent. Check inbox');
-} catch(error){
-showToast('error','Failed to send reset email');
-}
+if(!email){showToast('error','Please enter your email first');return;}
+try{await sendPasswordResetEmail(auth, email);showToast('success','Password reset email sent');} 
+catch(error){showToast('error','Failed to send reset email');}
 });
-
-// Card Animation
-const box = document.querySelector(".login-box");
-box.style.opacity = "0";
-box.style.transform = "translateY(40px)";
-box.style.transition = "1s";
-window.onload = () => {
-box.style.opacity = "1";
-box.style.transform = "translateY(0)";
-};
 </script>
 
 </body>

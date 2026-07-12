@@ -194,6 +194,11 @@ header nav{display:none;}
 
 <p id="statusMessage"></p>
 
+<div style="text-align:center;margin-top:20px;">
+    <p style="color:#ccc;">Not a member yet?</p>
+    <a href="registration.html" class="btn" style="width:auto;display:inline-block;margin-top:10px;">Register Here</a>
+</div>
+
 </form>
 </div>
 </section>
@@ -230,7 +235,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// YOUR FIREBASE CONFIG
+// YOUR FIREBASE CONFIG - FIXED appId
 const firebaseConfig = {
 apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
 authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -238,7 +243,7 @@ databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.fireb
 projectId: "mansonry-family-fraternity",
 storageBucket: "mansonry-family-fraternity.firebasestorage.app",
 messagingSenderId: "964415179161",
-appId: "1:964415179161:web:c8fd1a777542932d7c6c08",
+appId: "1:964415179161:web:c8fd1a777542932d7c6b08", // FIXED: was c6c08
 measurementId: "G-Q8LC74ZFXN"
 };
 
@@ -278,8 +283,9 @@ lastLogin: new Date().toISOString()
 });
 
 status.style.color = "#4cff88";
-status.textContent = "✓ Login successful. Redirecting...";
+status.textContent = "✓ Login successful. Redirecting to dashboard...";
 
+// DIRECT TO DASHBOARD AFTER 1 SECOND
 setTimeout(() => {
 window.location.href = "dashboard.html";
 }, 1000);
@@ -289,16 +295,16 @@ catch(error){
 console.error(error);
 status.style.color = "#ff5555";
 status.textContent = "Invalid email or password.";
-}
-finally{
 loginBtn.disabled = false;
 loginBtn.textContent = "Login";
 }
 });
 
+// If already logged in, send to dashboard
 onAuthStateChanged(auth, (user) => {
 if(user){
-console.log("Logged in:", user.email);
+console.log("Already logged in:", user.email);
+window.location.href = "dashboard.html";
 }
 });
 

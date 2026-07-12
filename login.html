@@ -10,33 +10,143 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;overflow-x:hidden;}
-body::before{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.04);z-index:-1;pointer-events:none;}
-header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
+body{
+background:#07111f;
+color:white;
+min-height:100vh;
+padding-bottom:100px;
+overflow-x:hidden;
+}
+body::before{
+content:"";
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:
+linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),
+url("1517026394531.jpeg");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+z-index:-2;
+}
+body::after{
+content:"◬";
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:500px;
+color:rgba(212,175,55,.04);
+z-index:-1;
+pointer-events:none;
+}
+
+header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+padding:20px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(10px);
+z-index:1000;
+}
 .logo{font-size:30px;font-weight:700;color:#d4af37;}
 header nav a{color:white;text-decoration:none;margin-left:20px;transition:.3s;}
 header nav a:hover{color:#d4af37;}
-.hero{height:45vh;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;background:linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-color:#0b1728;}
+
+.hero{
+height:45vh;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
+}
 .hero h1{font-size:55px;}
 .hero p{margin-top:15px;color:#ddd;}
+
 section{padding:80px 10%;}
 .title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:40px;}
-.login-box{max-width:500px;margin:auto;background:#142238;padding:45px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.25);}
-.input-group{display:flex;flex-direction:column;margin-bottom:25px;}
+
+.login-box{
+max-width:500px;
+margin:auto;
+background:rgba(20,34,56,.8);
+backdrop-filter:blur(20px);
+padding:45px;
+border-radius:20px;
+box-shadow:0 20px 50px rgba(0,0,0,.5);
+border:1px solid rgba(212,175,55,.25);
+}
+
+.input-group{display:flex;flex-direction:column;margin-bottom:20px;}
 label{color:#d4af37;margin-bottom:8px;font-weight:500;}
-input{width:100%;background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;outline:none;font-size:15px;}
+input{
+width:100%;
+background:#08111f;
+border:1px solid #39485f;
+padding:15px;
+border-radius:10px;
+color:white;
+outline:none;
+font-size:15px;
+}
 input:focus{border-color:#d4af37;}
-.btn{display:block;width:220px;margin:30px auto 0;padding:15px;border:none;border-radius:40px;background:#d4af37;color:#111;font-weight:bold;cursor:pointer;transition:.3s;text-decoration:none;text-align:center;font-size:16px;}
-.btn:hover{transform:translateY(-5px);background:#f1ca52;}
-.btn:disabled{opacity:.6;cursor:not-allowed;}
+
+/* REMEMBER ME + FORGOT */
+.options{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+font-size:14px;
+}
+.remember{display:flex;align-items:center;gap:8px;}
+.remember input{width:16px;height:16px;accent-color:#d4af37;}
+.forgot{color:#d4af37;text-decoration:none;font-weight:500;transition:.3s;}
+.forgot:hover{color:#f1ca52;text-decoration:underline;}
+
+/* BUTTON */
+.btn{
+display:block;
+width:220px;
+margin:30px auto 0;
+padding:15px;
+border:none;
+border-radius:40px;
+background:linear-gradient(135deg,#d4af37,#b8941f);
+color:#111;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+text-decoration:none;
+text-align:center;
+font-size:16px;
+box-shadow:0 5px 20px rgba(212,175,55,.3);
+}
+.btn:hover{transform:translateY(-5px);background:linear-gradient(135deg,#f1ca52,#d4af37);}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+
 #statusMessage{text-align:center;margin-top:25px;font-weight:600;color:#d4af37;min-height:24px;}
+
 .info{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;margin-top:40px;}
-.card{background:#142238;padding:25px;border-radius:15px;border:1px solid rgba(212,175,55,.15);transition:.3s;}
+.card{background:rgba(20,34,56,.7);backdrop-filter:blur(15px);padding:25px;border-radius:15px;border:1px solid rgba(212,175,55,.15);transition:.3s;}
 .card:hover{transform:translateY(-8px);border-color:#d4af37;}
 .card h3{color:#d4af37;margin-bottom:10px;}
 .card p{color:#ddd;line-height:1.7;}
+
 footer{background:#020509;padding:35px;text-align:center;color:#999;}
-@media(max-width:700px){.hero h1{font-size:35px;}header nav{display:none;}.login-box{padding:25px;}}
+
+@media(max-width:700px){
+.hero h1{font-size:35px;}
+header nav{display:none;}
+.login-box{padding:25px;}
+.options{flex-direction:column;gap:15px;align-items:flex-start;}
+}
 </style>
 </head>
 
@@ -47,7 +157,6 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 <nav>
 <a href="index.html">Home</a>
 <a href="history.html">History</a>
-<a href="registration.html">Register</a>
 </nav>
 </header>
 
@@ -74,14 +183,17 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 <input id="password" type="password" placeholder="Enter password" required>
 </div>
 
+<div class="options">
+<div class="remember">
+<input type="checkbox" id="rememberMe">
+<label for="rememberMe" style="color:#ccc;cursor:pointer;">Remember Me</label>
+</div>
+<a href="#" class="forgot" id="forgotPassword">Forgot Password?</a>
+</div>
+
 <button class="btn" id="loginBtn" type="submit">Login</button>
 
 <p id="statusMessage"></p>
-
-<div style="text-align:center;margin-top:20px;">
-    <p style="color:#ccc;">Not a member yet?</p>
-    <a href="registration.html" class="btn" style="width:auto;display:inline-block;margin-top:10px;">Register Here</a>
-</div>
 
 </form>
 </div>
@@ -90,18 +202,9 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 <section>
 <h2 class="title">Member Access Information</h2>
 <div class="info">
-<div class="card">
-<h3>Secure Login</h3>
-<p>Member accounts are authenticated securely through Firebase Authentication with full data protection.</p>
-</div>
-<div class="card">
-<h3>Member Records</h3>
-<p>Your profile and activity are synchronized in real-time with our secure Firebase Realtime Database.</p>
-</div>
-<div class="card">
-<h3>Account Protection</h3>
-<p>Never share your password. Your account credentials remain private and secure at all times.</p>
-</div>
+<div class="card"><h3>Secure Login</h3><p>Member accounts are authenticated securely through Firebase Authentication with full data protection.</p></div>
+<div class="card"><h3>Member Records</h3><p>Your profile and activity are synchronized in real-time with our secure Firebase Realtime Database.</p></div>
+<div class="card"><h3>Account Protection</h3><p>Never share your password. Your account credentials remain private and secure at all times.</p></div>
 </div>
 </section>
 
@@ -116,10 +219,10 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 <!-- FIREBASE AUTH + REALTIME DATABASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// YOUR FIREBASE CONFIG - UPDATED
+// YOUR FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -138,57 +241,79 @@ const database = getDatabase(app);
 const loginForm = document.getElementById("loginForm");
 const loginBtn = document.getElementById("loginBtn");
 const status = document.getElementById("statusMessage");
+const rememberMe = document.getElementById("rememberMe");
+const forgotBtn = document.getElementById("forgotPassword");
 
+// LOGIN WITH REMEMBER ME
 loginForm.addEventListener("submit", async(e) => {
 e.preventDefault();
 loginBtn.disabled = true;
 loginBtn.textContent = "Logging in...";
+status.textContent = "";
 
 const email = document.getElementById("email").value.trim();
 const password = document.getElementById("password").value;
 
+// Set persistence based on "Remember Me"
+const persistence = rememberMe.checked ? browserLocalPersistence : browserSessionPersistence;
+
 try{
+await setPersistence(auth, persistence);
 const result = await signInWithEmailAndPassword(auth, email, password);
 const user = result.user;
 
-// Log login to Realtime Database
+// REALTIME SYNC: Log login
 await set(ref(database, "login_logs/" + user.uid + "/" + Date.now()), {
 uid: user.uid,
 email: user.email,
-time: new Date().toISOString(),
+time: serverTimestamp(),
 action: "login"
 });
 
-// Update user status
-await set(ref(database, "users/" + user.uid), {
-email: user.email,
-status: "active",
-lastLogin: new Date().toISOString()
-});
+// REALTIME SYNC: Update lastLogin
+await set(ref(database, "users/" + user.uid + "/lastLogin"), serverTimestamp());
 
 status.style.color = "#4cff88";
 status.textContent = "✓ Login successful. Redirecting to dashboard...";
 
-// DIRECT TO DASHBOARD AFTER 1 SECOND
 setTimeout(() => {
 window.location.href = "dashboard.html";
-}, 1000);
+}, 1200);
 
 }
 catch(error){
 console.error(error);
 status.style.color = "#ff5555";
+if(error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password'){
 status.textContent = "Invalid email or password.";
+} else if(error.code === 'auth/too-many-requests'){
+status.textContent = "Too many attempts. Try again later.";
+} else {
+status.textContent = "Login failed: " + error.message;
+}
 loginBtn.disabled = false;
 loginBtn.textContent = "Login";
 }
 });
 
-// If already logged in, send to dashboard
-onAuthStateChanged(auth, (user) => {
-if(user){
-console.log("Already logged in:", user.email);
-window.location.href = "dashboard.html";
+// FORGOT PASSWORD
+forgotBtn.addEventListener("click", async(e) => {
+e.preventDefault();
+const email = document.getElementById("email").value.trim();
+
+if(!email){
+status.style.color = "#f1ca52";
+status.textContent = "Please enter your email first.";
+return;
+}
+
+try{
+await sendPasswordResetEmail(auth, email);
+status.style.color = "#4cff88";
+status.textContent = "✓ Password reset email sent. Check your inbox.";
+} catch(error){
+status.style.color = "#ff5555";
+status.textContent = "Failed to send reset email: " + error.message;
 }
 });
 

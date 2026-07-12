@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freemasonry | Fraternity Rules</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{
+background:#07111f;
+color:white;
+min-height:100vh;
+padding-bottom:100px;
+}
+body::before{
+content:"";
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:
+linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),
+url("1517026394531.jpeg");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+z-index:-2;
+}
+body::after{
+content:"◬";
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:400px;
+color:rgba(212,175,55,.04);
+z-index:-1;
+pointer-events:none;
+}
+
+/* HEADER */
+header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+padding:20px 8%;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(15px);
+display:flex;
+justify-content:space-between;
+align-items:center;
+z-index:1000;
+}
+.logo{font-size:28px;font-weight:700;color:#d4af37;}
+.logout{
+background:#d4af37;
+color:#111;
+padding:10px 25px;
+border-radius:30px;
+text-decoration:none;
+font-weight:600;
+transition:.3s;
+}
+.logout:hover{background:#f1ca52;transform:translateY(-2px);}
+
+/* DASHBOARD */
+.dashboard{padding:130px 8% 50px;}
+.welcome{text-align:center;margin-bottom:40px;}
+.welcome h1{font-size:42px;color:#d4af37;}
+.welcome p{color:#ccc;margin-top:10px;}
+
+/* RULES SECTION */
+.rules-container{
+max-width:900px;
+margin:auto;
+background:linear-gradient(145deg, #142238, #0b1728);
+border-radius:25px;
+padding:40px;
+border:1px solid rgba(212,175,55,.25);
+box-shadow:0 20px 50px rgba(0,0,0,.5);
+}
+.rule-group{margin-bottom:35px;}
+.rule-group h2{
+font-size:22px;
+color:#d4af37;
+margin-bottom:18px;
+padding-bottom:10px;
+border-bottom:1px solid rgba(212,175,55,.2);
+}
+.rule-item{
+background:#08111f;
+padding:15px 20px;
+border-radius:12px;
+margin-bottom:12px;
+border-left:3px solid #d4af37;
+transition:.3s;
+}
+.rule-item:hover{background:#0f1a2e;border-color:#f1ca52;}
+.rule-item strong{display:block;font-size:16px;color:#fff;margin-bottom:6px;}
+.rule-item p{font-size:14px;color:#ddd;line-height:1.7;}
+
+/* INFORMATION CARDS */
+.cards{
+margin-top:50px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+}
+.card{
+background:#142238;
+padding:30px;
+border-radius:18px;
+border:1px solid rgba(212,175,55,.15);
+transition:.3s;
+}
+.card:hover{transform:translateY(-8px);border-color:#d4af37;}
+.card h3{color:#d4af37;margin-bottom:15px;}
+.card p{color:#ddd;line-height:1.7;}
+
+/* BOTTOM NAVIGATION */
+.bottom-nav{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(20,34,56,.95);
+backdrop-filter:blur(15px);
+padding:12px;
+border-radius:50px;
+display:flex;
+gap:10px;
+border:1px solid rgba(212,175,55,.3);
+box-shadow:0 15px 40px rgba(0,0,0,.5);
+z-index:2000;
+}
+.bottom-nav a{
+text-decoration:none;
+color:white;
+padding:12px 22px;
+border-radius:35px;
+font-size:14px;
+font-weight:600;
+transition:.3s;
+white-space:nowrap;
+}
+.bottom-nav a:hover,
+.bottom-nav .active{
+background:#d4af37;
+color:#111;
+}
+
+/* MOBILE */
+@media(max-width:800px){
+.welcome h1{font-size:32px;}
+.rules-container{padding:25px;}
+.bottom-nav{width:95%;justify-content:center;overflow-x:auto;}
+.bottom-nav a{padding:10px 14px;font-size:12px;}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">Freemasonry Heritage</div>
+<a href="#" class="logout">Logout</a>
+</header>
+
+<main class="dashboard">
+<div class="welcome">
+<h1>Fraternity Rules & Conduct</h1>
+<p>Upholding the values, traditions, and brotherhood of our Order.</p>
+</div>
+
+<section class="rules-container" id="rulesContainer">
+<div class="rule-group">
+<h2>Loading Rules...</h2>
+</div>
+</section>
+
+<section class="cards">
+<div class="card"><h3>Laws & Regulations</h3><p>Review the full constitutional laws governing the fraternity.</p></div>
+<div class="card"><h3>Member Support</h3><p>Need clarification on any rule? Contact the lodge secretary.</p></div>
+<div class="card"><h3>Code of Ethics</h3><p>Our core values: Brotherly Love, Relief, and Truth guide all actions.</p></div>
+</section>
+</main>
+
+<!-- Firebase Script with Realtime Sync -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+// YOUR FIREBASE CONFIG - INJECTED
+const firebaseConfig = {
+  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+  authDomain: "mansonry-family-fraternity.firebaseapp.com",
+  databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mansonry-family-fraternity",
+  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
+  messagingSenderId: "964415179161",
+  appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
+  measurementId: "G-Q8LC74ZFXN"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+const rulesContainer = document.getElementById("rulesContainer");
+
+// Check if user is logged in, then load rules in real-time
+onAuthStateChanged(auth, (user) => {
+if(!user){
+window.location.href = "login.html";
+return;
+}
+
+// REALTIME SYNC: Load rules from Firebase
+const rulesRef = ref(database, "rules");
+onValue(rulesRef, (snapshot) => {
+if(snapshot.exists()){
+const rulesData = snapshot.val();
+renderRules(rulesData);
+} else {
+// Show default rules if nothing in Firebase yet
+rulesContainer.innerHTML = `
+<div class="rule-group">
+<h2>General Conduct</h2>
+<div class="rule-item"><strong>1. Respect & Brotherhood</strong><p>Treat every brother with dignity, honor, and respect.</p></div>
+</div>
+<p style="text-align:center;color:#aaa;">No rules found in Firebase. Add them in /rules path to sync.</p>
+`;
+}
+});
+});
+
+// Function to render rules from Firebase
+function renderRules(data){
+let html = "";
+for(const group in data){
+html += `<div class="rule-group"><h2>${group}</h2>`;
+data[group].forEach((rule, index) => {
+html += `
+<div class="rule-item">
+<strong>${index + 1}. ${rule.title}</strong>
+<p>${rule.description}</p>
+</div>
+`;
+});
+html += `</div>`;
+}
+rulesContainer.innerHTML = html;
+}
+
+// Logout
+document.querySelector(".logout").addEventListener("click",(e)=>{
+e.preventDefault();
+signOut(auth).then(()=>{
+window.location.href="login.html";
+});
+});
+</script>
+
+<nav class="bottom-nav">
+<a href="dashboard.html">Home</a>
+<a href="rules.html" class="active">Rules</a>
+<a href="application.html">Application</a>
+<a href="help.html">Help Line</a>
+<a href="member.html">Member</a>
+</nav>
+
+</body>
+  </html>

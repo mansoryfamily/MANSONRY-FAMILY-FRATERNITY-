@@ -115,7 +115,7 @@ font-size:15px;
 }
 input:focus{border-color:#d4af37;}
 
-/* BUTTONS */
+/* BUTTON */
 .btn{
 display:block;
 width:220px;
@@ -134,25 +134,6 @@ font-size:16px;
 }
 .btn:hover{transform:translateY(-5px);background:#f1ca52;}
 .btn:disabled{opacity:.6;cursor:not-allowed;}
-
-/* OUTLINE BUTTON FOR LINKS */
-.btn-outline{
-display:inline-block;
-margin-top:10px;
-padding:12px 35px;
-border:2px solid #d4af37;
-border-radius:40px;
-color:#d4af37;
-text-decoration:none;
-font-weight:600;
-transition:.3s;
-background:transparent;
-}
-.btn-outline:hover{
-background:#d4af37;
-color:#111;
-transform:translateY(-3px);
-}
 
 /* STATUS */
 #statusMessage{text-align:center;margin-top:25px;font-weight:600;color:#d4af37;min-height:24px;}
@@ -212,12 +193,6 @@ header nav{display:none;}
 <button class="btn" id="loginBtn" type="submit">Login</button>
 
 <p id="statusMessage"></p>
-
-<div style="text-align:center;margin-top:20px;">
-    <p style="color:#ccc;">Not a member yet?</p>
-    <!-- FIXED: Using btn-outline so it shows properly -->
-    <a href="registration.html" class="btn-outline">Register Here</a>
-</div>
 
 </form>
 </div>

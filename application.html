@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freemasonry Heritage | Membership Application</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+<style>
+:root{--gold:#d4af37;--gold-dark:#b8941f;--dark:#07111f;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:var(--dark);color:white;min-height:100vh;padding-bottom:120px;}
+
+/* BACKGROUND IMAGE */
+body::before{
+content:"";
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:
+linear-gradient(rgba(7,17,31,.88), rgba(7,17,31,.95)),
+url("1517026394531.jpeg"); /* YOUR IMAGE */
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+z-index:-2;
+}
+/* MASONIC SYMBOL OVERLAY */
+body::after{
+content:"◬";
+position:fixed;
+top:50%;left:50%;
+transform:translate(-50%,-50%);
+font-size:400px;
+color:rgba(212,175,55,.03);
+z-index:-1;
+pointer-events:none;
+}
+
+header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,0,0,.8);backdrop-filter:blur(15px);display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid rgba(212,175,55,.2);}
+.logo{font-size:28px;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif;}
+.logout{background:var(--gold);color:#111;padding:10px 25px;border-radius:30px;text-decoration:none;font-weight:600;transition:.3s;}
+.logout:hover{background:var(--gold-dark);transform:translateY(-2px);}
+.container{padding:140px 8% 50px;max-width:1000px;margin:auto;}
+.fraternity-header{text-align:center;margin-bottom:50px;}
+.fraternity-header h1{font-size:48px;color:var(--gold);font-family:'Playfair Display',serif;margin-bottom:10px;}
+.fraternity-header p{color:#ccc;font-size:16px;max-width:700px;margin:auto;line-height:1.8;}
+.form-card{background:linear-gradient(145deg,rgba(20,34,56,.9),rgba(11,23,40,.9));backdrop-filter:blur(20px);border-radius:25px;padding:45px;border:1px solid rgba(212,175,55,.25);box-shadow:0 20px 50px rgba(0,0,0,.5);}
+.section{margin-bottom:45px;padding-bottom:35px;border-bottom:1px solid rgba(212,175,55,.15);}
+.section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.section-title{font-size:24px;color:var(--gold);margin-bottom:25px;display:flex;align-items:center;gap:12px;}
+.section-title span{background:var(--gold);color:#111;width:35px;height:35px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+.form-group{display:flex;flex-direction:column;}
+.form-group label{color:#ccc;font-size:14px;margin-bottom:8px;font-weight:500;}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:#08111f;border:1px solid rgba(212,175,55,.25);border-radius:12px;padding:14px 18px;color:white;font-size:15px;outline:none;transition:.3s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.1);}
+.requirement-box{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.3);border-radius:15px;padding:25px;margin-bottom:20px;}
+.requirement-box h4{color:var(--gold);margin-bottom:12px;font-size:18px;}
+.fee-list{display:flex;flex-direction:column;gap:12px;}
+.fee-item{display:flex;justify-content:space-between;align-items:center;padding:12px;background:#08111f;border-radius:10px;border:1px solid rgba(212,175,55,.15);}
+.fee-item span:first-child{color:#ddd;}
+.fee-item span:last-child{color:var(--gold);font-weight:700;font-size:16px;}
+.total-fee{background:rgba(212,175,55,.15);border:2px solid var(--gold);margin-top:10px;}
+.total-fee span{font-size:18px!important;}
+.lodge-info{background:#08111f;border-radius:15px;padding:25px;margin-bottom:20px;border:1px solid rgba(212,175,55,.15);}
+.lodge-info h4{color:var(--gold);margin-bottom:10px;font-size:16px;}
+.lodge-info p{color:#ddd;line-height:1.7;font-size:14px;margin-bottom:8px;}
+.contact-box{background:rgba(212,175,55,.1);border-left:4px solid var(--gold);padding:18px;border-radius:10px;margin-top:15px;}
+.contact-box p{margin-bottom:5px;color:#ccc;font-size:14px;}
+.btn-submit{display:block;width:100%;padding:18px;border:none;border-radius:15px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#111;font-size:18px;font-weight:700;cursor:pointer;transition:.3s;margin-top:30px;box-shadow:0 10px 30px rgba(212,175,55,.3);}
+.btn-submit:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(212,175,55,.4);}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);backdrop-filter:blur(20px);padding:30px 40px;border-radius:18px;border:2px solid var(--gold);box-shadow:0 20px 60px rgba(212,175,55,.4);z-index:9999;opacity:0;transition:all.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);text-align:center;min-width:320px;}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+.toast.success{border-color:#4cff88;}
+.toast.error{border-color:#ff5555;}
+.toast.icon{font-size:45px;margin-bottom:12px;display:block;}
+.toast.message{font-size:17px;font-weight:600;color:#fff;}
+.bottom-nav{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(20,34,56,.95);backdrop-filter:blur(15px);padding:12px;border-radius:50px;display:flex;gap:10px;border:1px solid rgba(212,175,55,.3);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;}
+.bottom-nav a{text-decoration:none;color:white;padding:12px 22px;border-radius:35px;font-size:14px;font-weight:600;transition:.3s;}
+.bottom-nav a:hover,.bottom-nav.active{background:var(--gold);color:#111;}
+@media(max-width:800px){.fraternity-header h1{font-size:32px;}.form-card{padding:25px;}.form-grid{grid-template-columns:1fr;}.toast{min-width:280px;}}
+</style>
+</head>
+
+<body>
+
+<!-- TOAST -->
+<div id="toast" class="toast"><span class="icon" id="toastIcon"></span><span class="message" id="toastMessage"></span></div>
+
+<header>
+<div class="logo">Freemasonry Heritage</div>
+<a href="#" class="logout">Logout</a>
+</header>
+
+<main class="container">
+<div class="fraternity-header">
+<h1>Membership Application Form</h1>
+<p>Welcome to Freemasonry Heritage. Complete this application to begin your journey of brotherhood, honor, and personal growth. All information is confidential.</p>
+</div>
+
+<form class="form-card" id="applicationForm">
+
+<!-- SECTION 1: PERSONAL DETAILS -->
+<div class="section">
+<h2 class="section-title"><span>1</span>Personal Details</h2>
+<div class="form-grid">
+<div class="form-group"><label>Full Name *</label><input type="text" id="fullName" required></div>
+<div class="form-group"><label>Date of Birth *</label><input type="date" id="dob" required></div>
+<div class="form-group"><label>Identity Number / National ID *</label><input type="text" id="idNumber" placeholder="e.g. 12345678" required></div>
+<div class="form-group"><label>Gender *</label>
+<select id="gender" required><option value="">Select Gender</option><option>Male</option><option>Female</option><option>Prefer not to say</option></select>
+</div>
+<div class="form-group"><label>Home / Birth Town *</label><input type="text" id="birthTown" placeholder="e.g. Kisumu" required></div>
+<div class="form-group"><label>Preferred Nickname</label><input type="text" id="nickname" placeholder="What should members call you?"></div>
+</div>
+</div>
+
+<!-- SECTION 2: BUSINESS INFORMATION -->
+<div class="section">
+<h2 class="section-title"><span>2</span>Business Information</h2>
+<p style="color:#aaa;margin-bottom:20px;">As a member you qualify for our Life-Changing Business Grant. Tell us about your business plan.</p>
+<div class="form-grid">
+<div class="form-group">
+<label>Type of Business *</label>
+<input type="text" id="businessType" placeholder="e.g. Retail Shop, Agriculture, Transport" required>
+<small style="color:#888;font-size:12px;margin-top:5px;">Let us know the business you can run well</small>
+</div>
+<div class="form-group">
+<label>Preferred Business Location *</label>
+<input type="text" id="businessLocation" placeholder="e.g. Kisumu CBD, Nairobi" required>
+<small style="color:#888;font-size:12px;margin-top:5px;">Where do you like to locate your business</small>
+</div>
+</div>
+</div>
+
+<!-- SECTION 3: INITIATION PROCESS -->
+<div class="section">
+<h2 class="section-title"><span>3</span>Initiation Process & Requirements</h2>
+<div class="requirement-box">
+<h4>Requirements to Join Our Brotherhood</h4>
+<p style="color:#ddd;line-height:1.7;margin-bottom:15px;">All requirements must be met to proceed with your application and initiation.</p>
+<div class="fee-list">
+<div class="fee-item"><span>Registration Fee</span><span>Sh. 18,000</span></div>
+<div class="fee-item"><span>Transport Fee</span><span>Sh. 2,500</span></div>
+<div class="fee-item total-fee"><span><strong>Total Initial Amount</strong></span><span><strong>Sh. 20,500</strong></span></div>
+</div>
+<p style="color:#aaa;font-size:13px;margin-top:15px;"><strong>Note:</strong> This is the first amount required before the start of any progress. Payment plans can be discussed with your Lodge Director.</p>
+</div>
+</div>
+
+<!-- SECTION 4: LODGE LOCATIONS -->
+<div class="section">
+<h2 class="section-title"><span>4</span>Location of Lodges</h2>
+<div class="lodge-info">
+<h4>Main Hall / Headquarters</h4>
+<p><strong>Freemasons’ Hall, Nairobi</strong></p>
+<p>Address: Nyerere Avenue/Road, opposite Serena Hotel, Nairobi</p>
+<p>This is the central meeting place for most lodges in Kenya including Lodge Harmony, Victoria Nyanza Lodge, Orient Lodge, Progress Lodge.</p>
+</div>
+
+<div class="lodge-info">
+<h4>Other Kenyan Towns with Lodges</h4>
+<p><strong>Nairobi:</strong> Multiple lodges at Freemasons’ Hall - Lodge Harmony 3084, Victoria Nyanza 3492, Orient 3703</p>
+<p><strong>Mombasa:</strong> Mombasa Lodge 3645 at FM Hall</p>
+<p><strong>Nakuru:</strong> Lodge Menengai 3559 at FM Hall</p>
+<p><strong>Kisumu:</strong> Equator Lodge 4337, Lake Lodge 5022 - founded in 1928</p>
+<p><strong>Other towns:</strong> Nyeri, Ruiru, Kericho, Kitale</p>
+</div>
+
+<div class="contact-box">
+<h4 style="color:var(--gold);margin-bottom:10px;">How to Contact</h4>
+<p><strong>District Grand Lodge of East Africa (E.C.)</strong></p>
+<p>P.O Box 40828, 00100, NAIROBI - KENYA</p>
+<p>Physical: Freemasons’ Hall, Nyerere Avenue, opposite Serena Hotel</p>
+<p>Phone: +254726126580</p>
+</div>
+
+<div class="form-group" style="margin-top:25px;">
+<label>Nearest Location / Lodge Preference *</label>
+<input type="text" id="nearestLodge" placeholder="e.g. Kisumu - Lake Lodge 5022" required>
+<small style="color:#888;font-size:12px;margin-top:5px;">Let us know your nearest location</small>
+</div>
+
+<p style="color:#aaa;font-size:13px;margin-top:15px;line-height:1.7;"><strong>Requirements:</strong> Male 21+, believe in a supreme being, recommended by a member known 3+ years. Fees apply.</p>
+</div>
+
+<button type="submit" class="btn-submit" id="submitBtn">Submit Application</button>
+
+</form>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, set, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+// YOUR FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+  authDomain: "mansonry-family-fraternity.firebaseapp.com",
+  databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mansonry-family-fraternity",
+  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
+  messagingSenderId: "964415179161",
+  appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
+  measurementId: "G-Q8LC74ZFXN"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+let currentUser = null;
+
+onAuthStateChanged(auth, (user) => { if (user) { currentUser = user; } });
+
+const toast = document.getElementById("toast");
+const toastIcon = document.getElementById("toastIcon");
+const toastMessage = document.getElementById("toastMessage");
+
+function showToast(type, message){
+toast.className = `toast ${type} show`;
+toastIcon.textContent = type === 'success'? '✓' : '✕';
+toastMessage.textContent = message;
+setTimeout(() => {toast.classList.remove('show');}, 3500);
+}
+
+document.getElementById("applicationForm").addEventListener("submit", async (e) => {
+e.preventDefault();
+const btn = document.getElementById("submitBtn");
+btn.disabled = true;
+btn.textContent = "Submitting Application...";
+
+const applicationData = {
+fullName: document.getElementById('fullName').value.trim(),
+dob: document.getElementById('dob').value,
+idNumber: document.getElementById('idNumber').value.trim(),
+gender: document.getElementById('gender').value,
+birthTown: document.getElementById('birthTown').value.trim(),
+nickname: document.getElementById('nickname').value.trim(),
+businessType: document.getElementById('businessType').value.trim(),
+businessLocation: document.getElementById('businessLocation').value.trim(),
+nearestLodge: document.getElementById('nearestLodge').value.trim(),
+registrationFee: 18000,
+transportFee: 2500,
+totalInitial: 20500,
+status: "pending",
+submittedBy: currentUser? currentUser.uid : "guest",
+submittedAt: serverTimestamp()
+};
+
+for(let key in applicationData){
+if(key!== 'nickname' && key!== 'submittedBy' &&!applicationData[key]){
+showToast('error','Please fill all required fields marked *');
+btn.disabled = false;
+btn.textContent = "Submit Application";
+return;
+}
+}
+
+try{
+const applicationsRef = ref(database, "applications");
+const newApplicationRef = push(applicationsRef);
+await set(newApplicationRef, applicationData);
+if(currentUser){await set(ref(database, "users/" + currentUser.uid + "/applications/" + newApplicationRef.key), applicationData);}
+
+showToast('success','Application Submitted Successfully! Redirecting to Help Line...');
+setTimeout(() => {window.location.href = "help.html";}, 2000);
+
+} catch(error){
+showToast('error','Submission Failed: ' + error.message);
+btn.disabled = false;
+btn.textContent = "Submit Application";
+}
+});
+
+document.querySelector(".logout").addEventListener("click",(e)=>{
+e.preventDefault();
+signOut(auth).then(()=>{window.location.href="login.html";});
+});
+</script>
+
+<nav class="bottom-nav">
+<a href="dashboard.html">Home</a>
+<a href="requirements.html">Requirements</a>
+<a href="application.html" class="active">Application</a>
+<a href="help.html">Help Line</a>
+<a href="member.html">Member</a>
+</nav>
+
+</body>
+     </html>

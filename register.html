@@ -11,15 +11,16 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;}
-body::before{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.04);z-index:-1;pointer-events:none;}
+body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-attachment:fixed;z-index:-2;}
+body::after{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.04);z-index:-1;pointer-events:none;}
 header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
 .logo{font-size:30px;font-weight:700;color:#d4af37;}
-.hero{height:45vh;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-color:#0b1728;}
+.hero{height:45vh;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;}
 .hero h1{font-size:55px;}
 .hero p{margin-top:15px;color:#ddd;}
 section{padding:80px 10%;}
 .title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:40px;}
-.register-box{max-width:850px;margin:auto;background:#142238;padding:45px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.2);}
+.register-box{max-width:850px;margin:auto;background:rgba(20,34,56,.8);backdrop-filter:blur(20px);padding:45px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.2);}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
 .input-group{display:flex;flex-direction:column;position:relative;}
 label{margin-bottom:8px;color:#d4af37;}
@@ -42,22 +43,53 @@ transition:.3s;
 }
 .toggle-password:hover{color:#d4af37;}
 
-.btn{margin-top:30px;display:block;width:220px;padding:15px;margin-left:auto;margin-right:auto;border:none;border-radius:40px;background:#d4af37;color:#111;font-weight:bold;cursor:pointer;transition:.3s;}
-.btn:hover{transform:translateY(-5px);background:#f1ca52;}
-.btn:disabled{opacity:.6;cursor:not-allowed;}
+.btn{margin-top:30px;display:block;width:220px;padding:15px;margin-left:auto;margin-right:auto;border:none;border-radius:40px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:bold;cursor:pointer;transition:.3s;box-shadow:0 5px 20px rgba(212,175,55,.3);}
+.btn:hover{transform:translateY(-5px);background:linear-gradient(135deg,#f1ca52,#d4af37);}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
 .info{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
-.card{background:#142238;padding:25px;border-radius:15px;border:1px solid rgba(212,175,55,.15);transition:.3s;}
+.card{background:rgba(20,34,56,.7);backdrop-filter:blur(15px);padding:25px;border-radius:15px;border:1px solid rgba(212,175,55,.15);transition:.3s;}
 .card:hover{transform:translateY(-8px);border-color:#d4af37;}
 .card h3{color:#d4af37;margin-bottom:10px;}
 .card p{color:#ddd;line-height:1.7;}
-#statusMessage{text-align:center;margin-top:25px;font-weight:600;color:#d4af37;min-height:24px;}
 footer{background:#020509;padding:35px;text-align:center;color:#999;}
-@media(max-width:700px){.hero h1{font-size:35px;}.register-box{padding:25px;}}
+
+/* TOAST NOTIFICATION - CENTER */
+.toast{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%) scale(0.8);
+background:rgba(20,34,56,.95);
+backdrop-filter:blur(20px);
+padding:25px 35px;
+border-radius:15px;
+border:2px solid #d4af37;
+box-shadow:0 20px 60px rgba(212,175,55,.4);
+z-index:9999;
+opacity:0;
+transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+text-align:center;
+min-width:300px;
+max-width:90%;
+}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+.toast.success{border-color:#4cff88;box-shadow:0 20px 60px rgba(76,255,136,.3);}
+.toast.error{border-color:#ff5555;box-shadow:0 20px 60px rgba(255,85,85,.3);}
+.toast .icon{font-size:40px;margin-bottom:10px;display:block;}
+.toast .message{font-size:16px;font-weight:600;color:#fff;}
+
+@media(max-width:700px){.hero h1{font-size:35px;}.register-box{padding:25px;}.toast{min-width:280px;}}
 </style>
 
 </head>
 
 <body>
+
+<!-- TOAST CONTAINER -->
+<div id="toast" class="toast">
+<span class="icon" id="toastIcon"></span>
+<span class="message" id="toastMessage"></span>
+</div>
 
 <header>
 <div class="logo">Freemasonry Heritage</div>
@@ -125,7 +157,6 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 </select>
 </div>
 
-<!-- PASSWORD FIELDS WITH TOGGLE -->
 <div class="input-group">
 <label>Create Password</label>
 <div class="password-wrapper">
@@ -155,8 +186,6 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
     <a href="login.html" style="display:inline-block;margin-top:10px;padding:12px 35px;border:2px solid #d4af37;border-radius:40px;color:#d4af37;text-decoration:none;font-weight:600;transition:.3s;">Login</a>
 </div>
 
-<p id="statusMessage"></p>
-
 </form>
 </div>
 </section>
@@ -164,18 +193,9 @@ footer{background:#020509;padding:35px;text-align:center;color:#999;}
 <section>
 <h2 class="title">Before You Apply</h2>
 <div class="info">
-<div class="card">
-<h3>Character & Integrity</h3>
-<p>We welcome men of good character who value honesty, respect, and responsibility in all areas of life.</p>
-</div>
-<div class="card">
-<h3>Growth & Learning</h3>
-<p>Membership is a journey of self-improvement. You will be guided and mentored every step of the way by your Lodge Director.</p>
-</div>
-<div class="card">
-<h3>Support & Opportunity</h3>
-<p>Once registered, members gain access to brotherhood support, mentorship, and business empowerment opportunities.</p>
-</div>
+<div class="card"><h3>Character & Integrity</h3><p>We welcome men of good character who value honesty, respect, and responsibility in all areas of life.</p></div>
+<div class="card"><h3>Growth & Learning</h3><p>Membership is a journey of self-improvement. You will be guided and mentored every step of the way by your Lodge Director.</p></div>
+<div class="card"><h3>Support & Opportunity</h3><p>Once registered, members gain access to brotherhood support, mentorship, and business empowerment opportunities.</p></div>
 </div>
 </section>
 
@@ -193,7 +213,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -205,29 +224,37 @@ const firebaseConfig = {
   measurementId: "G-Q8LC74ZFXN"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-// Get Elements
 const form = document.getElementById("registrationForm");
 const button = document.getElementById("submitBtn");
-const statusMessage = document.getElementById("statusMessage");
 const box = document.querySelector(".register-box");
 
-// PASSWORD SHOW/HIDE TOGGLE WITH BOX
+const toast = document.getElementById("toast");
+const toastIcon = document.getElementById("toastIcon");
+const toastMessage = document.getElementById("toastMessage");
+
+// TOAST FUNCTION
+function showToast(type, message){
+toast.className = `toast ${type} show`;
+toastIcon.textContent = type === 'success' ? '✓' : '✕';
+toastMessage.textContent = message;
+setTimeout(() => {toast.classList.remove('show');}, 3000);
+}
+
+// PASSWORD SHOW/HIDE TOGGLE
 document.querySelectorAll('.toggle-password').forEach(icon => {
     icon.addEventListener('click', () => {
         const targetId = icon.getAttribute('data-target');
         const input = document.getElementById(targetId);
-        
         if(input.type === 'password'){
             input.type = 'text';
-            icon.textContent = '☑️'; // checked box = visible
+            icon.textContent = '☑️';
         } else {
             input.type = 'password';
-            icon.textContent = '☐'; // empty box = hidden
+            icon.textContent = '☐';
         }
     });
 });
@@ -237,7 +264,6 @@ form.addEventListener("submit", async (event) => {
     event.preventDefault();
     button.disabled = true;
     button.textContent = "Creating Account...";
-    statusMessage.textContent = "";
 
     const fullName = document.getElementById("fullName").value.trim();
     const email = document.getElementById("email").value.trim();
@@ -251,27 +277,26 @@ form.addEventListener("submit", async (event) => {
 
     // 1. Validate passwords match
     if(password !== confirmPassword){
-        statusMessage.style.color = "#ff5555";
-        statusMessage.textContent = "Passwords do not match.";
+        showToast('error', 'Passwords do not match');
         button.disabled = false;
         button.textContent = "Submit Registration";
         return;
     }
 
+    // 2. Validate password length
     if(password.length < 6){
-        statusMessage.style.color = "#ff5555";
-        statusMessage.textContent = "Password must be at least 6 characters.";
+        showToast('error', 'Password must be 6 characters or more');
         button.disabled = false;
         button.textContent = "Submit Registration";
         return;
     }
 
     try {
-        // 2. Create Firebase Auth User
+        // 3. Create Firebase Auth User
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // 3. Save user data to /users/{uid}
+        // 4. Save user data to /users/{uid}
         const userData = {
             uid: user.uid,
             fullName: fullName,
@@ -288,28 +313,27 @@ form.addEventListener("submit", async (event) => {
 
         await set(ref(database, "users/" + user.uid), userData);
 
-        statusMessage.style.color = "#4cff88";
-        statusMessage.textContent = "✓ Account created successfully. Redirecting to dashboard...";
-
+        showToast('success', 'Registration Successful! Redirecting...');
+        button.textContent = "Success";
         form.reset();
 
-        // 4. Redirect to dashboard
+        // 5. Redirect to dashboard
         setTimeout(() => {
             window.location.href = "dashboard.html";
         }, 1500);
 
     } catch (error) {
         console.error("Firebase Error:", error.code, error.message);
-        statusMessage.style.color = "#ff5555";
-        
-        if(error.code === 'auth/email-already-in-use'){
-            statusMessage.textContent = "This email is already registered. Please login.";
-        } else {
-            statusMessage.textContent = `Registration failed: ${error.message}`;
-        }
-        
         button.disabled = false;
         button.textContent = "Submit Registration";
+        
+        if(error.code === 'auth/email-already-in-use'){
+            showToast('error', 'This email is already registered');
+        } else if(error.code === 'auth/weak-password'){
+            showToast('error', 'Password must be 6 characters or more');
+        } else {
+            showToast('error', 'Registration Failed: ' + error.message);
+        }
     }
 });
 

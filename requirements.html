@@ -2,294 +2,726 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Freemasonry | Membership Requirements</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+*{
+
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+
+}
+
 body{
+
 background:#07111f;
 color:white;
 min-height:100vh;
 padding-bottom:100px;
+
 }
+
 body::before{
-content:"";
-position:fixed;
-top:0;left:0;width:100%;height:100%;
-background:
-linear-gradient(rgba(7,17,31,.88), rgba(7,17,31,.95)),
-url("photo-1766054910220-3aae7d880d6d.jpeg");
-background-size:cover;
-background-position:center;
-background-attachment:fixed;
-z-index:-2;
-}
-body::after{
+
 content:"◬";
+
 position:fixed;
+
 top:50%;
 left:50%;
+
 transform:translate(-50%,-50%);
+
 font-size:400px;
+
 color:rgba(212,175,55,.04);
+
 z-index:-1;
-pointer-events:none;
+
 }
 
 /* HEADER */
+
 header{
+
 position:fixed;
+
 top:0;
 left:0;
+
 width:100%;
+
 padding:20px 8%;
+
 background:rgba(0,0,0,.75);
+
 backdrop-filter:blur(15px);
+
 display:flex;
+
 justify-content:space-between;
+
 align-items:center;
+
 z-index:1000;
+
 }
-.logo{font-size:28px;font-weight:700;color:#d4af37;}
+
+.logo{
+
+font-size:28px;
+
+font-weight:700;
+
+color:#d4af37;
+
+}
+
 .logout{
+
 background:#d4af37;
+
 color:#111;
+
 padding:10px 25px;
+
 border-radius:30px;
+
 text-decoration:none;
+
 font-weight:600;
-transition:.3s;
+
 }
-.logout:hover{background:#f1ca52;transform:translateY(-2px);}
 
 /* DASHBOARD */
-.dashboard{padding:130px 8% 50px;}
-.welcome{text-align:center;margin-bottom:40px;}
-.welcome h1{font-size:42px;color:#d4af37;}
-.welcome p{color:#ccc;margin-top:10px;max-width:700px;margin-left:auto;margin-right:auto;line-height:1.8;}
+
+.dashboard{
+
+padding:130px 8% 50px;
+
+}
+
+.welcome{
+
+text-align:center;
+
+margin-bottom:40px;
+
+}
+
+.welcome h1{
+
+font-size:42px;
+
+color:#d4af37;
+
+}
+
+.welcome p{
+
+color:#ccc;
+
+margin-top:10px;
+
+max-width:700px;
+
+margin-left:auto;
+
+margin-right:auto;
+
+line-height:1.8;
+
+}
 
 /* REQUIREMENTS CARD */
+
 .requirements-card{
+
 max-width:900px;
+
 margin:auto;
-background:linear-gradient(145deg, #142238, #0b1728);
+
+background:
+
+linear-gradient(
+
+145deg,
+
+#142238,
+
+#0b1728
+
+);
+
 border-radius:25px;
+
 padding:40px;
+
 border:1px solid rgba(212,175,55,.25);
-box-shadow:0 20px 50px rgba(0,0,0,.5);
+
+box-shadow:
+
+0 20px 50px rgba(0,0,0,.5);
+
 }
-.requirements-card h2{font-size:28px;color:#d4af37;text-align:center;margin-bottom:10px;}
-.requirements-card > p{text-align:center;color:#ddd;margin-bottom:30px;line-height:1.8;}
+
+.requirements-card h2{
+
+font-size:28px;
+
+color:#d4af37;
+
+text-align:center;
+
+margin-bottom:10px;
+
+}
+
+.requirements-card > p{
+
+text-align:center;
+
+color:#ddd;
+
+margin-bottom:30px;
+
+line-height:1.8;
+
+}
 
 .requirement-item{
+
 background:#08111f;
+
 padding:20px 25px;
+
 border-radius:15px;
+
 margin-bottom:18px;
+
 border-left:4px solid #d4af37;
+
 display:flex;
+
 justify-content:space-between;
+
 align-items:center;
+
 transition:.3s;
+
 }
-.requirement-item:hover{transform:translateX(5px);border-color:#f1ca52;}
-.requirement-item .info h3{font-size:18px;color:#fff;margin-bottom:6px;}
-.requirement-item .info p{font-size:14px;color:#aaa;line-height:1.6;}
-.requirement-item .price{font-size:22px;font-weight:700;color:#d4af37;white-space:nowrap;margin-left:20px;}
+
+.requirement-item:hover{
+
+transform:translateX(5px);
+
+border-color:#d4af37;
+
+}
+
+.requirement-item .info h3{
+
+font-size:18px;
+
+color:#fff;
+
+margin-bottom:6px;
+
+}
+
+.requirement-item .info p{
+
+font-size:14px;
+
+color:#aaa;
+
+line-height:1.6;
+
+}
+
+.requirement-item .price{
+
+font-size:22px;
+
+font-weight:700;
+
+color:#d4af37;
+
+white-space:nowrap;
+
+margin-left:20px;
+
+}
 
 .note-box{
+
 background:rgba(212,175,55,.08);
+
 border:1px solid rgba(212,175,55,.25);
+
 border-radius:15px;
+
 padding:25px;
+
 margin-top:30px;
+
 }
-.note-box h3{color:#d4af37;margin-bottom:12px;font-size:18px;}
-.note-box p{color:#ddd;line-height:1.8;font-size:15px;}
+
+.note-box h3{
+
+color:#d4af37;
+
+margin-bottom:12px;
+
+font-size:18px;
+
+}
+
+.note-box p{
+
+color:#ddd;
+
+line-height:1.8;
+
+font-size:15px;
+
+}
 
 /* WHY JOIN SECTION */
+
 .why-join{
+
 margin-top:50px;
+
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+
+grid-template-columns:
+
+repeat(auto-fit,minmax(250px,1fr));
+
 gap:25px;
+
 }
+
 .benefit-card{
+
 background:#142238;
+
 padding:30px;
+
 border-radius:18px;
+
 border:1px solid rgba(212,175,55,.15);
+
 transition:.3s;
+
 text-align:center;
-}
-.benefit-card:hover{transform:translateY(-8px);border-color:#d4af37;}
-.benefit-card .icon{font-size:40px;margin-bottom:15px;}
-.benefit-card h3{color:#d4af37;margin-bottom:12px;}
-.benefit-card p{color:#ddd;line-height:1.7;font-size:14px;}
 
-/* BOTTOM NAVIGATION */
-.bottom-nav{
-position:fixed;
-bottom:20px;
-left:50%;
-transform:translateX(-50%);
-background:rgba(20,34,56,.95);
-backdrop-filter:blur(15px);
-padding:12px;
-border-radius:50px;
-display:flex;
-gap:10px;
-border:1px solid rgba(212,175,55,.3);
-box-shadow:0 15px 40px rgba(0,0,0,.5);
-z-index:2000;
 }
-.bottom-nav a{
-text-decoration:none;
-color:white;
-padding:12px 22px;
-border-radius:35px;
+
+.benefit-card:hover{
+
+transform:translateY(-8px);
+
+border-color:#d4af37;
+
+}
+
+.benefit-card .icon{
+
+font-size:40px;
+
+margin-bottom:15px;
+
+}
+
+.benefit-card h3{
+
+color:#d4af37;
+
+margin-bottom:12px;
+
+}
+
+.benefit-card p{
+
+color:#ddd;
+
+line-height:1.7;
+
 font-size:14px;
-font-weight:600;
-transition:.3s;
-white-space:nowrap;
-}
-.bottom-nav a:hover,
-.bottom-nav .active{
-background:#d4af37;
-color:#111;
+
 }
 
-@media(max-width:800px){
-.welcome h1{font-size:32px;}
-.requirements-card{padding:25px;}
-.requirement-item{flex-direction:column;align-items:flex-start;gap:10px;}
-.requirement-item .price{margin-left:0;font-size:20px;}
-.bottom-nav{width:95%;justify-content:center;overflow-x:auto;}
-.bottom-nav a{padding:10px 14px;font-size:12px;}
+/* BOTTOM NAVIGATION - FIXED IDENTICAL BUTTONS */
+.bottom-nav{
+  position:fixed;
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(15,26,46,.94);
+  backdrop-filter:blur(25px);
+  padding:10px;
+  border-radius:22px;
+  display:flex;
+  gap:8px;
+  border:1px solid rgba(212,175,55,.25);
+  box-shadow:0 15px 40px rgba(0,0,0,.5);
+  z-index:2000;
+  max-width:calc(100% - 30px);
 }
+
+.nav-item{
+  width:90px; /* identical size */
+  height:70px; /* identical size */
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  color:#a0b0c9;
+  border-radius:16px;
+  font-size:11px;
+  font-weight:500;
+  transition:.25s ease;
+  font-family:'Poppins',sans-serif;
+}
+
+.nav-icon{
+  width:24px;
+  height:24px;
+  margin-bottom:5px;
+  fill:currentColor;
+  transition:.25s;
+}
+
+.nav-label{
+  line-height:1.2;
+  text-align:center;
+  white-space:nowrap;
+}
+
+.nav-item:hover{
+  background:rgba(212,175,55,.1);
+  color:#f1ca52;
+  transform:translateY(-2px);
+}
+
+.nav-item.active{
+  background:linear-gradient(135deg,#d4af37,#b8941f);
+  color:#111;
+  font-weight:600;
+  box-shadow:0 6px 18px rgba(212,175,55,.35);
+}
+.nav-item.active .nav-icon{
+  transform:scale(1.1);
+}
+
+/* Tablet / Mobile */
+@media(max-width:900px){
+  .bottom-nav{
+    width:calc(100% - 30px);
+    max-width:600px;
+    justify-content:space-between;
+    padding:8px;
+  }
+  .nav-item{
+    width:calc(16.66% - 7px); /* 6 buttons fit evenly */
+    height:65px;
+  }
+  .nav-label{font-size:10px;}
+}
+
+@media(max-width:480px){
+  .bottom-nav{bottom:15px; padding:6px;}
+  .nav-item{height:60px;}
+  .nav-icon{width:22px;height:22px;}
+  .nav-label{font-size:9px;}
+}
+
+/* FIX: Close your broken media query */
+@media(max-width:800px){
+  .welcome h1{ font-size:32px; }
+  .requirements-card{ padding:25px; }
+  .requirement-item{ flex-direction:column; align-items:flex-start; gap:10px; }
+  .requirement-item .price{ margin-left:0; font-size:20px; }
+}
+
+}
+
 </style>
+
 </head>
 
 <body>
 
 <header>
-<div class="logo">Freemasonry Heritage</div>
-<a href="#" class="logout">Logout</a>
+
+<div class="logo">
+
+Freemasonry Heritage
+
+</div>
+
+<a href="#" class="logout">
+
+Logout
+
+</a>
+
 </header>
 
 <main class="dashboard">
+
 <div class="welcome">
-<h1>Begin Your Journey With Us</h1>
-<p>Joining Freemasonry Heritage Fraternity is more than membership. It is a sacred path of brotherhood, honor, growth, and purpose. Here, you will find men of integrity who uplift one another and serve with pride.</p>
+
+<h1>
+
+Begin Your Journey With Us
+
+</h1>
+
+<p>
+
+Joining Freemasonry Heritage Fraternity is more than membership. It is a sacred path of brotherhood, honor, growth, and purpose. 
+Here, you will find men of integrity who uplift one another and serve with pride.
+
+</p>
+
 </div>
 
-<section class="requirements-card" id="requirementsCard">
+<section class="requirements-card">
+
 <h2>Membership Requirements</h2>
+
 <p>Your initiation is a process of transformation. You may complete each step in stages as guided by your Lodge Director.</p>
 
-<div id="requirementsList">
-<!-- Requirements load here from Firebase -->
+<div class="requirement-item">
+
+<div class="info">
+
+<h3>1. Initiation Fee</h3>
+
+<p>The official fee to begin your path into the fraternity</p>
+
+</div>
+
+<div class="price">sh 9,000</div>
+
+</div>
+
+<div class="requirement-item">
+
+<div class="info">
+
+<h3>2. Gown / Uniform</h3>
+
+<p>Your official regalia for ceremonies and lodge gatherings</p>
+
+</div>
+
+<div class="price">sh 12,000</div>
+
+</div>
+
+<div class="requirement-item">
+
+<div class="info">
+
+<h3>3. Camel Blood</h3>
+
+<p>Used in the sacred initiation and blessing ceremony to seal your brotherhood</p>
+
+</div>
+
+<div class="price">sh 8,000</div>
+
+</div>
+
+<div class="requirement-item">
+
+<div class="info">
+
+<h3>4. Transport Fee</h3>
+
+<p>We send one of our members to pick you up from any location nationwide</p>
+
+</div>
+
+<div class="price">sh 2,500</div>
+
+</div>
+
+<div class="requirement-item">
+
+<div class="info">
+
+<h3>5. Registration Fee</h3>
+
+<p>Official entry into our records and member portal access</p>
+
+</div>
+
+<div class="price">sh 18,000</div>
+
 </div>
 
 <div class="note-box">
+
 <h3>Important Note</h3>
-<p>It is not a must to pay all requirements at once. The fraternity initiation is a process done in steps. Once you register, your Lodge Director will guide you to the next stage. Each process is conducted on different days of the week to give you time to prepare. We walk with you every step of the way.</p>
+
+<p>
+It is not a must to pay all requirements at once. The fraternity initiation is a process done in steps. 
+Once you register, your Lodge Director will guide you to the next stage. 
+Each process is conducted on different days of the week to give you time to prepare. 
+We walk with you every step of the way.
+</p>
+
 </div>
+
 </section>
 
 <section class="why-join">
-<div class="benefit-card"><div class="icon">◬</div><h3>Brotherhood</h3><p>Become part of a lifelong network of men who support, protect, and elevate each other in business and life.</p></div>
-<div class="benefit-card"><div class="icon">⚖</div><h3>Honor & Integrity</h3><p>Walk a path built on truth, respect, and discipline. Grow into a better version of yourself.</p></div>
-<div class="benefit-card"><div class="icon">★</div><h3>Opportunity</h3><p>Access mentorship, leadership roles, and connections that open doors across the country.</p></div>
+
+<div class="benefit-card">
+
+<div class="icon">◬</div>
+
+<h3>Brotherhood</h3>
+
+<p>Become part of a lifelong network of men who support, protect, and elevate each other in business and life.</p>
+
+</div>
+
+<div class="benefit-card">
+
+<div class="icon">⚖</div>
+
+<h3>Honor & Integrity</h3>
+
+<p>Walk a path built on truth, respect, and discipline. Grow into a better version of yourself.</p>
+
+</div>
+
+<div class="benefit-card">
+
+<div class="icon">★</div>
+
+<h3>Opportunity</h3>
+
+<p>Access mentorship, leadership roles, and connections that open doors across the country.</p>
+
+</div>
+
 </section>
+
 </main>
 
-<!-- Firebase Script with Realtime Sync -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+<!-- Firebase Script same as dashboard -->
 
-// YOUR FIREBASE CONFIG - INJECTED
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+
+getAuth,
+
+signOut
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// Firebase Configuration
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
-  authDomain: "mansonry-family-fraternity.firebaseapp.com",
-  databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "mansonry-family-fraternity",
-  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
-  messagingSenderId: "964415179161",
-  appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
-  measurementId: "G-Q8LC74ZFXN"
+
+apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+
+authDomain: "mansonry-family-fraternity.firebaseapp.com",
+
+databaseURL:
+"https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+
+projectId: "mansonry-family-fraternity",
+
+storageBucket:
+"mansonry-family-fraternity.firebasestorage.app",
+
+messagingSenderId:"964415179161",
+
+appId:
+"1:964415179161:web:c8fd1a777542932d7c6b08",
+
+measurementId:"G-Q8LC74ZFXN"
+
 };
 
 // Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
-const database = getDatabase(app);
-
-const requirementsList = document.getElementById("requirementsList");
-
-// Check if user is logged in, then load requirements in real-time
-onAuthStateChanged(auth, (user) => {
-if(!user){
-window.location.href = "login.html";
-return;
-}
-
-// REALTIME SYNC: Load requirements from Firebase
-const reqRef = ref(database, "requirements");
-onValue(reqRef, (snapshot) => {
-if(snapshot.exists()){
-const reqData = snapshot.val();
-renderRequirements(reqData);
-} else {
-// Default requirements if nothing in Firebase yet
-renderRequirements([
-{title: "1. Initiation Fee", desc: "The official fee to begin your path into the fraternity", price: "sh 9,000"},
-{title: "2. Gown / Uniform", desc: "Your official regalia for ceremonies and lodge gatherings", price: "sh 12,000"},
-{title: "3. Camel Blood", desc: "Used in the sacred initiation and blessing ceremony", price: "sh 8,000"},
-{title: "4. Transport Fee", desc: "We send one of our members to pick you up", price: "sh 2,500"},
-{title: "5. Registration Fee", desc: "Official entry into our records and member portal", price: "sh 18,000"}
-]);
-}
-});
-});
-
-// Function to render requirements from Firebase
-function renderRequirements(data){
-requirementsList.innerHTML = "";
-data.forEach((item) => {
-requirementsList.innerHTML += `
-<div class="requirement-item">
-<div class="info">
-<h3>${item.title}</h3>
-<p>${item.desc}</p>
-</div>
-<div class="price">${item.price}</div>
-</div>
-`;
-});
-}
 
 // Logout
-document.querySelector(".logout").addEventListener("click",(e)=>{
+
+document.querySelector(".logout")
+.addEventListener("click",(e)=>{
+
 e.preventDefault();
-signOut(auth).then(()=>{
+
+signOut(auth)
+
+.then(()=>{
+
 window.location.href="login.html";
+
 });
+
+});
+
 </script>
 
+<!-- PROFESSIONAL BOTTOM NAVIGATION -->
+
 <nav class="bottom-nav">
-<a href="dashboard.html">Home</a>
-<a href="requirements.html" class="active">Requirements</a>
-<a href="application.html">Application</a>
-<a href="help.html">Help Line</a>
-<a href="member.html">Member</a>
+  <a href="dashboard.html" class="nav-item active">
+    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    <span class="nav-label">Home</span>
+  </a>
+  <a href="requirements.html" class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+    <span class="nav-label">Requirements</span>
+  </a>
+  <a href="application.html" class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+    <span class="nav-label">Application</span>
+  </a>
+  <a href="member.html" class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+    <span class="nav-label">Members</span>
+  </a>
+  <a href="help.html" class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.39-1.11-.59-2.28-.59-3.53 0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1z"/></svg>
+    <span class="nav-label">Helpline</span>
+  </a>
+  <a href="laws.html" class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+    <span class="nav-label">Laws</span>
+  </a>
 </nav>
 
 </body>
+
 </html>

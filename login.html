@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>
+Freemasonry | Member Login
+</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#07111f;
+color:white;
+min-height:100vh;
+padding-bottom:100px;
+overflow-x:hidden;
+}
+
+body::before{
+content:"◬";
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:500px;
+color:rgba(212,175,55,.04);
+z-index:-1;
+pointer-events:none;
+}
+
+/* HEADER */
+header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+padding:20px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(10px);
+z-index:1000;
+}
+
+.logo{
+font-size:30px;
+font-weight:700;
+color:#d4af37;
+}
+
+header nav a{
+color:white;
+text-decoration:none;
+margin-left:20px;
+transition:.3s;
+}
+
+header nav a:hover{
+color:#d4af37;
+}
+
+/* HERO */
+.hero{
+height:45vh;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
+
+background:
+linear-gradient(
+rgba(0,0,0,.75),
+rgba(0,0,0,.75)
+),
+url("1517026394531.jpeg");
+
+background-size:cover;
+background-position:center;
+background-color:#0b1728;
+}
+
+.hero h1{
+font-size:55px;
+}
+
+.hero p{
+margin-top:15px;
+color:#ddd;
+}
+
+/* LOGIN SECTION */
+section{
+padding:80px 10%;
+}
+
+.title{
+text-align:center;
+font-size:38px;
+color:#d4af37;
+margin-bottom:40px;
+}
+
+.login-box{
+max-width:500px;
+margin:auto;
+background:#142238;
+padding:45px;
+border-radius:20px;
+box-shadow:0 20px 50px rgba(0,0,0,.5);
+border:1px solid rgba(212,175,55,.25);
+}
+
+.input-group{
+display:flex;
+flex-direction:column;
+margin-bottom:25px;
+}
+
+label{
+color:#d4af37;
+margin-bottom:8px;
+font-weight:500;
+}
+
+input{
+width:100%;
+background:#08111f;
+border:1px solid #39485f;
+padding:15px;
+border-radius:10px;
+color:white;
+outline:none;
+font-size:15px;
+}
+
+input:focus{
+border-color:#d4af37;
+}
+
+/* BUTTON */
+.btn{
+display:block;
+width:220px;
+margin:30px auto 0;
+padding:15px;
+border:none;
+border-radius:40px;
+background:#d4af37;
+color:#111;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
+
+.btn:hover{
+transform:translateY(-5px);
+background:#f1ca52;
+}
+
+.btn:disabled{
+opacity:.6;
+cursor:not-allowed;
+}
+
+/* STATUS */
+#statusMessage{
+text-align:center;
+margin-top:25px;
+font-weight:600;
+color:#d4af37;
+}
+
+/* EXTRA CARDS */
+.info{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+margin-top:40px;
+}
+
+.card{
+background:#142238;
+padding:25px;
+border-radius:15px;
+border:1px solid rgba(212,175,55,.15);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+border-color:#d4af37;
+}
+
+.card h3{
+color:#d4af37;
+margin-bottom:10px;
+}
+
+.card p{
+color:#ddd;
+line-height:1.7;
+}
+
+/* FOOTER */
+footer{
+background:#020509;
+padding:35px;
+text-align:center;
+color:#999;
+}
+
+@media(max-width:700px){
+.hero h1{
+font-size:35px;
+}
+header nav{
+display:none;
+}
+.login-box{
+padding:25px;
+}
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">
+Freemasonry Heritage
+</div>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="history.html">History</a>
+<a href="registration.html">Register</a>
+</nav>
+</header>
+
+<section class="hero">
+<div>
+<h1>Member Login</h1>
+<p>Secure access for registered members of the brotherhood.</p>
+</div>
+</section>
+
+<section>
+<h2 class="title">Welcome Back</h2>
+
+<div class="login-box">
+<form id="loginForm">
+
+<div class="input-group">
+<label>Email Address</label>
+<input id="email" type="email" placeholder="Enter your email" required>
+</div>
+
+<div class="input-group">
+<label>Password</label>
+<input id="password" type="password" placeholder="Enter password" required>
+</div>
+
+<button class="btn" id="loginBtn" type="submit">Login</button>
+
+<p id="statusMessage"></p>
+
+<div style="text-align:center;margin-top:20px;">
+    <p style="color:#ccc;">Not a member yet?</p>
+    <a href="registration.html" style="display:inline-block;margin-top:10px;padding:12px 35px;border:2px solid #d4af37;border-radius:40px;color:#d4af37;text-decoration:none;font-weight:600;transition:.3s;">Register Here</a>
+</div>
+
+</form>
+</div>
+
+</section>
+
+<section>
+<h2 class="title">Member Access Information</h2>
+
+<div class="info">
+<div class="card">
+<h3>Secure Login</h3>
+<p>Member accounts are authenticated securely through Firebase Authentication with full data protection.</p>
+</div>
+
+<div class="card">
+<h3>Member Records</h3>
+<p>Your profile and activity are synchronized in real-time with our secure Firebase Realtime Database.</p>
+</div>
+
+<div class="card">
+<h3>Account Protection</h3>
+<p>Never share your password. Your account credentials remain private and secure at all times.</p>
+</div>
+</div>
+</section>
+
+<footer>
+<h2 style="color:#d4af37;">Freemasonry Heritage</h2>
+<br>
+<p>Building men of character for a stronger tomorrow.</p>
+<br>
+<p>© 2026 Freemasonry Heritage</p>
+</footer>
+
+<!-- FIREBASE AUTH + REALTIME DATABASE -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+// YOUR FIREBASE CONFIG
+const firebaseConfig = {
+apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+authDomain: "mansonry-family-fraternity.firebaseapp.com",
+databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+projectId: "mansonry-family-fraternity",
+storageBucket: "mansonry-family-fraternity.firebasestorage.app",
+messagingSenderId: "964415179161",
+appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
+measurementId: "G-Q8LC74ZFXN"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+const loginForm = document.getElementById("loginForm");
+const loginBtn = document.getElementById("loginBtn");
+const status = document.getElementById("statusMessage");
+
+loginForm.addEventListener("submit", async(e) => {
+e.preventDefault();
+loginBtn.disabled = true;
+loginBtn.textContent = "Logging in...";
+
+const email = document.getElementById("email").value.trim();
+const password = document.getElementById("password").value;
+
+try{
+const result = await signInWithEmailAndPassword(auth, email, password);
+const user = result.user;
+
+// Log login to Realtime Database
+await set(ref(database, "login_logs/" + user.uid + "/" + Date.now()), {
+uid: user.uid,
+email: user.email,
+time: new Date().toISOString(),
+action: "login"
+});
+
+// Update user status
+await set(ref(database, "users/" + user.uid), {
+email: user.email,
+status: "active",
+lastLogin: new Date().toISOString()
+});
+
+status.style.color = "#4cff88";
+status.textContent = "✓ Login successful. Redirecting...";
+
+setTimeout(() => {
+window.location.href = "dashboard.html";
+}, 1000);
+
+}
+catch(error){
+console.error(error);
+status.style.color = "#ff5555";
+status.textContent = "Invalid email or password.";
+}
+finally{
+loginBtn.disabled = false;
+loginBtn.textContent = "Login";
+}
+});
+
+onAuthStateChanged(auth, (user) => {
+if(user){
+console.log("Logged in:", user.email);
+}
+});
+
+// Card Animation
+const box = document.querySelector(".login-box");
+box.style.opacity = "0";
+box.style.transform = "translateY(40px)";
+box.style.transition = "1s";
+
+window.onload = () => {
+box.style.opacity = "1";
+box.style.transform = "translateY(0)";
+};
+
+</script>
+
+</body>
+</html>

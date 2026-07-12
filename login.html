@@ -115,7 +115,7 @@ font-size:15px;
 }
 input:focus{border-color:#d4af37;}
 
-/* BUTTON */
+/* BUTTONS */
 .btn{
 display:block;
 width:220px;
@@ -130,12 +130,32 @@ cursor:pointer;
 transition:.3s;
 text-decoration:none;
 text-align:center;
+font-size:16px;
 }
 .btn:hover{transform:translateY(-5px);background:#f1ca52;}
 .btn:disabled{opacity:.6;cursor:not-allowed;}
 
+/* OUTLINE BUTTON FOR LINKS */
+.btn-outline{
+display:inline-block;
+margin-top:10px;
+padding:12px 35px;
+border:2px solid #d4af37;
+border-radius:40px;
+color:#d4af37;
+text-decoration:none;
+font-weight:600;
+transition:.3s;
+background:transparent;
+}
+.btn-outline:hover{
+background:#d4af37;
+color:#111;
+transform:translateY(-3px);
+}
+
 /* STATUS */
-#statusMessage{text-align:center;margin-top:25px;font-weight:600;color:#d4af37;}
+#statusMessage{text-align:center;margin-top:25px;font-weight:600;color:#d4af37;min-height:24px;}
 
 /* EXTRA CARDS */
 .info{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;margin-top:40px;}
@@ -195,8 +215,8 @@ header nav{display:none;}
 
 <div style="text-align:center;margin-top:20px;">
     <p style="color:#ccc;">Not a member yet?</p>
-    <!-- FIXED: This now goes to registration.html -->
-    <a href="registration.html" class="btn" style="width:auto;display:inline-block;margin-top:10px;">Register Here</a>
+    <!-- FIXED: Using btn-outline so it shows properly -->
+    <a href="registration.html" class="btn-outline">Register Here</a>
 </div>
 
 </form>

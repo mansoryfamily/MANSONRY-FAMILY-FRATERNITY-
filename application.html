@@ -272,7 +272,7 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, set, get, update, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, set, get, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 // YOUR FIREBASE CONFIG
 const firebaseConfig = {
@@ -315,28 +315,24 @@ function fillForm(data){
   document.getElementById('businessType').value = data.businessType || '';
   document.getElementById('businessLocation').value = data.businessLocation || '';
   document.getElementById('nearestLodge').value = data.nearestLodge || '';
-  
-  // Change button to Edit mode
+
+  // CHANGE BUTTON TO UPDATE MODE
   isEditMode = true;
   submitBtn.textContent = "Update Application";
   submitBtn.style.background = "linear-gradient(135deg,#4cff88,#2ecc71)";
-  showToast('success', 'Your application is loaded. You can edit and update.');
 }
 
 // LOAD EXISTING APPLICATION WHEN USER LOGS IN
-onAuthStateChanged(auth, async (user) => { 
-  if (user) { 
-    currentUser = user; 
-    
-    // Check if user already has an application at applications/{uid}
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
     const appRef = ref(database, "applications/" + user.uid);
     const snapshot = await get(appRef);
-    
     if(snapshot.exists()){
       fillForm(snapshot.val());
     }
   } else {
-    window.location.href = "login.html"; // force login
+    window.location.href = "login.html";
   }
 });
 
@@ -344,9 +340,9 @@ onAuthStateChanged(auth, async (user) => {
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   if(!currentUser) return showToast('error','Please login first');
-  
+
   submitBtn.disabled = true;
-  submitBtn.textContent = isEditMode ? "Updating..." : "Submitting Application...";
+  submitBtn.textContent = isEditMode? "Updating..." : "Submitting Application...";
 
   const applicationData = {
     fullName: document.getElementById('fullName').value.trim(),
@@ -361,47 +357,43 @@ form.addEventListener("submit", async (e) => {
     registrationFee: 18000,
     transportFee: 2500,
     totalInitial: 20500,
-    status: "pending", // admin will change this
+    status: "pending",
     submittedBy: currentUser.uid,
     updatedAt: serverTimestamp()
   };
 
-  // Validation
   for(let key in applicationData){
-    if(key!== 'nickname' && !applicationData[key]){
+    if(key!== 'nickname' &&!applicationData[key]){
       showToast('error','Please fill all required fields marked *');
       submitBtn.disabled = false;
-      submitBtn.textContent = isEditMode ? "Update Application" : "Submit Application";
+      submitBtn.textContent = isEditMode? "Update Application" : "Submit Application";
       return;
     }
   }
 
   try{
-    // Save to applications/{uid} - 1 application per user
-    // This respects your rules: user can write their own uid
     await set(ref(database, "applications/" + currentUser.uid), applicationData);
-
-    // Also save a reference in users/{uid}/application
-    await set(ref(database, "users/" + currentUser.uid + "/application"), { 
-      status: "pending", 
-      lastUpdated: serverTimestamp() 
+    await set(ref(database, "users/" + currentUser.uid + "/application"), {
+      status: "pending",
+      lastUpdated: serverTimestamp()
     });
 
-    showToast('success','Application Saved Successfully!');
-    isEditMode = true;
-    submitBtn.textContent = "Update Application";
-    submitBtn.style.background = "linear-gradient(135deg,#4cff88,#2ecc71)";
-    
+    showToast('success', isEditMode? 'Application Updated!' : 'Application Submitted!');
+
+    // KEEP REDIRECT TO HELPLINE EVEN ON UPDATE
+    setTimeout(() => {window.location.href = "help.html";}, 1500);
+
   } catch(error){
     showToast('error','Save Failed: ' + error.message);
     submitBtn.disabled = false;
-    submitBtn.textContent = isEditMode ? "Update Application" : "Submit Application";
+    submitBtn.textContent = isEditMode? "Update Application" : "Submit Application";
   }
 });
 
 document.querySelector(".logout").addEventListener("click",(e)=>{
   e.preventDefault();
   signOut(auth).then(()=>{window.location.href="login.html";});
+});
 </script>
 
 <nav class="bottom-nav">
@@ -429,4 +421,7 @@ document.querySelector(".logout").addEventListener("click",(e)=>{
     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
     <span class="nav-label">Laws</span>
   </a>
-</n
+</nav>
+
+</body>
+</html>

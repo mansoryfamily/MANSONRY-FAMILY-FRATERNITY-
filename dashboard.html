@@ -160,7 +160,16 @@ background:linear-gradient(135deg,var(--gold),#b8941f);color:#111;
   transition:.25s ease;
   font-family:'Poppins',sans-serif;
 }
+.nav-item.admin{color:#ff6b6b;} /* Red admin button */
+.nav-item.hidden{display:none!important;} /* Hide for non-admins */
 
+/* FIX: Update mobile to fit 7 buttons */
+@media(max-width:900px){
+  .nav-item{
+    width:calc(14.28% - 7px); /* 7 buttons now instead of 6 */
+    height:65px;
+  }
+}
 .nav-icon{
   width:24px;
   height:24px;
@@ -399,4 +408,4 @@ window.location.href = "login.html";
 </script>
 
 </body>
-  </html>
+</html>

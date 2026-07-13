@@ -146,7 +146,7 @@ const auth = getAuth(app);
 const database = getDatabase(app);
 let currentUser = null;
 let isEditMode = false;
-let existingStatus = "pending"; // KEEP EXISTING STATUS
+let existingStatus = "pending";
 
 const toast = document.getElementById("toast");
 const toastIcon = document.getElementById("toastIcon");
@@ -172,7 +172,7 @@ function fillForm(data){
   document.getElementById('businessLocation').value = data.businessLocation || '';
   document.getElementById('nearestLodge').value = data.nearestLodge || '';
 
-  existingStatus = data.status || "pending"; // SAVE EXISTING STATUS
+  existingStatus = data.status || "pending";
   isEditMode = true;
   submitBtn.textContent = "Update Application";
   submitBtn.style.background = "linear-gradient(135deg,#4cff88,#2ecc71)";
@@ -211,13 +211,13 @@ form.addEventListener("submit", async (e) => {
     registrationFee: 18000,
     transportFee: 2500,
     totalInitial: 20500,
-    status: existingStatus, // DO NOT RESET STATUS ON UPDATE
+    status: existingStatus,
     submittedBy: currentUser.uid,
     updatedAt: serverTimestamp()
   };
 
   for(let key in applicationData){
-    if(key!== 'nickname' && key !== 'status' && !applicationData[key]){
+    if(key!== 'nickname' && key!== 'status' &&!applicationData[key]){
       showToast('error','Please fill all required fields marked *');
       submitBtn.disabled = false;
       submitBtn.textContent = isEditMode? "Update Application" : "Submit Application";
@@ -233,10 +233,12 @@ form.addEventListener("submit", async (e) => {
     });
 
     showToast('success', isEditMode? 'Application Updated!' : 'Application Submitted!');
-    setTimeout(() => {window.location.href = "help.html";}, 1500); // ALWAYS REDIRECT
+    form.classList.add('submitted'); // <- TURN CARD GREEN
+
+    setTimeout(() => {window.location.href = "help.html";}, 1500); // REDIRECT AFTER 1.5s
 
   } catch(error){
-    console.error("FIREBASE ERROR:", error); // CHECK CONSOLE
+    console.error("FIREBASE ERROR:", error);
     showToast('error','Save Failed: ' + error.message);
     submitBtn.disabled = false;
     submitBtn.textContent = isEditMode? "Update Application" : "Submit Application";
@@ -246,7 +248,6 @@ form.addEventListener("submit", async (e) => {
 document.querySelector(".logout").addEventListener("click",(e)=>{
   e.preventDefault();
   signOut(auth).then(()=>{window.location.href="login.html";});
-});
 </script>
 
 <nav class="bottom-nav">

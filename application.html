@@ -12,109 +12,8 @@
 :root{--gold:#d4af37;--gold-dark:#b8941f;--dark:#07111f;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 body{background:var(--dark);color:white;min-height:100vh;padding-bottom:120px;}
-
-/* BACKGROUND IMAGE */
-body::before{
-content:"";
-position:fixed;
-top:0;left:0;width:100%;height:100%;
-background:
-linear-gradient(rgba(7,17,31,.88), rgba(7,17,31,.95)),
-url("1517026394531.jpeg"); /* YOUR IMAGE */
-background-size:cover;
-background-position:center;
-background-attachment:fixed;
-z-index:-2;
-}
-/* MASONIC SYMBOL OVERLAY */
-body::after{
-content:"◬";
-position:fixed;
-top:50%;left:50%;
-transform:translate(-50%,-50%);
-font-size:400px;
-color:rgba(212,175,55,.03);
-z-index:-1;
-pointer-events:none;
-}
-.bottom-nav{
-  position:fixed;
-  bottom:25px;
-  left:50%;
-  transform:translateX(-50%);
-  background:rgba(15,26,46,.94);
-  backdrop-filter:blur(25px);
-  padding:10px;
-  border-radius:22px;
-  display:flex;
-  gap:8px;
-  border:1px solid rgba(212,175,55,.25);
-  box-shadow:0 15px 40px rgba(0,0,0,.5);
-  z-index:2000;
-}
-
-.nav-item{
-  width:90px; /* identical size */
-  height:70px; /* identical size */
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-decoration:none;
-  color:#a0b0c9;
-  border-radius:16px;
-  font-size:11px;
-  font-weight:500;
-  transition:.25s ease;
-  font-family:'Poppins',sans-serif;
-}
-
-.nav-icon{
-  width:24px;
-  height:24px;
-  margin-bottom:5px;
-  fill:currentColor;
-  transition:.25s;
-}
-
-.nav-label{
-  line-height:1.2;
-  text-align:center;
-}
-
-.nav-item:hover{
-  background:rgba(212,175,55,.1);
-  color:#f1ca52;
-}
-
-.nav-item.active{
-  background:linear-gradient(135deg,#d4af37,#b8941f);
-  color:#111;
-  font-weight:600;
-  box-shadow:0 6px 18px rgba(212,175,55,.35);
-}
-
-/* Tablet / Mobile */
-@media(max-width:900px){
-  .bottom-nav{
-    left:50%;
-    transform:translateX(-50%);
-    width:calc(100% - 30px);
-    max-width:600px;
-    justify-content:space-between;
-  }
-  .nav-item{
-    width:calc(16.66% - 7px); /* 6 buttons fit evenly */
-    height:65px;
-  }
-  .nav-label{font-size:10px;}
-}
-
-@media(max-width:480px){
-  .nav-item{height:60px;}
-  .nav-icon{width:22px;height:22px;}
-  .nav-label{font-size:9px;}
-}
+body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.88), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-attachment:fixed;z-index:-2;}
+body::after{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:400px;color:rgba(212,175,55,.03);z-index:-1;pointer-events:none;}
 header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,0,0,.8);backdrop-filter:blur(15px);display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid rgba(212,175,55,.2);}
 .logo{font-size:28px;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif;}
 .logout{background:var(--gold);color:#111;padding:10px 25px;border-radius:30px;text-decoration:none;font-weight:600;transition:.3s;}
@@ -155,16 +54,16 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 .toast.error{border-color:#ff5555;}
 .toast.icon{font-size:45px;margin-bottom:12px;display:block;}
 .toast.message{font-size:17px;font-weight:600;color:#fff;}
-.bottom-nav{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(20,34,56,.95);backdrop-filter:blur(15px);padding:12px;border-radius:50px;display:flex;gap:10px;border:1px solid rgba(212,175,55,.3);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;}
-.bottom-nav a{text-decoration:none;color:white;padding:12px 22px;border-radius:35px;font-size:14px;font-weight:600;transition:.3s;}
-.bottom-nav a:hover,.bottom-nav.active{background:var(--gold);color:#111;}
-@media(max-width:800px){.fraternity-header h1{font-size:32px;}.form-card{padding:25px;}.form-grid{grid-template-columns:1fr;}.toast{min-width:280px;}}
+.bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(15,26,46,.94);backdrop-filter:blur(25px);padding:10px;border-radius:22px;display:flex;gap:8px;border:1px solid rgba(212,175,55,.25);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;}
+.nav-item{width:90px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#a0b0c9;border-radius:16px;font-size:11px;font-weight:500;transition:.25s ease;font-family:'Poppins',sans-serif;}
+.nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;transition:.25s;}
+.nav-item.active{background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:600;box-shadow:0 6px 18px rgba(212,175,55,.35);}
+@media(max-width:900px){.bottom-nav{width:calc(100% - 30px);max-width:600px;justify-content:space-between;}.nav-item{width:calc(16.66% - 7px);height:65px;}}
 </style>
 </head>
 
 <body>
 
-<!-- TOAST -->
 <div id="toast" class="toast"><span class="icon" id="toastIcon"></span><span class="message" id="toastMessage"></span></div>
 
 <header>
@@ -180,88 +79,45 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 
 <form class="form-card" id="applicationForm">
 
-<!-- SECTION 1: PERSONAL DETAILS -->
 <div class="section">
 <h2 class="section-title"><span>1</span>Personal Details</h2>
 <div class="form-grid">
 <div class="form-group"><label>Full Name *</label><input type="text" id="fullName" required></div>
 <div class="form-group"><label>Date of Birth *</label><input type="date" id="dob" required></div>
 <div class="form-group"><label>Identity Number / National ID *</label><input type="text" id="idNumber" placeholder="e.g. 12345678" required></div>
-<div class="form-group"><label>Gender *</label>
-<select id="gender" required><option value="">Select Gender</option><option>Male</option><option>Female</option><option>Prefer not to say</option></select>
-</div>
+<div class="form-group"><label>Gender *</label><select id="gender" required><option value="">Select Gender</option><option>Male</option><option>Female</option><option>Prefer not to say</option></select></div>
 <div class="form-group"><label>Home / Birth Town *</label><input type="text" id="birthTown" placeholder="e.g. Kisumu" required></div>
 <div class="form-group"><label>Preferred Nickname</label><input type="text" id="nickname" placeholder="What should members call you?"></div>
 </div>
 </div>
 
-<!-- SECTION 2: BUSINESS INFORMATION -->
 <div class="section">
 <h2 class="section-title"><span>2</span>Business Information</h2>
 <p style="color:#aaa;margin-bottom:20px;">As a member you qualify for our Life-Changing Business Grant. Tell us about your business plan.</p>
 <div class="form-grid">
-<div class="form-group">
-<label>Type of Business *</label>
-<input type="text" id="businessType" placeholder="e.g. Retail Shop, Agriculture, Transport" required>
-<small style="color:#888;font-size:12px;margin-top:5px;">Let us know the business you can run well</small>
-</div>
-<div class="form-group">
-<label>Preferred Business Location *</label>
-<input type="text" id="businessLocation" placeholder="e.g. Kisumu CBD, Nairobi" required>
-<small style="color:#888;font-size:12px;margin-top:5px;">Where do you like to locate your business</small>
-</div>
+<div class="form-group"><label>Type of Business *</label><input type="text" id="businessType" placeholder="e.g. Retail Shop, Agriculture, Transport" required></div>
+<div class="form-group"><label>Preferred Business Location *</label><input type="text" id="businessLocation" placeholder="e.g. Kisumu CBD, Nairobi" required></div>
 </div>
 </div>
 
-<!-- SECTION 3: INITIATION PROCESS -->
 <div class="section">
 <h2 class="section-title"><span>3</span>Initiation Process & Requirements</h2>
 <div class="requirement-box">
 <h4>Requirements to Join Our Brotherhood</h4>
-<p style="color:#ddd;line-height:1.7;margin-bottom:15px;">All requirements must be met to proceed with your application and initiation.</p>
 <div class="fee-list">
 <div class="fee-item"><span>Registration Fee</span><span>Sh. 18,000</span></div>
 <div class="fee-item"><span>Transport Fee</span><span>Sh. 2,500</span></div>
 <div class="fee-item total-fee"><span><strong>Total Initial Amount</strong></span><span><strong>Sh. 20,500</strong></span></div>
 </div>
-<p style="color:#aaa;font-size:13px;margin-top:15px;"><strong>Note:</strong> This is the first amount required before the start of any progress. Payment plans can be discussed with your Lodge Director.</p>
 </div>
 </div>
 
-<!-- SECTION 4: LODGE LOCATIONS -->
 <div class="section">
 <h2 class="section-title"><span>4</span>Location of Lodges</h2>
-<div class="lodge-info">
-<h4>Main Hall / Headquarters</h4>
-<p><strong>Freemasons’ Hall, Nairobi</strong></p>
-<p>Address: Nyerere Avenue/Road, opposite Serena Hotel, Nairobi</p>
-<p>This is the central meeting place for most lodges in Kenya including Lodge Harmony, Victoria Nyanza Lodge, Orient Lodge, Progress Lodge.</p>
-</div>
-
-<div class="lodge-info">
-<h4>Other Kenyan Towns with Lodges</h4>
-<p><strong>Nairobi:</strong> Multiple lodges at Freemasons’ Hall - Lodge Harmony 3084, Victoria Nyanza 3492, Orient 3703</p>
-<p><strong>Mombasa:</strong> Mombasa Lodge 3645 at FM Hall</p>
-<p><strong>Nakuru:</strong> Lodge Menengai 3559 at FM Hall</p>
-<p><strong>Kisumu:</strong> Equator Lodge 4337, Lake Lodge 5022 - founded in 1928</p>
-<p><strong>Other towns:</strong> Nyeri, Ruiru, Kericho, Kitale</p>
-</div>
-
-<div class="contact-box">
-<h4 style="color:var(--gold);margin-bottom:10px;">How to Contact</h4>
-<p><strong>District Grand Lodge of East Africa (E.C.)</strong></p>
-<p>P.O Box 40828, 00100, NAIROBI - KENYA</p>
-<p>Physical: Freemasons’ Hall, Nyerere Avenue, opposite Serena Hotel</p>
-<p>Phone: +254726126580</p>
-</div>
-
 <div class="form-group" style="margin-top:25px;">
 <label>Nearest Location / Lodge Preference *</label>
 <input type="text" id="nearestLodge" placeholder="e.g. Kisumu - Lake Lodge 5022" required>
-<small style="color:#888;font-size:12px;margin-top:5px;">Let us know your nearest location</small>
 </div>
-
-<p style="color:#aaa;font-size:13px;margin-top:15px;line-height:1.7;"><strong>Requirements:</strong> Male 21+, believe in a supreme being, recommended by a member known 3+ years. Fees apply.</p>
 </div>
 
 <button type="submit" class="btn-submit" id="submitBtn">Submit Application</button>
@@ -274,7 +130,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, set, get, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// YOUR FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -291,6 +146,7 @@ const auth = getAuth(app);
 const database = getDatabase(app);
 let currentUser = null;
 let isEditMode = false;
+let existingStatus = "pending"; // KEEP EXISTING STATUS
 
 const toast = document.getElementById("toast");
 const toastIcon = document.getElementById("toastIcon");
@@ -316,13 +172,12 @@ function fillForm(data){
   document.getElementById('businessLocation').value = data.businessLocation || '';
   document.getElementById('nearestLodge').value = data.nearestLodge || '';
 
-  // CHANGE BUTTON TO UPDATE MODE
+  existingStatus = data.status || "pending"; // SAVE EXISTING STATUS
   isEditMode = true;
   submitBtn.textContent = "Update Application";
   submitBtn.style.background = "linear-gradient(135deg,#4cff88,#2ecc71)";
 }
 
-// LOAD EXISTING APPLICATION WHEN USER LOGS IN
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUser = user;
@@ -336,7 +191,6 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// SUBMIT / UPDATE APPLICATION
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   if(!currentUser) return showToast('error','Please login first');
@@ -357,13 +211,13 @@ form.addEventListener("submit", async (e) => {
     registrationFee: 18000,
     transportFee: 2500,
     totalInitial: 20500,
-    status: "pending",
+    status: existingStatus, // DO NOT RESET STATUS ON UPDATE
     submittedBy: currentUser.uid,
     updatedAt: serverTimestamp()
   };
 
   for(let key in applicationData){
-    if(key!== 'nickname' &&!applicationData[key]){
+    if(key!== 'nickname' && key !== 'status' && !applicationData[key]){
       showToast('error','Please fill all required fields marked *');
       submitBtn.disabled = false;
       submitBtn.textContent = isEditMode? "Update Application" : "Submit Application";
@@ -374,16 +228,15 @@ form.addEventListener("submit", async (e) => {
   try{
     await set(ref(database, "applications/" + currentUser.uid), applicationData);
     await set(ref(database, "users/" + currentUser.uid + "/application"), {
-      status: "pending",
+      status: existingStatus,
       lastUpdated: serverTimestamp()
     });
 
     showToast('success', isEditMode? 'Application Updated!' : 'Application Submitted!');
-
-    // KEEP REDIRECT TO HELPLINE EVEN ON UPDATE
-    setTimeout(() => {window.location.href = "help.html";}, 1500);
+    setTimeout(() => {window.location.href = "help.html";}, 1500); // ALWAYS REDIRECT
 
   } catch(error){
+    console.error("FIREBASE ERROR:", error); // CHECK CONSOLE
     showToast('error','Save Failed: ' + error.message);
     submitBtn.disabled = false;
     submitBtn.textContent = isEditMode? "Update Application" : "Submit Application";
@@ -397,30 +250,12 @@ document.querySelector(".logout").addEventListener("click",(e)=>{
 </script>
 
 <nav class="bottom-nav">
-  <a href="dashboard.html" class="nav-item active">
-    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-    <span class="nav-label">Home</span>
-  </a>
-  <a href="requirements.html" class="nav-item">
-    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-    <span class="nav-label">Requirements</span>
-  </a>
-  <a href="application.html" class="nav-item">
-    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-    <span class="nav-label">Application</span>
-  </a>
-  <a href="member.html" class="nav-item">
-    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-    <span class="nav-label">Members</span>
-  </a>
-  <a href="help.html" class="nav-item">
-    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.39-1.11-.59-2.28-.59-3.53 0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1z"/></svg>
-    <span class="nav-label">Helpline</span>
-  </a>
-  <a href="laws.html" class="nav-item">
-    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
-    <span class="nav-label">Laws</span>
-  </a>
+  <a href="dashboard.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="nav-label">Home</span></a>
+  <a href="requirements.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span class="nav-label">Requirements</span></a>
+  <a href="application.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg><span class="nav-label">Application</span></a>
+  <a href="member.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span class="nav-label">Members</span></a>
+  <a href="help.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.39-1.11-.59-2.28-.59-3.53 0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1z"/></svg><span class="nav-label">Helpline</span></a>
+  <a href="laws.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg><span class="nav-label">Laws</span></a>
 </nav>
 
 </body>

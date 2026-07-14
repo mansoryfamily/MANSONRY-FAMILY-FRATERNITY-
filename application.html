@@ -23,6 +23,7 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 .fraternity-header h1{font-size:48px;color:var(--gold);font-family:'Playfair Display',serif;margin-bottom:10px;}
 .fraternity-header p{color:#ccc;font-size:16px;max-width:700px;margin:auto;line-height:1.8;}
 .form-card{background:linear-gradient(145deg,rgba(20,34,56,.9),rgba(11,23,40,.9));backdrop-filter:blur(20px);border-radius:25px;padding:45px;border:1px solid rgba(212,175,55,.25);box-shadow:0 20px 50px rgba(0,0,0,.5);transition:all.5s ease;}
+/* GREEN CARD - PERMANENT */
 .form-card.submitted{border-color:#4cff88;background:linear-gradient(145deg,rgba(20,80,60,.9),rgba(10,60,40,.9));box-shadow:0 20px 50px rgba(76,255,136,.3);}
 .section{margin-bottom:45px;padding-bottom:35px;border-bottom:1px solid rgba(212,175,55,.15);}
 .section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
@@ -41,6 +42,11 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 .fee-item span:last-child{color:var(--gold);font-weight:700;font-size:16px;}
 .total-fee{background:rgba(212,175,55,.15);border:2px solid var(--gold);margin-top:10px;}
 .total-fee span{font-size:18px!important;}
+.lodge-info{background:#08111f;border-radius:15px;padding:25px;margin-bottom:20px;border:1px solid rgba(212,175,55,.15);}
+.lodge-info h4{color:var(--gold);margin-bottom:10px;font-size:16px;}
+.lodge-info p{color:#ddd;line-height:1.7;font-size:14px;margin-bottom:8px;}
+.contact-box{background:rgba(212,175,55,.1);border-left:4px solid var(--gold);padding:18px;border-radius:10px;margin-top:15px;}
+.contact-box p{margin-bottom:5px;color:#ccc;font-size:14px;}
 .btn-submit{display:block;width:100%;padding:18px;border:none;border-radius:15px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#111;font-size:18px;font-weight:700;cursor:pointer;transition:.3s;margin-top:30px;box-shadow:0 10px 30px rgba(212,175,55,.3);}
 .btn-submit:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(212,175,55,.4);}
 .btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none;}
@@ -175,7 +181,7 @@ function fillForm(data){
   isEditMode = true;
   submitBtn.textContent = "Update Application";
   submitBtn.style.background = "linear-gradient(135deg,#4cff88,#2ecc71)";
-  form.classList.add('submitted');
+  form.classList.add('submitted'); // <- KEEP CARD GREEN FOREVER
 }
 
 onAuthStateChanged(auth, async (user) => {
@@ -233,7 +239,7 @@ form.addEventListener("submit", async (e) => {
     });
 
     showToast('success', isEditMode? 'Application Updated!' : 'Application Submitted!');
-    form.classList.add('submitted');
+    form.classList.add('submitted'); // TURN GREEN ON SUBMIT TOO
 
     setTimeout(() => {window.location.href = "help.html";}, 1500);
 
@@ -248,9 +254,10 @@ form.addEventListener("submit", async (e) => {
 document.querySelector(".logout").addEventListener("click",(e)=>{
   e.preventDefault();
   signOut(auth).then(()=>{window.location.href="login.html";});
+});
 </script>
 
-<!-- FIXED ICONS ONLY - NOW IDENTICAL TO DASHBOARD -->
+<!-- FIXED BOTTOM NAV - IDENTICAL TO DASHBOARD -->
 <nav class="bottom-nav">
   <a href="dashboard.html" class="nav-item">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -269,7 +276,7 @@ document.querySelector(".logout").addEventListener("click",(e)=>{
     <span class="nav-label">Members</span>
   </a>
   <a href="help.html" class="nav-item">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1.45 1 1V20c0.55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1.45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.39-1.11-.59-2.28-.59-3.53 0-.55-.45-1-1-1H4c-.55 0-1-1-1 0 9.39 7.61 17 17 17.55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1z"/></svg>
     <span class="nav-label">Helpline</span>
   </a>
   <a href="laws.html" class="nav-item">

@@ -59,9 +59,9 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 .dropdown-content{display:none;position:absolute;right:0;background:#142238;min-width:140px;box-shadow:0 8px 20px rgba(0,0,0,.5);z-index:1;border-radius:12px;border:1px solid rgba(212,175,55,.3);overflow:hidden;}
 .dropdown-content button{color:#ddd;padding:10px 14px;text-decoration:none;display:block;width:100%;text-align:left;border:none;background:none;cursor:pointer;font-size:13px;transition:.2s;}
 .dropdown-content button:hover{background:rgba(212,175,55,.1);}
-.dropdown-content.approve:hover{background:rgba(34,197,94,.2);color:var(--success);}
-.dropdown-content.pending:hover{background:rgba(245,158,11,.2);color:var(--warning);}
-.dropdown-content.reject:hover{background:rgba(239,68,68,.2);color:var(--danger);}
+.dropdown-content button.approve:hover{background:rgba(34,197,94,.2);color:var(--success);}
+.dropdown-content button.pending:hover{background:rgba(245,158,11,.2);color:var(--warning);}
+.dropdown-content button.reject:hover{background:rgba(239,68,68,.2);color:var(--danger);}
 .show{display:block;}
 
 .loading{text-align:center;padding:40px;color:#aaa;}
@@ -125,7 +125,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// YOUR FIREBASE CONFIG
+// INJECTED FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -143,13 +143,22 @@ const database = getDatabase(app);
 
 const usersTable = document.getElementById('usersTable');
 
-// PROTECT ADMIN PAGE
+// PROTECT ADMIN PAGE - ONLY ADMIN CAN ACCESS
 onAuthStateChanged(auth, (user) => {
   if(!user){
     window.location.href = "https://mansoryfamily.github.io/MANSONRY-FAMILY-FRATERNITY-/login.html";
     return;
   }
-  loadUsers();
+  // Check if user is admin
+  const userRef = ref(database, "users/" + user.uid);
+  onValue(userRef, (snap) => {
+    if(snap.exists() && snap.val().role === "admin"){
+      loadUsers(); // Load table
+    } else {
+      alert("Access Denied: Admins Only");
+      window.location.href = "dashboard.html";
+    }
+  }, {onlyOnce: true});
 });
 
 // LOAD USERS IN REAL TIME
@@ -159,6 +168,7 @@ function loadUsers(){
     const data = snapshot.val();
     if(!data){
       usersTable.innerHTML = `<tr><td colspan="7" class="loading">No members found</td></tr>`;
+      updateStats(0,0,0,0);
       return;
     }
 
@@ -174,13 +184,15 @@ function loadUsers(){
       else pending++;
       total++;
 
+      const appliedDate = user.timestamp? new Date(user.timestamp).toLocaleDateString() : 'N/A';
+
       html += `
       <tr>
         <td>${count++}</td>
         <td>${user.fullName || 'N/A'}</td>
         <td>${user.email || 'N/A'}</td>
         <td>${user.phone || 'N/A'}</td>
-        <td>${user.appliedDate || 'N/A'}</td>
+        <td>${appliedDate}</td>
         <td><span class="badge ${status}">${status}</span></td>
         <td>
           <div class="dropdown">
@@ -197,11 +209,15 @@ function loadUsers(){
     });
 
     usersTable.innerHTML = html;
-    document.getElementById('totalUsers').textContent = total;
-    document.getElementById('approvedUsers').textContent = approved;
-    document.getElementById('pendingUsers').textContent = pending;
-    document.getElementById('rejectedUsers').textContent = rejected;
+    updateStats(total, approved, pending, rejected);
   });
+}
+
+function updateStats(total, approved, pending, rejected){
+  document.getElementById('totalUsers').textContent = total;
+  document.getElementById('approvedUsers').textContent = approved;
+  document.getElementById('pendingUsers').textContent = pending;
+  document.getElementById('rejectedUsers').textContent = rejected;
 }
 
 // TOGGLE DROPDOWN
@@ -222,11 +238,13 @@ window.onclick = function(event) {
   }
 }
 
-// UPDATE USER STATUS
+// UPDATE USER STATUS - REAL TIME
 window.updateStatus = function(uid, status){
   const userRef = ref(database, "users/" + uid);
   update(userRef, { status: status }).then(() => {
-    // auto closes dropdown
+    // also update application status
+    const appRef = ref(database, "applications/" + uid);
+    update(appRef, { status: status });
     document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
   }).catch((error) => {
     alert("Error: " + error.message);

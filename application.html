@@ -23,7 +23,6 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 .fraternity-header h1{font-size:48px;color:var(--gold);font-family:'Playfair Display',serif;margin-bottom:10px;}
 .fraternity-header p{color:#ccc;font-size:16px;max-width:700px;margin:auto;line-height:1.8;}
 .form-card{background:linear-gradient(145deg,rgba(20,34,56,.9),rgba(11,23,40,.9));backdrop-filter:blur(20px);border-radius:25px;padding:45px;border:1px solid rgba(212,175,55,.25);box-shadow:0 20px 50px rgba(0,0,0,.5);transition:all.5s ease;}
-/* GREEN CARD - PERMANENT */
 .form-card.submitted{border-color:#4cff88;background:linear-gradient(145deg,rgba(20,80,60,.9),rgba(10,60,40,.9));box-shadow:0 20px 50px rgba(76,255,136,.3);}
 .section{margin-bottom:45px;padding-bottom:35px;border-bottom:1px solid rgba(212,175,55,.15);}
 .section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
@@ -42,11 +41,6 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 .fee-item span:last-child{color:var(--gold);font-weight:700;font-size:16px;}
 .total-fee{background:rgba(212,175,55,.15);border:2px solid var(--gold);margin-top:10px;}
 .total-fee span{font-size:18px!important;}
-.lodge-info{background:#08111f;border-radius:15px;padding:25px;margin-bottom:20px;border:1px solid rgba(212,175,55,.15);}
-.lodge-info h4{color:var(--gold);margin-bottom:10px;font-size:16px;}
-.lodge-info p{color:#ddd;line-height:1.7;font-size:14px;margin-bottom:8px;}
-.contact-box{background:rgba(212,175,55,.1);border-left:4px solid var(--gold);padding:18px;border-radius:10px;margin-top:15px;}
-.contact-box p{margin-bottom:5px;color:#ccc;font-size:14px;}
 .btn-submit{display:block;width:100%;padding:18px;border:none;border-radius:15px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#111;font-size:18px;font-weight:700;cursor:pointer;transition:.3s;margin-top:30px;box-shadow:0 10px 30px rgba(212,175,55,.3);}
 .btn-submit:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(212,175,55,.4);}
 .btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none;}
@@ -56,14 +50,72 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 .toast.error{border-color:#ff5555;}
 .toast.icon{font-size:45px;margin-bottom:12px;display:block;}
 .toast.message{font-size:17px;font-weight:600;color:#fff;}
-.bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(15,26,46,.94);backdrop-filter:blur(25px);padding:10px;border-radius:22px;display:flex;gap:8px;border:1px solid rgba(212,175,55,.25);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;}
-.nav-item{width:90px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#a0b0c9;border-radius:16px;font-size:11px;font-weight:500;transition:.25s ease;font-family:'Poppins',sans-serif;}
-.nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;transition:.25s;}
-.nav-label{line-height:1.2;text-align:center;}
-.nav-item:hover{background:rgba(212,175,55,.1);color:#f1ca52;}
-.nav-item.active{background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:600;box-shadow:0 6px 18px rgba(212,175,55,.35);}
-@media(max-width:900px){.bottom-nav{width:calc(100% - 30px);max-width:600px;justify-content:space-between;}.nav-item{width:calc(16.66% - 7px);height:65px;}.nav-label{font-size:10px;}}
-@media(max-width:480px){.nav-item{height:60px;}.nav-icon{width:22px;height:22px;}.nav-label{font-size:9px;}}
+
+/* FIXED BOTTOM NAV - LIKE YOUR SCREENSHOT */
+.bottom-nav{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(15,26,46,.95);
+  backdrop-filter:blur(25px);
+  padding:8px;
+  border-radius:50px;
+  display:flex;
+  gap:6px;
+  border:1px solid rgba(212,175,55,.25);
+  box-shadow:0 15px 40px rgba(0,0,0,.6);
+  z-index:2000;
+  width:calc(100% - 30px);
+  max-width:550px;
+}
+
+.nav-item{
+  flex:1;
+  height:55px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  color:#a0b0c9;
+  border-radius:40px;
+  font-size:10px;
+  font-weight:500;
+  transition:.25s ease;
+  gap:3px;
+}
+
+.nav-icon{
+  width:22px;
+  height:22px;
+  fill:currentColor;
+  transition:.25s;
+}
+
+.nav-label{
+  line-height:1;
+  text-align:center;
+  font-size:10px;
+}
+
+.nav-item:hover{
+  background:rgba(212,175,55,.1);
+  color:#f1ca52;
+}
+
+.nav-item.active{
+  background:linear-gradient(135deg,#d4af37,#b8941f);
+  color:#111;
+  font-weight:700;
+  box-shadow:0 6px 18px rgba(212,175,55,.4);
+}
+
+@media(max-width:480px){
+.nav-item{height:52px;}
+.nav-icon{width:20px;height:20px;}
+.nav-label{font-size:9px;}
+}
 </style>
 </head>
 
@@ -181,7 +233,7 @@ function fillForm(data){
   isEditMode = true;
   submitBtn.textContent = "Update Application";
   submitBtn.style.background = "linear-gradient(135deg,#4cff88,#2ecc71)";
-  form.classList.add('submitted'); // <- KEEP CARD GREEN FOREVER
+  form.classList.add('submitted');
 }
 
 onAuthStateChanged(auth, async (user) => {
@@ -239,7 +291,7 @@ form.addEventListener("submit", async (e) => {
     });
 
     showToast('success', isEditMode? 'Application Updated!' : 'Application Submitted!');
-    form.classList.add('submitted'); // TURN GREEN ON SUBMIT TOO
+    form.classList.add('submitted');
 
     setTimeout(() => {window.location.href = "help.html";}, 1500);
 
@@ -254,10 +306,9 @@ form.addEventListener("submit", async (e) => {
 document.querySelector(".logout").addEventListener("click",(e)=>{
   e.preventDefault();
   signOut(auth).then(()=>{window.location.href="login.html";});
-});
 </script>
 
-<!-- FIXED BOTTOM NAV - IDENTICAL TO DASHBOARD -->
+<!-- BOTTOM NAV LIKE SCREENSHOT -->
 <nav class="bottom-nav">
   <a href="dashboard.html" class="nav-item">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>

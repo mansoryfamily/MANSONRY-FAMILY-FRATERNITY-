@@ -65,7 +65,44 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 <div class="stat-card"><h2 id="pendingUsers">0</h2><p>Pending</p></div>
 <div class="stat-card"><h2 id="rejectedUsers">0</h2><p>Rejected</p></div>
 </div>
+<div class="stats">
+    ...
+</div>
 
+<!-- PLACE THE SEND ANNOUNCEMENT BOX HERE -->
+
+<div class="table-wrapper" style="margin-bottom:30px;">
+    <h2 class="table-title">Send Announcement</h2>
+
+    <div style="display:flex;flex-direction:column;gap:15px;">
+
+        <input
+            type="text"
+            id="notificationTitle"
+            placeholder="Notification Title"
+            style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
+
+        <textarea
+            id="notificationMessage"
+            rows="5"
+            placeholder="Write your message here..."
+            style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;resize:vertical;"></textarea>
+
+        <button
+            id="sendNotificationBtn"
+            style="background:#d4af37;color:#111;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;">
+            📢 Send to All Members
+        </button>
+
+    </div>
+</div>
+
+<!-- MEMBER APPLICATIONS TABLE -->
+
+<div class="table-wrapper">
+    <h2 class="table-title">Member Applications</h2>
+    ...
+</div>
 <div class="table-wrapper">
 <h2 class="table-title">Member Applications</h2>
 <div class="table-scroll">

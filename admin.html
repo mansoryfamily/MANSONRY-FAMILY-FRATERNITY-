@@ -44,17 +44,16 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 .loading{text-align:center;padding:40px;color:#aaa;}
 .error-box{background:rgba(239,68,68,.15);border:1px solid var(--danger);color:#ff9999;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;}
 .success-box{background:rgba(34,197,94,.15);border:1px solid var(--success);color:#4cff88;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;}
-.btn-group{display:flex;gap:10px;flex-wrap:wrap;}
 .current-ann{background:rgba(5,12,24,.6);border:1px solid rgba(212,175,55,.3);border-left:4px solid var(--gold);padding:15px;border-radius:10px;margin-bottom:15px;}
 .current-ann h4{color:var(--gold);font-size:15px;margin-bottom:6px;}
 .current-ann p{color:#ddd;font-size:13px;line-height:1.6;margin-bottom:6px;}
 .current-ann small{color:#8a9bb0;font-size:11px;}
-
-/* NEW: Notification list for delete */
-.notif-item{background:rgba(5,12,24,.5);border:1px solid rgba(212,175,55,.2);padding:12px;border-radius:10px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.notif-item{background:rgba(5,12,24,.5);border:1px solid rgba(212,175,55,.2);padding:12px;border-radius:10px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;animation:fadeIn.3s ease;}
+@keyframes fadeIn {from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
 .notif-item h5{color:var(--gold);font-size:14px;margin-bottom:4px;}
 .notif-item p{color:#ddd;font-size:12px;}
-.delete-one-btn{background:var(--danger);color:#fff;border:none;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;}
+.delete-one-btn{background:var(--danger);color:#fff;border:none;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:.3s;}
+.delete-one-btn:hover{background:#dc2626;}
 </style>
 </head>
 <body>
@@ -82,22 +81,18 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 <!-- CARD 1: SEND ANNOUNCEMENT -->
 <div class="table-wrapper" style="margin-bottom:30px;">
     <h2 class="table-title">📢 Send Announcement</h2>
-    <div id="currentAnnouncementPreview">
-        <p style="color:#a0b0c9;font-size:13px;">Loading current announcement...</p>
-    </div>
+    <div id="currentAnnouncementPreview"><p style="color:#a0b0c9;font-size:13px;">Loading current announcement...</p></div>
     <div style="display:flex;flex-direction:column;gap:15px;">
         <select id="notificationRecipient" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
             <option value="all">📢 Send to ALL Members + Announcement Board</option>
         </select>
-        <input type="text" id="notificationTitle" placeholder="Announcement Title - e.g. Meeting Reminder" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
+        <input type="text" id="notificationTitle" placeholder="Announcement Title" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
         <textarea id="notificationMessage" rows="5" placeholder="Write your message here..." style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;resize:vertical;"></textarea>
-        <button id="sendNotificationBtn" style="background:#d4af37;color:#111;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;transition:.3s;">
-            Send Announcement
-        </button>
+        <button id="sendNotificationBtn" style="background:#d4af37;color:#111;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;">Send Announcement</button>
     </div>
 </div>
 
-<!-- CARD 2: DELETE ANNOUNCEMENT -->
+<!-- CARD 2: DELETE SPECIFIC -->
 <div class="table-wrapper" style="margin-bottom:30px;">
     <h2 class="table-title">🗑️ Delete Announcement</h2>
     <div style="display:flex;flex-direction:column;gap:15px;">
@@ -105,27 +100,19 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
             <option value="">-- Select Member to View/Delete Their Notifications --</option>
             <option value="all">🗑️ Delete from ALL Members Announcement Board</option>
         </select>
-
-        <!-- NEW: Shows all notifications for selected member -->
-        <div id="memberNotificationsList" style="max-height:300px;overflow-y:auto;display:none;">
-            <p style="color:#a0b0c9;font-size:13px;">Select a member above to see their notifications</p>
-        </div>
-
-        <button id="deleteAllBtn" style="background:var(--danger);color:#fff;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;transition:.3s;display:none;">
+        <div id="memberNotificationsList" style="max-height:300px;overflow-y:auto;display:none;"></div>
+        <button id="deleteAllBtn" style="background:var(--danger);color:#fff;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;display:none;">
             Delete ALL Notifications for Selected Member
         </button>
-        <p style="color:#a0b0c9;font-size:12px;">Note: Use dropdown to delete specific one. Use button below to delete all for that member.</p>
     </div>
 </div>
 
-<!-- MEMBER APPLICATIONS TABLE -->
+<!-- MEMBER TABLE -->
 <div class="table-wrapper">
-<h2 class="table-title">Member Applications</h2>
+<h2 class="table-title">Member Applications - REAL TIME</h2>
 <div class="table-scroll">
 <table>
-<thead>
-<tr><th>#</th><th>Full Name</th><th>Email</th><th>Phone</th><th>Applied On</th><th>Status</th><th>Actions</th></tr>
-</thead>
+<thead><tr><th>#</th><th>Full Name</th><th>Email</th><th>Phone</th><th>Applied On</th><th>Status</th><th>Actions</th></tr></thead>
 <tbody id="usersTable"><tr><td colspan="7" class="loading">Connecting to Firebase...</td></tr></tbody>
 </table>
 </div>
@@ -137,6 +124,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, onValue, update, get, push, set, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+// CONFIG INJECTED
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -159,243 +147,105 @@ const deleteRecipientSelect = document.getElementById('deleteRecipient');
 const memberNotifList = document.getElementById('memberNotificationsList');
 const deleteAllBtn = document.getElementById('deleteAllBtn');
 
-function showError(msg){
-  errorBox.innerHTML = `<div class="error-box">${msg}</div>`;
-  setTimeout(()=>{errorBox.innerHTML = ""}, 5000);
-  console.error(msg);
-}
-function showSuccess(msg){
-  successBox.innerHTML = `<div class="success-box">${msg}</div>`;
-  setTimeout(()=>{successBox.innerHTML = ""}, 4000);
-}
+function showError(msg){errorBox.innerHTML = `<div class="error-box">${msg}</div>`;setTimeout(()=>{errorBox.innerHTML = ""}, 5000);}
+function showSuccess(msg){successBox.innerHTML = `<div class="success-box">${msg}</div>`;setTimeout(()=>{successBox.innerHTML = ""}, 4000);}
 
 onAuthStateChanged(auth, async (user) => {
-  if(!user){
-    window.location.href = "https://mansoryfamily.github.io/MANSONRY-FAMILY-FRATERNITY-/login.html";
-    return;
-  }
-  try{
-    const userSnap = await get(ref(database, "users/" + user.uid));
-    if(!userSnap.exists() || userSnap.val().role!== "admin"){
-      showError("Access Denied: You are not an admin.");
-      setTimeout(()=>{window.location.href = "dashboard.html";}, 3000);
-      return;
-    }
-    loadUsers();
-    loadRecipients();
-    loadCurrentAnnouncement();
-  }catch(err){
-    showError("Firebase Error: " + err.message);
-  }
+  if(!user){window.location.href = "https://mansoryfamily.github.io/MANSONRY-FAMILY-FRATERNITY-/login.html";return;}
+  const userSnap = await get(ref(database, "users/" + user.uid));
+  if(!userSnap.exists() || userSnap.val().role!== "admin"){showError("Access Denied");setTimeout(()=>{window.location.href = "dashboard.html";}, 3000);return;}
+  loadUsers();loadRecipients();loadCurrentAnnouncement();
 });
 
+// REAL-TIME CURRENT ANNOUNCEMENT
 function loadCurrentAnnouncement(){
-  const annRef = ref(database, 'announcements');
-  onValue(annRef, (snapshot) => {
+  onValue(ref(database, 'announcements'), (snapshot) => {
     const data = snapshot.val();
     const previewDiv = document.getElementById('currentAnnouncementPreview');
-    if(!data){
-      previewDiv.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No current announcement</p>`;
-      return;
-    }
+    if(!data){previewDiv.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No current announcement</p>`;return;}
     const date = data.timestamp? new Date(data.timestamp).toLocaleString() : 'Just now';
-    previewDiv.innerHTML = `
-      <div class="current-ann">
-        <h4>Current Announcement: ${data.title}</h4>
-        <p>${data.message}</p>
-        <small>Posted by: ${data.sentByEmail || 'Admin'} • ${date}</small>
-      </div>
-    `;
+    previewDiv.innerHTML = `<div class="current-ann"><h4>Current: ${data.title}</h4><p>${data.message}</p><small>By: ${data.sentByEmail} • ${date}</small></div>`;
   });
 }
 
+// REAL-TIME USERS + STATS
 function loadUsers(){
-  const usersRef = ref(database, "users");
-  onValue(usersRef, (snapshot) => {
-    const data = snapshot.val();
-    if(!data){
-      usersTable.innerHTML = `<tr><td colspan="7" class="loading">No members found in database</td></tr>`;
-      updateStats(0,0,0,0);
-      return;
-    }
-    let html = "";
-    let total = 0, approved = 0, pending = 0, rejected = 0;
-    let count = 1;
+  onValue(ref(database, "users"), (snapshot) => {
+    const data = snapshot.val();if(!data){usersTable.innerHTML = `<tr><td colspan="7" class="loading">No members</td></tr>`;return;}
+    let html = "";let total = 0, approved = 0, pending = 0, rejected = 0;let count = 1;
     Object.keys(data).forEach(uid => {
-      const user = data[uid];
-      const status = user.status || "pending";
-      if(status === "approved") approved++;
-      else if(status === "rejected") rejected++;
-      else pending++;
-      total++;
+      const user = data[uid];const status = user.status || "pending";
+      if(status === "approved") approved++;else if(status === "rejected") rejected++;else pending++;total++;
       const appliedDate = user.timestamp? new Date(user.timestamp).toLocaleDateString() : 'N/A';
-      html += `<tr>
-        <td>${count++}</td>
-        <td>${user.fullName || 'N/A'}</td>
-        <td>${user.email || 'N/A'}</td>
-        <td>${user.phone || 'N/A'}</td>
-        <td>${appliedDate}</td>
-        <td><span class="badge ${status}">${status}</span></td>
-        <td><div class="dropdown"><button onclick="toggleDropdown('dropdown${uid}')" class="dropbtn">Actions ▼</button>
-        <div id="dropdown${uid}" class="dropdown-content">
-        <button onclick="updateStatus('${uid}','approved')">Approve</button>
-        <button onclick="updateStatus('${uid}','pending')">Pending</button>
-        <button onclick="updateStatus('${uid}','rejected')">Rejected</button>
-        </div></div></td></tr>`;
+      html += `<tr><td>${count++}</td><td>${user.fullName}</td><td>${user.email}</td><td>${user.phone || 'N/A'}</td><td>${appliedDate}</td><td><span class="badge ${status}">${status}</span></td><td><div class="dropdown"><button onclick="toggleDropdown('dropdown${uid}')" class="dropbtn">Actions ▼</button><div id="dropdown${uid}" class="dropdown-content"><button onclick="updateStatus('${uid}','approved')">Approve</button><button onclick="updateStatus('${uid}','pending')">Pending</button><button onclick="updateStatus('${uid}','rejected')">Rejected</button></div></div></td></tr>`;
     });
-    usersTable.innerHTML = html;
-    updateStats(total, approved, pending, rejected);
+    usersTable.innerHTML = html;document.getElementById('totalUsers').textContent = total;document.getElementById('approvedUsers').textContent = approved;document.getElementById('pendingUsers').textContent = pending;document.getElementById('rejectedUsers').textContent = rejected;
   });
 }
 
+// REAL-TIME DROPDOWNS
 function loadRecipients(){
-  const usersRef = ref(database, "users");
-  onValue(usersRef, (snapshot) => {
+  onValue(ref(database, "users"), (snapshot) => {
     const data = snapshot.val();
     recipientSelect.innerHTML = '<option value="all">📢 Send to ALL Members + Announcement Board</option>';
-    deleteRecipientSelect.innerHTML = '<option value="">-- Select Member to View/Delete Their Notifications --</option><option value="all">🗑️ Delete from ALL Members Announcement Board</option>';
-    if(data){
-      Object.keys(data).forEach(uid => {
-        const user = data[uid];
-        if(user.role!== "admin"){
-          const option1 = document.createElement("option");
-          option1.value = uid;
-          option1.textContent = `📢 Send to: ${user.fullName}`;
-          recipientSelect.appendChild(option1);
-
-          const option2 = document.createElement("option");
-          option2.value = uid;
-          option2.textContent = `👤 ${user.fullName}`;
-          deleteRecipientSelect.appendChild(option2);
-        }
-      });
-    }
+    deleteRecipientSelect.innerHTML = '<option value="">-- Select Member --</option><option value="all">🗑️ Delete from ALL Members Announcement Board</option>';
+    if(data){Object.keys(data).forEach(uid => {if(data[uid].role!== "admin"){recipientSelect.innerHTML += `<option value="${uid}">📢 ${data[uid].fullName}</option>`;deleteRecipientSelect.innerHTML += `<option value="${uid}">👤 ${data[uid].fullName}</option>`;}});}
   });
 }
 
-// NEW: SHOW MEMBER NOTIFICATIONS WHEN SELECTED
+// REAL-TIME MEMBER NOTIFICATIONS
 deleteRecipientSelect.addEventListener("change", (e) => {
   const uid = e.target.value;
-  if(!uid || uid === "all"){
-    memberNotifList.style.display = "none";
-    deleteAllBtn.style.display = "none";
-    return;
-  }
-  memberNotifList.style.display = "block";
-  deleteAllBtn.style.display = "block";
-  loadMemberNotifications(uid);
-});
-
-function loadMemberNotifications(uid){
-  const notifRef = ref(database, `notifications/${uid}`);
-  onValue(notifRef, (snapshot) => {
+  if(!uid || uid === "all"){memberNotifList.style.display = "none";deleteAllBtn.style.display = "none";return;}
+  memberNotifList.style.display = "block";deleteAllBtn.style.display = "block";
+  onValue(ref(database, `notifications/${uid}`), (snapshot) => {
     const data = snapshot.val();
-    if(!data){
-      memberNotifList.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No notifications for this member</p>`;
-      return;
-    }
-    let html = "";
-    Object.keys(data).reverse().forEach(key => { // reverse = newest first
-      const n = data[key];
-      const date = n.timestamp? new Date(n.timestamp).toLocaleString() : '';
-      html += `
-        <div class="notif-item">
-          <div>
-            <h5>${n.title}</h5>
-            <p>${n.message}</p>
-            <small style="color:#8a9bb0;font-size:10px;">${date}</small>
-          </div>
-          <button class="delete-one-btn" onclick="deleteSpecificNotification('${uid}','${key}')">Delete</button>
-        </div>
-      `;
+    if(!data){memberNotifList.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No notifications</p>`;return;}
+    let html = "";Object.keys(data).reverse().forEach(key => {
+      const n = data[key];const date = n.timestamp? new Date(n.timestamp).toLocaleString() : '';
+      html += `<div class="notif-item"><div><h5>${n.title}</h5><p>${n.message}</p><small style="color:#8a9bb0;font-size:10px;">${date}</small></div><button class="delete-one-btn" onclick="deleteSpecificNotification('${uid}','${key}')">Delete</button></div>`;
     });
     memberNotifList.innerHTML = html;
   });
-}
+});
 
 window.deleteSpecificNotification = function(uid, key){
   if(confirm("Delete this specific notification?")){
-    remove(ref(database, `notifications/${uid}/${key}`))
-   .then(() => showSuccess("Notification deleted"))
-   .catch(err => showError(err.message));
+    remove(ref(database, `notifications/${uid}/${key}`)).then(() => showSuccess("Notification deleted")).catch(err => showError(err.message));
   }
 }
 
-function updateStats(t,a,p,r){
-  document.getElementById('totalUsers').textContent = t;
-  document.getElementById('approvedUsers').textContent = a;
-  document.getElementById('pendingUsers').textContent = p;
-  document.getElementById('rejectedUsers').textContent = r;
-}
+window.toggleDropdown = function(id) {document.getElementById(id).classList.toggle("show");}
+window.onclick = function(event) {if (!event.target.matches('.dropbtn')) {document.querySelectorAll(".dropdown-content").forEach(d => d.classList.remove('show'));}}
+window.updateStatus = function(uid, status){update(ref(database, "users/" + uid), { status: status });showSuccess("Status updated");}
 
-window.toggleDropdown = function(id) {
-  document.getElementById(id).classList.toggle("show");
-}
-window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-    document.querySelectorAll(".dropdown-content").forEach(d => d.classList.remove('show'));
-  }
-}
-window.updateStatus = function(uid, status){
-  update(ref(database, "users/" + uid), { status: status });
-}
-
-// SEND ANNOUNCEMENT
+// REAL-TIME SEND
 document.getElementById("sendNotificationBtn").addEventListener("click", () => {
-  const recipient = recipientSelect.value;
-  const title = document.getElementById("notificationTitle").value.trim();
-  const message = document.getElementById("notificationMessage").value.trim();
-  const adminEmail = auth.currentUser.email;
-  if(!title ||!message){
-    showError("Please fill both Title and Message");
-    return;
-  }
-  const btn = document.getElementById("sendNotificationBtn");
-  btn.disabled = true;
-  btn.textContent = "Sending...";
-  const notificationData = {title, message, timestamp: Date.now(), read: false, sentBy: adminEmail};
-  const announcementData = {title, message, timestamp: Date.now(), sentByEmail: adminEmail};
+  const recipient = recipientSelect.value;const title = document.getElementById("notificationTitle").value.trim();const message = document.getElementById("notificationMessage").value.trim();
+  if(!title ||!message){showError("Fill Title and Message");return;}
+  const btn = document.getElementById("sendNotificationBtn");btn.disabled = true;btn.textContent = "Sending...";
+  const notificationData = {title, message, timestamp: Date.now(), read: false, sentBy: auth.currentUser.email};
+  const announcementData = {title, message, timestamp: Date.now(), sentByEmail: auth.currentUser.email};
   if(recipient === "all"){
     get(ref(database, "users")).then((snapshot) => {
-      const data = snapshot.val();
-      const updates = {};
-      Object.keys(data).forEach(uid => {
-        if(data[uid].role!== "admin"){
-          const newNotifKey = push(ref(database, `notifications/${uid}`)).key;
-          updates[`notifications/${uid}/${newNotifKey}`] = notificationData;
-        }
-      });
-      updates[`announcements`] = announcementData;
-      return update(ref(database), updates);
-    }).then(() => {
-      showSuccess(`Announcement sent to all members!`);
-      resetForm();
-    }).catch(err => {showError("Failed to send: " + err.message); resetBtn();});
+      const data = snapshot.val();const updates = {};
+      Object.keys(data).forEach(uid => {if(data[uid].role!== "admin"){const newNotifKey = push(ref(database, `notifications/${uid}`)).key;updates[`notifications/${uid}/${newNotifKey}`] = notificationData;}});
+      updates[`announcements`] = announcementData;return update(ref(database), updates);
+    }).then(() => {showSuccess(`Sent to all!`);document.getElementById("notificationTitle").value = "";document.getElementById("notificationMessage").value = "";btn.disabled = false;btn.textContent = "Send Announcement";});
   } else {
     const newNotifKey = push(ref(database, `notifications/${recipient}`)).key;
-    update(ref(database, `notifications/${recipient}/${newNotifKey}`), notificationData).then(() => {
-      showSuccess(`Notification sent to selected member!`);
-      resetForm();
-    }).catch(err => {showError("Failed to send: " + err.message); resetBtn();});
+    update(ref(database, `notifications/${recipient}/${newNotifKey}`), notificationData).then(() => {showSuccess(`Sent!`);document.getElementById("notificationTitle").value = "";document.getElementById("notificationMessage").value = "";btn.disabled = false;btn.textContent = "Send Announcement";});
   }
-  function resetForm(){document.getElementById("notificationTitle").value = "";document.getElementById("notificationMessage").value = "";recipientSelect.value = "all";resetBtn();}
-  function resetBtn(){btn.disabled = false;btn.textContent = "Send Announcement";}
 });
 
-// DELETE LOGIC
+// REAL-TIME DELETE ALL FOR MEMBER
 document.getElementById("deleteAllBtn").addEventListener("click", () => {
   const uid = deleteRecipientSelect.value;
-  if(uid && uid!== "all"){
-    if(confirm("Delete ALL notifications for this member?")){
-      set(ref(database, `notifications/${uid}`), null)
-     .then(() => showSuccess("All notifications deleted for member"))
-     .catch(err => showError(err.message));
-    }
-  }
+  if(uid && uid!== "all"){if(confirm("Delete ALL notifications for this member?")){set(ref(database, `notifications/${uid}`), null).then(() => showSuccess("All deleted for member")).catch(err => showError(err.message));}}
 });
 
-document.getElementById("logoutBtn").addEventListener("click",()=>{
-  signOut(auth).then(()=>{window.location.href="https://mansoryfamily.github.io/MANSONRY-FAMILY-FRATERNITY-/login.html";});
+// DELETE MAIN ANNOUNCEMENT
+document.getElementById("logoutBtn").addEventListener("click",()=>{signOut(auth).then(()=>{window.location.href="https://mansoryfamily.github.io/MANSONRY-FAMILY-FRATERNITY-/login.html";});});
 </script>
 </body>
 </html>

@@ -45,6 +45,12 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 .error-box{background:rgba(239,68,68,.15);border:1px solid var(--danger);color:#ff9999;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;}
 .success-box{background:rgba(34,197,94,.15);border:1px solid var(--success);color:#4cff88;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;}
 .btn-group{display:flex;gap:10px;flex-wrap:wrap;}
+
+/* NEW: Current Announcement Preview */
+.current-ann{background:rgba(5,12,24,.6);border:1px solid rgba(212,175,55,.3);border-left:4px solid var(--gold);padding:15px;border-radius:10px;margin-bottom:15px;}
+.current-ann h4{color:var(--gold);font-size:15px;margin-bottom:6px;}
+.current-ann p{color:#ddd;font-size:13px;line-height:1.6;margin-bottom:6px;}
+.current-ann small{color:#8a9bb0;font-size:11px;}
 </style>
 </head>
 <body>
@@ -72,6 +78,12 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 <!-- SEND NOTIFICATION / ANNOUNCEMENT BOX -->
 <div class="table-wrapper" style="margin-bottom:30px;">
     <h2 class="table-title">📢 Send Announcement</h2>
+
+    <!-- NEW: SHOW CURRENT ANNOUNCEMENT -->
+    <div id="currentAnnouncementPreview">
+        <p style="color:#a0b0c9;font-size:13px;">Loading current announcement...</p>
+    </div>
+
     <div style="display:flex;flex-direction:column;gap:15px;">
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
             <select id="notificationRecipient" style="flex:1;min-width:200px;padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
@@ -156,10 +168,32 @@ onAuthStateChanged(auth, async (user) => {
     }
     loadUsers();
     loadRecipients();
+    loadCurrentAnnouncement(); // NEW
   }catch(err){
     showError("Firebase Error: " + err.message);
   }
 });
+
+// NEW: LOAD CURRENT ANNOUNCEMENT FOR ADMIN PREVIEW
+function loadCurrentAnnouncement(){
+  const annRef = ref(database, 'announcements');
+  onValue(annRef, (snapshot) => {
+    const data = snapshot.val();
+    const previewDiv = document.getElementById('currentAnnouncementPreview');
+    if(!data){
+      previewDiv.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No current announcement</p>`;
+      return;
+    }
+    const date = data.timestamp? new Date(data.timestamp).toLocaleString() : 'Just now';
+    previewDiv.innerHTML = `
+      <div class="current-ann">
+        <h4>Current Announcement: ${data.title}</h4>
+        <p>${data.message}</p>
+        <small>Posted by: ${data.sentByEmail || 'Admin'} • ${date}</small>
+      </div>
+    `;
+  });
+}
 
 // REAL-TIME USERS
 function loadUsers(){
@@ -318,11 +352,11 @@ document.getElementById("sendNotificationBtn").addEventListener("click", () => {
   }
 });
 
-// DELETE ANNOUNCEMENT - NEW
+// DELETE ANNOUNCEMENT
 document.getElementById("deleteAnnouncementBtn").addEventListener("click", () => {
   if(confirm("Delete current announcement from all member dashboards?")){
     set(ref(database, 'announcements'), null)
-   .then(() => {
+  .then(() => {
       showSuccess("Announcement deleted successfully");
     }).catch(err => {
       showError("Failed to delete: " + err.message);
@@ -335,4 +369,4 @@ document.getElementById("logoutBtn").addEventListener("click",()=>{
 });
 </script>
 </body>
-  </html>
+</html>

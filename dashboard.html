@@ -18,7 +18,6 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 body::after{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.025);z-index:-1;pointer-events:none;font-family:'Cinzel',serif;}
 header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,.85);backdrop-filter:blur(25px);display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid rgba(212,175,55,.2);}
 .logo{font-size:28px;font-weight:700;color:var(--gold);letter-spacing:2px;font-family:'Cinzel',serif;}
-.header-actions{display:flex;align-items:center;gap:18px;position:relative;}
 .logout{background:linear-gradient(135deg,var(--gold),#b8941f);color:#111;padding:11px 28px;border-radius:40px;text-decoration:none;font-weight:600;transition:.3s;box-shadow:0 5px 20px rgba(212,175,55,.3);}
 .logout:hover{background:linear-gradient(135deg,var(--gold-light),var(--gold));transform:translateY(-3px);}
 .dashboard{padding:60px 8% 140px;max-width:1500px;margin:auto;}
@@ -44,31 +43,28 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 .status-active{color:#4cff88;font-weight:700;}
 .status-pending{color:#f1ca52;font-weight:700;}
 .side-cards{display:flex;flex-direction:column;gap:25px;}
+.card{background:rgba(15,26,46,.7);backdrop-filter:blur(25px);padding:30px;border-radius:18px;border:1px solid rgba(212,175,55,.2);}
+.card-icon{width:50px;height:50px;background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.1));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;}
+.card h3{color:var(--gold);margin-bottom:10px;font-size:18px;font-family:'Cinzel',serif;}
+.card p{color:#a0b0c9;line-height:1.7;font-size:14px;}
 
-/* COLLAPSIBLE CARD */
-.card{background:rgba(15,26,46,.7);backdrop-filter:blur(25px);padding:0;border-radius:18px;border:1px solid rgba(212,175,55,.2);overflow:hidden;}
-.card-header{padding:20px 25px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:.3s;}
-.card-header:hover{background:rgba(212,175,55,.05);}
-.card-header h3{color:var(--gold);font-size:18px;font-family:'Cinzel',serif;display:flex;align-items:center;gap:12px;}
-.card-icon{width:40px;height:40px;background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.1));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;}
-.arrow{transition:.3s;color:var(--gold); font-size:18px;}
-.card.open.arrow{transform:rotate(180deg);}
-.card-content{max-height:0;overflow:hidden;transition:max-height.4s ease;}
-.card.open.card-content{max-height:600px; padding:0 25px 25px 25px;}
-
-/* NOTIFICATION/ANNOUNCEMENT ITEMS */
-.item-list{max-height:400px; overflow-y:auto; margin-top:15px;}
-.item{display:flex; gap:12px; padding:14px; border-radius:12px; margin-bottom:10px; background:rgba(5,12,24,.6); border-left:3px solid transparent; cursor:pointer; transition:.2s;}
-.item:hover{background:rgba(212,175,55,.08);}
-.item.unread{border-left:3px solid var(--gold); background:rgba(212,175,55,.1);}
-.item-icon{font-size:22px; line-height:1;}
-.item-content{flex:1;}
-.item-content h4{font-size:14px;color:var(--gold);margin-bottom:4px;}
-.item-content p{font-size:13px;color:#ddd;line-height:1.5;}
-.item-content small{font-size:11px;color:#8a9bb0;}
-.empty-msg{padding:20px;text-align:center;color:#8a9bb0;font-size:13px;}
+/* COLLAPSIBLE ANNOUNCEMENT STYLES */
+.card.collapsible{padding:0; overflow:hidden;}
+.collapsible-header{padding:30px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:.3s;}
+.collapsible-header:hover{background:rgba(212,175,55,.05);}
+.collapsible-header h3{display:flex; align-items:center; gap:12px; margin:0;}
+.arrow{font-size:20px; color:var(--gold); transition:transform.3s ease;}
+.card.collapsible.open.arrow{transform:rotate(180deg);}
+.collapsible-content{max-height:0; overflow:hidden; transition:max-height.4s ease; padding:0 30px;}
+.card.collapsible.open.collapsible-content{max-height:400px; padding:0 30px 30px 30px;}
+.ann-item{background:rgba(5,12,24,.6); padding:12px; border-radius:10px; margin-bottom:10px; border-left:3px solid var(--gold);}
+.ann-item h4{color:var(--gold); font-size:14px; margin-bottom:4px;}
+.ann-item p{color:#ddd; font-size:13px; line-height:1.5;}
+.ann-item small{color:#8a9bb0; font-size:11px;}
 
 .card.admin-card{display:none;}
+.card.admin-card.card-icon{background:linear-gradient(135deg,rgba(255,107,107,.2),rgba(255,107,107,.1));}
+.card.admin-card h3{color:#ff6b6b;}
 .bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(15,26,46,.94);backdrop-filter:blur(25px);padding:10px;border-radius:22px;display:flex;gap:8px;border:1px solid rgba(212,175,55,.25);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;}
 .nav-item{width:90px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#a0b0c9;border-radius:16px;font-size:11px;font-weight:500;transition:.25s ease;font-family:'Poppins',sans-serif;}
 .nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;transition:.25s;}
@@ -81,13 +77,7 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 </style>
 </head>
 <body>
-<header>
-  <div class="logo">FREEMASONRY HERITAGE</div>
-  <div class="header-actions">
-    <a href="#" class="logout">Logout</a>
-  </div>
-</header>
-
+<header><div class="logo">FREEMASONRY HERITAGE</div><div class="header-actions"><a href="#" class="logout">Logout</a></div></header>
 <main class="dashboard">
 <div class="welcome"><h1>Welcome Back, <span id="greetingName">Member</span></h1><p>Member Portal • Secure Access • Real-time Updates</p></div>
 <section class="stats">
@@ -108,35 +98,26 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 </div>
 </section>
 <div class="side-cards">
-  <div class="card"><div class="card-header"><h3><div class="card-icon">📜</div>Lodge Information</h3><span class="arrow">▼</span></div><div class="card-content"><p>Access meeting schedules, lodge announcements, and member activities.</p></div></div>
+  <div class="card"><div class="card-icon">📜</div><h3>Lodge Information</h3><p>Access meeting schedules, lodge announcements, and member activities.</p></div>
 
-  <!-- NOTIFICATIONS CARD -->
-  <div class="card" id="notificationsCard">
-    <div class="card-header"><h3><div class="card-icon">📩</div>Notifications <span id="notifCount" style="font-size:12px;color:#aaa;"></span></h3><span class="arrow">▼</span></div>
-    <div class="card-content">
-      <div class="item-list" id="notificationsList">
-        <div class="empty-msg">Loading...</div>
+  <!-- COLLAPSIBLE ANNOUNCEMENTS CARD -->
+  <div class="card collapsible" id="announcementsCard">
+    <div class="collapsible-header">
+      <h3><div class="card-icon">📢</div>Latest Announcements</h3>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div id="announcementsList" style="max-height:350px; overflow-y:auto;">
+        <p style="color:#a0b0c9; font-size:13px;">Loading...</p>
       </div>
     </div>
   </div>
 
-  <!-- ANNOUNCEMENTS CARD -->
-  <div class="card" id="announcementsCard">
-    <div class="card-header"><h3><div class="card-icon">📩</div>Announcements <span id="annCount" style="font-size:12px;color:#aaa;"></span></h3><span class="arrow">▼</span></div>
-    <div class="card-content">
-      <div class="item-list" id="announcementsList">
-        <div class="empty-msg">Loading...</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card"><div class="card-header"><h3><div class="card-icon">🤝</div>Membership Support</h3><span class="arrow">▼</span></div><div class="card-content"><p>Contact your Lodge Director for guidance and fraternity assistance.</p></div></div>
-
-  <div class="card admin-card" id="adminPanel"><div class="card-header"><h3><div class="card-icon">⚙️</div>Admin Panel</h3><span class="arrow">▼</span></div><div class="card-content"><p>Manage members, applications, and lodge settings. <a href="admin.html" style="color:var(--gold); text-decoration:underline;">Go to Dashboard →</a></p></div></div>
+  <div class="card"><div class="card-icon">🤝</div><h3>Membership Support</h3><p>Contact your Lodge Director for guidance and fraternity assistance.</p></div>
+  <div class="card admin-card" id="adminPanel"><div class="card-icon">⚙️</div><h3>Admin Panel</h3><p>Manage members, applications, and lodge settings. <a href="admin.html" style="color:var(--gold); text-decoration:underline;">Go to Dashboard →</a></p></div>
 </div>
 </div>
 </main>
-
 <nav class="bottom-nav">
   <a href="dashboard.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="nav-label">Home</span></a>
   <a href="requirements.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span class="nav-label">Requirements</span></a>
@@ -149,7 +130,7 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -166,150 +147,78 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-let currentUserId = null;
+const greetingName = document.getElementById("greetingName");
+const memberName = document.getElementById("memberName");
+const memberEmail = document.getElementById("memberEmail");
+const profileInitial = document.getElementById("profileInitial");
+const detailFullName = document.getElementById("detailFullName");
+const detailEmail = document.getElementById("detailEmail");
+const detailPhone = document.getElementById("detailPhone");
+const detailCountry = document.getElementById("detailCountry");
+const detailInterest = document.getElementById("detailInterest");
+const memberStatus = document.getElementById("memberStatus");
+const statStatus = document.getElementById("statStatus");
+const statLodge = document.getElementById("statLodge");
+const statSince = document.getElementById("statSince");
 
-// ACCORDION FUNCTION - only 1 open at a time
-document.querySelectorAll('.card-header').forEach(header => {
-  header.addEventListener('click', () => {
-    const card = header.parentElement;
-    const isOpen = card.classList.contains('open');
-    // close all
-    document.querySelectorAll('.card').forEach(c => c.classList.remove('open'));
-    // open clicked if it wasn't open
-    if(!isOpen) card.classList.add('open');
-  });
+// COLLAPSE TOGGLE FOR ANNOUNCEMENTS
+document.querySelector(".collapsible-header").addEventListener("click", () => {
+  document.getElementById("announcementsCard").classList.toggle("open");
 });
 
 onAuthStateChanged(auth, (user) => {
   if(!user){ window.location.href = "login.html"; return; }
-  currentUserId = user.uid;
-
-  loadUserData(user.uid);
-  loadNotifications(user.uid);
-  loadAnnouncements(user.uid);
-});
-
-function loadUserData(uid){
-  const userRef = ref(database, "users/" + uid);
+  memberEmail.textContent = user.email;
+  detailEmail.textContent = user.email;
+  const userRef = ref(database, "users/" + user.uid);
   onValue(userRef, (snapshot) => {
     if(snapshot.exists()){
       const data = snapshot.val();
       const fullName = data.fullName || "Member";
-      document.getElementById("greetingName").textContent = fullName.split(' ')[0];
-      document.getElementById("memberName").textContent = fullName;
-      document.getElementById("profileInitial").textContent = fullName.charAt(0).toUpperCase();
-      document.getElementById("memberEmail").textContent = data.email || "-";
-      document.getElementById("detailFullName").textContent = fullName;
-      document.getElementById("detailEmail").textContent = data.email || "-";
-      document.getElementById("detailPhone").textContent = data.phone || "Not Provided";
-      document.getElementById("detailCountry").textContent = data.country || "Not Set";
-      document.getElementById("detailInterest").textContent = data.interest || "Not Set";
+      const firstName = fullName.split(' ')[0];
+      greetingName.textContent = firstName;
+      memberName.textContent = fullName;
+      profileInitial.textContent = fullName.charAt(0).toUpperCase();
+      detailFullName.textContent = fullName;
+      detailPhone.textContent = data.phone || "Not Provided";
+      detailCountry.textContent = data.country || "Not Set";
+      detailInterest.textContent = data.interest || "Not Set";
       if(data.timestamp){
         const regYear = new Date(data.timestamp).getFullYear();
-        document.getElementById("statSince").textContent = isNaN(regYear)? "-" : regYear;
+        statSince.textContent = isNaN(regYear)? "-" : regYear;
       }
       if(data.status === "approved" || data.status === "active"){
-        document.getElementById("memberStatus").textContent = "ACTIVE";
-        document.getElementById("memberStatus").className = "status-active";
-        document.getElementById("statStatus").textContent = "Active";
+        memberStatus.textContent = "ACTIVE";
+        memberStatus.className = "status-active";
+        statStatus.textContent = "Active";
       } else {
-        document.getElementById("memberStatus").textContent = "PENDING";
-        document.getElementById("memberStatus").className = "status-pending";
-        document.getElementById("statStatus").textContent = "Pending";
+        memberStatus.textContent = "PENDING";
+        memberStatus.className = "status-pending";
+        statStatus.textContent = "Pending";
       }
-      document.getElementById("statLodge").textContent = data.lodgeNumber || "Not Assigned";
-      if(data.role === "admin"){ document.getElementById("adminPanel").style.display = "block"; }
+      statLodge.textContent = data.lodgeNumber || "Not Assigned";
+      const adminPanel = document.getElementById("adminPanel");
+      if(data.role === "admin"){ adminPanel.style.display = "block"; }
+    } else {
+      memberName.textContent = "Profile Not Found";
+      detailFullName.textContent = "Please complete registration";
     }
+  }, (error) => { console.error("Firebase Error:", error); });
+});
+
+const announcementsRef = ref(database, 'announcements');
+onValue(announcementsRef, (snapshot) => {
+  const list = document.getElementById('announcementsList');
+  const data = snapshot.val();
+  if(!data){ list.innerHTML = `<p style="color:#a0b0c9; font-size:13px;">No announcements yet</p>`; return; }
+  let html = "";
+  Object.keys(data).reverse().slice(0,10).forEach(key => {
+    const a = data[key];
+    const date = a.timestamp? new Date(a.timestamp).toLocaleString() : 'Just now';
+    html += `<div class="ann-item"><h4>${a.title}</h4><p>${a.message}</p><small>${date}</small></div>`;
   });
-}
-
-// NOTIFICATIONS
-function loadNotifications(uid){
-  const notifRef = ref(database, "notifications/" + uid);
-  onValue(notifRef, (snapshot) => {
-    const data = snapshot.val();
-    const list = document.getElementById('notificationsList');
-    const countSpan = document.getElementById('notifCount');
-
-    if(!data){
-      list.innerHTML = `<div class="empty-msg">No notifications yet</div>`;
-      countSpan.textContent = "";
-      return;
-    }
-
-    const notifs = Object.entries(data).reverse();
-    let unreadCount = 0;
-    let html = "";
-
-    notifs.forEach(([key, n]) => {
-      if(!n.read) unreadCount++;
-      const icon = n.read? "📧" : "📩";
-      const date = n.timestamp? new Date(n.timestamp).toLocaleString() : 'Just now';
-      html += `
-        <div class="item ${!n.read? 'unread' : ''}" onclick="markNotificationRead('${key}')">
-          <div class="item-icon">${icon}</div>
-          <div class="item-content">
-            <h4>${n.title || 'Notification'}</h4>
-            <p>${n.message}</p>
-            <small>${date}</small>
-          </div>
-        </div>
-      `;
-    });
-
-    list.innerHTML = html;
-    countSpan.textContent = unreadCount > 0? `(${unreadCount} new)` : "";
-  });
-}
-
-window.markNotificationRead = function(key){
-  if(!currentUserId) return;
-  update(ref(database, `notifications/${currentUserId}/${key}`), { read: true });
-}
-
-// ANNOUNCEMENTS - mark as read when card is opened
-function loadAnnouncements(uid){
-  const annRef = ref(database, "announcements");
-  onValue(annRef, (snapshot) => {
-    const data = snapshot.val();
-    const list = document.getElementById('announcementsList');
-    const countSpan = document.getElementById('annCount');
-
-    if(!data){
-      list.innerHTML = `<div class="empty-msg">No announcements yet</div>`;
-      countSpan.textContent = "";
-      return;
-    }
-
-    const anns = Object.entries(data).reverse();
-    let html = "";
-    anns.slice(0,10).forEach(([key, a]) => {
-      const isRead = localStorage.getItem(`ann_read_${key}`) === "true";
-      const icon = isRead? "📧" : "📩";
-      const date = a.timestamp? new Date(a.timestamp).toLocaleString() : 'Just now';
-      html += `
-        <div class="item ${!isRead? 'unread' : ''}" onclick="markAnnouncementRead('${key}')">
-          <div class="item-icon">${icon}</div>
-          <div class="item-content">
-            <h4>${a.title}</h4>
-            <p>${a.message}</p>
-            <small>${date}</small>
-          </div>
-        </div>
-      `;
-    });
-
-    list.innerHTML = html;
-    const unreadAnn = anns.filter(([k]) => localStorage.getItem(`ann_read_${k}`)!== "true").length;
-    countSpan.textContent = unreadAnn > 0? `(${unreadAnn} new)` : "";
-  });
-}
-
-window.markAnnouncementRead = function(key){
-  localStorage.setItem(`ann_read_${key}`, "true");
-  // refresh to update icon
-  loadAnnouncements(currentUserId);
-}
+  list.innerHTML = html;
+});
 
 document.querySelector(".logout").addEventListener("click", (e) => {
   e.preventDefault();
@@ -317,10 +226,12 @@ document.querySelector(".logout").addEventListener("click", (e) => {
 });
 </script>
 
+<!-- PWA SERVICE WORKER -->
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
 }
 </script>
+<script type="module" src="notifications.js"></script>
 </body>
   </html>

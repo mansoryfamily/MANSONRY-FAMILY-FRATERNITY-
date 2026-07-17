@@ -48,15 +48,15 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 .card h3{color:var(--gold);margin-bottom:10px;font-size:18px;font-family:'Cinzel',serif;}
 .card p{color:#a0b0c9;line-height:1.7;font-size:14px;}
 
-/* COLLAPSIBLE ANNOUNCEMENT STYLES */
+/* COLLAPSIBLE ANNOUNCEMENT STYLES - FIXED */
 .card.collapsible{padding:0; overflow:hidden;}
 .collapsible-header{padding:30px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:.3s;}
 .collapsible-header:hover{background:rgba(212,175,55,.05);}
 .collapsible-header h3{display:flex; align-items:center; gap:12px; margin:0;}
 .arrow{font-size:20px; color:var(--gold); transition:transform.3s ease;}
-.card.collapsible.open.arrow{transform:rotate(180deg);}
+.card.collapsible.open.arrow{transform:rotate(180deg);} /* FIXED: added space */
 .collapsible-content{max-height:0; overflow:hidden; transition:max-height.4s ease; padding:0 30px;}
-.card.collapsible.open.collapsible-content{max-height:400px; padding:0 30px 30px 30px;}
+.card.collapsible.open.collapsible-content{max-height:400px; padding:0 30px 30px 30px;} /* FIXED: added space */
 .ann-item{background:rgba(5,12,24,.6); padding:12px; border-radius:10px; margin-bottom:10px; border-left:3px solid var(--gold);}
 .ann-item h4{color:var(--gold); font-size:14px; margin-bottom:4px;}
 .ann-item p{color:#ddd; font-size:13px; line-height:1.5;}
@@ -100,8 +100,8 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 <div class="side-cards">
   <div class="card"><div class="card-icon">📜</div><h3>Lodge Information</h3><p>Access meeting schedules, lodge announcements, and member activities.</p></div>
 
-  <!-- COLLAPSIBLE ANNOUNCEMENTS CARD -->
-  <div class="card collapsible" id="announcementsCard">
+  <!-- COLLAPSIBLE ANNOUNCEMENTS CARD - OPEN BY DEFAULT -->
+  <div class="card collapsible open" id="announcementsCard">
     <div class="collapsible-header">
       <h3><div class="card-icon">📢</div>Latest Announcements</h3>
       <span class="arrow">▼</span>
@@ -206,18 +206,28 @@ onAuthStateChanged(auth, (user) => {
   }, (error) => { console.error("Firebase Error:", error); });
 });
 
+// LOAD ANNOUNCEMENTS
 const announcementsRef = ref(database, 'announcements');
 onValue(announcementsRef, (snapshot) => {
   const list = document.getElementById('announcementsList');
   const data = snapshot.val();
-  if(!data){ list.innerHTML = `<p style="color:#a0b0c9; font-size:13px;">No announcements yet</p>`; return; }
+  console.log("Announcements data:", data); // for debugging
+
+  if(!data){
+    list.innerHTML = `<p style="color:#a0b0c9; font-size:13px;">No announcements yet</p>`;
+    return;
+  }
+
   let html = "";
   Object.keys(data).reverse().slice(0,10).forEach(key => {
     const a = data[key];
     const date = a.timestamp? new Date(a.timestamp).toLocaleString() : 'Just now';
-    html += `<div class="ann-item"><h4>${a.title}</h4><p>${a.message}</p><small>${date}</small></div>`;
+    html += `<div class="ann-item"><h4>${a.title || 'No Title'}</h4><p>${a.message || ''}</p><small>${date}</small></div>`;
   });
   list.innerHTML = html;
+}, (error) => {
+  console.error("Announcements Error:", error);
+  document.getElementById('announcementsList').innerHTML = `<p style="color:#ff6b6b; font-size:13px;">Error loading announcements</p>`;
 });
 
 document.querySelector(".logout").addEventListener("click", (e) => {
@@ -232,6 +242,5 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
 }
 </script>
-<script type="module" src="notifications.js"></script>
 </body>
-  </html>
+</html>

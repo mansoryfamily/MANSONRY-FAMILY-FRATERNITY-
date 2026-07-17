@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Freemasonry Heritage | Member Dashboard</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#d4af37">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--gold:#d4af37;--gold-light:#f1ca52;--dark:#050c18;--card:#0f1a2e;}
@@ -13,6 +18,24 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;backg
 body::after{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.025);z-index:-1;pointer-events:none;font-family:'Cinzel',serif;}
 header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,.85);backdrop-filter:blur(25px);display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid rgba(212,175,55,.2);}
 .logo{font-size:28px;font-weight:700;color:var(--gold);letter-spacing:2px;font-family:'Cinzel',serif;}
+.header-actions{display:flex;align-items:center;gap:18px;position:relative;}
+
+/* NOTIFICATION BELL */
+.notif-btn{position:relative;background:none;border:none;cursor:pointer;color:#a0b0c9;transition:.3s;padding:8px;}
+.notif-btn:hover{color:var(--gold);}
+.notif-badge{position:absolute;top:2px;right:2px;background:#ff3b3b;color:#fff;font-size:10px;font-weight:700;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:2px solid #050c18;display:none;}
+.notif-dropdown{position:absolute;top:55px;right:0;width:340px;max-height:400px;background:rgba(15,26,46,.95);backdrop-filter:blur(25px);border:1px solid rgba(212,175,55,.3);border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.6);display:none;flex-direction:column;z-index:2001;overflow:hidden;}
+.notif-dropdown.show{display:flex;}
+.notif-header{padding:15px 18px;border-bottom:1px solid rgba(212,175,55,.2);font-family:'Cinzel',serif;color:var(--gold);font-weight:600;font-size:15px;}
+.notif-list{overflow-y:auto;max-height:340px;}
+.notif-item{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;transition:.2s;}
+.notif-item:hover{background:rgba(212,175,55,.08);}
+.notif-item.unread{background:rgba(212,175,55,.12);border-left:3px solid var(--gold);}
+.notif-item h4{font-size:14px;color:var(--gold);margin-bottom:4px;}
+.notif-item p{font-size:13px;color:#ddd;line-height:1.5;}
+.notif-item small{font-size:11px;color:#8a9bb0;}
+.notif-empty{padding:25px;text-align:center;color:#8a9bb0;font-size:13px;}
+
 .logout{background:linear-gradient(135deg,var(--gold),#b8941f);color:#111;padding:11px 28px;border-radius:40px;text-decoration:none;font-weight:600;transition:.3s;box-shadow:0 5px 20px rgba(212,175,55,.3);}
 .logout:hover{background:linear-gradient(135deg,var(--gold-light),var(--gold));transform:translateY(-3px);}
 .dashboard{padding:60px 8% 140px;max-width:1500px;margin:auto;}
@@ -43,8 +66,6 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 .card h3{color:var(--gold);margin-bottom:10px;font-size:18px;font-family:'Cinzel',serif;}
 .card p{color:#a0b0c9;line-height:1.7;font-size:14px;}
 .card.admin-card{display:none;}
-.card.admin-card.card-icon{background:linear-gradient(135deg,rgba(255,107,107,.2),rgba(255,107,107,.1));}
-.card.admin-card h3{color:#ff6b6b;}
 .bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(15,26,46,.94);backdrop-filter:blur(25px);padding:10px;border-radius:22px;display:flex;gap:8px;border:1px solid rgba(212,175,55,.25);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;}
 .nav-item{width:90px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#a0b0c9;border-radius:16px;font-size:11px;font-weight:500;transition:.25s ease;font-family:'Poppins',sans-serif;}
 .nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;transition:.25s;}
@@ -52,12 +73,29 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 .nav-item:hover{background:rgba(212,175,55,.1);color:#f1ca52;}
 .nav-item.active{background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:600;box-shadow:0 6px 18px rgba(212,175,55,.35);}
 @media(max-width:900px){.bottom-nav{left:50%;transform:translateX(-50%);width:calc(100% - 30px);max-width:600px;justify-content:space-between;}.nav-item{width:calc(16.66% - 7px);height:65px;}.nav-label{font-size:10px;}}
-@media(max-width:480px){.nav-item{height:60px;}.nav-icon{width:22px;height:22px;}.nav-label{font-size:9px;}}
+@media(max-width:480px){.nav-item{height:60px;}.nav-icon{width:22px;height:22px;}.nav-label{font-size:9px;}.notif-dropdown{width:calc(100vw - 30px); right:-10px;}}
 @media(max-width:800px){.dashboard{padding:40px 5% 140px;}.details-grid{grid-template-columns:1fr;}.profile-header{flex-direction:column;text-align:center;}}
 </style>
 </head>
 <body>
-<header><div class="logo">FREEMASONRY HERITAGE</div><div class="header-actions"><a href="#" class="logout">Logout</a></div></header>
+<header>
+  <div class="logo">FREEMASONRY HERITAGE</div>
+  <div class="header-actions">
+    <!-- NOTIFICATION BELL -->
+    <button class="notif-btn" id="notifBtn">
+      <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+      <span class="notif-badge" id="notifBadge">0</span>
+    </button>
+    <div class="notif-dropdown" id="notifDropdown">
+      <div class="notif-header">Notifications</div>
+      <div class="notif-list" id="notifList">
+        <div class="notif-empty">No notifications yet</div>
+      </div>
+    </div>
+    <a href="#" class="logout">Logout</a>
+  </div>
+</header>
+
 <main class="dashboard">
 <div class="welcome"><h1>Welcome Back, <span id="greetingName">Member</span></h1><p>Member Portal • Secure Access • Real-time Updates</p></div>
 <section class="stats">
@@ -85,6 +123,7 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 </div>
 </div>
 </main>
+
 <nav class="bottom-nav">
   <a href="dashboard.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="nav-label">Home</span></a>
   <a href="requirements.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span class="nav-label">Requirements</span></a>
@@ -97,7 +136,7 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -114,6 +153,9 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
+let currentUserId = null;
+let lastNotifCount = 0;
+
 const greetingName = document.getElementById("greetingName");
 const memberName = document.getElementById("memberName");
 const memberEmail = document.getElementById("memberEmail");
@@ -128,22 +170,25 @@ const statStatus = document.getElementById("statStatus");
 const statLodge = document.getElementById("statLodge");
 const statSince = document.getElementById("statSince");
 
-// REALTIME SYNC
+// NOTIFICATION ELEMENTS
+const notifBtn = document.getElementById("notifBtn");
+const notifBadge = document.getElementById("notifBadge");
+const notifDropdown = document.getElementById("notifDropdown");
+const notifList = document.getElementById("notifList");
+
 onAuthStateChanged(auth, (user) => {
   if(!user){ window.location.href = "login.html"; return; }
-
+  currentUserId = user.uid;
   memberEmail.textContent = user.email;
   detailEmail.textContent = user.email;
+  loadNotifications(user.uid); // Load notifications
 
   const userRef = ref(database, "users/" + user.uid);
   onValue(userRef, (snapshot) => {
-    console.log("Firebase data:", snapshot.val());
     if(snapshot.exists()){
-      const data = snapshot.val(); // ALL CODE MUST BE INSIDE HERE
-
+      const data = snapshot.val();
       const fullName = data.fullName || "Member";
       const firstName = fullName.split(' ')[0];
-
       greetingName.textContent = firstName;
       memberName.textContent = fullName;
       profileInitial.textContent = fullName.charAt(0).toUpperCase();
@@ -151,12 +196,10 @@ onAuthStateChanged(auth, (user) => {
       detailPhone.textContent = data.phone || "Not Provided";
       detailCountry.textContent = data.country || "Not Set";
       detailInterest.textContent = data.interest || "Not Set";
-
       if(data.timestamp){
         const regYear = new Date(data.timestamp).getFullYear();
         statSince.textContent = isNaN(regYear)? "-" : regYear;
       }
-
       if(data.status === "approved" || data.status === "active"){
         memberStatus.textContent = "ACTIVE";
         memberStatus.className = "status-active";
@@ -166,21 +209,86 @@ onAuthStateChanged(auth, (user) => {
         memberStatus.className = "status-pending";
         statStatus.textContent = "Pending";
       }
-
       statLodge.textContent = data.lodgeNumber || "Not Assigned";
-
       const adminPanel = document.getElementById("adminPanel");
       if(data.role === "admin"){ adminPanel.style.display = "block"; }
-
-    } else {
-      console.log("No data found for UID:", user.uid);
-      memberName.textContent = "Profile Not Found";
-      detailFullName.textContent = "Please complete registration";
     }
-  }, (error) => { console.error("Firebase Error:", error); });
+  });
 });
 
-// REAL-TIME ANNOUNCEMENTS
+// NOTIFICATION SYSTEM
+function loadNotifications(uid){
+  const notifRef = ref(database, "notifications/" + uid);
+  onValue(notifRef, (snapshot) => {
+    const data = snapshot.val();
+    if(!data){
+      notifList.innerHTML = `<div class="notif-empty">No notifications yet</div>`;
+      notifBadge.style.display = "none";
+      return;
+    }
+
+    const notifs = Object.entries(data).reverse(); // newest first
+    let unreadCount = 0;
+    let html = "";
+
+    notifs.forEach(([key, n]) => {
+      if(!n.read) unreadCount++;
+      const date = n.timestamp? new Date(n.timestamp).toLocaleString() : 'Just now';
+      html += `
+        <div class="notif-item ${!n.read? 'unread' : ''}" data-id="${key}">
+          <h4>${n.title || 'Notification'}</h4>
+          <p>${n.message}</p>
+          <small>${date}</small>
+        </div>
+      `;
+    });
+
+    notifList.innerHTML = html;
+
+    // Update badge
+    if(unreadCount > 0){
+      notifBadge.textContent = unreadCount;
+      notifBadge.style.display = "flex";
+
+      // Alert for new notifications
+      if(unreadCount > lastNotifCount){
+        alert(`🔔 You have ${unreadCount} new notification(s)!`);
+      }
+      lastNotifCount = unreadCount;
+    } else {
+      notifBadge.style.display = "none";
+      lastNotifCount = 0;
+    }
+  });
+}
+
+// Toggle dropdown
+notifBtn.addEventListener("click", () => {
+  notifDropdown.classList.toggle("show");
+  if(notifDropdown.classList.contains("show") && currentUserId){
+    // Mark all as read when opened
+    const notifRef = ref(database, "notifications/" + currentUserId);
+    onValue(notifRef, (snapshot) => {
+      const updates = {};
+      snapshot.forEach(child => {
+        if(!child.val().read){
+          updates[child.key + "/read"] = true;
+        }
+      });
+      if(Object.keys(updates).length > 0){
+        update(notifRef, updates);
+      }
+    }, { onlyOnce: true });
+  }
+});
+
+// Close dropdown when clicking outside
+document.addEventListener("click", (e) => {
+  if(!notifBtn.contains(e.target) &&!notifDropdown.contains(e.target)){
+    notifDropdown.classList.remove("show");
+  }
+});
+
 const announcementsRef = ref(database, 'announcements');
 onValue(announcementsRef, (snapshot) => {
   const list = document.getElementById('announcementsList');
@@ -195,12 +303,16 @@ onValue(announcementsRef, (snapshot) => {
   list.innerHTML = html;
 });
 
-// Logout
 document.querySelector(".logout").addEventListener("click", (e) => {
   e.preventDefault();
   signOut(auth).then(() => { window.location.href = "login.html"; });
 });
 </script>
-<script type="module" src="notifications.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
 </body>
 </html>

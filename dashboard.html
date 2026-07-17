@@ -43,7 +43,7 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 .status-active{color:#4cff88;font-weight:700;}
 .status-pending{color:#f1ca52;font-weight:700;}
 .side-cards{display:flex;flex-direction:column;gap:25px;}
-.card{background:rgba(15,26,46,.7);backdrop-filter:blur(25px);padding:30px;border-radius:18px;border:1px solid rgba(212,175,55,.2);}
+.card{background:rgba(15,26,46,.7);backdrop-filter:blur(25px);padding:30px;border-radius:18px;border:1px solid rgba(212,175,55,.2);transition:.3s;}
 .card-icon{width:50px;height:50px;background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.1));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;}
 .card h3{color:var(--gold);margin-bottom:10px;font-size:18px;font-family:'Cinzel',serif;}
 .card p{color:#a0b0c9;line-height:1.7;font-size:14px;}
@@ -54,12 +54,13 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 .ann-item small{color:#8a9bb0; font-size:11px;}
 .card.admin-card{display:none;}
 
-/* FIXED: COLLAPSIBLE + ALERT */
-.card-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+/* FINAL FIXED COLLAPSE CSS */
+.card-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
 .card-header h3{margin-bottom:0;}
-.toggle-icon{font-size:20px;color:var(--gold);transition:.3s;}
-.card.collapsed.card-content{display:none;} /* FIXED SPACE */
-.card.collapsed.toggle-icon{transform:rotate(-90deg);} /* FIXED SPACE */
+.toggle-icon{font-size:20px;color:var(--gold);transition:transform 0.3s ease;}
+.card-content{overflow:hidden;transition:max-height 0.3s ease;}
+.card.collapsed.card-content{max-height:0;padding-top:0;padding-bottom:0;overflow:hidden;} /* FIXED */
+.card.collapsed.toggle-icon{transform:rotate(-180deg);} /* FIXED */
 .new-ann-alert{background:linear-gradient(135deg,rgba(212,175,55,.25),rgba(212,175,55,.1));border:1px solid var(--gold);color:var(--gold);padding:10px 14px;border-radius:10px;font-size:12px;font-weight:600;margin-bottom:12px;display:none;animation:ping 1.5s ease-in-out infinite;}
 @keyframes ping {0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.02);opacity:.8;}}
 

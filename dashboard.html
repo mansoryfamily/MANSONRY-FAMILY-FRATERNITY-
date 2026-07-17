@@ -47,9 +47,12 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 .card-icon{width:50px;height:50px;background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.1));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;}
 .card h3{color:var(--gold);margin-bottom:10px;font-size:18px;font-family:'Cinzel',serif;}
 .card p{color:#a0b0c9;line-height:1.7;font-size:14px;}
+.ann-item{background:rgba(5,12,24,.6); padding:12px; border-radius:10px; margin-bottom:10px; border-left:3px solid var(--gold); animation:fadeIn 0.3s ease;} /* FIXED SPACE HERE */
+@keyframes fadeIn {from{opacity:0; transform:translateY(-5px);} to{opacity:1; transform:translateY(0);}}
+.ann-item h4{color:var(--gold); font-size:14px; margin-bottom:4px;}
+.ann-item p{color:#ddd; font-size:13px; line-height:1.5;}
+.ann-item small{color:#8a9bb0; font-size:11px;}
 .card.admin-card{display:none;}
-.card.admin-card.card-icon{background:linear-gradient(135deg,rgba(255,107,107,.2),rgba(255,107,107,.1));}
-.card.admin-card h3{color:#ff6b6b;}
 .bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(15,26,46,.94);backdrop-filter:blur(25px);padding:10px;border-radius:22px;display:flex;gap:8px;border:1px solid rgba(212,175,55,.25);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;}
 .nav-item{width:90px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#a0b0c9;border-radius:16px;font-size:11px;font-weight:500;transition:.25s ease;font-family:'Poppins',sans-serif;}
 .nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;transition:.25s;}
@@ -95,8 +98,8 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
   <a href="requirements.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span class="nav-label">Requirements</span></a>
   <a href="application.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg><span class="nav-label">Application</span></a>
   <a href="member.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span class="nav-label">Members</span></a>
-  <a href="help.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.39-1.11-.59-2.28-.59-3.53 0-.55-.45-1-1-1H4c-.55 0-1.45-1 1 0 9.39 7.61 17 17 17.55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1z"/></svg><span class="nav-label">Helpline</span></a>
-  <a href="laws.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2.9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg><span class="nav-label">Laws</span></a>
+  <a href="help.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.39-1.11-.59-2.28-.59-3.53 0-.55-.45-1-1-1H4c-.55 0-1-1.45-1 0 9.39 7.61 17 17 17.55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1z"/></svg><span class="nav-label">Helpline</span></a>
+  <a href="laws.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2-1.9-2-2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg><span class="nav-label">Laws</span></a>
 </nav>
 
 <script type="module">
@@ -170,21 +173,48 @@ onAuthStateChanged(auth, (user) => {
       memberName.textContent = "Profile Not Found";
       detailFullName.textContent = "Please complete registration";
     }
-  }, (error) => { console.error("Firebase Error:", error); });
+  });
 });
 
+// BULLETPROOF REAL-TIME ANNOUNCEMENTS
 const announcementsRef = ref(database, 'announcements');
 onValue(announcementsRef, (snapshot) => {
   const list = document.getElementById('announcementsList');
   const data = snapshot.val();
-  if(!data){ list.innerHTML = `<p style="color:#a0b0c9; font-size:13px;">No announcements yet</p>`; return; }
+
+  if(!data){
+    list.innerHTML = `<p style="color:#a0b0c9; font-size:13px;">No announcements yet</p>`;
+    return;
+  }
+
   let html = "";
-  Object.keys(data).reverse().slice(0,5).forEach(key => {
-    const a = data[key];
+  let announcementsArray = [];
+
+  // Handle both: single object OR multiple objects
+  if(data.title){ // Single announcement
+    announcementsArray = [data];
+  } else { // Multiple announcements
+    announcementsArray = Object.values(data).filter(item => item && item.title && item.message);
+  }
+
+  if(announcementsArray.length === 0){
+    list.innerHTML = `<p style="color:#a0b0c9; font-size:13px;">No announcements yet</p>`;
+    return;
+  }
+
+  announcementsArray.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0)).slice(0,5).forEach(a => {
     const date = a.timestamp? new Date(a.timestamp).toLocaleString() : 'Just now';
-    html += `<div style="background:rgba(5,12,24,.6); padding:12px; border-radius:10px; margin-bottom:10px; border-left:3px solid var(--gold);"><h4 style="color:var(--gold); font-size:14px; margin-bottom:4px;">${a.title}</h4><p style="color:#ddd; font-size:13px; line-height:1.5;">${a.message}</p><small style="color:#8a9bb0; font-size:11px;">${date}</small></div>`;
+    html += `<div class="ann-item">
+      <h4>${a.title}</h4>
+      <p>${a.message}</p>
+      <small>By: ${a.sentByEmail || 'Admin'} • ${date}</small>
+    </div>`;
   });
+
   list.innerHTML = html;
+}, (error) => {
+  console.error("Announcements Error:", error);
+  document.getElementById('announcementsList').innerHTML = `<p style="color:#ff6b6b; font-size:13px;">Error loading announcements</p>`;
 });
 
 document.querySelector(".logout").addEventListener("click", (e) => {
@@ -201,4 +231,4 @@ if ('serviceWorker' in navigator) {
 </script>
 <script type="module" src="notifications.js"></script>
 </body>
-                                                                                                               </html>
+</html>

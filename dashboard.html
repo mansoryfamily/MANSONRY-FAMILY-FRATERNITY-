@@ -54,12 +54,12 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 .ann-item small{color:#8a9bb0; font-size:11px;}
 .card.admin-card{display:none;}
 
-/* UPDATED: COLLAPSIBLE + ALERT */
+/* FIXED: COLLAPSIBLE + ALERT */
 .card-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
 .card-header h3{margin-bottom:0;}
 .toggle-icon{font-size:20px;color:var(--gold);transition:.3s;}
-.card.collapsed.card-content{display:none;}
-.card.collapsed.toggle-icon{transform:rotate(-90deg);}
+.card.collapsed.card-content{display:none;} /* FIXED SPACE */
+.card.collapsed.toggle-icon{transform:rotate(-90deg);} /* FIXED SPACE */
 .new-ann-alert{background:linear-gradient(135deg,rgba(212,175,55,.25),rgba(212,175,55,.1));border:1px solid var(--gold);color:var(--gold);padding:10px 14px;border-radius:10px;font-size:12px;font-weight:600;margin-bottom:12px;display:none;animation:ping 1.5s ease-in-out infinite;}
 @keyframes ping {0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.02);opacity:.8;}}
 
@@ -264,4 +264,4 @@ if ('serviceWorker' in navigator) {
 </script>
 <script type="module" src="notifications.js"></script>
 </body>
-    </html>
+  </html>

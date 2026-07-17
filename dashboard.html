@@ -1,243 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Freemasonry Heritage | Member Dashboard</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{
---gold:#d4af37;
---gold-light:#f1ca52;
---dark:#050c18;
---card:#0f1a2e;
-}
-
-body{
-font-family:'Poppins',sans-serif;
-background:var(--dark);
-color:white;
-min-height:100vh;
-overflow-x:hidden;
-}
-
-/* BACKGROUND IMAGE CHANGED */
-body::before{
-content:"";
-position:fixed;
-top:0;left:0;width:100%;height:100%;
-background:
-linear-gradient(rgba(5,12,24,.88), rgba(5,12,24,.95)),
-url("images (1).jpeg"); /* YOUR NEW BACKGROUND */
-background-size:cover;background-position:center;background-attachment:fixed;
-z-index:-2;
-}
-
-body::after{
-content:"◬";
-position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-font-size:500px;color:rgba(212,175,55,.025);z-index:-1;pointer-events:none;
-font-family:'Cinzel',serif;
-}
-
-header{
-position:sticky;top:0;width:100%;padding:20px 8%;
-background:rgba(5,12,24,.85);backdrop-filter:blur(25px);
-display:flex;justify-content:space-between;align-items:center;
-z-index:1000;border-bottom:1px solid rgba(212,175,55,.2);
-}
+:root{--gold:#d4af37;--gold-light:#f1ca52;--dark:#050c18;--card:#0f1a2e;}
+body{font-family:'Poppins',sans-serif;background:var(--dark);color:white;min-height:100vh;overflow-x:hidden;}
+body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(5,12,24,.88), rgba(5,12,24,.95)),url("images (1).jpeg");background-size:cover;background-position:center;background-attachment:fixed;z-index:-2;}
+body::after{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.025);z-index:-1;pointer-events:none;font-family:'Cinzel',serif;}
+header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,.85);backdrop-filter:blur(25px);display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid rgba(212,175,55,.2);}
 .logo{font-size:28px;font-weight:700;color:var(--gold);letter-spacing:2px;font-family:'Cinzel',serif;}
-.logout{
-background:linear-gradient(135deg,var(--gold),#b8941f);
-color:#111;padding:11px 28px;border-radius:40px;
-text-decoration:none;font-weight:600;transition:.3s;
-box-shadow:0 5px 20px rgba(212,175,55,.3);
-}
+.logout{background:linear-gradient(135deg,var(--gold),#b8941f);color:#111;padding:11px 28px;border-radius:40px;text-decoration:none;font-weight:600;transition:.3s;box-shadow:0 5px 20px rgba(212,175,55,.3);}
 .logout:hover{background:linear-gradient(135deg,var(--gold-light),var(--gold));transform:translateY(-3px);}
-
 .dashboard{padding:60px 8% 140px;max-width:1500px;margin:auto;}
 .welcome{margin-bottom:45px;}
 .welcome h1{font-size:42px;color:var(--gold);font-weight:700;font-family:'Cinzel',serif;}
 .welcome p{color:#a0b0c9;margin-top:10px;font-size:15px;}
-
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:25px;margin-bottom:45px;}
-.stat-card{
-background:rgba(15,26,46,.6);backdrop-filter:blur(20px);
-border:1px solid rgba(212,175,55,.25);border-radius:18px;padding:30px;
-transition:.4s;
-}
+.stat-card{background:rgba(15,26,46,.6);backdrop-filter:blur(20px);border:1px solid rgba(212,175,55,.25);border-radius:18px;padding:30px;transition:.4s;}
 .stat-card:hover{transform:translateY(-8px);border-color:var(--gold);}
 .stat-card h4{color:#a0b0c9;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:1.5px;}
 .stat-card h2{color:var(--gold);font-size:36px;margin-top:12px;font-family:'Cinzel',serif;}
-
 .main-grid{display:grid;grid-template-columns:1.3fr 0.7fr;gap:35px;}
 @media(max-width:1100px){.main-grid{grid-template-columns:1fr;}}
-
-.profile-card{
-background:rgba(15,26,46,.7);backdrop-filter:blur(25px);
-border-radius:22px;padding:40px;border:1px solid rgba(212,175,55,.3);
-box-shadow:0 25px 60px rgba(0,0,0,.5);
-}
+.profile-card{background:rgba(15,26,46,.7);backdrop-filter:blur(25px);border-radius:22px;padding:40px;border:1px solid rgba(212,175,55,.3);box-shadow:0 25px 60px rgba(0,0,0,.5);}
 .profile-header{display:flex;gap:25px;align-items:center;margin-bottom:35px;}
-.profile-image{
-width:100px;height:100px;border-radius:50%;
-background:linear-gradient(135deg, var(--gold), #b8941f);
-display:flex;align-items:center;justify-content:center;
-font-size:40px;color:#111;font-weight:700;
-border:4px solid rgba(212,175,55,.4);
-}
+.profile-image{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg, var(--gold), #b8941f);display:flex;align-items:center;justify-content:center;font-size:40px;color:#111;font-weight:700;border:4px solid rgba(212,175,55,.4);}
 .profile-info h2{font-size:28px;color:var(--gold);margin-bottom:6px;font-family:'Cinzel',serif;}
 .profile-info p{color:#a0b0c9;font-size:14px;}
-
 .details-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
-.detail{
-background:rgba(5,12,24,.6);padding:18px 20px;border-radius:14px;
-border-left:4px solid var(--gold);
-}
+.detail{background:rgba(5,12,24,.6);padding:18px 20px;border-radius:14px;border-left:4px solid var(--gold);}
 .detail span{display:block;font-size:11px;color:#8a9bb0;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px;}
 .detail strong{font-size:15px;color:#fff;font-weight:500;}
-
 .status-active{color:#4cff88;font-weight:700;}
 .status-pending{color:#f1ca52;font-weight:700;}
-
 .side-cards{display:flex;flex-direction:column;gap:25px;}
-.card{
-background:rgba(15,26,46,.7);backdrop-filter:blur(25px);
-padding:30px;border-radius:18px;border:1px solid rgba(212,175,55,.2);
-}
-.card-icon{
-width:50px;height:50px;background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.1));
-border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;
-}
+.card{background:rgba(15,26,46,.7);backdrop-filter:blur(25px);padding:30px;border-radius:18px;border:1px solid rgba(212,175,55,.2);}
+.card-icon{width:50px;height:50px;background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.1));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;}
 .card h3{color:var(--gold);margin-bottom:10px;font-size:18px;font-family:'Cinzel',serif;}
 .card p{color:#a0b0c9;line-height:1.7;font-size:14px;}
-
-/* ADDED: HIDE ADMIN CARD BY DEFAULT */
 .card.admin-card{display:none;}
-
 .card.admin-card.card-icon{background:linear-gradient(135deg,rgba(255,107,107,.2),rgba(255,107,107,.1));}
 .card.admin-card h3{color:#ff6b6b;}
-
-.bottom-nav{
-position:fixed;bottom:25px;left:50%;transform:translateX(-50%);
-background:rgba(15,26,46,.94);
-backdrop-filter:blur(25px);
-padding:10px;
-border-radius:22px;
-display:flex;
-gap:8px;
-border:1px solid rgba(212,175,55,.25);
-box-shadow:0 15px 40px rgba(0,0,0,.5);
-z-index:2000;
-}
-
-.nav-item{
-  width:90px; /* identical size */
-  height:70px; /* identical size */
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-decoration:none;
-  color:#a0b0c9;
-  border-radius:16px;
-  font-size:11px;
-  font-weight:500;
-  transition:.25s ease;
-  font-family:'Poppins',sans-serif;
-}
-
-.nav-icon{
-  width:24px;
-  height:24px;
-  margin-bottom:5px;
-  fill:currentColor;
-  transition:.25s;
-}
-
-.nav-label{
-  line-height:1.2;
-  text-align:center;
-}
-
-.nav-item:hover{
-  background:rgba(212,175,55,.1);
-  color:#f1ca52;
-}
-
-.nav-item.active{
-  background:linear-gradient(135deg,#d4af37,#b8941f);
-  color:#111;
-  font-weight:600;
-  box-shadow:0 6px 18px rgba(212,175,55,.35);
-}
-
-/* Tablet / Mobile */
-@media(max-width:900px){
-.bottom-nav{
-    left:50%;
-    transform:translateX(-50%);
-    width:calc(100% - 30px);
-    max-width:600px;
-    justify-content:space-between;
-  }
-.nav-item{
-    width:calc(16.66% - 7px); /* 6 buttons fit evenly */
-    height:65px;
-  }
-.nav-label{font-size:10px;}
-}
-
-@media(max-width:480px){
-.nav-item{height:60px;}
-.nav-icon{width:22px;height:22px;}
-.nav-label{font-size:9px;}
-}
-@media(max-width:800px){
-.dashboard{padding:40px 5% 140px;}
-.details-grid{grid-template-columns:1fr;}
-.profile-header{flex-direction:column;text-align:center;}
-}
+.bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(15,26,46,.94);backdrop-filter:blur(25px);padding:10px;border-radius:22px;display:flex;gap:8px;border:1px solid rgba(212,175,55,.25);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;}
+.nav-item{width:90px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#a0b0c9;border-radius:16px;font-size:11px;font-weight:500;transition:.25s ease;font-family:'Poppins',sans-serif;}
+.nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;transition:.25s;}
+.nav-label{line-height:1.2;text-align:center;}
+.nav-item:hover{background:rgba(212,175,55,.1);color:#f1ca52;}
+.nav-item.active{background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:600;box-shadow:0 6px 18px rgba(212,175,55,.35);}
+@media(max-width:900px){.bottom-nav{left:50%;transform:translateX(-50%);width:calc(100% - 30px);max-width:600px;justify-content:space-between;}.nav-item{width:calc(16.66% - 7px);height:65px;}.nav-label{font-size:10px;}}
+@media(max-width:480px){.nav-item{height:60px;}.nav-icon{width:22px;height:22px;}.nav-label{font-size:9px;}}
+@media(max-width:800px){.dashboard{padding:40px 5% 140px;}.details-grid{grid-template-columns:1fr;}.profile-header{flex-direction:column;text-align:center;}}
 </style>
 </head>
-
 <body>
-
-<header>
-<div class="logo">FREEMASONRY HERITAGE</div>
-<div class="header-actions">
-<a href="#" class="logout">Logout</a>
-</div>
-</header>
-
+<header><div class="logo">FREEMASONRY HERITAGE</div><div class="header-actions"><a href="#" class="logout">Logout</a></div></header>
 <main class="dashboard">
-
-<div class="welcome">
-<h1>Welcome Back, <span id="greetingName">Member</span></h1>
-<p>Member Portal • Secure Access • Real-time Updates</p>
-</div>
-
+<div class="welcome"><h1>Welcome Back, <span id="greetingName">Member</span></h1><p>Member Portal • Secure Access • Real-time Updates</p></div>
 <section class="stats">
 <div class="stat-card"><h4>Membership Status</h4><h2 id="statStatus">Pending</h2></div>
 <div class="stat-card"><h4>Lodge</h4><h2 id="statLodge">Not Assigned</h2></div>
 <div class="stat-card"><h4>Member Since</h4><h2 id="statSince">-</h2></div>
 </section>
-
 <div class="main-grid">
-
 <section class="profile-card">
-<div class="profile-header">
-<div class="profile-image" id="profileInitial">M</div>
-<div class="profile-info">
-<h2 id="memberName">Loading...</h2>
-<p id="memberEmail">-</p>
-</div>
-</div>
-
+<div class="profile-header"><div class="profile-image" id="profileInitial">M</div><div class="profile-info"><h2 id="memberName">Loading...</h2><p id="memberEmail">-</p></div></div>
 <div class="details-grid">
 <div class="detail"><span>Full Name</span><strong id="detailFullName">-</strong></div>
 <div class="detail"><span>Email Address</span><strong id="detailEmail">-</strong></div>
@@ -247,58 +77,21 @@ z-index:2000;
 <div class="detail"><span>Membership Status</span><strong id="memberStatus" class="status-pending">PENDING</strong></div>
 </div>
 </section>
-
 <div class="side-cards">
   <div class="card"><div class="card-icon">📜</div><h3>Lodge Information</h3><p>Access meeting schedules, lodge announcements, and member activities.</p></div>
-
-  <!-- NEW: ANNOUNCEMENTS CARD -->
-  <div class="card" id="announcementsCard">
-    <div class="card-icon">📢</div>
-    <h3>Latest Announcements</h3>
-    <div id="announcementsList" style="margin-top:10px; max-height:300px; overflow-y:auto;">
-      <p style="color:#a0b0c9; font-size:13px;">Loading...</p>
-    </div>
-  </div>
-
+  <div class="card" id="announcementsCard"><div class="card-icon">📢</div><h3>Latest Announcements</h3><div id="announcementsList" style="margin-top:10px; max-height:300px; overflow-y:auto;"><p style="color:#a0b0c9; font-size:13px;">Loading...</p></div></div>
   <div class="card"><div class="card-icon">🤝</div><h3>Membership Support</h3><p>Contact your Lodge Director for guidance and fraternity assistance.</p></div>
-
-  <!-- ADMIN PANEL CARD -->
-  <div class="card admin-card" id="adminPanel">
-    <div class="card-icon">⚙️</div>
-    <h3>Admin Panel</h3>
-    <p>Manage members, applications, and lodge settings. <a href="admin.html" style="color:var(--gold); text-decoration:underline;">Go to Dashboard →</a></p>
-  </div>
-
+  <div class="card admin-card" id="adminPanel"><div class="card-icon">⚙️</div><h3>Admin Panel</h3><p>Manage members, applications, and lodge settings. <a href="admin.html" style="color:var(--gold); text-decoration:underline;">Go to Dashboard →</a></p></div>
 </div>
-
 </div>
 </main>
-
 <nav class="bottom-nav">
-  <a href="dashboard.html" class="nav-item active">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-    <span class="nav-label">Home</span>
-  </a>
-  <a href="requirements.html" class="nav-item">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-    <span class="nav-label">Requirements</span>
-  </a>
-  <a href="application.html" class="nav-item">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-    <span class="nav-label">Application</span>
-  </a>
-  <a href="member.html" class="nav-item">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-    <span class="nav-label">Members</span>
-  </a>
-  <a href="help.html" class="nav-item">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.39-1.11-.59-2.28-.59-3.53 0-.55-.45-1-1-1H4c-.55 0-1.45-1 1 0 9.39 7.61 17 17 17.55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1z"/></svg>
-    <span class="nav-label">Helpline</span>
-  </a>
-  <a href="laws.html" class="nav-item">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2.9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
-    <span class="nav-label">Laws</span>
-  </a>
+  <a href="dashboard.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="nav-label">Home</span></a>
+  <a href="requirements.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span class="nav-label">Requirements</span></a>
+  <a href="application.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg><span class="nav-label">Application</span></a>
+  <a href="member.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span class="nav-label">Members</span></a>
+  <a href="help.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.39-1.11-.59-2.28-.59-3.53 0-.55-.45-1-1-1H4c-.55 0-1.45-1 1 0 9.39 7.61 17 17 17.55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1z"/></svg><span class="nav-label">Helpline</span></a>
+  <a href="laws.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2.9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg><span class="nav-label">Laws</span></a>
 </nav>
 
 <script type="module">
@@ -321,7 +114,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-// Elements
 const greetingName = document.getElementById("greetingName");
 const memberName = document.getElementById("memberName");
 const memberEmail = document.getElementById("memberEmail");
@@ -338,87 +130,16 @@ const statSince = document.getElementById("statSince");
 
 // REALTIME SYNC
 onAuthStateChanged(auth, (user) => {
-if(!user){
-window.location.href = "login.html";
-return;
-}
-
-memberEmail.textContent = user.email;
-detailEmail.textContent = user.email;
-
-  const userRef = ref(database, "users/" + user.uid);
-onValue(userRef, (snapshot) => {
-  console.log("Firebase data:", snapshot.val()); // DEBUG
-  if(snapshot.exists()){
-    const data = snapshot.val();
-    // ... rest of your code
-  } else {
-    console.log("No data found for UID:", user.uid);
-    memberName.textContent = "Profile Not Found";
-    detailFullName.textContent = "Please complete registration";
-  }
-}, (error) => {
-  console.error("Firebase Error:", error); // This will tell us if it's rules
-});
-
-const fullName = data.fullName || "Member";
-const firstName = fullName.split(' ')[0];
-
-greetingName.textContent = firstName;
-memberName.textContent = fullName;
-profileInitial.textContent = fullName.charAt(0).toUpperCase();
-
-detailFullName.textContent = fullName;
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-const firebaseConfig = {
-apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
-authDomain: "mansonry-family-fraternity.firebaseapp.com",
-databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
-projectId: "mansonry-family-fraternity",
-storageBucket: "mansonry-family-fraternity.firebasestorage.app",
-messagingSenderId: "964415179161",
-appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
-measurementId: "G-Q8LC74ZFXN"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
-
-// Elements
-const greetingName = document.getElementById("greetingName");
-const memberName = document.getElementById("memberName");
-const memberEmail = document.getElementById("memberEmail");
-const profileInitial = document.getElementById("profileInitial");
-const detailFullName = document.getElementById("detailFullName");
-const detailEmail = document.getElementById("detailEmail");
-const detailPhone = document.getElementById("detailPhone");
-const detailCountry = document.getElementById("detailCountry");
-const detailInterest = document.getElementById("detailInterest");
-const memberStatus = document.getElementById("memberStatus");
-const statStatus = document.getElementById("statStatus");
-const statLodge = document.getElementById("statLodge");
-const statSince = document.getElementById("statSince");
-
-// REALTIME SYNC
-onAuthStateChanged(auth, (user) => {
-  if(!user){
-    window.location.href = "login.html";
-    return;
-  }
+  if(!user){ window.location.href = "login.html"; return; }
 
   memberEmail.textContent = user.email;
   detailEmail.textContent = user.email;
 
   const userRef = ref(database, "users/" + user.uid);
   onValue(userRef, (snapshot) => {
-    console.log("Firebase data:", snapshot.val()); // DEBUG
+    console.log("Firebase data:", snapshot.val());
     if(snapshot.exists()){
-      const data = snapshot.val(); // <-- THIS MUST BE INSIDE HERE
+      const data = snapshot.val(); // ALL CODE MUST BE INSIDE HERE
 
       const fullName = data.fullName || "Member";
       const firstName = fullName.split(' ')[0];
@@ -426,7 +147,6 @@ onAuthStateChanged(auth, (user) => {
       greetingName.textContent = firstName;
       memberName.textContent = fullName;
       profileInitial.textContent = fullName.charAt(0).toUpperCase();
-
       detailFullName.textContent = fullName;
       detailPhone.textContent = data.phone || "Not Provided";
       detailCountry.textContent = data.country || "Not Set";
@@ -449,45 +169,28 @@ onAuthStateChanged(auth, (user) => {
 
       statLodge.textContent = data.lodgeNumber || "Not Assigned";
 
-      // SHOW ADMIN CARD IF ROLE = ADMIN
       const adminPanel = document.getElementById("adminPanel");
-      if(data.role === "admin"){
-        adminPanel.style.display = "block";
-      }
+      if(data.role === "admin"){ adminPanel.style.display = "block"; }
 
     } else {
       console.log("No data found for UID:", user.uid);
       memberName.textContent = "Profile Not Found";
       detailFullName.textContent = "Please complete registration";
     }
-  }, (error) => {
-    console.error("Firebase Error:", error); // This will tell us if it's rules
-  });
+  }, (error) => { console.error("Firebase Error:", error); });
+});
 
-}); // <-- This closes onAuthStateChanged
-
-// REAL-TIME ANNOUNCEMENTS FOR MEMBERS
+// REAL-TIME ANNOUNCEMENTS
 const announcementsRef = ref(database, 'announcements');
 onValue(announcementsRef, (snapshot) => {
   const list = document.getElementById('announcementsList');
   const data = snapshot.val();
-
-  if(!data){
-    list.innerHTML = `<p style="color:#a0b0c9; font-size:13px;">No announcements yet</p>`;
-    return;
-  }
-
+  if(!data){ list.innerHTML = `<p style="color:#a0b0c9; font-size:13px;">No announcements yet</p>`; return; }
   let html = "";
-  // Show newest first, max 5
   Object.keys(data).reverse().slice(0,5).forEach(key => {
     const a = data[key];
     const date = a.timestamp? new Date(a.timestamp).toLocaleString() : 'Just now';
-    html += `
-      <div style="background:rgba(5,12,24,.6); padding:12px; border-radius:10px; margin-bottom:10px; border-left:3px solid var(--gold);">
-        <h4 style="color:var(--gold); font-size:14px; margin-bottom:4px;">${a.title}</h4>
-        <p style="color:#ddd; font-size:13px; line-height:1.5;">${a.message}</p>
-        <small style="color:#8a9bb0; font-size:11px;">${date}</small>
-      </div>`;
+    html += `<div style="background:rgba(5,12,24,.6); padding:12px; border-radius:10px; margin-bottom:10px; border-left:3px solid var(--gold);"><h4 style="color:var(--gold); font-size:14px; margin-bottom:4px;">${a.title}</h4><p style="color:#ddd; font-size:13px; line-height:1.5;">${a.message}</p><small style="color:#8a9bb0; font-size:11px;">${date}</small></div>`;
   });
   list.innerHTML = html;
 });
@@ -495,10 +198,8 @@ onValue(announcementsRef, (snapshot) => {
 // Logout
 document.querySelector(".logout").addEventListener("click", (e) => {
   e.preventDefault();
-  signOut(auth).then(() => {
-    window.location.href = "login.html";
-  });
-}); // <-- FIXED: was missing this
+  signOut(auth).then(() => { window.location.href = "login.html"; });
+});
 </script>
 <script type="module" src="notifications.js"></script>
 </body>

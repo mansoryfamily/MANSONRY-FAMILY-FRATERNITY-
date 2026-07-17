@@ -346,10 +346,20 @@ return;
 memberEmail.textContent = user.email;
 detailEmail.textContent = user.email;
 
-const userRef = ref(database, "users/" + user.uid);
+  const userRef = ref(database, "users/" + user.uid);
 onValue(userRef, (snapshot) => {
-if(snapshot.exists()){
-const data = snapshot.val();
+  console.log("Firebase data:", snapshot.val()); // DEBUG
+  if(snapshot.exists()){
+    const data = snapshot.val();
+    // ... rest of your code
+  } else {
+    console.log("No data found for UID:", user.uid);
+    memberName.textContent = "Profile Not Found";
+    detailFullName.textContent = "Please complete registration";
+  }
+}, (error) => {
+  console.error("Firebase Error:", error); // This will tell us if it's rules
+});
 
 const fullName = data.fullName || "Member";
 const firstName = fullName.split(' ')[0];

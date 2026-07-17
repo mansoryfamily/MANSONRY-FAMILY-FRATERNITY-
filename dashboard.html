@@ -47,12 +47,22 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 .card-icon{width:50px;height:50px;background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.1));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;}
 .card h3{color:var(--gold);margin-bottom:10px;font-size:18px;font-family:'Cinzel',serif;}
 .card p{color:#a0b0c9;line-height:1.7;font-size:14px;}
-.ann-item{background:rgba(5,12,24,.6); padding:12px; border-radius:10px; margin-bottom:10px; border-left:3px solid var(--gold); animation:fadeIn.3s ease;}
+.ann-item{background:rgba(5,12,24,.6); padding:12px; border-radius:10px; margin-bottom:10px; border-left:3px solid var(--gold); animation:fadeIn 0.3s ease;}
 @keyframes fadeIn {from{opacity:0; transform:translateY(-5px);} to{opacity:1; transform:translateY(0);}}
 .ann-item h4{color:var(--gold); font-size:14px; margin-bottom:4px;}
 .ann-item p{color:#ddd; font-size:13px; line-height:1.5;}
 .ann-item small{color:#8a9bb0; font-size:11px;}
 .card.admin-card{display:none;}
+
+/* NEW: COLLAPSIBLE + ALERT */
+.card-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.card-header h3{margin-bottom:0;}
+.toggle-icon{font-size:20px;color:var(--gold);transition:.3s;}
+.card.collapsed.card-content{display:none;}
+.card.collapsed.toggle-icon{transform:rotate(-90deg);}
+.new-ann-alert{background:linear-gradient(135deg,rgba(212,175,55,.25),rgba(212,175,55,.1));border:1px solid var(--gold);color:var(--gold);padding:10px 14px;border-radius:10px;font-size:12px;font-weight:600;margin-bottom:12px;display:none;animation:ping 1.5s ease-in-out infinite;}
+@keyframes ping {0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.02);opacity:.8;}}
+
 .bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(15,26,46,.94);backdrop-filter:blur(25px);padding:10px;border-radius:22px;display:flex;gap:8px;border:1px solid rgba(212,175,55,.25);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;}
 .nav-item{width:90px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#a0b0c9;border-radius:16px;font-size:11px;font-weight:500;transition:.25s ease;font-family:'Poppins',sans-serif;}
 .nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;transition:.25s;}
@@ -87,7 +97,22 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 </section>
 <div class="side-cards">
   <div class="card"><div class="card-icon">📜</div><h3>Lodge Information</h3><p>Access meeting schedules, lodge announcements, and member activities.</p></div>
-  <div class="card" id="announcementsCard"><div class="card-icon">📢</div><h3>Latest Announcements</h3><div id="announcementsList" style="margin-top:10px; max-height:300px; overflow-y:auto;"><p style="color:#a0b0c9; font-size:13px;">Loading...</p></div></div>
+
+  <!-- UPDATED: COLLAPSIBLE ANNOUNCEMENT CARD -->
+  <div class="card" id="announcementsCard">
+    <div class="card-header" onclick="toggleAnnouncements()">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <div class="card-icon" style="margin-bottom:0;">📢</div>
+            <h3>Latest Announcements</h3>
+        </div>
+        <div class="toggle-icon">▼</div>
+    </div>
+    <div class="card-content">
+        <div id="newAnnAlert" class="new-ann-alert">🔔 NEW ANNOUNCEMENT POSTED!</div>
+        <div id="announcementsList" style="margin-top:10px; max-height:300px; overflow-y:auto;"><p style="color:#a0b0c9; font-size:13px;">Loading...</p></div>
+    </div>
+  </div>
+
   <div class="card"><div class="card-icon">🤝</div><h3>Membership Support</h3><p>Contact your Lodge Director for guidance and fraternity assistance.</p></div>
   <div class="card admin-card" id="adminPanel"><div class="card-icon">⚙️</div><h3>Admin Panel</h3><p>Manage members, applications, and lodge settings. <a href="admin.html" style="color:var(--gold); text-decoration:underline;">Go to Dashboard →</a></p></div>
 </div>
@@ -141,7 +166,7 @@ onAuthStateChanged(auth, (user) => {
   memberEmail.textContent = user.email;
   detailEmail.textContent = user.email;
   const userRef = ref(database, "users/" + user.uid);
-  onValue(userRef, (snapshot) => { // REAL-TIME USER DATA
+  onValue(userRef, (snapshot) => {
     if(snapshot.exists()){
       const data = snapshot.val();
       const fullName = data.fullName || "Member";
@@ -169,45 +194,52 @@ onAuthStateChanged(auth, (user) => {
       statLodge.textContent = data.lodgeNumber || "Not Assigned";
       const adminPanel = document.getElementById("adminPanel");
       if(data.role === "admin"){ adminPanel.style.display = "block"; }
-    } else {
-      memberName.textContent = "Profile Not Found";
-      detailFullName.textContent = "Please complete registration";
     }
   });
 });
 
-// REAL-TIME ANNOUNCEMENTS SYNC
+// COLLAPSE FUNCTION
+window.toggleAnnouncements = function(){
+  document.getElementById('announcementsCard').classList.toggle('collapsed');
+  document.getElementById('newAnnAlert').style.display = 'none'; // hide alert when opened
+}
+
+let lastTimestamp = 0; // Track last announcement
+
+// REAL-TIME ANNOUNCEMENTS WITH NEW ALERT
 const announcementsRef = ref(database, 'announcements');
-onValue(announcementsRef, (snapshot) => { // THIS FIRES INSTANTLY ON ANY DB CHANGE
+onValue(announcementsRef, (snapshot) => {
   const list = document.getElementById('announcementsList');
+  const newAlert = document.getElementById('newAnnAlert');
   const data = snapshot.val();
+
   if(!data){
     list.innerHTML = `<p style="color:#a0b0c9; font-size:13px;">No announcements yet</p>`;
     return;
   }
 
   let html = "";
-  let announcements = [];
+  let announcementsArray = [];
+  if(data.title){ announcementsArray = [data]; }
+  else { announcementsArray = Object.values(data).filter(item => item && item.title && item.message); }
 
-  // CASE 1: Single announcement object
-  if(data.title && data.message){
-    announcements.push(data);
-  }
-  // CASE 2: Multiple announcements with keys
-  else {
-    Object.values(data).forEach(item => {
-      if(item && item.title && item.message){ // filters undefined
-        announcements.push(item);
-      }
-    });
-  }
-
-  if(announcements.length === 0){
+  if(announcementsArray.length === 0){
     list.innerHTML = `<p style="color:#a0b0c9; font-size:13px;">No announcements yet</p>`;
     return;
   }
 
-  announcements.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0)).slice(0,5).forEach(a => {
+  announcementsArray.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+  const latestTimestamp = announcementsArray[0].timestamp || 0;
+
+  // SHOW NEW ANNOUNCEMENT ALERT
+  if(lastTimestamp > 0 && latestTimestamp > lastTimestamp){
+    newAlert.style.display = 'block';
+    document.getElementById('announcementsCard').classList.remove('collapsed'); // auto expand
+    setTimeout(() => { newAlert.style.display = 'none'; }, 8000); // hide after 8s
+  }
+  lastTimestamp = latestTimestamp;
+
+  announcementsArray.slice(0,5).forEach(a => {
     const date = a.timestamp? new Date(a.timestamp).toLocaleString() : 'Just now';
     html += `<div class="ann-item">
       <h4>${a.title}</h4>
@@ -217,9 +249,6 @@ onValue(announcementsRef, (snapshot) => { // THIS FIRES INSTANTLY ON ANY DB CHAN
   });
 
   list.innerHTML = html;
-}, (error) => {
-  console.error("Announcements Sync Error:", error);
-  document.getElementById('announcementsList').innerHTML = `<p style="color:#ff6b6b; font-size:13px;">Connection error. Retrying...</p>`;
 });
 
 document.querySelector(".logout").addEventListener("click", (e) => {
@@ -228,7 +257,6 @@ document.querySelector(".logout").addEventListener("click", (e) => {
 });
 </script>
 
-<!-- PWA SERVICE WORKER -->
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');

@@ -44,11 +44,6 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 .loading{text-align:center;padding:40px;color:#aaa;}
 .error-box{background:rgba(239,68,68,.15);border:1px solid var(--danger);color:#ff9999;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;}
 .success-box{background:rgba(34,197,94,.15);border:1px solid var(--success);color:#4cff88;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;}
-.input-group{display:flex;gap:10px;flex-wrap:wrap;}
-.input-group select{flex:1;min-width:200px;}
-.btn-group{display:flex;gap:10px;flex-wrap:wrap;}
-.btn-group button{flex:1;min-width:180px;}
-@media(max-width:768px){.input-group,.btn-group{flex-direction:column;}}
 </style>
 </head>
 <body>
@@ -73,26 +68,20 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 <div class="stat-card"><h2 id="rejectedUsers">0</h2><p>Rejected</p></div>
 </div>
 
-<!-- SEND NOTIFICATION BOX -->
+<!-- SEND NOTIFICATION / ANNOUNCEMENT BOX -->
 <div class="table-wrapper" style="margin-bottom:30px;">
-    <h2 class="table-title">📢 Send Notification</h2>
+    <h2 class="table-title">📢 Send Announcement</h2>
     <div style="display:flex;flex-direction:column;gap:15px;">
-
-        <div class="input-group">
-            <select id="notificationRecipient" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
-                <option value="all">📢 Send to ALL Members</option>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <select id="notificationRecipient" style="flex:1;min-width:200px;padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
+                <option value="all">📢 Send to ALL Members + Announcement Board</option>
             </select>
         </div>
-
-        <input type="text" id="notificationTitle" placeholder="Notification Title - e.g. Meeting Reminder" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
-
+        <input type="text" id="notificationTitle" placeholder="Announcement Title - e.g. Meeting Reminder" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
         <textarea id="notificationMessage" rows="5" placeholder="Write your message here..." style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;resize:vertical;"></textarea>
-
-        <div class="btn-group">
-            <button id="sendNotificationBtn" style="background:#d4af37;color:#111;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;transition:.3s;">
-                Send Notification
-            </button>
-        </div>
+        <button id="sendNotificationBtn" style="background:#d4af37;color:#111;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;transition:.3s;">
+            Send Announcement
+        </button>
     </div>
 </div>
 
@@ -113,8 +102,9 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, update, get, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, update, get, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+// FIREBASE CONFIG INJECTED
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -164,6 +154,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
+// REAL-TIME USERS
 function loadUsers(){
   const usersRef = ref(database, "users");
   onValue(usersRef, (snapshot) => {
@@ -205,20 +196,19 @@ function loadUsers(){
 
     usersTable.innerHTML = html;
     updateStats(total, approved, pending, rejected);
-  }, (error) => {
-    showError("Database Read Failed: " + error.message);
   });
 }
 
+// REAL-TIME RECIPIENTS
 function loadRecipients(){
   const usersRef = ref(database, "users");
   onValue(usersRef, (snapshot) => {
     const data = snapshot.val();
-    recipientSelect.innerHTML = '<option value="all">📢 Send to ALL Members</option>';
+    recipientSelect.innerHTML = '<option value="all">📢 Send to ALL Members + Announcement Board</option>';
     if(data){
       Object.keys(data).forEach(uid => {
         const user = data[uid];
-        if(user.role!== "admin"){ // skip admins
+        if(user.role!== "admin"){
           const option = document.createElement("option");
           option.value = uid;
           option.textContent = `${user.fullName} - ${user.email}`;
@@ -246,14 +236,14 @@ window.onclick = function(event) {
 }
 window.updateStatus = function(uid, status){
   update(ref(database, "users/" + uid), { status: status });
-  update(ref(database, "applications/" + uid), { status: status });
 }
 
-// SEND NOTIFICATION FUNCTION
+// SEND ANNOUNCEMENT + NOTIFICATION - REAL TIME
 document.getElementById("sendNotificationBtn").addEventListener("click", () => {
   const recipient = recipientSelect.value;
   const title = document.getElementById("notificationTitle").value.trim();
   const message = document.getElementById("notificationMessage").value.trim();
+  const adminEmail = auth.currentUser.email;
 
   if(!title ||!message){
     showError("Please fill both Title and Message");
@@ -268,11 +258,20 @@ document.getElementById("sendNotificationBtn").addEventListener("click", () => {
     title: title,
     message: message,
     timestamp: Date.now(),
-    read: false
+    read: false,
+    sentBy: adminEmail
+  };
+
+  const announcementData = {
+    title: title,
+    message: message,
+    timestamp: Date.now(),
+    sentByEmail: adminEmail
   };
 
   if(recipient === "all"){
-    // Send to all members
+    // 1. Send to all members notifications
+    // 2. Also update main /announcements for dashboard
     get(ref(database, "users")).then((snapshot) => {
       const data = snapshot.val();
       const updates = {};
@@ -282,16 +281,18 @@ document.getElementById("sendNotificationBtn").addEventListener("click", () => {
           updates[`notifications/${uid}/${newNotifKey}`] = notificationData;
         }
       });
+      // This makes it show on member dashboard instantly
+      updates[`announcements`] = announcementData;
       return update(ref(database), updates);
     }).then(() => {
-      showSuccess(`Notification sent to all members!`);
+      showSuccess(`Announcement sent to all members!`);
       resetForm();
     }).catch(err => {
       showError("Failed to send: " + err.message);
       resetBtn();
     });
   } else {
-    // Send to specific member
+    // Send to specific member only
     const newNotifKey = push(ref(database, `notifications/${recipient}`)).key;
     update(ref(database, `notifications/${recipient}/${newNotifKey}`), notificationData).then(() => {
       showSuccess(`Notification sent to selected member!`);
@@ -310,7 +311,7 @@ document.getElementById("sendNotificationBtn").addEventListener("click", () => {
   }
   function resetBtn(){
     btn.disabled = false;
-    btn.textContent = "Send Notification";
+    btn.textContent = "Send Announcement";
   }
 });
 

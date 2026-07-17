@@ -19,23 +19,6 @@ body::after{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-5
 header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,.85);backdrop-filter:blur(25px);display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid rgba(212,175,55,.2);}
 .logo{font-size:28px;font-weight:700;color:var(--gold);letter-spacing:2px;font-family:'Cinzel',serif;}
 .header-actions{display:flex;align-items:center;gap:18px;position:relative;}
-
-/* NOTIFICATION BELL */
-.notif-btn{position:relative;background:none;border:none;cursor:pointer;color:#a0b0c9;transition:.3s;padding:8px;}
-.notif-btn:hover{color:var(--gold);}
-.notif-badge{position:absolute;top:2px;right:2px;background:#ff3b3b;color:#fff;font-size:10px;font-weight:700;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:2px solid #050c18;display:none;}
-.notif-dropdown{position:absolute;top:55px;right:0;width:340px;max-height:400px;background:rgba(15,26,46,.95);backdrop-filter:blur(25px);border:1px solid rgba(212,175,55,.3);border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.6);display:none;flex-direction:column;z-index:2001;overflow:hidden;}
-.notif-dropdown.show{display:flex;}
-.notif-header{padding:15px 18px;border-bottom:1px solid rgba(212,175,55,.2);font-family:'Cinzel',serif;color:var(--gold);font-weight:600;font-size:15px;}
-.notif-list{overflow-y:auto;max-height:340px;}
-.notif-item{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;transition:.2s;}
-.notif-item:hover{background:rgba(212,175,55,.08);}
-.notif-item.unread{background:rgba(212,175,55,.12);border-left:3px solid var(--gold);}
-.notif-item h4{font-size:14px;color:var(--gold);margin-bottom:4px;}
-.notif-item p{font-size:13px;color:#ddd;line-height:1.5;}
-.notif-item small{font-size:11px;color:#8a9bb0;}
-.notif-empty{padding:25px;text-align:center;color:#8a9bb0;font-size:13px;}
-
 .logout{background:linear-gradient(135deg,var(--gold),#b8941f);color:#111;padding:11px 28px;border-radius:40px;text-decoration:none;font-weight:600;transition:.3s;box-shadow:0 5px 20px rgba(212,175,55,.3);}
 .logout:hover{background:linear-gradient(135deg,var(--gold-light),var(--gold));transform:translateY(-3px);}
 .dashboard{padding:60px 8% 140px;max-width:1500px;margin:auto;}
@@ -61,10 +44,30 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 .status-active{color:#4cff88;font-weight:700;}
 .status-pending{color:#f1ca52;font-weight:700;}
 .side-cards{display:flex;flex-direction:column;gap:25px;}
-.card{background:rgba(15,26,46,.7);backdrop-filter:blur(25px);padding:30px;border-radius:18px;border:1px solid rgba(212,175,55,.2);}
-.card-icon{width:50px;height:50px;background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.1));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;}
-.card h3{color:var(--gold);margin-bottom:10px;font-size:18px;font-family:'Cinzel',serif;}
-.card p{color:#a0b0c9;line-height:1.7;font-size:14px;}
+
+/* COLLAPSIBLE CARD */
+.card{background:rgba(15,26,46,.7);backdrop-filter:blur(25px);padding:0;border-radius:18px;border:1px solid rgba(212,175,55,.2);overflow:hidden;}
+.card-header{padding:20px 25px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:.3s;}
+.card-header:hover{background:rgba(212,175,55,.05);}
+.card-header h3{color:var(--gold);font-size:18px;font-family:'Cinzel',serif;display:flex;align-items:center;gap:12px;}
+.card-icon{width:40px;height:40px;background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.1));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.arrow{transition:.3s;color:var(--gold); font-size:18px;}
+.card.open.arrow{transform:rotate(180deg);}
+.card-content{max-height:0;overflow:hidden;transition:max-height.4s ease;}
+.card.open.card-content{max-height:600px; padding:0 25px 25px 25px;}
+
+/* NOTIFICATION/ANNOUNCEMENT ITEMS */
+.item-list{max-height:400px; overflow-y:auto; margin-top:15px;}
+.item{display:flex; gap:12px; padding:14px; border-radius:12px; margin-bottom:10px; background:rgba(5,12,24,.6); border-left:3px solid transparent; cursor:pointer; transition:.2s;}
+.item:hover{background:rgba(212,175,55,.08);}
+.item.unread{border-left:3px solid var(--gold); background:rgba(212,175,55,.1);}
+.item-icon{font-size:22px; line-height:1;}
+.item-content{flex:1;}
+.item-content h4{font-size:14px;color:var(--gold);margin-bottom:4px;}
+.item-content p{font-size:13px;color:#ddd;line-height:1.5;}
+.item-content small{font-size:11px;color:#8a9bb0;}
+.empty-msg{padding:20px;text-align:center;color:#8a9bb0;font-size:13px;}
+
 .card.admin-card{display:none;}
 .bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(15,26,46,.94);backdrop-filter:blur(25px);padding:10px;border-radius:22px;display:flex;gap:8px;border:1px solid rgba(212,175,55,.25);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;}
 .nav-item{width:90px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#a0b0c9;border-radius:16px;font-size:11px;font-weight:500;transition:.25s ease;font-family:'Poppins',sans-serif;}
@@ -73,7 +76,7 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 .nav-item:hover{background:rgba(212,175,55,.1);color:#f1ca52;}
 .nav-item.active{background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:600;box-shadow:0 6px 18px rgba(212,175,55,.35);}
 @media(max-width:900px){.bottom-nav{left:50%;transform:translateX(-50%);width:calc(100% - 30px);max-width:600px;justify-content:space-between;}.nav-item{width:calc(16.66% - 7px);height:65px;}.nav-label{font-size:10px;}}
-@media(max-width:480px){.nav-item{height:60px;}.nav-icon{width:22px;height:22px;}.nav-label{font-size:9px;}.notif-dropdown{width:calc(100vw - 30px); right:-10px;}}
+@media(max-width:480px){.nav-item{height:60px;}.nav-icon{width:22px;height:22px;}.nav-label{font-size:9px;}}
 @media(max-width:800px){.dashboard{padding:40px 5% 140px;}.details-grid{grid-template-columns:1fr;}.profile-header{flex-direction:column;text-align:center;}}
 </style>
 </head>
@@ -81,17 +84,6 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 <header>
   <div class="logo">FREEMASONRY HERITAGE</div>
   <div class="header-actions">
-    <!-- NOTIFICATION BELL -->
-    <button class="notif-btn" id="notifBtn">
-      <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-      <span class="notif-badge" id="notifBadge">0</span>
-    </button>
-    <div class="notif-dropdown" id="notifDropdown">
-      <div class="notif-header">Notifications</div>
-      <div class="notif-list" id="notifList">
-        <div class="notif-empty">No notifications yet</div>
-      </div>
-    </div>
     <a href="#" class="logout">Logout</a>
   </div>
 </header>
@@ -116,10 +108,31 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 </div>
 </section>
 <div class="side-cards">
-  <div class="card"><div class="card-icon">📜</div><h3>Lodge Information</h3><p>Access meeting schedules, lodge announcements, and member activities.</p></div>
-  <div class="card" id="announcementsCard"><div class="card-icon">📢</div><h3>Latest Announcements</h3><div id="announcementsList" style="margin-top:10px; max-height:300px; overflow-y:auto;"><p style="color:#a0b0c9; font-size:13px;">Loading...</p></div></div>
-  <div class="card"><div class="card-icon">🤝</div><h3>Membership Support</h3><p>Contact your Lodge Director for guidance and fraternity assistance.</p></div>
-  <div class="card admin-card" id="adminPanel"><div class="card-icon">⚙️</div><h3>Admin Panel</h3><p>Manage members, applications, and lodge settings. <a href="admin.html" style="color:var(--gold); text-decoration:underline;">Go to Dashboard →</a></p></div>
+  <div class="card"><div class="card-header"><h3><div class="card-icon">📜</div>Lodge Information</h3><span class="arrow">▼</span></div><div class="card-content"><p>Access meeting schedules, lodge announcements, and member activities.</p></div></div>
+
+  <!-- NOTIFICATIONS CARD -->
+  <div class="card" id="notificationsCard">
+    <div class="card-header"><h3><div class="card-icon">📩</div>Notifications <span id="notifCount" style="font-size:12px;color:#aaa;"></span></h3><span class="arrow">▼</span></div>
+    <div class="card-content">
+      <div class="item-list" id="notificationsList">
+        <div class="empty-msg">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANNOUNCEMENTS CARD -->
+  <div class="card" id="announcementsCard">
+    <div class="card-header"><h3><div class="card-icon">📩</div>Announcements <span id="annCount" style="font-size:12px;color:#aaa;"></span></h3><span class="arrow">▼</span></div>
+    <div class="card-content">
+      <div class="item-list" id="announcementsList">
+        <div class="empty-msg">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card"><div class="card-header"><h3><div class="card-icon">🤝</div>Membership Support</h3><span class="arrow">▼</span></div><div class="card-content"><p>Contact your Lodge Director for guidance and fraternity assistance.</p></div></div>
+
+  <div class="card admin-card" id="adminPanel"><div class="card-header"><h3><div class="card-icon">⚙️</div>Admin Panel</h3><span class="arrow">▼</span></div><div class="card-content"><p>Manage members, applications, and lodge settings. <a href="admin.html" style="color:var(--gold); text-decoration:underline;">Go to Dashboard →</a></p></div></div>
 </div>
 </div>
 </main>
@@ -154,154 +167,149 @@ const auth = getAuth(app);
 const database = getDatabase(app);
 
 let currentUserId = null;
-let lastNotifCount = 0;
 
-const greetingName = document.getElementById("greetingName");
-const memberName = document.getElementById("memberName");
-const memberEmail = document.getElementById("memberEmail");
-const profileInitial = document.getElementById("profileInitial");
-const detailFullName = document.getElementById("detailFullName");
-const detailEmail = document.getElementById("detailEmail");
-const detailPhone = document.getElementById("detailPhone");
-const detailCountry = document.getElementById("detailCountry");
-const detailInterest = document.getElementById("detailInterest");
-const memberStatus = document.getElementById("memberStatus");
-const statStatus = document.getElementById("statStatus");
-const statLodge = document.getElementById("statLodge");
-const statSince = document.getElementById("statSince");
-
-// NOTIFICATION ELEMENTS
-const notifBtn = document.getElementById("notifBtn");
-const notifBadge = document.getElementById("notifBadge");
-const notifDropdown = document.getElementById("notifDropdown");
-const notifList = document.getElementById("notifList");
+// ACCORDION FUNCTION - only 1 open at a time
+document.querySelectorAll('.card-header').forEach(header => {
+  header.addEventListener('click', () => {
+    const card = header.parentElement;
+    const isOpen = card.classList.contains('open');
+    // close all
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('open'));
+    // open clicked if it wasn't open
+    if(!isOpen) card.classList.add('open');
+  });
+});
 
 onAuthStateChanged(auth, (user) => {
   if(!user){ window.location.href = "login.html"; return; }
   currentUserId = user.uid;
-  memberEmail.textContent = user.email;
-  detailEmail.textContent = user.email;
-  loadNotifications(user.uid); // Load notifications
 
-  const userRef = ref(database, "users/" + user.uid);
+  loadUserData(user.uid);
+  loadNotifications(user.uid);
+  loadAnnouncements(user.uid);
+});
+
+function loadUserData(uid){
+  const userRef = ref(database, "users/" + uid);
   onValue(userRef, (snapshot) => {
     if(snapshot.exists()){
       const data = snapshot.val();
       const fullName = data.fullName || "Member";
-      const firstName = fullName.split(' ')[0];
-      greetingName.textContent = firstName;
-      memberName.textContent = fullName;
-      profileInitial.textContent = fullName.charAt(0).toUpperCase();
-      detailFullName.textContent = fullName;
-      detailPhone.textContent = data.phone || "Not Provided";
-      detailCountry.textContent = data.country || "Not Set";
-      detailInterest.textContent = data.interest || "Not Set";
+      document.getElementById("greetingName").textContent = fullName.split(' ')[0];
+      document.getElementById("memberName").textContent = fullName;
+      document.getElementById("profileInitial").textContent = fullName.charAt(0).toUpperCase();
+      document.getElementById("memberEmail").textContent = data.email || "-";
+      document.getElementById("detailFullName").textContent = fullName;
+      document.getElementById("detailEmail").textContent = data.email || "-";
+      document.getElementById("detailPhone").textContent = data.phone || "Not Provided";
+      document.getElementById("detailCountry").textContent = data.country || "Not Set";
+      document.getElementById("detailInterest").textContent = data.interest || "Not Set";
       if(data.timestamp){
         const regYear = new Date(data.timestamp).getFullYear();
-        statSince.textContent = isNaN(regYear)? "-" : regYear;
+        document.getElementById("statSince").textContent = isNaN(regYear)? "-" : regYear;
       }
       if(data.status === "approved" || data.status === "active"){
-        memberStatus.textContent = "ACTIVE";
-        memberStatus.className = "status-active";
-        statStatus.textContent = "Active";
+        document.getElementById("memberStatus").textContent = "ACTIVE";
+        document.getElementById("memberStatus").className = "status-active";
+        document.getElementById("statStatus").textContent = "Active";
       } else {
-        memberStatus.textContent = "PENDING";
-        memberStatus.className = "status-pending";
-        statStatus.textContent = "Pending";
+        document.getElementById("memberStatus").textContent = "PENDING";
+        document.getElementById("memberStatus").className = "status-pending";
+        document.getElementById("statStatus").textContent = "Pending";
       }
-      statLodge.textContent = data.lodgeNumber || "Not Assigned";
-      const adminPanel = document.getElementById("adminPanel");
-      if(data.role === "admin"){ adminPanel.style.display = "block"; }
+      document.getElementById("statLodge").textContent = data.lodgeNumber || "Not Assigned";
+      if(data.role === "admin"){ document.getElementById("adminPanel").style.display = "block"; }
     }
   });
-});
+}
 
-// NOTIFICATION SYSTEM
+// NOTIFICATIONS
 function loadNotifications(uid){
   const notifRef = ref(database, "notifications/" + uid);
   onValue(notifRef, (snapshot) => {
     const data = snapshot.val();
+    const list = document.getElementById('notificationsList');
+    const countSpan = document.getElementById('notifCount');
+
     if(!data){
-      notifList.innerHTML = `<div class="notif-empty">No notifications yet</div>`;
-      notifBadge.style.display = "none";
+      list.innerHTML = `<div class="empty-msg">No notifications yet</div>`;
+      countSpan.textContent = "";
       return;
     }
 
-    const notifs = Object.entries(data).reverse(); // newest first
+    const notifs = Object.entries(data).reverse();
     let unreadCount = 0;
     let html = "";
 
     notifs.forEach(([key, n]) => {
       if(!n.read) unreadCount++;
+      const icon = n.read? "📧" : "📩";
       const date = n.timestamp? new Date(n.timestamp).toLocaleString() : 'Just now';
       html += `
-        <div class="notif-item ${!n.read? 'unread' : ''}" data-id="${key}">
-          <h4>${n.title || 'Notification'}</h4>
-          <p>${n.message}</p>
-          <small>${date}</small>
+        <div class="item ${!n.read? 'unread' : ''}" onclick="markNotificationRead('${key}')">
+          <div class="item-icon">${icon}</div>
+          <div class="item-content">
+            <h4>${n.title || 'Notification'}</h4>
+            <p>${n.message}</p>
+            <small>${date}</small>
+          </div>
         </div>
       `;
     });
 
-    notifList.innerHTML = html;
-
-    // Update badge
-    if(unreadCount > 0){
-      notifBadge.textContent = unreadCount;
-      notifBadge.style.display = "flex";
-
-      // Alert for new notifications
-      if(unreadCount > lastNotifCount){
-        alert(`🔔 You have ${unreadCount} new notification(s)!`);
-      }
-      lastNotifCount = unreadCount;
-    } else {
-      notifBadge.style.display = "none";
-      lastNotifCount = 0;
-    }
+    list.innerHTML = html;
+    countSpan.textContent = unreadCount > 0? `(${unreadCount} new)` : "";
   });
 }
 
-// Toggle dropdown
-notifBtn.addEventListener("click", () => {
-  notifDropdown.classList.toggle("show");
-  if(notifDropdown.classList.contains("show") && currentUserId){
-    // Mark all as read when opened
-    const notifRef = ref(database, "notifications/" + currentUserId);
-    onValue(notifRef, (snapshot) => {
-      const updates = {};
-      snapshot.forEach(child => {
-        if(!child.val().read){
-          updates[child.key + "/read"] = true;
-        }
-      });
-      if(Object.keys(updates).length > 0){
-        update(notifRef, updates);
-      }
-    }, { onlyOnce: true });
-  }
-});
+window.markNotificationRead = function(key){
+  if(!currentUserId) return;
+  update(ref(database, `notifications/${currentUserId}/${key}`), { read: true });
+}
 
-// Close dropdown when clicking outside
-document.addEventListener("click", (e) => {
-  if(!notifBtn.contains(e.target) &&!notifDropdown.contains(e.target)){
-    notifDropdown.classList.remove("show");
-  }
-});
+// ANNOUNCEMENTS - mark as read when card is opened
+function loadAnnouncements(uid){
+  const annRef = ref(database, "announcements");
+  onValue(annRef, (snapshot) => {
+    const data = snapshot.val();
+    const list = document.getElementById('announcementsList');
+    const countSpan = document.getElementById('annCount');
 
-const announcementsRef = ref(database, 'announcements');
-onValue(announcementsRef, (snapshot) => {
-  const list = document.getElementById('announcementsList');
-  const data = snapshot.val();
-  if(!data){ list.innerHTML = `<p style="color:#a0b0c9; font-size:13px;">No announcements yet</p>`; return; }
-  let html = "";
-  Object.keys(data).reverse().slice(0,5).forEach(key => {
-    const a = data[key];
-    const date = a.timestamp? new Date(a.timestamp).toLocaleString() : 'Just now';
-    html += `<div style="background:rgba(5,12,24,.6); padding:12px; border-radius:10px; margin-bottom:10px; border-left:3px solid var(--gold);"><h4 style="color:var(--gold); font-size:14px; margin-bottom:4px;">${a.title}</h4><p style="color:#ddd; font-size:13px; line-height:1.5;">${a.message}</p><small style="color:#8a9bb0; font-size:11px;">${date}</small></div>`;
+    if(!data){
+      list.innerHTML = `<div class="empty-msg">No announcements yet</div>`;
+      countSpan.textContent = "";
+      return;
+    }
+
+    const anns = Object.entries(data).reverse();
+    let html = "";
+    anns.slice(0,10).forEach(([key, a]) => {
+      const isRead = localStorage.getItem(`ann_read_${key}`) === "true";
+      const icon = isRead? "📧" : "📩";
+      const date = a.timestamp? new Date(a.timestamp).toLocaleString() : 'Just now';
+      html += `
+        <div class="item ${!isRead? 'unread' : ''}" onclick="markAnnouncementRead('${key}')">
+          <div class="item-icon">${icon}</div>
+          <div class="item-content">
+            <h4>${a.title}</h4>
+            <p>${a.message}</p>
+            <small>${date}</small>
+          </div>
+        </div>
+      `;
+    });
+
+    list.innerHTML = html;
+    const unreadAnn = anns.filter(([k]) => localStorage.getItem(`ann_read_${k}`)!== "true").length;
+    countSpan.textContent = unreadAnn > 0? `(${unreadAnn} new)` : "";
   });
-  list.innerHTML = html;
-});
+}
+
+window.markAnnouncementRead = function(key){
+  localStorage.setItem(`ann_read_${key}`, "true");
+  // refresh to update icon
+  loadAnnouncements(currentUserId);
+}
 
 document.querySelector(".logout").addEventListener("click", (e) => {
   e.preventDefault();
@@ -315,4 +323,4 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 </body>
-</html>
+  </html>

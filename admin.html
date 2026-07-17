@@ -43,6 +43,12 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 .show{display:block;}
 .loading{text-align:center;padding:40px;color:#aaa;}
 .error-box{background:rgba(239,68,68,.15);border:1px solid var(--danger);color:#ff9999;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;}
+.success-box{background:rgba(34,197,94,.15);border:1px solid var(--success);color:#4cff88;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;}
+.input-group{display:flex;gap:10px;flex-wrap:wrap;}
+.input-group select{flex:1;min-width:200px;}
+.btn-group{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-group button{flex:1;min-width:180px;}
+@media(max-width:768px){.input-group,.btn-group{flex-direction:column;}}
 </style>
 </head>
 <body>
@@ -58,6 +64,7 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 </div>
 
 <div id="errorBox"></div>
+<div id="successBox"></div>
 
 <div class="stats">
 <div class="stat-card"><h2 id="totalUsers">0</h2><p>Total Members</p></div>
@@ -65,44 +72,31 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 <div class="stat-card"><h2 id="pendingUsers">0</h2><p>Pending</p></div>
 <div class="stat-card"><h2 id="rejectedUsers">0</h2><p>Rejected</p></div>
 </div>
-<div class="stats">
-    ...
-</div>
 
-<!-- PLACE THE SEND ANNOUNCEMENT BOX HERE -->
-
+<!-- SEND NOTIFICATION BOX -->
 <div class="table-wrapper" style="margin-bottom:30px;">
-    <h2 class="table-title">Send Announcement</h2>
-
+    <h2 class="table-title">📢 Send Notification</h2>
     <div style="display:flex;flex-direction:column;gap:15px;">
 
-        <input
-            type="text"
-            id="notificationTitle"
-            placeholder="Notification Title"
-            style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
+        <div class="input-group">
+            <select id="notificationRecipient" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
+                <option value="all">📢 Send to ALL Members</option>
+            </select>
+        </div>
 
-        <textarea
-            id="notificationMessage"
-            rows="5"
-            placeholder="Write your message here..."
-            style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;resize:vertical;"></textarea>
+        <input type="text" id="notificationTitle" placeholder="Notification Title - e.g. Meeting Reminder" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
 
-        <button
-            id="sendNotificationBtn"
-            style="background:#d4af37;color:#111;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;">
-            📢 Send to All Members
-        </button>
+        <textarea id="notificationMessage" rows="5" placeholder="Write your message here..." style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;resize:vertical;"></textarea>
 
+        <div class="btn-group">
+            <button id="sendNotificationBtn" style="background:#d4af37;color:#111;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;transition:.3s;">
+                Send Notification
+            </button>
+        </div>
     </div>
 </div>
 
 <!-- MEMBER APPLICATIONS TABLE -->
-
-<div class="table-wrapper">
-    <h2 class="table-title">Member Applications</h2>
-    ...
-</div>
 <div class="table-wrapper">
 <h2 class="table-title">Member Applications</h2>
 <div class="table-scroll">
@@ -119,7 +113,7 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, update, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, update, get, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -137,10 +131,17 @@ const auth = getAuth(app);
 const database = getDatabase(app);
 const usersTable = document.getElementById('usersTable');
 const errorBox = document.getElementById('errorBox');
+const successBox = document.getElementById('successBox');
+const recipientSelect = document.getElementById('notificationRecipient');
 
 function showError(msg){
   errorBox.innerHTML = `<div class="error-box">${msg}</div>`;
+  setTimeout(()=>{errorBox.innerHTML = ""}, 5000);
   console.error(msg);
+}
+function showSuccess(msg){
+  successBox.innerHTML = `<div class="success-box">${msg}</div>`;
+  setTimeout(()=>{successBox.innerHTML = ""}, 4000);
 }
 
 onAuthStateChanged(auth, async (user) => {
@@ -148,16 +149,16 @@ onAuthStateChanged(auth, async (user) => {
     window.location.href = "https://mansoryfamily.github.io/MANSONRY-FAMILY-FRATERNITY-/login.html";
     return;
   }
-  
+
   try{
-    // CHECK IF ADMIN - use get() not onValue to prevent loop
     const userSnap = await get(ref(database, "users/" + user.uid));
-    if(!userSnap.exists() || userSnap.val().role !== "admin"){
-      showError("Access Denied: You are not an admin. Set role:'admin' in Firebase for user: " + user.uid);
+    if(!userSnap.exists() || userSnap.val().role!== "admin"){
+      showError("Access Denied: You are not an admin.");
       setTimeout(()=>{window.location.href = "dashboard.html";}, 3000);
       return;
     }
     loadUsers();
+    loadRecipients();
   }catch(err){
     showError("Firebase Error: " + err.message);
   }
@@ -209,6 +210,25 @@ function loadUsers(){
   });
 }
 
+function loadRecipients(){
+  const usersRef = ref(database, "users");
+  onValue(usersRef, (snapshot) => {
+    const data = snapshot.val();
+    recipientSelect.innerHTML = '<option value="all">📢 Send to ALL Members</option>';
+    if(data){
+      Object.keys(data).forEach(uid => {
+        const user = data[uid];
+        if(user.role!== "admin"){ // skip admins
+          const option = document.createElement("option");
+          option.value = uid;
+          option.textContent = `${user.fullName} - ${user.email}`;
+          recipientSelect.appendChild(option);
+        }
+      });
+    }
+  });
+}
+
 function updateStats(t,a,p,r){
   document.getElementById('totalUsers').textContent = t;
   document.getElementById('approvedUsers').textContent = a;
@@ -229,10 +249,74 @@ window.updateStatus = function(uid, status){
   update(ref(database, "applications/" + uid), { status: status });
 }
 
+// SEND NOTIFICATION FUNCTION
+document.getElementById("sendNotificationBtn").addEventListener("click", () => {
+  const recipient = recipientSelect.value;
+  const title = document.getElementById("notificationTitle").value.trim();
+  const message = document.getElementById("notificationMessage").value.trim();
+
+  if(!title ||!message){
+    showError("Please fill both Title and Message");
+    return;
+  }
+
+  const btn = document.getElementById("sendNotificationBtn");
+  btn.disabled = true;
+  btn.textContent = "Sending...";
+
+  const notificationData = {
+    title: title,
+    message: message,
+    timestamp: Date.now(),
+    read: false
+  };
+
+  if(recipient === "all"){
+    // Send to all members
+    get(ref(database, "users")).then((snapshot) => {
+      const data = snapshot.val();
+      const updates = {};
+      Object.keys(data).forEach(uid => {
+        if(data[uid].role!== "admin"){
+          const newNotifKey = push(ref(database, `notifications/${uid}`)).key;
+          updates[`notifications/${uid}/${newNotifKey}`] = notificationData;
+        }
+      });
+      return update(ref(database), updates);
+    }).then(() => {
+      showSuccess(`Notification sent to all members!`);
+      resetForm();
+    }).catch(err => {
+      showError("Failed to send: " + err.message);
+      resetBtn();
+    });
+  } else {
+    // Send to specific member
+    const newNotifKey = push(ref(database, `notifications/${recipient}`)).key;
+    update(ref(database, `notifications/${recipient}/${newNotifKey}`), notificationData).then(() => {
+      showSuccess(`Notification sent to selected member!`);
+      resetForm();
+    }).catch(err => {
+      showError("Failed to send: " + err.message);
+      resetBtn();
+    });
+  }
+
+  function resetForm(){
+    document.getElementById("notificationTitle").value = "";
+    document.getElementById("notificationMessage").value = "";
+    recipientSelect.value = "all";
+    resetBtn();
+  }
+  function resetBtn(){
+    btn.disabled = false;
+    btn.textContent = "Send Notification";
+  }
+});
+
 document.getElementById("logoutBtn").addEventListener("click",()=>{
   signOut(auth).then(()=>{window.location.href="https://mansoryfamily.github.io/MANSONRY-FAMILY-FRATERNITY-/login.html";});
 });
 </script>
-  <script type="module" src="notifications.js"></script>
 </body>
 </html>

@@ -49,6 +49,12 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 .current-ann h4{color:var(--gold);font-size:15px;margin-bottom:6px;}
 .current-ann p{color:#ddd;font-size:13px;line-height:1.6;margin-bottom:6px;}
 .current-ann small{color:#8a9bb0;font-size:11px;}
+
+/* NEW: Notification list for delete */
+.notif-item{background:rgba(5,12,24,.5);border:1px solid rgba(212,175,55,.2);padding:12px;border-radius:10px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.notif-item h5{color:var(--gold);font-size:14px;margin-bottom:4px;}
+.notif-item p{color:#ddd;font-size:12px;}
+.delete-one-btn{background:var(--danger);color:#fff;border:none;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -80,11 +86,9 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
         <p style="color:#a0b0c9;font-size:13px;">Loading current announcement...</p>
     </div>
     <div style="display:flex;flex-direction:column;gap:15px;">
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <select id="notificationRecipient" style="flex:1;min-width:200px;padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
-                <option value="all">📢 Send to ALL Members + Announcement Board</option>
-            </select>
-        </div>
+        <select id="notificationRecipient" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
+            <option value="all">📢 Send to ALL Members + Announcement Board</option>
+        </select>
         <input type="text" id="notificationTitle" placeholder="Announcement Title - e.g. Meeting Reminder" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
         <textarea id="notificationMessage" rows="5" placeholder="Write your message here..." style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;resize:vertical;"></textarea>
         <button id="sendNotificationBtn" style="background:#d4af37;color:#111;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;transition:.3s;">
@@ -98,12 +102,19 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
     <h2 class="table-title">🗑️ Delete Announcement</h2>
     <div style="display:flex;flex-direction:column;gap:15px;">
         <select id="deleteRecipient" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
+            <option value="">-- Select Member to View/Delete Their Notifications --</option>
             <option value="all">🗑️ Delete from ALL Members Announcement Board</option>
         </select>
-        <button id="deleteAnnouncementBtn" style="background:var(--danger);color:#fff;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;transition:.3s;">
-            Delete Selected Announcement
+
+        <!-- NEW: Shows all notifications for selected member -->
+        <div id="memberNotificationsList" style="max-height:300px;overflow-y:auto;display:none;">
+            <p style="color:#a0b0c9;font-size:13px;">Select a member above to see their notifications</p>
+        </div>
+
+        <button id="deleteAllBtn" style="background:var(--danger);color:#fff;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;transition:.3s;display:none;">
+            Delete ALL Notifications for Selected Member
         </button>
-        <p style="color:#a0b0c9;font-size:12px;">Note: Deleting from "ALL" removes it from member dashboard. Deleting from "One Member" removes their personal notification only.</p>
+        <p style="color:#a0b0c9;font-size:12px;">Note: Use dropdown to delete specific one. Use button below to delete all for that member.</p>
     </div>
 </div>
 
@@ -126,7 +137,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, onValue, update, get, push, set, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// FIREBASE CONFIG INJECTED
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -146,6 +156,8 @@ const errorBox = document.getElementById('errorBox');
 const successBox = document.getElementById('successBox');
 const recipientSelect = document.getElementById('notificationRecipient');
 const deleteRecipientSelect = document.getElementById('deleteRecipient');
+const memberNotifList = document.getElementById('memberNotificationsList');
+const deleteAllBtn = document.getElementById('deleteAllBtn');
 
 function showError(msg){
   errorBox.innerHTML = `<div class="error-box">${msg}</div>`;
@@ -177,7 +189,6 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// LOAD CURRENT ANNOUNCEMENT FOR ADMIN PREVIEW
 function loadCurrentAnnouncement(){
   const annRef = ref(database, 'announcements');
   onValue(annRef, (snapshot) => {
@@ -198,7 +209,6 @@ function loadCurrentAnnouncement(){
   });
 }
 
-// LOAD USERS + FILL BOTH DROPDOWNS
 function loadUsers(){
   const usersRef = ref(database, "users");
   onValue(usersRef, (snapshot) => {
@@ -208,11 +218,9 @@ function loadUsers(){
       updateStats(0,0,0,0);
       return;
     }
-
     let html = "";
     let total = 0, approved = 0, pending = 0, rejected = 0;
     let count = 1;
-
     Object.keys(data).forEach(uid => {
       const user = data[uid];
       const status = user.status || "pending";
@@ -220,9 +228,7 @@ function loadUsers(){
       else if(status === "rejected") rejected++;
       else pending++;
       total++;
-
       const appliedDate = user.timestamp? new Date(user.timestamp).toLocaleDateString() : 'N/A';
-
       html += `<tr>
         <td>${count++}</td>
         <td>${user.fullName || 'N/A'}</td>
@@ -237,7 +243,6 @@ function loadUsers(){
         <button onclick="updateStatus('${uid}','rejected')">Rejected</button>
         </div></div></td></tr>`;
     });
-
     usersTable.innerHTML = html;
     updateStats(total, approved, pending, rejected);
   });
@@ -248,7 +253,7 @@ function loadRecipients(){
   onValue(usersRef, (snapshot) => {
     const data = snapshot.val();
     recipientSelect.innerHTML = '<option value="all">📢 Send to ALL Members + Announcement Board</option>';
-    deleteRecipientSelect.innerHTML = '<option value="all">🗑️ Delete from ALL Members Announcement Board</option>';
+    deleteRecipientSelect.innerHTML = '<option value="">-- Select Member to View/Delete Their Notifications --</option><option value="all">🗑️ Delete from ALL Members Announcement Board</option>';
     if(data){
       Object.keys(data).forEach(uid => {
         const user = data[uid];
@@ -260,12 +265,60 @@ function loadRecipients(){
 
           const option2 = document.createElement("option");
           option2.value = uid;
-          option2.textContent = `🗑️ Delete from: ${user.fullName}`;
+          option2.textContent = `👤 ${user.fullName}`;
           deleteRecipientSelect.appendChild(option2);
         }
       });
     }
   });
+}
+
+// NEW: SHOW MEMBER NOTIFICATIONS WHEN SELECTED
+deleteRecipientSelect.addEventListener("change", (e) => {
+  const uid = e.target.value;
+  if(!uid || uid === "all"){
+    memberNotifList.style.display = "none";
+    deleteAllBtn.style.display = "none";
+    return;
+  }
+  memberNotifList.style.display = "block";
+  deleteAllBtn.style.display = "block";
+  loadMemberNotifications(uid);
+});
+
+function loadMemberNotifications(uid){
+  const notifRef = ref(database, `notifications/${uid}`);
+  onValue(notifRef, (snapshot) => {
+    const data = snapshot.val();
+    if(!data){
+      memberNotifList.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No notifications for this member</p>`;
+      return;
+    }
+    let html = "";
+    Object.keys(data).reverse().forEach(key => { // reverse = newest first
+      const n = data[key];
+      const date = n.timestamp? new Date(n.timestamp).toLocaleString() : '';
+      html += `
+        <div class="notif-item">
+          <div>
+            <h5>${n.title}</h5>
+            <p>${n.message}</p>
+            <small style="color:#8a9bb0;font-size:10px;">${date}</small>
+          </div>
+          <button class="delete-one-btn" onclick="deleteSpecificNotification('${uid}','${key}')">Delete</button>
+        </div>
+      `;
+    });
+    memberNotifList.innerHTML = html;
+  });
+}
+
+window.deleteSpecificNotification = function(uid, key){
+  if(confirm("Delete this specific notification?")){
+    remove(ref(database, `notifications/${uid}/${key}`))
+   .then(() => showSuccess("Notification deleted"))
+   .catch(err => showError(err.message));
+  }
 }
 
 function updateStats(t,a,p,r){
@@ -293,31 +346,15 @@ document.getElementById("sendNotificationBtn").addEventListener("click", () => {
   const title = document.getElementById("notificationTitle").value.trim();
   const message = document.getElementById("notificationMessage").value.trim();
   const adminEmail = auth.currentUser.email;
-
   if(!title ||!message){
     showError("Please fill both Title and Message");
     return;
   }
-
   const btn = document.getElementById("sendNotificationBtn");
   btn.disabled = true;
   btn.textContent = "Sending...";
-
-  const notificationData = {
-    title: title,
-    message: message,
-    timestamp: Date.now(),
-    read: false,
-    sentBy: adminEmail
-  };
-
-  const announcementData = {
-    title: title,
-    message: message,
-    timestamp: Date.now(),
-    sentByEmail: adminEmail
-  };
-
+  const notificationData = {title, message, timestamp: Date.now(), read: false, sentBy: adminEmail};
+  const announcementData = {title, message, timestamp: Date.now(), sentByEmail: adminEmail};
   if(recipient === "all"){
     get(ref(database, "users")).then((snapshot) => {
       const data = snapshot.val();
@@ -333,61 +370,32 @@ document.getElementById("sendNotificationBtn").addEventListener("click", () => {
     }).then(() => {
       showSuccess(`Announcement sent to all members!`);
       resetForm();
-    }).catch(err => {
-      showError("Failed to send: " + err.message);
-      resetBtn();
-    });
+    }).catch(err => {showError("Failed to send: " + err.message); resetBtn();});
   } else {
     const newNotifKey = push(ref(database, `notifications/${recipient}`)).key;
     update(ref(database, `notifications/${recipient}/${newNotifKey}`), notificationData).then(() => {
       showSuccess(`Notification sent to selected member!`);
       resetForm();
-    }).catch(err => {
-      showError("Failed to send: " + err.message);
-      resetBtn();
-    });
+    }).catch(err => {showError("Failed to send: " + err.message); resetBtn();});
   }
-
-  function resetForm(){
-    document.getElementById("notificationTitle").value = "";
-    document.getElementById("notificationMessage").value = "";
-    recipientSelect.value = "all";
-    resetBtn();
-  }
-  function resetBtn(){
-    btn.disabled = false;
-    btn.textContent = "Send Announcement";
-  }
+  function resetForm(){document.getElementById("notificationTitle").value = "";document.getElementById("notificationMessage").value = "";recipientSelect.value = "all";resetBtn();}
+  function resetBtn(){btn.disabled = false;btn.textContent = "Send Announcement";}
 });
 
-// DELETE ANNOUNCEMENT - NEW CARD LOGIC
-document.getElementById("deleteAnnouncementBtn").addEventListener("click", () => {
-  const recipient = deleteRecipientSelect.value;
-
-  if(recipient === "all"){
-    if(confirm("Delete current announcement from ALL member dashboards?")){
-      set(ref(database, 'announcements'), null)
-    .then(() => {
-        showSuccess("Announcement deleted from all member dashboards");
-      }).catch(err => {
-        showError("Failed to delete: " + err.message);
-      });
-    }
-  } else {
-    if(confirm("Delete all notifications for this member?")){
-      set(ref(database, `notifications/${recipient}`), null)
-    .then(() => {
-        showSuccess("All notifications deleted for selected member");
-      }).catch(err => {
-        showError("Failed to delete: " + err.message);
-      });
+// DELETE LOGIC
+document.getElementById("deleteAllBtn").addEventListener("click", () => {
+  const uid = deleteRecipientSelect.value;
+  if(uid && uid!== "all"){
+    if(confirm("Delete ALL notifications for this member?")){
+      set(ref(database, `notifications/${uid}`), null)
+     .then(() => showSuccess("All notifications deleted for member"))
+     .catch(err => showError(err.message));
     }
   }
 });
 
 document.getElementById("logoutBtn").addEventListener("click",()=>{
   signOut(auth).then(()=>{window.location.href="https://mansoryfamily.github.io/MANSONRY-FAMILY-FRATERNITY-/login.html";});
-});
 </script>
 </body>
 </html>

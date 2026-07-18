@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freemasonry | Member Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;overflow-x:hidden;}
+body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-attachment:fixed;z-index:-2;}
+header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
+.logo{font-size:30px;font-weight:700;color:#d4af37;}
+.hero{height:45vh;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;}
+.hero h1{font-size:55px;color:#d4af37;}
+section{padding:80px 10%;}
+.title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:40px;}
+.login-box{max-width:500px;margin:auto;background:rgba(20,34,56,.8);backdrop-filter:blur(20px);padding:45px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.25);}
+.input-group{display:flex;flex-direction:column;margin-bottom:20px;position:relative;}
+label{color:#d4af37;margin-bottom:8px;font-weight:500;}
+input{width:100%;background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;outline:none;font-size:15px;}
+input:focus{border-color:#d4af37;}
+.input-group input[type="password"], .input-group input[type="text"]{padding-right:50px;}
+
+/* SHOW/HIDE PASSWORD BOX */
+.toggle-password{
+position:absolute;right:15px;top:42px;
+background:#d4af37;border:none;width:22px;height:22px;border-radius:4px;
+cursor:pointer;transition:.3s;
+}
+.toggle-password:hover{background:#f0c84b;}
+.toggle-password.active{background:#111;border:2px solid #d4af37;}
+
+.options{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;font-size:14px;}
+.remember{display:flex;align-items:center;gap:8px;}
+.remember input{width:16px;height:16px;accent-color:#d4af37;}
+.forgot{color:#d4af37;text-decoration:none;font-weight:500;}
+.btn{display:block;width:220px;margin:30px auto 0;padding:15px;border:none;border-radius:40px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:bold;cursor:pointer;transition:.3s;font-size:16px;}
+.btn:hover{transform:translateY(-5px);}
+.btn:disabled{opacity:.6;cursor:not-allowed;}
+
+/* TOAST */
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);backdrop-filter:blur(20px);padding:30px 40px;border-radius:18px;border:2px solid #d4af37;z-index:9999;opacity:0;transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);text-align:center;min-width:320px;}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+.toast.success{border-color:#4cff88;}
+.toast.error{border-color:#ff5555;}
+.toast .icon{font-size:45px;margin-bottom:12px;display:block;}
+.toast .message{font-size:17px;font-weight:600;color:#fff;}
+</style>
+</head>
+
+<body>
+
+<div id="toast" class="toast"><span class="icon" id="toastIcon"></span><span class="message" id="toastMessage"></span></div>
+
+<header><div class="logo">Freemasonry Heritage</div></header>
+
+<section class="hero"><div><h1>Member Login</h1><p>Secure access for registered members</p></div></section>
+
+<section>
+<h2 class="title">Welcome Back</h2>
+<div class="login-box">
+<form id="loginForm">
+<div class="input-group">
+<label>Email Address</label>
+<input id="email" type="email" placeholder="Enter your email" required>
+</div>
+
+<div class="input-group">
+<label>Password</label>
+<input id="password" type="password" placeholder="Enter password" required>
+<button type="button" class="toggle-password" id="togglePassword" title="Show Password"></button> <!-- SQUARE BOX -->
+</div>
+
+<div class="options">
+<div class="remember"><input type="checkbox" id="rememberMe"><label for="rememberMe" style="color:#ccc;cursor:pointer;">Remember Me</label></div>
+<a href="#" class="forgot" id="forgotPassword">Forgot Password?</a>
+</div>
+
+<button class="btn" id="loginBtn" type="submit">Login</button>
+</form>
+</div>
+</section>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// YOUR FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+  authDomain: "mansonry-family-fraternity.firebaseapp.com",
+  databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mansonry-family-fraternity",
+  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
+  messagingSenderId: "964415179161",
+  appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
+  measurementId: "G-Q8LC74ZFXN"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const loginForm = document.getElementById("loginForm");
+const loginBtn = document.getElementById("loginBtn");
+const rememberMe = document.getElementById("rememberMe");
+const forgotBtn = document.getElementById("forgotPassword");
+const passwordInput = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+
+const toast = document.getElementById("toast");
+const toastIcon = document.getElementById("toastIcon");
+const toastMessage = document.getElementById("toastMessage");
+
+function showToast(type, message){
+  toast.className = `toast ${type} show`;
+  toastIcon.textContent = type === 'success' ? '✓' : '✕';
+  toastMessage.textContent = message;
+  setTimeout(() => {toast.classList.remove('show');}, 3500);
+}
+
+// SHOW / HIDE PASSWORD WITH SQUARE BOX
+togglePassword.addEventListener("click", function(){
+  const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+  passwordInput.setAttribute("type", type);
+  this.classList.toggle("active"); // gold box becomes outline when visible
+});
+
+// LOGIN - ONLY FIRES ON BUTTON CLICK
+loginForm.addEventListener("submit", async(e) => {
+  e.preventDefault();
+  loginBtn.disabled = true;
+  loginBtn.textContent = "Logging in...";
+
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  const password = passwordInput.value;
+  const persistence = rememberMe.checked ? browserLocalPersistence : browserSessionPersistence;
+
+  try{
+    await setPersistence(auth, persistence);
+    await signInWithEmailAndPassword(auth, email, password);
+
+    showToast('success','Login Successful! Redirecting...');
+    setTimeout(() => {window.location.href = "dashboard.html";}, 1200);
+
+  }
+  catch(error){
+    loginBtn.disabled = false;
+    loginBtn.textContent = "Login";
+
+    if(error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password'){
+      showToast('error','Invalid email or password');
+    } else if(error.code === 'auth/invalid-email'){
+      showToast('error','Please enter a valid email address');
+    } else if(error.code === 'auth/too-many-requests'){
+      showToast('error','Too many attempts. Try again later');
+    } else {
+      showToast('error','Login failed. Please try again');
+    }
+  }
+});
+
+// FORGOT PASSWORD
+forgotBtn.addEventListener("click", async(e) => {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  if(!email){showToast('error','Please enter your email first');return;}
+  try{
+    await sendPasswordResetEmail(auth, email);
+    showToast('success','Password reset link sent to your email');
+  } 
+  catch(error){
+    if(error.code === 'auth/user-not-found'){
+      showToast('error','No account found with this email');
+    } else {
+      showToast('error','Failed to send reset email');
+    }
+  }
+});
+</script>
+<script type="module" src="notifications.js"></script>
+</body>
+</html>

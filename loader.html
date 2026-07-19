@@ -63,7 +63,7 @@ h1{
 }
 
 @keyframes fade{
-  0%,100%{opacity:.6;}
+ 0%,100%{opacity:.6;}
  50%{opacity:1;}
 }
 
@@ -83,7 +83,7 @@ h1{
   width:0%;
   background:linear-gradient(90deg,#d4af37,#f1ca52);
   border-radius:10px;
-  animation:load 3s linear forwards;
+  animation:load 5s linear forwards; /* CHANGED TO 5S */
   box-shadow:0 0 15px #d4af37;
 }
 
@@ -109,16 +109,16 @@ if(!isApp){
   // If opened in browser, skip loader and go straight to index
   window.location.href = "index.html";
 } else {
-  // 2. PLAY SOUND + REDIRECT AFTER 3 SEC
+  // 2. PLAY SOUND + REDIRECT AFTER 5 SEC
   window.addEventListener('load', () => {
     const chime = document.getElementById('chime');
-    chime.volume = 0.4; // not too loud
-    chime.play().catch(()=>{}); // some browsers block autoplay
+    chime.volume = 0.4;
+    chime.play().catch(()=>{});
   });
 
   setTimeout(() => {
     window.location.href = "index.html";
-  }, 3000);
+  }, 5000); // CHANGED TO 5000 = 5 SECONDS
 }
 </script>
 

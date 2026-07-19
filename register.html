@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <title>Freemasonry | Membership Registration</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -11,14 +10,17 @@
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#d4af37">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;}
+body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;padding-top: env(safe-area-inset-top);}
 body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-attachment:fixed;z-index:-2;}
 body::after{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.04);z-index:-1;pointer-events:none;}
-header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
+header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;padding-top: calc(20px + env(safe-area-inset-top));display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
 .logo{font-size:30px;font-weight:700;color:#d4af37;}
 .hero{height:45vh;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;}
 .hero h1{font-size:55px;}
@@ -108,7 +110,6 @@ padding:10px 18px;border-radius:25px;cursor:pointer;
 
 @media(max-width:700px){.hero h1{font-size:35px;}.register-box{padding:25px;}.toast{min-width:280px;}}
 </style>
-
 </head>
 
 <body>
@@ -292,10 +293,10 @@ document.querySelectorAll('.toggle-password').forEach(btn => {
         const input = document.getElementById(targetId);
         if(input.type === 'password'){
             input.type = 'text';
-            btn.classList.add('active'); // outline box
+            btn.classList.add('active');
         } else {
             input.type = 'password';
-            btn.classList.remove('active'); // gold box
+            btn.classList.remove('active');
         }
     });
 });
@@ -418,4 +419,4 @@ if('serviceWorker' in navigator){
 </script>
 
 </body>
-      </html>
+</html>

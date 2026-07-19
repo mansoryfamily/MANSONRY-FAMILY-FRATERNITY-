@@ -5,12 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <title>Freemasonry | History & Heritage</title>
 
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#d4af37">
   <meta name="mobile-web-app-capable" content="yes">
-  
-  <!-- iPhone -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Freemasonry Heritage">
@@ -23,38 +20,33 @@
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;scroll-behavior:smooth;}
   html,body{height:100%;}
   body{background:#07111f;color:white;overflow-x:hidden;padding-bottom:90px;
-  padding-top: env(safe-area-inset-top); /* for notches */
+  padding-top: env(safe-area-inset-top);
   padding-bottom: calc(90px + env(safe-area-inset-bottom));
   }
   body::before{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:300px;color:rgba(212,175,55,.04);z-index:-1;pointer-events:none;white-space:nowrap;}
   img{max-width:100%;height:auto;display:block;border-radius:18px;}
 
-  /* HEADER */
   header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;padding-top: calc(20px + env(safe-area-inset-top));
   background:rgba(0,0,0,.75);backdrop-filter:blur(10px);display:flex;justify-content:space-between;align-items:center;z-index:1000;}
   .logo{font-size:30px;font-weight:700;color:#d4af37;}
   header nav a{color:white;text-decoration:none;margin-left:20px;font-size:15px;transition:.3s;}
   header nav a:hover{color:#d4af37;}
 
-  /* HERO */
   .hero{height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.65)),url("images.jpeg");background-size:cover;background-position:center;}
   .hero h1{font-size:60px;margin-bottom:20px;}
   .hero p{max-width:850px;margin:auto;line-height:1.8;color:#ddd;}
 
-  /* BUTTONS */
   .btn{display:block;margin:20px auto;padding:14px 35px;background:#d4af37;color:#111;border-radius:40px;text-decoration:none;font-weight:700;transition:.3s;border:none;cursor:pointer;}
   .btn:hover{transform:translateY(-5px);}
   .join-btn{margin-left:15px;background:transparent;border:2px solid #d4af37;color:#d4af37;}
   .join-btn:hover{background:#d4af37;color:#111;}
 
-  /* GENERAL */
   section{padding:100px 10%;}
   .title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:50px;}
   .grid,.info{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;width:100%;}
   .history{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
   @media(max-width:900px){.grid,.info,.history{grid-template-columns:1fr;}section{padding:80px 5%;}.hero h1{font-size:38px;}}
 
-  /* INFO CARDS */
   .info{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;max-width:1100px;margin:40px auto 0;}
   .card{
   background:linear-gradient(145deg,#142238,#0b1728);
@@ -65,7 +57,6 @@
   .card h3{color:#d4af37;font-size:22px;margin-bottom:15px;}
   .card p{color:#ddd;line-height:1.8;font-size:15px;}
 
-  /* BOTTOM NAV */
   .bottom-nav{
   position:fixed;bottom:25px;left:50%;transform:translateX(-50%);
   display:flex;align-items:center;justify-content:center;
@@ -80,16 +71,12 @@
   text-decoration:none;font-size:15px;font-weight:700;white-space:nowrap;transition:.3s;
   }
   .bottom-nav a:hover{transform:translateY(-5px);background:#f0c84b;}
-  .bottom-nav span{font-size:20px;}
 
-  /* FOOTER */
   footer{background:#020509;padding:40px;text-align:center;color:#999;}
-
-  /* MOBILE */
   header nav{display:none;}
   @media(max-width:900px){.join-btn{margin-left:0;}}
 
-  /* INSTALL POPUP - CENTER - SAME AS REGISTER.HTML */
+  /* INSTALL POPUP - FIXED TO CENTER */
   .install-popup{
   position:fixed;
   top:50%;
@@ -100,7 +87,7 @@
   padding:30px 25px;
   border-radius:20px;
   border:2px solid #d4af37;
-  z-index:99999;
+  z-index:100000;
   display:none;
   flex-direction:column;
   align-items:center;
@@ -108,10 +95,15 @@
   width:90%;
   max-width:380px;
   box-shadow:0 20px 60px rgba(212,175,55,.4);
-  animation:popupIn .4s forwards;
   text-align:center;
+  opacity:0;
+  transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
-  @keyframes popupIn{to{transform:translate(-50%,-50%) scale(1);}}
+  .install-popup.show{
+    display:flex;
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1);
+  }
   .install-popup img{
   width:70px;
   height:70px;
@@ -156,7 +148,6 @@
 
 <body>
 
-<!-- INSTALL APP POPUP - SAME AS REGISTER.HTML -->
 <div class="install-popup" id="installPopup">
   <img src="icon-512.png" alt="logo">
   <div class="text">
@@ -216,12 +207,10 @@
   <p>© 2026 Freemasonry Heritage</p>
 </footer>
 
-<!-- FIXED BOTTOM NAVIGATION -->
 <nav class="bottom-nav">
   <a href="register.html" class="active">REGISTER</a>
 </nav>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -274,7 +263,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
   });
 });
 
-// PWA INSTALL POPUP - SAME AS REGISTER.HTML
+// PWA INSTALL POPUP - FIXED
 let deferredPrompt;
 const installPopup = document.getElementById('installPopup');
 const btnInstall = document.getElementById('btnInstall');
@@ -284,12 +273,15 @@ window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
   if(!window.matchMedia('(display-mode: standalone)').matches){
-    setTimeout(() => {installPopup.style.display = 'flex';}, 2000);
+    setTimeout(() => {
+      installPopup.classList.add('show');
+    }, 2000);
   }
 });
 
 btnInstall.addEventListener('click', async () => {
-  installPopup.style.display = 'none';
+  installPopup.classList.remove('show');
+  setTimeout(()=>{installPopup.style.display='none'}, 400);
   if(deferredPrompt){
     deferredPrompt.prompt();
     await deferredPrompt.userChoice;
@@ -298,11 +290,11 @@ btnInstall.addEventListener('click', async () => {
 });
 
 btnClose.addEventListener('click', () => {
-  installPopup.style.display = 'none';
+  installPopup.classList.remove('show');
+  setTimeout(()=>{installPopup.style.display='none'}, 400);
 });
 </script>
 
-<!-- PWA SERVICE WORKER -->
 <script>
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js')

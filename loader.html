@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Loading...</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{
+  background:#07111f;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+/* BACKGROUND GLOW COMPASS */
+body::before{
+  content:"◬";
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-size:500px;
+  color:rgba(212,175,55,.04);
+  animation:spin 25s linear infinite;
+  z-index:0;
+}
+
+/* LOGO */
+.logo{
+  width:120px;
+  height:120px;
+  border-radius:30px;
+  border:3px solid #d4af37;
+  box-shadow:0 0 40px rgba(212,175,55,.6), 0 0 80px rgba(212,175,55,.3);
+  animation:pulse 1.5s ease-in-out infinite;
+  z-index:2;
+}
+
+@keyframes pulse{
+ 0%,100%{transform:scale(1);box-shadow:0 0 40px rgba(212,175,55,.6);}
+ 50%{transform:scale(1.1);box-shadow:0 0 60px rgba(212,175,55,.9), 0 0 100px rgba(212,175,55,.5);}
+}
+
+@keyframes spin{
+  from{transform:translate(-50%,-50%) rotate(0deg);}
+  to{transform:translate(-50%,-50%) rotate(360deg);}
+}
+
+/* TEXT */
+h1{
+  color:#d4af37;
+  margin-top:30px;
+  font-size:22px;
+  letter-spacing:2px;
+  text-shadow:0 0 15px rgba(212,175,55,.7);
+  animation:fade 2s ease-in-out infinite;
+  z-index:2;
+}
+
+@keyframes fade{
+  0%,100%{opacity:.6;}
+ 50%{opacity:1;}
+}
+
+/* LOADING BAR */
+.loader{
+  width:220px;
+  height:4px;
+  background:rgba(212,175,55,.2);
+  border-radius:10px;
+  margin-top:20px;
+  overflow:hidden;
+  z-index:2;
+}
+.loader span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#d4af37,#f1ca52);
+  border-radius:10px;
+  animation:load 3s linear forwards;
+  box-shadow:0 0 15px #d4af37;
+}
+
+@keyframes load{
+  to{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<img src="icon-512.png" class="logo" alt="logo">
+<h1>Mansory Family</h1>
+<div class="loader"><span></span></div>
+
+<!-- GOLD CHIME SOUND -->
+<audio id="chime" src="https://cdn.pixabay.com/audio/2022/03/10/audio_4c1d5a8c3d.mp3" preload="auto"></audio>
+
+<script>
+// 1. CHECK IF APP IS INSTALLED / STANDALONE MODE
+const isApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+if(!isApp){
+  // If opened in browser, skip loader and go straight to index
+  window.location.href = "index.html";
+} else {
+  // 2. PLAY SOUND + REDIRECT AFTER 3 SEC
+  window.addEventListener('load', () => {
+    const chime = document.getElementById('chime');
+    chime.volume = 0.4; // not too loud
+    chime.play().catch(()=>{}); // some browsers block autoplay
+  });
+
+  setTimeout(() => {
+    window.location.href = "index.html";
+  }, 3000);
+}
+</script>
+
+</body>
+</html>

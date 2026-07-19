@@ -1,7 +1,7 @@
 {
   "name": "Mansory Family Fraternity",
   "short_name": "MFF",
-  "start_url": ".",
+  "start_url": "loader.html",
   "display": "standalone",
   "background_color": "#07111f",
   "theme_color": "#d4af37",

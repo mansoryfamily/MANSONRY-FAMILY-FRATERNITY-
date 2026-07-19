@@ -78,71 +78,23 @@
 
   /* INSTALL POPUP - FIXED TO CENTER */
   .install-popup{
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%) scale(0.8);
-  background:rgba(20,34,56,.98);
-  backdrop-filter:blur(20px);
-  padding:30px 25px;
-  border-radius:20px;
-  border:2px solid #d4af37;
-  z-index:100000;
-  display:none;
-  flex-direction:column;
-  align-items:center;
-  gap:20px;
-  width:90%;
-  max-width:380px;
-  box-shadow:0 20px 60px rgba(212,175,55,.4);
-  text-align:center;
-  opacity:0;
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);
+  background:rgba(20,34,56,.98);backdrop-filter:blur(20px);padding:30px 25px;
+  border-radius:20px;border:2px solid #d4af37;z-index:100000;display:none;
+  flex-direction:column;align-items:center;gap:20px;width:90%;max-width:380px;
+  box-shadow:0 20px 60px rgba(212,175,55,.4);text-align:center;opacity:0;
   transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
-  .install-popup.show{
-    display:flex;
-    opacity:1;
-    transform:translate(-50%,-50%) scale(1);
-  }
-  .install-popup img{
-  width:70px;
-  height:70px;
-  border-radius:18px;
-  border:2px solid #d4af37;
-  }
-  .install-popup .text h4{
-  color:#d4af37;
-  margin-bottom:8px;
-  font-size:18px;
-  }
-  .install-popup .text p{
-  color:#ccc;
-  font-size:14px;
-  }
-  .install-popup .btns{
-  display:flex;
-  gap:12px;
-  width:100%;
-  }
-  .install-popup .btn-install{
-  flex:1;
-  background:linear-gradient(135deg,#d4af37,#b8941f);
-  color:#111;
-  border:none;
-  padding:12px 18px;
-  border-radius:25px;
-  font-weight:bold;
-  cursor:pointer;
-  }
-  .install-popup .btn-close{
-  flex:1;
-  background:transparent;
-  color:#ccc;
-  border:1px solid #39485f;
-  padding:12px 18px;
-  border-radius:25px;
-  cursor:pointer;
-  }
+  .install-popup.show{display:flex;opacity:1;transform:translate(-50%,-50%) scale(1);}
+  .install-popup img{width:70px;height:70px;border-radius:18px;border:2px solid #d4af37;}
+  .install-popup .text h4{color:#d4af37;margin-bottom:8px;font-size:18px;}
+  .install-popup .text p{color:#ccc;font-size:14px;}
+  .install-popup .btns{display:flex;gap:12px;width:100%;}
+  .install-popup .btn-install{flex:1;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;border:none;padding:12px 18px;border-radius:25px;font-weight:bold;cursor:pointer;}
+  .install-popup .btn-close{flex:1;background:transparent;color:#ccc;border:1px solid #39485f;padding:12px 18px;border-radius:25px;cursor:pointer;}
+
+  /* TOP NOTIFICATION POPUP */
+  @keyframes slideDown{from{top:40px;opacity:0}to{top:80px;opacity:1}}
   </style>
 </head>
 
@@ -213,7 +165,8 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -228,6 +181,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+const messaging = getMessaging(app);
 
 const siteRef = ref(database, 'site');
 onValue(siteRef, (snapshot) => {
@@ -263,7 +217,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
   });
 });
 
-// PWA INSTALL POPUP - FIXED
+// PWA INSTALL POPUP
 let deferredPrompt;
 const installPopup = document.getElementById('installPopup');
 const btnInstall = document.getElementById('btnInstall');
@@ -273,9 +227,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
   if(!window.matchMedia('(display-mode: standalone)').matches){
-    setTimeout(() => {
-      installPopup.classList.add('show');
-    }, 2000);
+    setTimeout(() => { installPopup.classList.add('show'); }, 2000);
   }
 });
 
@@ -293,16 +245,59 @@ btnClose.addEventListener('click', () => {
   installPopup.classList.remove('show');
   setTimeout(()=>{installPopup.style.display='none'}, 400);
 });
+
+// ===== FIREBASE NOTIFICATIONS =====
+function requestNotificationPermission() {
+  Notification.requestPermission().then((permission) => {
+    if (permission === 'granted') {
+      console.log('Notification permission granted.');
+      getFCMToken();
+    }
+  });
+}
+
+function getFCMToken() {
+  getToken(messaging, { vapidKey: 'BAGY-aXv1nzMOMdtlBa_F29-tQ2_uVkV1VheA4gFyMF6C6WQBqQbrUXlehDO7htLuPQ9B0I-uuYF5Cz33i2zVME' }).then((currentToken) => {
+    if (currentToken) {
+      console.log('FCM Token:', currentToken);
+      const tokenRef = ref(database, 'tokens/' + currentToken.substring(0, 20));
+      set(tokenRef, { token: currentToken, joined: new Date().toISOString() });
+    }
+  }).catch((err) => { console.log('Token error: ', err); });
+}
+
+// FOREGROUND POPUP AT TOP
+onMessage(messaging, (payload) => {
+  console.log('Message received: ', payload);
+  const notif = document.createElement('div');
+  notif.style.cssText = `
+    position:fixed;top:80px;left:50%;transform:translateX(-50%);
+    background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;
+    padding:15px 25px;border-radius:15px;z-index:100001;
+    box-shadow:0 10px 30px rgba(212,175,55,.5);
+    font-weight:600;display:flex;align-items:center;gap:12px;
+    animation:slideDown .4s ease;max-width:90%;
+  `;
+  notif.innerHTML = `🔔 <div><b>${payload.notification.title}</b><br>${payload.notification.body}</div>`;
+  document.body.appendChild(notif);
+  setTimeout(() => { notif.remove(); }, 5000);
+});
+
+requestNotificationPermission();
 </script>
 
 <script>
+// REGISTER BOTH SERVICE WORKERS
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js')
-  .then(() => console.log("Service Worker Registered"))
+  .then(() => console.log("PWA SW Registered"))
   .catch(err => console.log("SW Error:", err));
+  
+  navigator.serviceWorker.register('firebase-messaging-sw.js')
+  .then(() => console.log("FCM SW Registered"))
+  .catch(err => console.log("FCM SW Error:", err));
 }
 </script>
 
-<script type="module" src="notifications.js"></script>
 </body>
 </html>

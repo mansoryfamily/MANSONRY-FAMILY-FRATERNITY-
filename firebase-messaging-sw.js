@@ -19,11 +19,14 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: 'icon-512.png', // Gold compass shows here
-    badge: 'icon-192.png',
+    icon: 'icon-512.png', // Shows in notification
+    badge: 'icon-192.png', // Small icon on Android
     image: payload.notification.image || null,
     vibrate: [200, 100, 200],
-    data: { url: payload.data?.url || 'index.html' }
+    data: { 
+      url: payload.data?.url || 'dashboard.html' // DEFAULT TO DASHBOARD
+    },
+    tag: 'mff-announcement' // Groups notifications
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
@@ -32,16 +35,20 @@ messaging.onBackgroundMessage((payload) => {
 // WHEN USER CLICKS NOTIFICATION
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+  
+  const urlToOpen = event.notification.data.url || 'dashboard.html';
+
   event.waitUntil(
-    clients.matchAll({type: 'window'}).then(clientList => {
-      // If app is open, focus it. If not, open new
+    clients.matchAll({type: 'window', includeUncontrolled: true}).then(clientList => {
+      // If dashboard is already open, just focus it
       for (const client of clientList) {
-        if (client.url.includes('index.html') && 'focus' in client) {
+        if (client.url.includes('dashboard.html') && 'focus' in client) {
           return client.focus();
         }
       }
+      // If app is open on another page, open dashboard in new tab
       if (clients.openWindow) {
-        return clients.openWindow(event.notification.data.url);
+        return clients.openWindow(urlToOpen);
       }
     })
   );

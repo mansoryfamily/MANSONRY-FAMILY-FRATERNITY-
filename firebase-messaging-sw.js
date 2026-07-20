@@ -6,12 +6,13 @@ firebase.initializeApp({
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
   projectId: "mansonry-family-fraternity",
   storageBucket: "mansonry-family-fraternity.firebasestorage.app",
-  messagingSenderId: "964415179161", // FIXED
-  appId: "1:964415179161:web:c8fd1a777542932d7c6b08" // FIXED
+  messagingSenderId: "964415179161",
+  appId: "1:964415179161:web:c8fd1a777542932d7c6b08"
 });
 
 const messaging = firebase.messaging();
 
+// BACKGROUND NOTIFICATION - when app is closed
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received message ', payload);
   
@@ -28,6 +29,7 @@ messaging.onBackgroundMessage((payload) => {
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
+// WHEN USER CLICKS NOTIFICATION
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(

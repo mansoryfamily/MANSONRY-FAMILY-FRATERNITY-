@@ -123,7 +123,7 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, onValue, update, get, push, set, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js"; // ADDED FOR FCM
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -139,8 +139,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
-const functions = getFunctions(app); // INIT FUNCTIONS
-const sendAnnouncementFn = httpsCallable(functions, 'sendAnnouncement'); // CALLABLE
+const functions = getFunctions(app, 'europe-west1'); // IMPORTANT: set your region
+const sendAnnouncementFn = httpsCallable(functions, 'sendAnnouncement');
 
 const usersTable = document.getElementById('usersTable');
 const errorBox = document.getElementById('errorBox');
@@ -154,7 +154,7 @@ function showError(msg){errorBox.innerHTML = `<div class="error-box">${msg}</div
 function showSuccess(msg){successBox.innerHTML = `<div class="success-box">${msg}</div>`;setTimeout(()=>{successBox.innerHTML = ""}, 4000);}
 
 onAuthStateChanged(auth, async (user) => {
-  if(!user){window.location.href = "https://mansoryfamily.github.io/MANSONRY-FAMILY-FRATERNITY-/login.html";return;}
+  if(!user){window.location.href = "login.html";return;}
   const userSnap = await get(ref(database, "users/" + user.uid));
   if(!userSnap.exists() || userSnap.val().role!== "admin"){showError("Access Denied");setTimeout(()=>{window.location.href = "dashboard.html";}, 3000);return;}
   loadUsers();loadRecipients();loadCurrentAnnouncement();
@@ -226,7 +226,7 @@ window.toggleDropdown = function(id) {document.getElementById(id).classList.togg
 window.onclick = function(event) {if (!event.target.matches('.dropbtn')) {document.querySelectorAll(".dropdown-content").forEach(d => d.classList.remove('show'));}}
 window.updateStatus = function(uid, status){update(ref(database, "users/" + uid), { status: status });showSuccess("Status updated");}
 
-// UPDATED SEND - NOW SAVES + PUSHES FCM
+// UPDATED SEND - NOW SAVES + PUSHES FCM + CLICK TO DASHBOARD
 document.getElementById("sendNotificationBtn").addEventListener("click", async () => {
   const recipient = recipientSelect.value;const title = document.getElementById("notificationTitle").value.trim();const message = document.getElementById("notificationMessage").value.trim();
   if(!title ||!message){showError("Fill Title and Message");return;}
@@ -247,14 +247,14 @@ document.getElementById("sendNotificationBtn").addEventListener("click", async (
       });
       updates[`announcements`] = announcementData;
       await update(ref(database), updates);
-      if(tokens.length > 0) await sendAnnouncementFn({title, body: message, tokens}); // PUSH
-      showSuccess(`Sent to ${Object.keys(data).length} members! ${tokens.length} got push notification.`);
+      if(tokens.length > 0) await sendAnnouncementFn({title, body: message, tokens}); // PUSH WITH CLICK
+      showSuccess(`Sent to ${tokens.length} members with push!`);
     } else {
       const newNotifKey = push(ref(database, `notifications/${recipient}`)).key;
       const tokenSnap = await get(ref(database, `users/${recipient}/fcmToken`));
       await update(ref(database, `notifications/${recipient}/${newNotifKey}`), notificationData);
       if(tokenSnap.exists()) await sendAnnouncementFn({title, body: message, tokens: [tokenSnap.val()]});
-      showSuccess(`Sent to member!`);
+      showSuccess(`Sent to member with push!`);
     }
   }catch(err){showError(err.message);}
   document.getElementById("notificationTitle").value = "";document.getElementById("notificationMessage").value = "";btn.disabled = false;btn.textContent = "Send Announcement";
@@ -287,7 +287,7 @@ deleteAllBtn.addEventListener("click", () => {
   }
 });
 
-document.getElementById("logoutBtn").addEventListener("click",()=>{signOut(auth).then(()=>{window.location.href="https://mansoryfamily.github.io/MANSONRY-FAMILY-FRATERNITY-/login.html";});});
+document.getElementById("logoutBtn").addEventListener("click",()=>{signOut(auth).then(()=>{window.location.href="login.html";});});
 </script>
 </body>
 </html>

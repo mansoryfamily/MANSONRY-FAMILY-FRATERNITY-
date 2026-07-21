@@ -7,46 +7,48 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#d4af37">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="icon-512.png">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;padding-top: env(safe-area-inset-top);}
+body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;}
 body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-attachment:fixed;z-index:-2;}
 body::after{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.04);z-index:-1;pointer-events:none;}
-header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;padding-top: calc(20px + env(safe-area-inset-top));display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
-.logo{font-size:30px;font-weight:700;color:#d4af37;}
-.hero{height:45vh;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;}
-.hero h1{font-size:55px;}
-.hero p{margin-top:15px;color:#ddd;}
-section{padding:80px 10%;}
-.title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:40px;}
-.register-box{max-width:850px;margin:auto;background:rgba(20,34,56,.8);backdrop-filter:blur(20px);padding:45px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.2);}
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
-.input-group{display:flex;flex-direction:column;position:relative;}
-label{margin-bottom:8px;color:#d4af37;}
-input,select,textarea{background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;outline:none;}
+header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
+.logo{font-size:28px;font-weight:700;color:#d4af37;text-align:center;}
+.container{padding:120px 6% 50px;max-width:900px;margin:auto;}
+.title{text-align:center;font-size:36px;color:#d4af37;margin-bottom:30px;}
+.register-box{max-width:850px;margin:auto;background:rgba(20,34,56,.85);backdrop-filter:blur(20px);padding:35px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.2);}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
+.input-group{display:flex;flex-direction:column;}
+label{margin-bottom:8px;color:#d4af37;font-size:14px;font-weight:500;}
+input,select,textarea{background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;outline:none;font-size:15px;}
 input:focus,select:focus,textarea:focus{border-color:#d4af37;}
-textarea{height:130px;resize:none;}
+textarea{height:120px;resize:none;grid-column:1/-1;}
 .full{grid-column:1/-1;}
-.phone-group{display:flex;gap:10px;align-items:flex-end;}
-.phone-group select{width:120px;flex-shrink:0;}
+
+/* PHONE WITH COUNTRY CODE */
+.phone-group{display:flex;gap:10px;align-items:center;}
+.phone-group select{width:130px;flex-shrink:0;background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;}
 .phone-group input{flex:1;}
+
 .password-wrapper{position:relative;display:flex;align-items:center;}
 .password-wrapper input{width:100%;padding-right:50px;}
-.toggle-password{position:absolute;right:15px;width:22px;height:22px;background:#d4af37;border:none;border-radius:4px;cursor:pointer;transition:.3s;}
-.toggle-password:hover{background:#f0c84b;}
+.toggle-password{position:absolute;right:15px;width:22px;height:22px;background:#d4af37;border:none;border-radius:4px;cursor:pointer;}
 .toggle-password.active{background:#111;border:2px solid #d4af37;}
-.btn{margin-top:30px;display:block;width:220px;padding:15px;margin-left:auto;margin-right:auto;border:none;border-radius:40px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:bold;cursor:pointer;transition:.3s;box-shadow:0 5px 20px rgba(212,175,55,.3);}
-.btn:hover{transform:translateY(-5px);background:linear-gradient(135deg,#f1ca52,#d4af37);}
+
+.btn{margin-top:30px;display:block;width:100%;max-width:300px;padding:16px;margin-left:auto;margin-right:auto;border:none;border-radius:40px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-size:16px;font-weight:700;cursor:pointer;transition:.3s;}
+.btn:hover{transform:translateY(-3px);}
 .btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
-.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.95);backdrop-filter:blur(20px);padding:25px 35px;border-radius:15px;border:2px solid #d4af37;box-shadow:0 20px 60px rgba(212,175,55,.4);z-index:9999;opacity:0;transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);text-align:center;min-width:300px;max-width:90%;}
+
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);padding:25px 35px;border-radius:15px;border:2px solid #d4af37;z-index:9999;opacity:0;transition:.4s;text-align:center;min-width:300px;}
 .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
-.toast.success{border-color:#4cff88;}
-.toast.error{border-color:#ff5555;}
+.toast.success{border-color:#4cff88;} .toast.error{border-color:#ff5555;}
 .toast .icon{font-size:40px;margin-bottom:10px;display:block;}
 .toast .message{font-size:16px;font-weight:600;color:#fff;}
-@media(max-width:700px){.hero h1{font-size:35px;}.register-box{padding:25px;}.phone-group select{width:100px;}}
+
+@media(max-width:700px){.title{font-size:28px;}.register-box{padding:25px;}.phone-group select{width:110px;}}
 </style>
 </head>
 
@@ -55,31 +57,37 @@ textarea{height:130px;resize:none;}
 
 <header><div class="logo">Freemasonry Heritage</div></header>
 
-<section class="hero"><div><h1>Membership Registration</h1><p>Take the first step towards brotherhood, honor, and personal growth.</p></div></section>
-
-<section>
+<div class="container">
 <h2 class="title">Register Your Interest</h2>
 <div class="register-box">
 <form id="registrationForm">
 <div class="form-grid">
-<div class="input-group"><label>Full Name</label><input id="fullName" type="text" placeholder="Enter your full name" required></div>
-<div class="input-group"><label>Email Address</label><input id="email" type="email" placeholder="Enter your email" required></div>
+
+<div class="input-group">
+<label>Full Name</label>
+<input id="fullName" type="text" placeholder="Enter your full name" required>
+</div>
+
+<div class="input-group">
+<label>Email Address</label>
+<input id="email" type="email" placeholder="Enter your email" required>
+</div>
 
 <div class="input-group">
 <label>Phone Number</label>
 <div class="phone-group">
 <select id="countryCode" required>
 <option value="">Code</option>
-<option value="+254">🇰🇪 +254 Kenya</option>
-<option value="+256">🇺🇬 +256 Uganda</option>
-<option value="+255">🇹🇿 +255 Tanzania</option>
-<option value="+250">🇷🇼 +250 Rwanda</option>
-<option value="+243">🇨🇩 +243 DRC</option>
-<option value="+27">🇿🇦 +27 South Africa</option>
-<option value="+234">🇳🇬 +234 Nigeria</option>
-<option value="+233">🇬🇭 +233 Ghana</option>
-<option value="+1">🇺🇸 +1 USA/Canada</option>
-<option value="+44">🇬🇧 +44 UK</option>
+<option value="+254">🇰🇪 +254</option>
+<option value="+256">🇺🇬 +256</option>
+<option value="+255">🇹🇿 +255</option>
+<option value="+250">🇷🇼 +250</option>
+<option value="+243">🇨🇩 +243</option>
+<option value="+27">🇿🇦 +27</option>
+<option value="+234">🇳🇬 +234</option>
+<option value="+233">🇬🇭 +233</option>
+<option value="+1">🇺🇸 +1</option>
+<option value="+44">🇬🇧 +44</option>
 </select>
 <input id="phone" type="tel" placeholder="712345678" required pattern="[0-9]{7,15}">
 </div>
@@ -89,25 +97,69 @@ textarea{height:130px;resize:none;}
 <label>Country</label>
 <select id="country" required>
 <option value="">Select Country</option>
-<option value="Kenya">Kenya</option><option value="Uganda">Uganda</option><option value="Tanzania">Tanzania</option>
-<option value="Rwanda">Rwanda</option><option value="DRC">DRC</option><option value="South Africa">South Africa</option>
-<option value="Nigeria">Nigeria</option><option value="Ghana">Ghana</option><option value="USA">USA</option>
-<option value="UK">UK</option><option value="Other">Other</option>
+<option value="Kenya">Kenya</option>
+<option value="Uganda">Uganda</option>
+<option value="Tanzania">Tanzania</option>
+<option value="Rwanda">Rwanda</option>
+<option value="DRC">DRC</option>
+<option value="South Africa">South Africa</option>
+<option value="Nigeria">Nigeria</option>
+<option value="Ghana">Ghana</option>
+<option value="USA">USA</option>
+<option value="UK">UK</option>
+<option value="Other">Other</option>
 </select>
 </div>
 
-<div class="input-group"><label>Age Group</label><select id="age" required><option value="">Select Age</option><option>18 - 25</option><option>26 - 40</option><option>41 - 60</option><option>60+</option></select></div>
-<div class="input-group"><label>Area of Interest</label><select id="interest" required><option value="">Select Interest</option><option>Brotherhood & Mentorship</option><option>Community Service</option><option>Business & Growth</option><option>Personal Development</option></select></div>
+<div class="input-group">
+<label>Age Group</label>
+<select id="age" required>
+<option value="">Select Age</option>
+<option>18 - 25</option>
+<option>26 - 40</option>
+<option>41 - 60</option>
+<option>60+</option>
+</select>
+</div>
 
-<div class="input-group"><label>Create Password</label><div class="password-wrapper"><input id="password" type="password" placeholder="Min 6 characters" required minlength="6"><button type="button" class="toggle-password" data-target="password"></button></div></div>
-<div class="input-group"><label>Confirm Password</label><div class="password-wrapper"><input id="confirmPassword" type="password" placeholder="Re-enter password" required minlength="6"><button type="button" class="toggle-password" data-target="confirmPassword"></button></div></div>
-<div class="input-group full"><label>Message</label><textarea id="message" placeholder="Tell us why you would like to join our brotherhood" required></textarea></div>
+<div class="input-group">
+<label>Area of Interest</label>
+<select id="interest" required>
+<option value="">Select Interest</option>
+<option>Brotherhood & Mentorship</option>
+<option>Community Service</option>
+<option>Business & Growth</option>
+<option>Personal Development</option>
+</select>
+</div>
+
+<div class="input-group">
+<label>Create Password</label>
+<div class="password-wrapper">
+<input id="password" type="password" placeholder="Min 6 characters" required minlength="6">
+<button type="button" class="toggle-password" data-target="password"></button>
+</div>
+</div>
+
+<div class="input-group">
+<label>Confirm Password</label>
+<div class="password-wrapper">
+<input id="confirmPassword" type="password" placeholder="Re-enter password" required minlength="6">
+<button type="button" class="toggle-password" data-target="confirmPassword"></button>
+</div>
+</div>
+
+<div class="input-group full">
+<label>Message</label>
+<textarea id="message" placeholder="Tell us why you would like to join our brotherhood" required></textarea>
+</div>
+
 </div>
 <button class="btn" id="submitBtn" type="submit">Submit Registration</button>
-<div style="text-align:center;margin-top:20px;"><p style="color:#ccc;">Already a member?</p><a href="login.html" style="display:inline-block;margin-top:10px;padding:12px 35px;border:2px solid #d4af37;border-radius:40px;color:#d4af37;text-decoration:none;font-weight:600;transition:.3s;">Login</a></div>
+<div style="text-align:center;margin-top:20px;"><p style="color:#ccc;">Already a member?</p><a href="login.html" style="display:inline-block;margin-top:10px;padding:12px 35px;border:2px solid #d4af37;border-radius:40px;color:#d4af37;text-decoration:none;font-weight:600;">Login</a></div>
 </form>
 </div>
-</section>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -121,8 +173,7 @@ const firebaseConfig = {
   projectId: "mansonry-family-fraternity",
   storageBucket: "mansonry-family-fraternity.firebasestorage.app",
   messagingSenderId: "964415179161",
-  appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
-  measurementId: "G-Q8LC74ZFXN"
+  appId: "1:964415179161:web:c8fd1a777542932d7c6b08"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -186,12 +237,10 @@ form.addEventListener("submit", async (event) => {
         form.reset();
         setTimeout(() => {window.location.href = "dashboard.html";}, 1500);
     } catch (error) {
-        console.error("FIREBASE ERROR:", error.code, error.message);
+        console.error("FIREBASE ERROR:", error);
         button.disabled = false;
         button.textContent = "Submit Registration";
         if(error.code === 'auth/email-already-in-use'){ showToast('error','This email is already registered'); } 
-        else if(error.code === 'auth/weak-password'){ showToast('error','Password must be 6 characters or more'); }
-        else if(error.code === 'auth/invalid-email'){ showToast('error','Invalid email format'); }
         else { showToast('error','Registration Failed: ' + error.message); }
     }
 });

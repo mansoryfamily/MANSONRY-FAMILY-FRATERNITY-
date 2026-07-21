@@ -6,7 +6,7 @@
 <title>Freemasonry | Membership Registration</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- PWA TAGS -->
+<!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#d4af37">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,13 +16,15 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;}
-body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-attachment:fixed;z-index:-2;}
+body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;background-position:center;z-index:-2;}
 body::after{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.04);z-index:-1;pointer-events:none;}
-header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
-.logo{font-size:28px;font-weight:700;color:#d4af37;text-align:center;}
+header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
+.logo{font-size:28px;font-weight:700;color:#d4af37;}
+.header-btn{background:transparent;color:#d4af37;padding:10px 25px;border:2px solid #d4af37;border-radius:30px;text-decoration:none;font-weight:600;transition:.3s;}
+.header-btn:hover{background:#d4af37;color:#111;}
 .container{padding:120px 6% 50px;max-width:900px;margin:auto;}
 .title{text-align:center;font-size:36px;color:#d4af37;margin-bottom:30px;}
-.register-box{background:rgba(20,34,56,.85);backdrop-filter:blur(20px);padding:35px;border-radius:20px;border:1px solid rgba(212,175,55,.2);box-shadow:0 20px 50px rgba(0,0,0,.5);}
+.register-box{background:rgba(20,34,56,.85);backdrop-filter:blur(20px);padding:35px;border-radius:20px;border:1px solid rgba(212,175,55,.2);}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
 .input-group{display:flex;flex-direction:column;}
 label{margin-bottom:8px;color:#d4af37;font-size:14px;font-weight:500;}
@@ -30,51 +32,129 @@ input,select,textarea{background:#08111f;border:1px solid #39485f;padding:15px;b
 input:focus,select:focus,textarea:focus{border-color:#d4af37;}
 textarea{height:120px;resize:none;grid-column:1/-1;}
 .full{grid-column:1/-1;}
+
+/* PHONE WITH COUNTRY CODE */
 .phone-wrapper{display:flex;gap:10px;}
 .phone-wrapper .input-group{flex:1;}
+.phone-wrapper select{width:100%;}
+
 .password-wrapper{position:relative;}
 .password-wrapper input{padding-right:50px;}
 .toggle-password{position:absolute;right:15px;top:50%;transform:translateY(-50%);width:22px;height:22px;background:#d4af37;border:2px solid #d4af37;border-radius:4px;cursor:pointer;transition:.3s;}
-.toggle-password.active{background:transparent;}
-.btn{margin-top:30px;width:100%;max-width:300px;padding:16px;margin:auto;display:block;border:none;border-radius:40px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(212,175,55,.3);}
-.btn:disabled{opacity:.6;}
+.toggle-password.active{background:transparent;} /* Gold=hidden, Outline=visible */
+
+.btn{margin-top:30px;width:100%;max-width:300px;padding:16px;margin-left:auto;margin-right:auto;display:block;border:none;border-radius:40px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-size:16px;font-weight:700;cursor:pointer;transition:.3s;}
+.btn:hover{transform:translateY(-3px);}
+.btn:disabled{opacity:.6;transform:none;}
+
 .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);padding:25px 35px;border-radius:15px;border:2px solid #d4af37;z-index:9999;opacity:0;transition:.4s;text-align:center;min-width:300px;}
 .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
 .toast.success{border-color:#4cff88;} .toast.error{border-color:#ff5555;}
+.toast .icon{font-size:40px;margin-bottom:10px;display:block;}
+.toast .message{font-size:16px;font-weight:600;color:#fff;}
+
 .login-link{text-align:center;margin-top:20px;}
 .login-link a{color:#d4af37;text-decoration:none;font-weight:600;}
+
+/* INSTALL POPUP */
 .install-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);backdrop-filter:blur(20px);padding:30px 25px;border-radius:20px;border:2px solid #d4af37;z-index:99999;display:none;flex-direction:column;align-items:center;gap:20px;width:90%;max-width:380px;box-shadow:0 20px 60px rgba(212,175,55,.4);animation:popupIn .4s forwards;text-align:center;}
 @keyframes popupIn{to{transform:translate(-50%,-50%) scale(1);}}
 .install-popup img{width:70px;height:70px;border-radius:18px;border:2px solid #d4af37;}
 .install-popup .text h4{color:#d4af37;margin-bottom:8px;font-size:18px;}
+.install-popup .text p{color:#ccc;font-size:14px;}
 .install-popup .btns{display:flex;gap:12px;width:100%;}
 .install-popup .btn-install{flex:1;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;border:none;padding:12px 18px;border-radius:25px;font-weight:bold;cursor:pointer;}
 .install-popup .btn-close{flex:1;background:transparent;color:#ccc;border:1px solid #39485f;padding:12px 18px;border-radius:25px;cursor:pointer;}
+@media(max-width:700px){.title{font-size:28px;}.register-box{padding:25px;}}
 </style>
 </head>
+
 <body>
 <div id="toast" class="toast"><span class="icon" id="toastIcon"></span><span class="message" id="toastMessage"></span></div>
 
+<!-- INSTALL APP POPUP -->
 <div class="install-popup" id="installPopup">
   <img src="icon-512.png" alt="logo">
   <div class="text"><h4>Install Mansory Family App</h4><p>Add to home screen for faster access</p></div>
   <div class="btns"><button class="btn-install" id="btnInstall">Install</button><button class="btn-close" id="btnClose">Later</button></div>
 </div>
 
-<header><div class="logo">Freemasonry Heritage</div></header>
+<header>
+  <div class="logo">Freemasonry Heritage</div>
+  <a href="login.html" class="header-btn">Login</a>
+</header>
 
 <div class="container">
 <h2 class="title">Register Your Interest</h2>
 <div class="register-box">
 <form id="registrationForm">
 <div class="form-grid">
-<div class="input-group"><label>Full Name *</label><input id="fullName" type="text" required></div>
-<div class="input-group"><label>Email Address *</label><input id="email" type="email" required></div>
-<div class="input-group"><label>Country *</label><select id="country" required><option value="">Select Country</option><option value="Kenya">🇰🇪 Kenya</option><option value="Uganda">🇺🇬 Uganda</option><option value="Tanzania">🇹🇿 Tanzania</option><option value="Other">Other</option></select></div>
-<div class="input-group"><label>Phone Number *</label><div class="phone-wrapper"><select id="countryCode" required><option value="">Code</option><option value="+254">+254</option><option value="+256">+256</option><option value="+255">+255</option></select><input id="phone" type="tel" required></div></div>
-<div class="input-group"><label>Create Password *</label><div class="password-wrapper"><input id="password" type="password" required><button type="button" class="toggle-password" data-target="password"></button></div></div>
-<div class="input-group"><label>Confirm Password *</label><div class="password-wrapper"><input id="confirmPassword" type="password" required><button type="button" class="toggle-password" data-target="confirmPassword"></button></div></div>
-<div class="input-group full"><label>Message *</label><textarea id="message" required></textarea></div>
+
+<div class="input-group"><label>Full Name *</label><input id="fullName" type="text" placeholder="Enter your full name" required></div>
+<div class="input-group"><label>Email Address *</label><input id="email" type="email" placeholder="Enter your email" required></div>
+
+<!-- COUNTRY FIRST -->
+<div class="input-group">
+<label>Country *</label>
+<select id="country" required>
+<option value="">Select Country</option>
+<option value="Kenya">🇰🇪 Kenya</option>
+<option value="Uganda">🇺🇬 Uganda</option>
+<option value="Tanzania">🇹🇿 Tanzania</option>
+<option value="Rwanda">🇷🇼 Rwanda</option>
+<option value="DRC">🇨🇩 DRC</option>
+<option value="South Africa">🇿🇦 South Africa</option>
+<option value="Nigeria">🇳🇬 Nigeria</option>
+<option value="Ghana">🇬🇭 Ghana</option>
+<option value="Ethiopia">🇪🇹 Ethiopia</option>
+<option value="Zimbabwe">🇿🇼 Zimbabwe</option>
+<option value="Zambia">🇿🇲 Zambia</option>
+<option value="Botswana">🇧🇼 Botswana</option>
+<option value="Namibia">🇳🇦 Namibia</option>
+<option value="USA">🇺🇸 USA</option>
+<option value="UK">🇬🇧 UK</option>
+<option value="Canada">🇨🇦 Canada</option>
+<option value="Australia">🇦🇺 Australia</option>
+<option value="India">🇮🇳 India</option>
+<option value="Other">Other</option>
+</select>
+</div>
+
+<!-- PHONE NUMBER SECOND - SAME SIZE CARD -->
+<div class="input-group">
+<label>Phone Number *</label>
+<div class="phone-wrapper">
+<select id="countryCode" required>
+<option value="">Code</option>
+<option value="+254">+254 🇰🇪 Kenya</option>
+<option value="+256">+256 🇺🇬 Uganda</option>
+<option value="+255">+255 🇹🇿 Tanzania</option>
+<option value="+250">+250 🇷🇼 Rwanda</option>
+<option value="+243">+243 🇨🇩 DRC</option>
+<option value="+27">+27 🇿🇦 South Africa</option>
+<option value="+234">+234 🇳🇬 Nigeria</option>
+<option value="+233">+233 🇬🇭 Ghana</option>
+<option value="+251">+251 🇪🇹 Ethiopia</option>
+<option value="+263">+263 🇿🇼 Zimbabwe</option>
+<option value="+260">+260 🇿🇲 Zambia</option>
+<option value="+267">+267 🇧🇼 Botswana</option>
+<option value="+264">+264 🇳🇦 Namibia</option>
+<option value="+1">+1 🇺🇸 USA / 🇨🇦 Canada</option>
+<option value="+44">+44 🇬🇧 UK</option>
+<option value="+61">+61 🇦🇺 Australia</option>
+<option value="+91">+91 🇮🇳 India</option>
+</select>
+<input id="phone" type="tel" placeholder="712345678" required pattern="[0-9]{7,15}">
+</div>
+</div>
+
+<div class="input-group"><label>Age Group *</label><select id="age" required><option value="">Select Age</option><option>18 - 25</option><option>26 - 40</option><option>41 - 60</option><option>60+</option></select></div>
+<div class="input-group"><label>Area of Interest *</label><select id="interest" required><option value="">Select Interest</option><option>Brotherhood & Mentorship</option><option>Community Service</option><option>Business & Growth</option><option>Personal Development</option></select></div>
+
+<div class="input-group"><label>Create Password *</label><div class="password-wrapper"><input id="password" type="password" placeholder="Min 6 characters" required minlength="6"><button type="button" class="toggle-password" data-target="password"></button></div></div>
+<div class="input-group"><label>Confirm Password *</label><div class="password-wrapper"><input id="confirmPassword" type="password" placeholder="Re-enter password" required minlength="6"><button type="button" class="toggle-password" data-target="confirmPassword"></button></div></div>
+<div class="input-group full"><label>Message *</label><textarea id="message" placeholder="Tell us why you would like to join our brotherhood" required></textarea></div>
+
 </div>
 <button class="btn" id="submitBtn" type="submit">Submit Registration</button>
 <div class="login-link"><p style="color:#ccc;">Already a member? <a href="login.html">Login here</a></p></div>
@@ -87,7 +167,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-const firebaseConfig = {apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",authDomain: "mansonry-family-fraternity.firebaseapp.com",databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",projectId: "mansonry-family-fraternity",storageBucket: "mansonry-family-fraternity.firebasestorage.app",messagingSenderId: "964415179161",appId: "1:964415179161:web:c8fd1a777542932d7c6b08"};
+const firebaseConfig = {
+  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+  authDomain: "mansonry-family-fraternity.firebaseapp.com",
+  databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mansonry-family-fraternity",
+  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
+  messagingSenderId: "964415179161",
+  appId: "1:964415179161:web:c8fd1a777542932d7c6b08"
+};
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
@@ -99,28 +188,77 @@ const countryCodeSelect = document.getElementById("countryCode");
 const toast = document.getElementById("toast");
 const toastIcon = document.getElementById("toastIcon");
 const toastMessage = document.getElementById("toastMessage");
-const countryToCode = {"Kenya":"+254","Uganda":"+256","Tanzania":"+255"};
 
-countrySelect.addEventListener("change", () => { if(countryToCode[countrySelect.value]){ countryCodeSelect.value = countryToCode[countrySelect.value]; }});
+const countryToCode = {
+"Kenya":"+254","Uganda":"+256","Tanzania":"+255","Rwanda":"+250","DRC":"+243",
+"South Africa":"+27","Nigeria":"+234","Ghana":"+233","Ethiopia":"+251",
+"Zimbabwe":"+263","Zambia":"+260","Botswana":"+267","Namibia":"+264",
+"USA":"+1","UK":"+44","Canada":"+1","Australia":"+61","India":"+91"
+};
 
-function showToast(type, message){toast.className = `toast ${type} show`;toastIcon.textContent = type === 'success'? '✓' : '✕';toastMessage.textContent = message;setTimeout(() => {toast.classList.remove('show');}, 3000);}
-
-document.querySelectorAll('.toggle-password').forEach(btn => {btn.addEventListener('click', () => {const input = document.getElementById(btn.getAttribute('data-target'));input.type = input.type === 'password'? 'text' : 'password';btn.classList.toggle('active');});});
-
-form.addEventListener("submit", async (event) => {
-    event.preventDefault();button.disabled = true;button.textContent = "Creating Account...";
-    const fullName = document.getElementById("fullName").value.trim();const email = document.getElementById("email").value.trim();const country = document.getElementById("country").value;const countryCode = document.getElementById("countryCode").value;const phoneNumber = document.getElementById("phone").value.trim();const phone = countryCode + phoneNumber;const message = document.getElementById("message").value.trim();const password = document.getElementById("password").value;const confirmPassword = document.getElementById("confirmPassword").value;
-    if(password !== confirmPassword){ showToast('error','Passwords do not match'); button.disabled=false; button.textContent="Submit Registration"; return; }
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;const userData = {uid:user.uid,fullName,email,country,countryCode,phoneNumber,phone,message,status:"pending",role:"member",timestamp:new Date().toISOString()};
-        await set(ref(database, "users/" + user.uid), userData);
-        showToast('success','Registration Successful! Redirecting...');button.textContent = "Success";form.reset();
-        setTimeout(() => {window.location.href = "dashboard.html";}, 1500);
-    } catch (error) {button.disabled = false;button.textContent = "Submit Registration";showToast('error', error.message);}
+// AUTO SELECT CODE WHEN COUNTRY CHANGES
+countrySelect.addEventListener("change", () => { 
+  if(countryToCode[countrySelect.value]){ 
+    countryCodeSelect.value = countryToCode[countrySelect.value]; 
+  }
 });
 
-// PWA INSTALL
+function showToast(type, message){
+  toast.className = `toast ${type} show`;
+  toastIcon.textContent = type === 'success'? '✓' : '✕';
+  toastMessage.textContent = message;
+  setTimeout(() => {toast.classList.remove('show');}, 3000);
+}
+
+// PASSWORD TOGGLE WITH COLOR
+document.querySelectorAll('.toggle-password').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.getAttribute('data-target'));
+        input.type = input.type === 'password'? 'text' : 'password';
+        btn.classList.toggle('active');
+    });
+});
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    button.disabled = true;
+    button.textContent = "Creating Account...";
+
+    const fullName = document.getElementById("fullName").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const country = document.getElementById("country").value;
+    const countryCode = document.getElementById("countryCode").value;
+    const phoneNumber = document.getElementById("phone").value.trim();
+    const phone = countryCode + phoneNumber;
+    const age = document.getElementById("age").value;
+    const interest = document.getElementById("interest").value;
+    const message = document.getElementById("message").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if(!country){ showToast('error','Please select country'); button.disabled=false; button.textContent="Submit Registration"; return; }
+    if(!countryCode){ showToast('error','Please select country code'); button.disabled=false; button.textContent="Submit Registration"; return; }
+    if(password !== confirmPassword){ showToast('error','Passwords do not match'); button.disabled=false; button.textContent="Submit Registration"; return; }
+    if(password.length < 6){ showToast('error','Password must be 6 characters or more'); button.disabled=false; button.textContent="Submit Registration"; return; }
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        const userData = {uid:user.uid,fullName,email,country,countryCode,phoneNumber,phone,age,interest,message,status:"pending",role:"member",timestamp:new Date().toISOString()};
+        await set(ref(database, "users/" + user.uid), userData);
+        showToast('success','Registration Successful! Redirecting...');
+        button.textContent = "Success";
+        form.reset();
+        setTimeout(() => {window.location.href = "dashboard.html";}, 1500);
+    } catch (error) {
+        button.disabled = false;
+        button.textContent = "Submit Registration";
+        if(error.code === 'auth/email-already-in-use'){ showToast('error','This email is already registered'); } 
+        else { showToast('error','Registration Failed: ' + error.message); }
+    }
+});
+
+// PWA INSTALL POPUP
 let deferredPrompt;const installPopup = document.getElementById('installPopup');const btnInstall = document.getElementById('btnInstall');const btnClose = document.getElementById('btnClose');
 window.addEventListener('beforeinstallprompt', (e) => {e.preventDefault();deferredPrompt = e;setTimeout(() => {if(!window.matchMedia('(display-mode: standalone)').matches){installPopup.style.display = 'flex';}}, 2000);});
 btnInstall.addEventListener('click', async () => {installPopup.style.display = 'none';if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt = null;}});

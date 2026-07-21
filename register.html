@@ -31,15 +31,14 @@ input:focus,select:focus,textarea:focus{border-color:#d4af37;}
 textarea{height:120px;resize:none;grid-column:1/-1;}
 .full{grid-column:1/-1;}
 
-/* PHONE WITH COUNTRY CODE - SAME SIZE CARDS */
+/* PHONE WITH COUNTRY CODE */
 .phone-wrapper{display:flex;gap:10px;}
 .phone-wrapper .input-group{flex:1;}
-.phone-wrapper select{width:100%;}
 
 .password-wrapper{position:relative;}
 .password-wrapper input{padding-right:50px;}
 .toggle-password{position:absolute;right:15px;top:50%;transform:translateY(-50%);width:22px;height:22px;background:#d4af37;border:2px solid #d4af37;border-radius:4px;cursor:pointer;transition:.3s;}
-.toggle-password.active{background:transparent;} /* uncolored when showing password */
+.toggle-password.active{background:transparent;}
 
 .btn{margin-top:30px;width:100%;max-width:300px;padding:16px;margin-left:auto;margin-right:auto;display:block;border:none;border-radius:40px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-size:16px;font-weight:700;cursor:pointer;transition:.3s;box-shadow:0 10px 30px rgba(212,175,55,.3);}
 .btn:hover{transform:translateY(-3px);}
@@ -54,27 +53,13 @@ textarea{height:120px;resize:none;grid-column:1/-1;}
 .login-link{text-align:center;margin-top:20px;}
 .login-link a{color:#d4af37;text-decoration:none;font-weight:600;}
 
-/* INSTALL POPUP - CENTER */
+/* INSTALL POPUP - FIXED */
 .install-popup{
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%) scale(0.8);
-background:rgba(20,34,56,.98);
-backdrop-filter:blur(20px);
-padding:30px 25px;
-border-radius:20px;
-border:2px solid #d4af37;
-z-index:99999;
-display:none;
-flex-direction:column;
-align-items:center;
-gap:20px;
-width:90%;
-max-width:380px;
-box-shadow:0 20px 60px rgba(212,175,55,.4);
-animation:popupIn .4s forwards;
-text-align:center;
+position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);
+background:rgba(20,34,56,.98);backdrop-filter:blur(20px);padding:30px 25px;
+border-radius:20px;border:2px solid #d4af37;z-index:99999;display:none;
+flex-direction:column;align-items:center;gap:20px;width:90%;max-width:380px;
+box-shadow:0 20px 60px rgba(212,175,55,.4);animation:popupIn .4s forwards;text-align:center;
 }
 @keyframes popupIn{to{transform:translate(-50%,-50%) scale(1);}}
 .install-popup img{width:70px;height:70px;border-radius:18px;border:2px solid #d4af37;}
@@ -111,11 +96,9 @@ text-align:center;
 <div class="register-box">
 <form id="registrationForm">
 <div class="form-grid">
-
 <div class="input-group"><label>Full Name *</label><input id="fullName" type="text" placeholder="Enter your full name" required></div>
 <div class="input-group"><label>Email Address *</label><input id="email" type="email" placeholder="Enter your email" required></div>
 
-<!-- COUNTRY FIRST -->
 <div class="input-group">
 <label>Country *</label>
 <select id="country" required>
@@ -134,7 +117,6 @@ text-align:center;
 </select>
 </div>
 
-<!-- PHONE NUMBER SECOND - SAME SIZE CARD -->
 <div class="input-group">
 <label>Phone Number *</label>
 <div class="phone-wrapper">
@@ -161,7 +143,6 @@ text-align:center;
 <div class="input-group"><label>Create Password *</label><div class="password-wrapper"><input id="password" type="password" placeholder="Min 6 characters" required minlength="6"><button type="button" class="toggle-password" data-target="password"></button></div></div>
 <div class="input-group"><label>Confirm Password *</label><div class="password-wrapper"><input id="confirmPassword" type="password" placeholder="Re-enter password" required minlength="6"><button type="button" class="toggle-password" data-target="confirmPassword"></button></div></div>
 <div class="input-group full"><label>Message *</label><textarea id="message" placeholder="Tell us why you would like to join our brotherhood" required></textarea></div>
-
 </div>
 <button class="btn" id="submitBtn" type="submit">Submit Registration</button>
 <div class="login-link"><p style="color:#ccc;">Already a member? <a href="login.html">Login here</a></p></div>
@@ -198,7 +179,6 @@ const toastMessage = document.getElementById("toastMessage");
 
 const countryToCode = {"Kenya":"+254","Uganda":"+256","Tanzania":"+255","Rwanda":"+250","DRC":"+243","South Africa":"+27","Nigeria":"+234","Ghana":"+233","USA":"+1","UK":"+44"};
 
-// AUTO SELECT CODE WHEN COUNTRY CHANGES
 countrySelect.addEventListener("change", () => { 
   if(countryToCode[countrySelect.value]){ 
     countryCodeSelect.value = countryToCode[countrySelect.value]; 
@@ -212,13 +192,12 @@ function showToast(type, message){
   setTimeout(() => {toast.classList.remove('show');}, 3000);
 }
 
-// PASSWORD TOGGLE WITH COLOR INDICATION
 document.querySelectorAll('.toggle-password').forEach(btn => {
     btn.addEventListener('click', () => {
         const input = document.getElementById(btn.getAttribute('data-target'));
         const isPassword = input.type === 'password';
         input.type = isPassword ? 'text' : 'password';
-        btn.classList.toggle('active'); // Gold = hidden, Outline = visible
+        btn.classList.toggle('active');
     });
 });
 
@@ -226,7 +205,6 @@ form.addEventListener("submit", async (event) => {
     event.preventDefault();
     button.disabled = true;
     button.textContent = "Creating Account...";
-
     const fullName = document.getElementById("fullName").value.trim();
     const email = document.getElementById("email").value.trim();
     const country = document.getElementById("country").value;
@@ -261,7 +239,7 @@ form.addEventListener("submit", async (event) => {
     }
 });
 
-// PWA INSTALL POPUP - YOUR WORKING CODE
+// ===== PWA INSTALL POPUP - FULLY FIXED =====
 let deferredPrompt;
 const installPopup = document.getElementById('installPopup');
 const btnInstall = document.getElementById('btnInstall');
@@ -270,9 +248,14 @@ const btnClose = document.getElementById('btnClose');
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  if(!window.matchMedia('(display-mode: standalone)').matches){
-    setTimeout(() => {installPopup.style.display = 'flex';}, 2000);
-  }
+  console.log('PWA ready to install');
+  
+  // Show popup after 2 seconds if not already installed
+  setTimeout(() => {
+    if(!window.matchMedia('(display-mode: standalone)').matches){
+      installPopup.style.display = 'flex';
+    }
+  }, 2000);
 });
 
 btnInstall.addEventListener('click', async () => {
@@ -286,9 +269,10 @@ btnInstall.addEventListener('click', async () => {
 
 btnClose.addEventListener('click', () => {
   installPopup.style.display = 'none';
+  localStorage.setItem('pwaDismissed', 'true'); // don't show again this session
 });
 
-// PWA SERVICE WORKER
+// Register Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js');

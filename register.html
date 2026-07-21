@@ -53,12 +53,56 @@ textarea{height:120px;resize:none;grid-column:1/-1;}
 
 .login-link{text-align:center;margin-top:20px;}
 .login-link a{color:#d4af37;text-decoration:none;font-weight:600;}
+
+/* INSTALL POPUP - CENTER */
+.install-popup{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%) scale(0.8);
+background:rgba(20,34,56,.98);
+backdrop-filter:blur(20px);
+padding:30px 25px;
+border-radius:20px;
+border:2px solid #d4af37;
+z-index:99999;
+display:none;
+flex-direction:column;
+align-items:center;
+gap:20px;
+width:90%;
+max-width:380px;
+box-shadow:0 20px 60px rgba(212,175,55,.4);
+animation:popupIn .4s forwards;
+text-align:center;
+}
+@keyframes popupIn{to{transform:translate(-50%,-50%) scale(1);}}
+.install-popup img{width:70px;height:70px;border-radius:18px;border:2px solid #d4af37;}
+.install-popup .text h4{color:#d4af37;margin-bottom:8px;font-size:18px;}
+.install-popup .text p{color:#ccc;font-size:14px;}
+.install-popup .btns{display:flex;gap:12px;width:100%;}
+.install-popup .btn-install{flex:1;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;border:none;padding:12px 18px;border-radius:25px;font-weight:bold;cursor:pointer;}
+.install-popup .btn-close{flex:1;background:transparent;color:#ccc;border:1px solid #39485f;padding:12px 18px;border-radius:25px;cursor:pointer;}
+
 @media(max-width:700px){.title{font-size:28px;}.register-box{padding:25px;}}
 </style>
 </head>
 
 <body>
 <div id="toast" class="toast"><span class="icon" id="toastIcon"></span><span class="message" id="toastMessage"></span></div>
+
+<!-- INSTALL APP POPUP -->
+<div class="install-popup" id="installPopup">
+  <img src="icon-512.png" alt="logo">
+  <div class="text">
+    <h4>Install Mansory Family App</h4>
+    <p>Add to home screen for faster access</p>
+  </div>
+  <div class="btns">
+    <button class="btn-install" id="btnInstall">Install</button>
+    <button class="btn-close" id="btnClose">Later</button>
+  </div>
+</div>
 
 <header><div class="logo">Freemasonry Heritage</div></header>
 
@@ -217,7 +261,34 @@ form.addEventListener("submit", async (event) => {
     }
 });
 
-// PWA SERVICE WORKER - KEEPS INSTALL POPUP
+// PWA INSTALL POPUP - YOUR WORKING CODE
+let deferredPrompt;
+const installPopup = document.getElementById('installPopup');
+const btnInstall = document.getElementById('btnInstall');
+const btnClose = document.getElementById('btnClose');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if(!window.matchMedia('(display-mode: standalone)').matches){
+    setTimeout(() => {installPopup.style.display = 'flex';}, 2000);
+  }
+});
+
+btnInstall.addEventListener('click', async () => {
+  installPopup.style.display = 'none';
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+  }
+});
+
+btnClose.addEventListener('click', () => {
+  installPopup.style.display = 'none';
+});
+
+// PWA SERVICE WORKER
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js');

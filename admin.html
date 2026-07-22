@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freemasonry Heritage | Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#d4af37;--gold-dark:#b8941f;--dark:#07111f;--success:#22c55e;--danger:#ef4444;--warning:#f59e0b;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:var(--dark);color:white;min-height:100vh;}
+body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.88), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-attachment:fixed;z-index:-2;}
+body::after{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:400px;color:rgba(212,175,55,.03);z-index:-1;pointer-events:none;}
+header{position:fixed;top:0;left:0;width:100%;padding:18px 5%;background:rgba(0,0,0,.85);backdrop-filter:blur(15px);display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid rgba(212,175,55,.2);}
+.logo{font-size:24px;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif;}
+.logout{background:var(--gold);color:#111;padding:8px 20px;border-radius:30px;text-decoration:none;font-weight:600;transition:.3s;border:none;cursor:pointer;font-size:14px;}
+.logout:hover{background:var(--gold-dark);transform:translateY(-2px);}
+.container{padding:120px 5% 50px;max-width:1400px;margin:auto;}
+.page-header{text-align:center;margin-bottom:30px;}
+.page-header.fraternity-name{font-size:14px;color:#ccc;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.page-header h1{font-size:36px;color:var(--gold);font-family:'Playfair Display',serif;}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:30px;}
+.stat-card{background:linear-gradient(145deg,rgba(20,34,56,.9),rgba(11,23,40,.9));backdrop-filter:blur(20px);padding:20px;border-radius:16px;text-align:center;border:1px solid rgba(212,175,55,.25);}
+.stat-card h2{color:var(--gold);font-size:32px;font-family:'Playfair Display',serif;}
+.stat-card p{color:#ccc;font-size:13px;margin-top:5px;}
+.table-wrapper{background:linear-gradient(145deg,rgba(20,34,56,.9),rgba(11,23,40,.9));backdrop-filter:blur(20px);border-radius:20px;padding:25px;border:1px solid rgba(212,175,55,.25);}
+.table-title{color:var(--gold);margin-bottom:20px;font-family:'Playfair Display',serif;font-size:22px;}
+.table-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;min-width:800px;}
+thead th{color:var(--gold);text-align:left;padding:14px 10px;border-bottom:2px solid rgba(212,175,55,.3);font-weight:600;font-size:14px;white-space:nowrap;}
+tbody td{padding:14px 10px;border-bottom:1px solid rgba(212,175,55,.1);color:#ddd;font-size:14px;}
+tbody tr:hover{background:rgba(212,175,55,.05);}
+.badge{padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;text-transform:capitalize;white-space:nowrap;}
+.badge.approved{background:rgba(34,197,94,.2);color:var(--success);border:1px solid var(--success);}
+.badge.pending{background:rgba(245,158,11,.2);color:var(--warning);border:1px solid var(--warning);}
+.badge.rejected{background:rgba(239,68,68,.2);color:var(--danger);border:1px solid var(--danger);}
+.dropdown{position:relative;display:inline-block;}
+.dropbtn{background:rgba(212,175,55,.15);color:var(--gold);padding:8px 16px;border-radius:20px;border:1px solid var(--gold);font-weight:600;cursor:pointer;font-size:12px;transition:.3s;}
+.dropbtn:hover{background:var(--gold);color:#111;}
+.dropdown-content{display:none;position:absolute;right:0;background:#142238;min-width:160px;box-shadow:0 8px 20px rgba(0,0,0,.5);z-index:1;border-radius:12px;border:1px solid rgba(212,175,55,.3);overflow:hidden;}
+.dropdown-content button{color:#ddd;padding:10px 14px;text-decoration:none;display:block;width:100%;text-align:left;border:none;background:none;cursor:pointer;font-size:13px;transition:.2s;}
+.dropdown-content button:hover{background:rgba(212,175,55,.1);}
+.dropdown-content button.danger{color:var(--danger);}
+.dropdown-content button.danger:hover{background:rgba(239,68,68,.15);}
+.show{display:block;}
+.loading{text-align:center;padding:40px;color:#aaa;}
+.error-box{background:rgba(239,68,68,.15);border:1px solid var(--danger);color:#ff9999;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;}
+.success-box{background:rgba(34,197,94,.15);border:1px solid var(--success);color:#4cff88;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;}
+.current-ann{background:rgba(5,12,24,.6);border:1px solid rgba(212,175,55,.3);border-left:4px solid var(--gold);padding:15px;border-radius:10px;margin-bottom:15px;}
+.current-ann h4{color:var(--gold);font-size:15px;margin-bottom:6px;}
+.current-ann p{color:#ddd;font-size:13px;line-height:1.6;margin-bottom:6px;}
+.current-ann small{color:#8a9bb0;font-size:11px;}
+.notif-item{background:rgba(5,12,24,.5);border:1px solid rgba(212,175,55,.2);padding:12px;border-radius:10px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;animation:fadeIn.3s ease;}
+@keyframes fadeIn {from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
+.notif-item h5{color:var(--gold);font-size:14px;margin-bottom:4px;}
+.notif-item p{color:#ddd;font-size:12px;}
+.delete-one-btn{background:var(--danger);color:#fff;border:none;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:.3s;}
+.delete-one-btn:hover{background:#dc2626;}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">Freemasonry Heritage</div>
+<button class="logout" id="logoutBtn">Logout</button>
+</header>
+
+<main class="container">
+<div class="page-header">
+<div class="fraternity-name">Freemasonry Heritage Fraternity</div>
+<h1>Admin Control Panel</h1>
+</div>
+
+<div id="errorBox"></div>
+<div id="successBox"></div>
+
+<div class="stats">
+<div class="stat-card"><h2 id="totalUsers">0</h2><p>Total Members</p></div>
+<div class="stat-card"><h2 id="approvedUsers">0</h2><p>Approved</p></div>
+<div class="stat-card"><h2 id="pendingUsers">0</h2><p>Pending</p></div>
+<div class="stat-card"><h2 id="rejectedUsers">0</h2><p>Rejected</p></div>
+</div>
+
+<div class="table-wrapper" style="margin-bottom:30px;">
+    <h2 class="table-title">📢 Send Announcement</h2>
+    <div id="currentAnnouncementPreview"><p style="color:#a0b0c9;font-size:13px;">Loading current announcement...</p></div>
+    <div style="display:flex;flex-direction:column;gap:15px;">
+        <select id="notificationRecipient" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
+            <option value="all">📢 Send to ALL Members + Announcement Board</option>
+        </select>
+        <input type="text" id="notificationTitle" placeholder="Announcement Title" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
+        <textarea id="notificationMessage" rows="5" placeholder="Write your message here..." style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;resize:vertical;"></textarea>
+        <button id="sendNotificationBtn" style="background:#d4af37;color:#111;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;">Send Announcement</button>
+    </div>
+</div>
+
+<div class="table-wrapper" style="margin-bottom:30px;">
+    <h2 class="table-title">🗑️ Delete Announcement</h2>
+    <div style="display:flex;flex-direction:column;gap:15px;">
+        <select id="deleteRecipient" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
+            <option value="">-- Select Member to View/Delete Their Notifications --</option>
+            <option value="all">🗑️ Delete from ALL Members Announcement Board</option>
+        </select>
+        <div id="memberNotificationsList" style="max-height:300px;overflow-y:auto;display:none;"></div>
+        <button id="deleteAllBtn" style="background:var(--danger);color:#fff;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;display:none;">
+            Delete ALL Notifications
+        </button>
+    </div>
+</div>
+
+<div class="table-wrapper">
+<h2 class="table-title">Member Applications - REAL TIME</h2>
+<div class="table-scroll">
+<table>
+<thead><tr><th>#</th><th>Full Name</th><th>Email</th><th>Phone</th><th>Applied On</th><th>Status</th><th>Actions</th></tr></thead>
+<tbody id="usersTable"><tr><td colspan="7" class="loading">Connecting to Firebase...</td></tr></tbody>
+</table>
+</div>
+</div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, onValue, update, get, push, set, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+  authDomain: "mansonry-family-fraternity.firebaseapp.com",
+  databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mansonry-family-fraternity",
+  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
+  messagingSenderId: "964415179161",
+  appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
+  measurementId: "G-Q8LC74ZFXN"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+const functions = getFunctions(app, 'europe-west1');
+const sendAnnouncementFn = httpsCallable(functions, 'sendAnnouncement');
+
+const usersTable = document.getElementById('usersTable');
+const errorBox = document.getElementById('errorBox');
+const successBox = document.getElementById('successBox');
+const recipientSelect = document.getElementById('notificationRecipient');
+const deleteRecipientSelect = document.getElementById('deleteRecipient');
+const memberNotifList = document.getElementById('memberNotificationsList');
+const deleteAllBtn = document.getElementById('deleteAllBtn');
+
+function showError(msg){errorBox.innerHTML = `<div class="error-box">${msg}</div>`;setTimeout(()=>{errorBox.innerHTML = ""}, 5000);}
+function showSuccess(msg){successBox.innerHTML = `<div class="success-box">${msg}</div>`;setTimeout(()=>{successBox.innerHTML = ""}, 4000);}
+
+onAuthStateChanged(auth, async (user) => {
+  if(!user){window.location.href = "login.html";return;}
+  const userSnap = await get(ref(database, "users/" + user.uid));
+  if(!userSnap.exists() || userSnap.val().role!== "admin"){showError("Access Denied");setTimeout(()=>{window.location.href = "dashboard.html";}, 3000);return;}
+  loadUsers();loadRecipients();loadCurrentAnnouncement();
+});
+
+function loadCurrentAnnouncement(){
+  onValue(ref(database, 'announcements'), (snapshot) => {
+    const data = snapshot.val();
+    const previewDiv = document.getElementById('currentAnnouncementPreview');
+    if(!data){previewDiv.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No current announcement</p>`;return;}
+    const date = data.timestamp? new Date(data.timestamp).toLocaleString() : 'Just now';
+    previewDiv.innerHTML = `<div class="current-ann"><h4>Current: ${data.title}</h4><p>${data.message}</p><small>By: ${data.sentByEmail} • ${date}</small></div>`;
+  });
+}
+
+function loadUsers(){
+  onValue(ref(database, "users"), (snapshot) => {
+    const data = snapshot.val();if(!data){usersTable.innerHTML = `<tr><td colspan="7" class="loading">No members</td></tr>`;return;}
+    let html = "";let total = 0, approved = 0, pending = 0, rejected = 0;let count = 1;
+    Object.keys(data).forEach(uid => {
+      const user = data[uid];const status = user.status || "pending";
+      if(status === "approved") approved++;else if(status === "rejected") rejected++;else pending++;total++;
+      const appliedDate = user.timestamp? new Date(user.timestamp).toLocaleDateString() : 'N/A';
+      const isAdmin = user.role === "admin";
+      const deleteBtn =!isAdmin? `<button class="danger" onclick="deleteMember('${uid}','${user.fullName}')">🗑️ Delete Member</button>` : '';
+      html += `<tr><td>${count++}</td><td>${user.fullName}</td><td>${user.email}</td><td>${user.phone || 'N/A'}</td><td>${appliedDate}</td><td><span class="badge ${status}">${status}</span></td><td><div class="dropdown"><button onclick="toggleDropdown('dropdown${uid}')" class="dropbtn">Actions ▼</button><div id="dropdown${uid}" class="dropdown-content"><button onclick="updateStatus('${uid}','approved')">Approve</button><button onclick="updateStatus('${uid}','pending')">Pending</button><button onclick="updateStatus('${uid}','rejected')">Rejected</button>${deleteBtn}</div></div></td></tr>`;
+    });
+    usersTable.innerHTML = html;document.getElementById('totalUsers').textContent = total;document.getElementById('approvedUsers').textContent = approved;document.getElementById('pendingUsers').textContent = pending;document.getElementById('rejectedUsers').textContent = rejected;
+  });
+}
+
+function loadRecipients(){
+  onValue(ref(database, "users"), (snapshot) => {
+    const data = snapshot.val();
+    recipientSelect.innerHTML = '<option value="all">📢 Send to ALL Members + Announcement Board</option>';
+    deleteRecipientSelect.innerHTML = '<option value="">-- Select Member --</option><option value="all">🗑️ Delete from ALL Members Announcement Board</option>';
+    if(data){Object.keys(data).forEach(uid => {recipientSelect.innerHTML += `<option value="${uid}">📢 ${data[uid].fullName}</option>`;deleteRecipientSelect.innerHTML += `<option value="${uid}">👤 ${data[uid].fullName}</option>`;});}
+  });
+}
+
+deleteRecipientSelect.addEventListener("change", (e) => {
+  const uid = e.target.value;
+  if(!uid){memberNotifList.style.display = "none";deleteAllBtn.style.display = "none";return;}
+  deleteAllBtn.style.display = "block";
+  if(uid === "all"){
+    memberNotifList.style.display = "none";
+    deleteAllBtn.textContent = "Delete ALL Notifications for EVERYONE";
+    return;
+  }
+  deleteAllBtn.textContent = "Delete ALL Notifications for Selected Member";
+  memberNotifList.style.display = "block";
+  onValue(ref(database, `notifications/${uid}`), (snapshot) => {
+    const data = snapshot.val();
+    if(!data){memberNotifList.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No notifications</p>`;return;}
+    let html = "";Object.keys(data).reverse().forEach(key => {
+      const n = data[key];const date = n.timestamp? new Date(n.timestamp).toLocaleString() : '';
+      html += `<div class="notif-item"><div><h5>${n.title}</h5><p>${n.message}</p><small style="color:#8a9bb0;font-size:10px;">${date}</small></div><button class="delete-one-btn" onclick="deleteSpecificNotification('${uid}','${key}')">Delete</button></div>`;
+    });
+    memberNotifList.innerHTML = html;
+  });
+});
+
+window.deleteSpecificNotification = function(uid, key){
+  if(confirm("Delete this specific notification?")){
+    remove(ref(database, `notifications/${uid}/${key}`)).then(() => showSuccess("Notification deleted")).catch(err => showError(err.message));
+  }
+}
+
+window.toggleDropdown = function(id) {document.getElementById(id).classList.toggle("show");}
+window.onclick = function(event) {if (!event.target.matches('.dropbtn')) {document.querySelectorAll(".dropdown-content").forEach(d => d.classList.remove('show'));}}
+window.updateStatus = function(uid, status){update(ref(database, "users/" + uid), { status: status });showSuccess("Status updated");}
+
+window.deleteMember = function(uid, name){
+  if(confirm(`⚠️ WARNING: This will PERMANENTLY delete ${name} from the database.\nThis cannot be undone. Continue?`)){
+    const updates = {};
+    updates[`users/${uid}`] = null;
+    updates[`notifications/${uid}`] = null;
+    update(ref(database), updates).then(() => {
+      showSuccess(`${name} has been deleted`);
+    }).catch(err => showError(err.message));
+  }
+}
+
+document.getElementById("sendNotificationBtn").addEventListener("click", async () => {
+  const recipient = recipientSelect.value;const title = document.getElementById("notificationTitle").value.trim();const message = document.getElementById("notificationMessage").value.trim();
+  if(!title ||!message){showError("Fill Title and Message");return;}
+  const btn = document.getElementById("sendNotificationBtn");btn.disabled = true;btn.textContent = "Sending...";
+  const notificationData = {title, message, timestamp: Date.now(), read: false, sentBy: auth.currentUser.email};
+  const announcementData = {title, message, timestamp: Date.now(), sentByEmail: auth.currentUser.email};
+
+  try{
+    if(recipient === "all"){
+      const snapshot = await get(ref(database, "users"));
+      const data = snapshot.val();const updates = {};const tokens = [];
+      Object.keys(data).forEach(uid => {
+        const newNotifKey = push(ref(database, `notifications/${uid}`)).key;
+        updates[`notifications/${uid}/${newNotifKey}`] = notificationData;
+        if(data[uid].fcmToken) tokens.push(data[uid].fcmToken);
+      });
+      updates[`announcements`] = announcementData;
+      await update(ref(database), updates);
+      if(tokens.length > 0) await sendAnnouncementFn({title, body: message, tokens});
+      showSuccess(`Sent to ${tokens.length} members with push!`);
+    } else {
+      const newNotifKey = push(ref(database, `notifications/${recipient}`)).key;
+      const tokenSnap = await get(ref(database, `users/${recipient}/fcmToken`));
+      await update(ref(database, `notifications/${recipient}/${newNotifKey}`), notificationData);
+      if(tokenSnap.exists()) await sendAnnouncementFn({title, body: message, tokens: [tokenSnap.val()]});
+      showSuccess(`Sent to member with push!`);
+    }
+  }catch(err){showError(err.message);}
+  document.getElementById("notificationTitle").value = "";document.getElementById("notificationMessage").value = "";btn.disabled = false;btn.textContent = "Send Announcement";
+});
+
+deleteAllBtn.addEventListener("click", () => {
+  const uid = deleteRecipientSelect.value;
+  if(!uid) return;
+  if(uid === "all"){
+    if(confirm("⚠️ This will DELETE ALL notifications for EVERY member AND clear the main announcement. Continue?")){
+      get(ref(database, "users")).then((snapshot) => {
+        const data = snapshot.val();const updates = {};
+        Object.keys(data).forEach(memberUid => {updates[`notifications/${memberUid}`] = null;});
+        updates[`announcements`] = null;
+        return update(ref(database), updates);
+      }).then(() => {
+        showSuccess("All notifications deleted for everyone!");
+        memberNotifList.style.display = "none";
+        deleteRecipientSelect.value = "";
+        deleteAllBtn.style.display = "none";
+      }).catch(err => showError(err.message));
+    }
+  } else {
+    if(confirm("Delete ALL notifications for this member?")){
+      set(ref(database, `notifications/${uid}`), null).then(() => showSuccess("All deleted for member")).catch(err => showError(err.message));
+    }
+  }
+});
+
+document.getElementById("logoutBtn").addEventListener("click",()=>{signOut(auth).then(()=>{window.location.href="login.html";});});
+</script>
+</body>
+</html>

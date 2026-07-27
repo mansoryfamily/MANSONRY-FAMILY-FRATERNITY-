@@ -23,7 +23,6 @@ header{position:fixed;top:0;left:0;width:100%;padding:18px 5%;background:rgba(0,
 .stat-card{background:linear-gradient(145deg,rgba(20,34,56,.9),rgba(11,23,40,.9));backdrop-filter:blur(20px);padding:20px;border-radius:16px;text-align:center;border:1px solid rgba(212,175,55,.25);}
 .stat-card h2{color:var(--gold);font-size:32px;font-family:'Playfair Display',serif}
 
-/* ADDED: Maintenance Section at bottom */
 .maintenance-section{margin-top:60px;padding:30px;border-radius:16px;background:linear-gradient(145deg,rgba(20,34,56,.9),rgba(11,23,40,.9));border:1px solid rgba(212,175,55,.25);text-align:center;}
 .maintenance-section h3{color:var(--gold);font-size:22px;margin-bottom:20px;font-family:'Playfair Display',serif;}
 .maintenance-buttons{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
@@ -32,22 +31,22 @@ header{position:fixed;top:0;left:0;width:100%;padding:18px 5%;background:rgba(0,
 .maint-btn.active{background:var(--success);border-color:var(--success);color:white;}
 .maint-btn.active.danger{background:var(--danger);border-color:var(--danger);}
 
-/* ADDED: Maintenance Overlay */
 .maintenance-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(7,17,31,.98);backdrop-filter:blur(20px);z-index:9999;display:none;justify-content:center;align-items:center;flex-direction:column;text-align:center;padding:20px;}
 .maintenance-overlay.active{display:flex;}
 .maintenance-icon{font-size:80px;color:var(--gold);margin-bottom:20px;animation:pulse 2s infinite;}
 .maintenance-title{font-size:42px;color:var(--gold);font-family:'Playfair Display',serif;margin-bottom:15px;}
-.maintenance-text{font-size:18px;color:#ccc;max-width:500px;line-height:1.8;}
+.maintenance-text{font-size:18px;color:#ccc;max-width:500px;line-height:1.8;margin-bottom:25px;}
+.exit-btn{background:var(--danger);color:white;padding:12px 30px;border-radius:30px;border:none;font-weight:600;cursor:pointer;font-size:16px;}
 @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
 </style>
 </head>
 <body>
 
-<!-- MAINTENANCE OVERLAY - Only shows to public -->
 <div class="maintenance-overlay" id="maintenanceOverlay">
   <div class="maintenance-icon">◬</div>
   <h1 class="maintenance-title">Under Maintenance</h1>
   <p class="maintenance-text">The Freemasonry Heritage site is currently undergoing scheduled maintenance. Please check back later.</p>
+  <button class="exit-btn" id="exitMaintenance">Exit Maintenance - Admin Only</button>
 </div>
 
 <header>
@@ -72,7 +71,6 @@ header{position:fixed;top:0;left:0;width:100%;padding:18px 5%;background:rgba(0,
     </div>
   </div>
 
-  <!-- ADDED: Maintenance Buttons at the END -->
   <div class="maintenance-section">
     <h3>Maintenance Mode</h3>
     <div class="maintenance-buttons">
@@ -80,22 +78,18 @@ header{position:fixed;top:0;left:0;width:100%;padding:18px 5%;background:rgba(0,
       <button class="maint-btn" id="maintenanceOff">Maintenance<br>Off</button>
     </div>
   </div>
-
 </div>
 
 <script>
-// MAINTENANCE LOGIC
 const overlay = document.getElementById('maintenanceOverlay');
 const btnOn = document.getElementById('maintenanceOn');
 const btnOff = document.getElementById('maintenanceOff');
-
-// Admin is never blocked
-const isAdmin = true; 
+const exitBtn = document.getElementById('exitMaintenance');
 
 function checkMaintenance() {
   const isMaintenance = localStorage.getItem('maintenanceMode') === 'true';
   
-  if(isMaintenance && !isAdmin) {
+  if(isMaintenance) {
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
   } else {
@@ -103,7 +97,6 @@ function checkMaintenance() {
     document.body.style.overflow = 'auto';
   }
   
-  // Update button styles
   if(isMaintenance) {
     btnOn.classList.add('active');
     btnOff.classList.remove('active','danger');
@@ -125,7 +118,12 @@ btnOff.addEventListener('click', () => {
   toast('Maintenance Mode: OFF');
 });
 
-// Toast in center
+exitBtn.addEventListener('click', () => {
+  localStorage.setItem('maintenanceMode', 'false');
+  checkMaintenance();
+  toast('Maintenance Mode: OFF');
+});
+
 function toast(message) {
   const t = document.createElement('div');
   t.textContent = message;

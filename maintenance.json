@@ -1,1 +1,9 @@
-{"maintenance": false}
+document.getElementById('maintenanceOn').addEventListener('click', () => {
+  set(ref(database, 'settings/maintenance'), true); // use SET not UPDATE
+  showSuccess('Maintenance Mode: ON - Site blocked for all users');
+});
+
+document.getElementById('maintenanceOff').addEventListener('click', () => {
+  set(ref(database, 'settings/maintenance'), false);
+  showSuccess('Maintenance Mode: OFF - Site is live');
+});

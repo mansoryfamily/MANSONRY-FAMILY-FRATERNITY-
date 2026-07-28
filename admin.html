@@ -187,6 +187,7 @@ let isAdmin = false;
 function showError(msg){errorBox.innerHTML = `<div class="error-box">${msg}</div>`;setTimeout(()=>{errorBox.innerHTML = ""}, 5000);}
 function showSuccess(msg){successBox.innerHTML = `<div class="success-box">${msg}</div>`;setTimeout(()=>{successBox.innerHTML = ""}, 4000);}
 
+// REALTIME MAINTENANCE SYNC
 function checkMaintenance(){
   onValue(ref(database, 'settings/maintenance'), (snapshot) => {
     const isMaintenance = snapshot.val() === true;
@@ -222,7 +223,7 @@ document.getElementById('exitMaintenance').addEventListener('click', () => {
 onAuthStateChanged(auth, async (user) => {
   if(!user){window.location.href = "login.html";return;}
 
-  // CHECK ADMIN FROM admins/{uid} PER YOUR RULES
+  // REALTIME ADMIN CHECK FROM admins/{uid}
   const adminSnap = await get(ref(database, "admins/" + user.uid));
   if(!adminSnap.exists()){showError("Access Denied");setTimeout(()=>{window.location.href = "dashboard.html";}, 3000);return;}
 
@@ -294,4 +295,4 @@ window.deleteSpecificNotification = function(uid, key){
 
 window.toggleDropdown = function(id) {document.getElementById(id).classList.toggle("show");}
 window.onclick = function(event) {if (!event.target.matches('.dropbtn')) {document.querySelectorAll(".dropdown-content").forEach(d => d.classList.remove('show'));}}
-window.updateStatus = function(uid, status){update(ref(database, "users/" + uid), { status: status }).then(()=>showSuccess("Statu
+window.updateStatus = function(uid, status){update(ref(database, "users/" + uid), { status: status }).then

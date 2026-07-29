@@ -71,7 +71,7 @@ textarea{height:120px;resize:none;grid-column:1/-1;}
 <div class="maintenance-overlay" id="maintenanceOverlay">
   <div class="maintenance-icon">◬</div>
   <h1 class="maintenance-title">Under Maintenance</h1>
-  <p class="maintenance-text">Registration is currently disabled. Please check back later.</p>
+  <p class="maintenance-text">Registration is currently disabled for new members.</p>
 </div>
 
 <div id="toast" class="toast"><span class="icon" id="toastIcon"></span><span class="message" id="toastMessage"></span></div>
@@ -107,8 +107,8 @@ textarea{height:120px;resize:none;grid-column:1/-1;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -129,23 +129,40 @@ const button = document.getElementById("submitBtn");
 const mainContainer = document.getElementById("mainContainer");
 const maintenanceOverlay = document.getElementById("maintenanceOverlay");
 
-// FIXED: REALTIME MAINTENANCE CHECK + HIDE CONTAINER
+let maintenanceMode = false;
+let currentUserRole = null;
+
+// 1. CHECK MAINTENANCE + USER ROLE
 onValue(ref(database, 'settings/maintenance'), (snapshot) => {
-  const isMaintenance = snapshot.val() === true;
-  console.log("Maintenance status:", isMaintenance); // Check this in browser console
-  
-  if(isMaintenance){
+  maintenanceMode = snapshot.val() === true;
+  updateUI();
+});
+
+// 2. CHECK IF LOGGED IN USER IS ADMIN
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    const snap = await get(ref(database, 'users/' + user.uid));
+    currentUserRole = snap.exists() ? snap.val().role : 'member';
+  } else {
+    currentUserRole = null;
+  }
+  updateUI();
+});
+
+function updateUI(){
+  // Only show maintenance if ON AND user is NOT admin
+  if(maintenanceMode && currentUserRole !== 'admin'){
     maintenanceOverlay.classList.add('active');
-    mainContainer.style.display = 'none'; // HIDE FORM COMPLETELY
+    mainContainer.style.display = 'none';
     document.body.style.overflow = 'hidden';
     form.querySelectorAll('input, select, textarea, button').forEach(el => el.disabled = true);
   } else {
     maintenanceOverlay.classList.remove('active');
-    mainContainer.style.display = 'block'; // SHOW FORM
+    mainContainer.style.display = 'block';
     document.body.style.overflow = 'auto';
     form.querySelectorAll('input, select, textarea, button').forEach(el => el.disabled = false);
   }
-});
+}
 
 const countrySelect = document.getElementById("country");
 const countryCodeSelect = document.getElementById("countryCode");
@@ -173,6 +190,13 @@ document.querySelectorAll('.toggle-password').forEach(btn => {
 
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    
+    // Double check before submitting
+    if(maintenanceMode && currentUserRole !== 'admin'){
+      showToast('error','Registration is currently disabled');
+      return;
+    }
+
     button.disabled = true;
     button.textContent = "Creating Account...";
     const fullName = document.getElementById("fullName").value.trim();

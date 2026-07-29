@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Freemasonry | Member Login</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;overflow-x:hidden;}
@@ -23,37 +20,26 @@ section{padding:80px 10%;}
 label{color:#d4af37;margin-bottom:8px;font-weight:500;}
 input{width:100%;background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;outline:none;font-size:15px;}
 input:focus{border-color:#d4af37;}
-input:disabled{background:#0a1628;opacity:.5;cursor:not-allowed;} /* ADDED */
+input:disabled{background:#0a1628;opacity:.5;cursor:not-allowed;}
 .input-group input[type="password"], .input-group input[type="text"]{padding-right:50px;}
-
-/* SHOW/HIDE PASSWORD BOX */
-.toggle-password{
-position:absolute;right:15px;top:42px;
-background:#d4af37;border:none;width:22px;height:22px;border-radius:4px;
-cursor:pointer;transition:.3s;
-}
+.toggle-password{position:absolute;right:15px;top:42px;background:#d4af37;border:none;width:22px;height:22px;border-radius:4px;cursor:pointer;transition:.3s;}
 .toggle-password:hover{background:#f0c84b;}
 .toggle-password.active{background:#111;border:2px solid #d4af37;}
-.toggle-password:disabled{opacity:.5;cursor:not-allowed;} /* ADDED */
-
+.toggle-password:disabled{opacity:.5;cursor:not-allowed;}
 .options{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;font-size:14px;}
 .remember{display:flex;align-items:center;gap:8px;}
 .remember input{width:16px;height:16px;accent-color:#d4af37;}
 .forgot{color:#d4af37;text-decoration:none;font-weight:500;}
-.forgot.disabled{opacity:.5;pointer-events:none;} /* ADDED */
+.forgot.disabled{opacity:.5;pointer-events:none;}
 .btn{display:block;width:220px;margin:30px auto 0;padding:15px;border:none;border-radius:40px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:bold;cursor:pointer;transition:.3s;font-size:16px;}
 .btn:hover{transform:translateY(-5px);}
 .btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
-
-/* TOAST */
 .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);backdrop-filter:blur(20px);padding:30px 40px;border-radius:18px;border:2px solid #d4af37;z-index:9999;opacity:0;transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);text-align:center;min-width:320px;}
 .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
 .toast.success{border-color:#4cff88;}
 .toast.error{border-color:#ff5555;}
 .toast .icon{font-size:45px;margin-bottom:12px;display:block;}
 .toast .message{font-size:17px;font-weight:600;color:#fff;}
-
-/* ADDED: MAINTENANCE OVERLAY */
 .maintenance-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(7,17,31,.98);backdrop-filter:blur(20px);z-index:99999;display:none;justify-content:center;align-items:center;flex-direction:column;text-align:center;padding:20px;}
 .maintenance-overlay.active{display:flex;}
 .maintenance-icon{font-size:80px;color:#d4af37;margin-bottom:20px;animation:pulse 2s infinite;}
@@ -65,7 +51,6 @@ cursor:pointer;transition:.3s;
 
 <body>
 
-<!-- ADDED: MAINTENANCE BLOCKS LOGIN -->
 <div class="maintenance-overlay" id="maintenanceOverlay">
   <div class="maintenance-icon">◬</div>
   <h1 class="maintenance-title">Under Maintenance</h1>
@@ -82,22 +67,12 @@ cursor:pointer;transition:.3s;
 <h2 class="title">Welcome Back</h2>
 <div class="login-box">
 <form id="loginForm">
-<div class="input-group">
-<label>Email Address</label>
-<input id="email" type="email" placeholder="Enter your email" required>
-</div>
-
-<div class="input-group">
-<label>Password</label>
-<input id="password" type="password" placeholder="Enter password" required>
-<button type="button" class="toggle-password" id="togglePassword" title="Show Password"></button>
-</div>
-
+<div class="input-group"><label>Email Address</label><input id="email" type="email" placeholder="Enter your email" required></div>
+<div class="input-group"><label>Password</label><input id="password" type="password" placeholder="Enter password" required><button type="button" class="toggle-password" id="togglePassword" title="Show Password"></button></div>
 <div class="options">
-<div class="remember"><input type="checkbox" id="rememberMe"><label for="rememberMe" style="color:#ccc;cursor:pointer;">Remember Me</label></div>
+<div class="remember"><input type="checkbox" id="rememberMe"><label for="rememberMe" style="color:#ccc;cursor:pointer;">Remember Me & Auto Login</label></div>
 <a href="#" class="forgot" id="forgotPassword">Forgot Password?</a>
 </div>
-
 <button class="btn" id="loginBtn" type="submit">Login</button>
 </form>
 </div>
@@ -105,8 +80,8 @@ cursor:pointer;transition:.3s;
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"; // ADDED
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -115,37 +90,58 @@ const firebaseConfig = {
   projectId: "mansonry-family-fraternity",
   storageBucket: "mansonry-family-fraternity.firebasestorage.app",
   messagingSenderId: "964415179161",
-  appId: "1:964415179161:web:c8fd1a777542932d7c6b08",
-  measurementId: "G-Q8LC74ZFXN"
+  appId: "1:964415179161:web:c8fd1a777542932d7c6b08"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const database = getDatabase(app); // ADDED
+const database = getDatabase(app);
 
 const loginForm = document.getElementById("loginForm");
 const loginBtn = document.getElementById("loginBtn");
 const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 const rememberMe = document.getElementById("rememberMe");
 const forgotBtn = document.getElementById("forgotPassword");
-const passwordInput = document.getElementById("password");
 const togglePassword = document.getElementById("togglePassword");
-const maintenanceOverlay = document.getElementById("maintenanceOverlay"); // ADDED
-
+const maintenanceOverlay = document.getElementById("maintenanceOverlay");
 const toast = document.getElementById("toast");
 const toastIcon = document.getElementById("toastIcon");
 const toastMessage = document.getElementById("toastMessage");
 
-// ADDED: REALTIME MAINTENANCE CHECK
-onValue(ref(database, 'settings/maintenance'), (snapshot) => {
+let isAdmin = false; // Track if current user is admin
+
+function showToast(type, message){
+  toast.className = `toast ${type} show`;
+  toastIcon.textContent = type === 'success' ? '✓' : '✕';
+  toastMessage.textContent = message;
+  setTimeout(() => {toast.classList.remove('show');}, 3500);
+}
+
+// 1. CHECK IF USER IS ADMIN
+async function checkIfAdmin(uid){
+  const snap = await get(ref(database, 'users/' + uid));
+  return snap.exists() && snap.val().role === 'admin';
+}
+
+// 2. MAINTENANCE CHECK - ALLOW ADMIN TO BYPASS
+onValue(ref(database, 'settings/maintenance'), async (snapshot) => {
   const isMaintenance = snapshot.val() === true;
+  const user = auth.currentUser;
+  
   if(isMaintenance){
-    maintenanceOverlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    loginForm.querySelectorAll('input, button, a').forEach(el => {
-      el.disabled = true;
-      if(el.tagName === 'A') el.classList.add('disabled');
-    });
+    // If maintenance ON and user is NOT admin, block them
+    if(!user || !isAdmin){
+      maintenanceOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      loginForm.querySelectorAll('input, button, a').forEach(el => {
+        el.disabled = true;
+        if(el.tagName === 'A') el.classList.add('disabled');
+      });
+    } else {
+      // Admin is logged in, let them pass
+      maintenanceOverlay.classList.remove('active');
+    }
   } else {
     maintenanceOverlay.classList.remove('active');
     document.body.style.overflow = 'auto';
@@ -156,20 +152,28 @@ onValue(ref(database, 'settings/maintenance'), (snapshot) => {
   }
 });
 
-function showToast(type, message){
-  toast.className = `toast ${type} show`;
-  toastIcon.textContent = type === 'success' ? '✓' : '✕';
-  toastMessage.textContent = message;
-  setTimeout(() => {toast.classList.remove('show');}, 3500);
-}
+// 3. AUTO LOGIN IF "REMEMBER ME" WAS ON
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    isAdmin = await checkIfAdmin(user.uid);
+    const wasRemembered = localStorage.getItem('mff_auto_login') === 'true';
+    
+    if(wasRemembered){
+      showToast('success','Auto Logging in...');
+      setTimeout(() => {window.location.href = "dashboard.html";}, 1000);
+    }
+  }
+});
 
-// 1. LOAD SAVED EMAIL + CHECKBOX ON PAGE LOAD
+// LOAD SAVED EMAIL + PASSWORD ON PAGE LOAD
 window.addEventListener('DOMContentLoaded', () => {
   const savedEmail = localStorage.getItem('mff_remember_email');
+  const savedPass = localStorage.getItem('mff_remember_pass');
   const wasRemembered = localStorage.getItem('mff_remember_checked') === 'true';
   
-  if(savedEmail && wasRemembered){
+  if(savedEmail && savedPass && wasRemembered){
     emailInput.value = savedEmail;
+    passwordInput.value = savedPass;
     rememberMe.checked = true;
   }
 });
@@ -193,15 +197,20 @@ loginForm.addEventListener("submit", async(e) => {
 
   try{
     await setPersistence(auth, persistence);
-    await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    isAdmin = await checkIfAdmin(userCredential.user.uid);
 
-    // 2. SAVE OR CLEAR EMAIL BASED ON CHECKBOX
+    // 4. SAVE EMAIL + PASSWORD IF REMEMBER ME IS ON
     if(rememberMe.checked){
       localStorage.setItem('mff_remember_email', email);
+      localStorage.setItem('mff_remember_pass', password); // SECURITY WARNING: Only for your use
       localStorage.setItem('mff_remember_checked', 'true');
+      localStorage.setItem('mff_auto_login', 'true');
     } else {
       localStorage.removeItem('mff_remember_email');
+      localStorage.removeItem('mff_remember_pass');
       localStorage.setItem('mff_remember_checked', 'false');
+      localStorage.setItem('mff_auto_login', 'false');
     }
 
     showToast('success','Login Successful! Redirecting...');
@@ -211,16 +220,8 @@ loginForm.addEventListener("submit", async(e) => {
   catch(error){
     loginBtn.disabled = false;
     loginBtn.textContent = "Login";
-
-    if(error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password'){
-      showToast('error','Invalid email or password');
-    } else if(error.code === 'auth/invalid-email'){
-      showToast('error','Please enter a valid email address');
-    } else if(error.code === 'auth/too-many-requests'){
-      showToast('error','Too many attempts. Try again later');
-    } else {
-      showToast('error','Login failed. Please try again');
-    }
+    if(error.code === 'auth/invalid-credential'){showToast('error','Invalid email or password');} 
+    else {showToast('error','Login failed: ' + error.message);}
   }
 });
 
@@ -232,14 +233,7 @@ forgotBtn.addEventListener("click", async(e) => {
   try{
     await sendPasswordResetEmail(auth, email);
     showToast('success','Password reset link sent to your email');
-  } 
-  catch(error){
-    if(error.code === 'auth/user-not-found'){
-      showToast('error','No account found with this email');
-    } else {
-      showToast('error','Failed to send reset email');
-    }
-  }
+  } catch(error){showToast('error','Failed to send reset email');}
 });
 </script>
 <script type="module" src="notifications.js"></script>

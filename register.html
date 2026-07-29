@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Freemasonry | Membership Registration</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;}
+body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;touch-action: manipulation;}
 body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;z-index:-2;}
 header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
 .logo{font-size:28px;font-weight:700;color:#d4af37;}
@@ -25,7 +25,7 @@ textarea{height:120px;grid-column:1/-1;}
 .btn:disabled{opacity:.6;cursor:not-allowed;}
 .login-link{text-align:center;margin-top:20px;color:#ccc;}
 .login-link a{color:#d4af37;text-decoration:none;font-weight:600;}
-.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(20,34,56,.98);padding:25px 35px;border-radius:15px;border:2px solid #d4af37;z-index:9999;opacity:0;transition:.4s;text-align:center;min-width:300px;}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(20,34,56,.98);padding:25px 35px;border-radius:15px;border:2px solid #d4af37;z-index:9999;opacity:0;transition:.4s;text-align:center;min-width:300px;pointer-events:none;}
 .toast.show{opacity:1;}
 .toast.error{border-color:#ff5555;} .toast.success{border-color:#4cff88;}
 .toast .icon{font-size:40px;margin-bottom:10px;display:block;}
@@ -33,8 +33,8 @@ textarea{height:120px;grid-column:1/-1;}
 /* MAINTENANCE OVERLAY */
 .maintenance-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(7,17,31,.98);backdrop-filter:blur(20px);z-index:99999;display:none;justify-content:center;align-items:center;flex-direction:column;text-align:center;padding:20px;}
 .maintenance-overlay.active{display:flex;}
-.maintenance-icon{font-size:80px;color:#d4af37;margin-bottom:20px;cursor:pointer;animation:pulse 2s infinite;user-select:none;transition:.2s;}
-.maintenance-icon:active{transform:scale(0.9);} /* perfect tap feedback */
+.maintenance-icon{font-size:80px;color:#d4af37;margin-bottom:20px;cursor:pointer;animation:pulse 2s infinite;user-select:none;transition:.1s;padding:30px;border-radius:50%;} /* bigger click area */
+.maintenance-icon.tapped{transform:scale(0.85);} 
 .maintenance-title{font-size:42px;color:#d4af37;margin-bottom:15px;}
 .maintenance-text{font-size:18px;color:#ccc;max-width:500px;line-height:1.8;}
 @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
@@ -65,7 +65,7 @@ textarea{height:120px;grid-column:1/-1;}
 <div class="input-group"><label>Age Group *</label><select id="age" required><option value="">Select Age</option><option>18 - 25</option><option>26 - 40</option></select></div>
 <div class="input-group"><label>Area of Interest *</label><select id="interest" required><option value="">Select Interest</option><option>Brotherhood</option><option>Business</option></select></div>
 <div class="input-group"><label>Create Password *</label><input id="password" type="password" required minlength="6"></div>
-<div class="input-group"><label>Confirm Password *</label><input id="confirmPassword" type="password" required minlength="6"></div>
+<div class="input-group"><label>Confirm Password *</label><input id="password" type="password" required minlength="6"></div>
 <div class="input-group full"><label>Message *</label><textarea id="message" required></textarea></div>
 </div>
 <button class="btn" id="submitBtn" type="submit">Submit Registration</button>
@@ -105,6 +105,7 @@ const toastMessage = document.getElementById("toastMessage");
 let maintenanceMode = false;
 let tapCount = 0;
 let tapTimer = null;
+let lastTap = 0; // prevent double fire
 
 function showToast(type, message){
   toast.className = `toast ${type} show`;
@@ -113,25 +114,33 @@ function showToast(type, message){
   setTimeout(() => {toast.classList.remove('show');}, 2000);
 }
 
-// PERFECT TRIPLE TAP - DIRECT TO LOGIN
-function handleTap() {
+// FIXED TRIPLE TAP
+function handleTap(e) {
+  e.preventDefault();
+  const now = Date.now();
+  if(now - lastTap < 100) return; // prevent double event
+  lastTap = now;
+
   tapCount++;
-  navigator.vibrate && navigator.vibrate(50); // phone vibration feedback
+  navigator.vibrate && navigator.vibrate(30);
+  secretIcon.classList.add('tapped');
+  setTimeout(()=>secretIcon.classList.remove('tapped'), 100);
   
   clearTimeout(tapTimer);
-  tapTimer = setTimeout(() => { tapCount = 0; }, 700); // 700ms to tap 3 times
+  tapTimer = setTimeout(() => { tapCount = 0; }, 1200); // 1.2s to tap 3 times
   
   if(tapCount >= 3){
-    showToast('success','Admin access granted. Redirecting...');
+    showToast('success','Admin access. Redirecting...');
     tapCount = 0;
+    clearTimeout(tapTimer);
     setTimeout(() => {
-      window.location.href = "login.html"; // DIRECT TO LOGIN
-    }, 800);
+      window.location.href = "login.html";
+    }, 600);
   }
 }
 
-secretIcon.addEventListener('click', handleTap);
-secretIcon.addEventListener('touchend', handleTap);
+// ONLY use pointerdown - works on both mobile + desktop
+secretIcon.addEventListener('pointerdown', handleTap);
 
 // LISTEN TO MAINTENANCE
 onValue(ref(database, 'settings/maintenance'), (snapshot) => {
@@ -143,6 +152,11 @@ onValue(ref(database, 'settings/maintenance'), (snapshot) => {
     maintenanceOverlay.classList.remove('active');
     mainContainer.style.display = 'block';
   }
+}, (error) => {
+  console.error("Firebase error:", error);
+  // If firebase fails, still show form
+  maintenanceOverlay.classList.remove('active');
+  mainContainer.style.display = 'block';
 });
 
 // SUBMIT WITH HARD BLOCK

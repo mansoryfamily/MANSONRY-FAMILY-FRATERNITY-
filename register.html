@@ -3,44 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Freemasonry | Member Login</title>
+<title>Freemasonry | Membership Registration</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:#07111f;color:white;min-height:100vh;}
+body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;}
 body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;z-index:-2;}
-header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
-.logo{font-size:30px;font-weight:700;color:#d4af37;}
-.hero{text-align:center;padding:120px 10% 40px;}
-.hero h1{font-size:55px;color:#d4af37;}
-.login-box{max-width:500px;margin:auto;background:rgba(20,34,56,.8);padding:45px;border-radius:20px;border:1px solid rgba(212,175,55,.25);}
-.input-group{margin-bottom:20px;}
-label{color:#d4af37;margin-bottom:8px;display:block;}
-input{width:100%;background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;}
-.btn{width:100%;padding:15px;border:none;border-radius:40px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:bold;cursor:pointer;font-size:16px;}
-.btn:disabled{opacity:.6;}
-.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(20,34,56,.98);padding:30px 40px;border-radius:18px;border:2px solid #d4af37;z-index:9999;opacity:0;transition:.4s;text-align:center;min-width:320px;}
+header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
+.logo{font-size:28px;font-weight:700;color:#d4af37;}
+.container{padding:120px 6% 50px;max-width:900px;margin:auto;}
+.title{text-align:center;font-size:36px;color:#d4af37;margin-bottom:30px;}
+.register-box{background:rgba(20,34,56,.85);padding:35px;border-radius:20px;border:1px solid rgba(212,175,55,.2);}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
+.input-group{display:flex;flex-direction:column;}
+label{margin-bottom:8px;color:#d4af37;font-size:14px;}
+input,select,textarea{background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;width:100%;}
+textarea{height:120px;grid-column:1/-1;}
+.full{grid-column:1/-1;}
+.phone-wrapper{display:flex;gap:10px;}
+.btn{margin-top:30px;width:100%;max-width:300px;padding:16px;margin:auto;display:block;border:none;border-radius:40px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-size:16px;font-weight:700;cursor:pointer;}
+.btn:disabled{opacity:.6;cursor:not-allowed;}
+.login-link{text-align:center;margin-top:20px;color:#ccc;}
+.login-link a{color:#d4af37;text-decoration:none;font-weight:600;}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(20,34,56,.98);padding:25px 35px;border-radius:15px;border:2px solid #d4af37;z-index:9999;opacity:0;transition:.4s;text-align:center;min-width:300px;}
 .toast.show{opacity:1;}
 .toast.error{border-color:#ff5555;} .toast.success{border-color:#4cff88;}
-.toast .icon{font-size:45px;margin-bottom:12px;display:block;}
+.toast .icon{font-size:40px;margin-bottom:10px;display:block;}
 
 /* MAINTENANCE OVERLAY */
-.maintenance-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(7,17,31,.98);z-index:99999;display:none;justify-content:center;align-items:center;flex-direction:column;text-align:center;}
+.maintenance-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(7,17,31,.98);backdrop-filter:blur(20px);z-index:99999;display:none;justify-content:center;align-items:center;flex-direction:column;text-align:center;padding:20px;}
 .maintenance-overlay.active{display:flex;}
-.maintenance-icon{font-size:80px;color:#d4af37;margin-bottom:20px;cursor:pointer;animation:pulse 2s infinite;}
+.maintenance-icon{font-size:80px;color:#d4af37;margin-bottom:20px;cursor:pointer;animation:pulse 2s infinite;user-select:none;}
 .maintenance-title{font-size:42px;color:#d4af37;margin-bottom:15px;}
+.maintenance-text{font-size:18px;color:#ccc;max-width:500px;line-height:1.8;}
 .admin-bypass-box{display:none;background:rgba(20,34,56,.9);padding:25px;border-radius:15px;border:1px solid #d4af37;max-width:400px;width:100%;margin-top:20px;}
 .admin-bypass-box.show{display:block;}
 .admin-bypass-btn{width:100%;padding:12px;background:linear-gradient(135deg,#d4af37,#b8941f);border:none;border-radius:10px;color:#111;font-weight:bold;cursor:pointer;margin-top:10px;}
 @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
 </style>
 </head>
+
 <body>
 
 <div class="maintenance-overlay" id="maintenanceOverlay">
   <div class="maintenance-icon" id="secretIcon">◬</div>
   <h1 class="maintenance-title">Under Maintenance</h1>
-  <p style="color:#ccc;margin-bottom:20px;">Login is currently disabled.</p>
+  <p class="maintenance-text">Registration is currently disabled for new members.</p>
   <div class="admin-bypass-box" id="adminBox">
     <label style="color:#d4af37;">Admin Email</label>
     <input type="email" id="adminBypassEmail" placeholder="Enter admin email" style="width:100%;padding:12px;margin:10px 0;background:#08111f;border:1px solid #39485f;border-radius:10px;color:white;">
@@ -52,22 +60,31 @@ input{width:100%;background:#08111f;border:1px solid #39485f;padding:15px;border
 
 <header><div class="logo">Freemasonry Heritage</div></header>
 
-<div class="hero"><h1>Welcome Back</h1><p>Secure access for registered members</p></div>
-
-<section style="padding:0 10% 80px;">
-<div class="login-box">
-<form id="loginForm">
-<div class="input-group"><label>Email Address</label><input id="email" type="email" required></div>
-<div class="input-group"><label>Password</label><input id="password" type="password" required></div>
-<button class="btn" id="loginBtn" type="submit">Login</button>
+<div class="container" id="mainContainer" style="display:none;">
+<h2 class="title">Register Your Interest</h2>
+<div class="register-box">
+<form id="registrationForm">
+<div class="form-grid">
+<div class="input-group"><label>Full Name *</label><input id="fullName" type="text" required></div>
+<div class="input-group"><label>Email Address *</label><input id="email" type="email" required></div>
+<div class="input-group"><label>Country *</label><select id="country" required><option value="">Select Country</option><option>Kenya</option><option>Uganda</option><option>Tanzania</option><option>Rwanda</option><option>Other</option></select></div>
+<div class="input-group"><label>Phone Number *</label><div class="phone-wrapper"><select id="countryCode" required><option value="">Code</option><option value="+254">+254</option><option value="+256">+256</option><option value="+255">+255</option></select><input id="phone" type="tel" required></div></div>
+<div class="input-group"><label>Age Group *</label><select id="age" required><option value="">Select Age</option><option>18 - 25</option><option>26 - 40</option><option>41 - 60</option></select></div>
+<div class="input-group"><label>Area of Interest *</label><select id="interest" required><option value="">Select Interest</option><option>Brotherhood & Mentorship</option><option>Business & Growth</option></select></div>
+<div class="input-group"><label>Create Password *</label><input id="password" type="password" required minlength="6"></div>
+<div class="input-group"><label>Confirm Password *</label><input id="confirmPassword" type="password" required minlength="6"></div>
+<div class="input-group full"><label>Message *</label><textarea id="message" required></textarea></div>
+</div>
+<button class="btn" id="submitBtn" type="submit">Submit Registration</button>
+<div class="login-link"><p>Already a member? <a href="login.html">Login here</a></p></div>
 </form>
 </div>
-</section>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -83,42 +100,52 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
+const form = document.getElementById("registrationForm");
+const button = document.getElementById("submitBtn");
+const mainContainer = document.getElementById("mainContainer");
 const maintenanceOverlay = document.getElementById("maintenanceOverlay");
 const secretIcon = document.getElementById("secretIcon");
 const adminBox = document.getElementById("adminBox");
 const adminBypassBtn = document.getElementById("adminBypassBtn");
-const loginForm = document.getElementById("loginForm");
-const loginBtn = document.getElementById("loginBtn");
 const toast = document.getElementById("toast");
+const toastIcon = document.getElementById("toastIcon");
 const toastMessage = document.getElementById("toastMessage");
 
 const ADMIN_EMAIL = "mansoryfamilyn@gmail.com";
 let maintenanceMode = false;
 let adminBypassed = false;
 let tapCount = 0;
+let tapTimer = null;
 
 function showToast(type, message){
   toast.className = `toast ${type} show`;
+  toastIcon.textContent = type === 'success'? '✓' : '✕';
   toastMessage.textContent = message;
   setTimeout(() => {toast.classList.remove('show');}, 3000);
 }
 
-// SECRET TAP
-secretIcon.addEventListener('click', () => {
+// FIXED SECRET TAP - WORKS ON MOBILE + PC
+function handleTap() {
   tapCount++;
-  setTimeout(() => { tapCount = 0; }, 1000);
+  clearTimeout(tapTimer);
+  tapTimer = setTimeout(() => { tapCount = 0; }, 800);
+  
   if(tapCount >= 3){
     adminBox.classList.add('show');
     showToast('success','Admin access unlocked');
     tapCount = 0;
   }
-});
+}
+
+secretIcon.addEventListener('click', handleTap);
+secretIcon.addEventListener('touchend', handleTap);
 
 // ADMIN BYPASS
 adminBypassBtn.addEventListener('click', () => {
   if(document.getElementById("adminBypassEmail").value.toLowerCase().trim() === ADMIN_EMAIL){
     adminBypassed = true;
     maintenanceOverlay.classList.remove('active');
+    mainContainer.style.display = 'block';
   } else {
     showToast('error','Invalid admin email');
   }
@@ -129,33 +156,48 @@ onValue(ref(database, 'settings/maintenance'), (snapshot) => {
   maintenanceMode = snapshot.val() === true;
   if(maintenanceMode && !adminBypassed){
     maintenanceOverlay.classList.add('active');
+    mainContainer.style.display = 'none';
   } else {
     maintenanceOverlay.classList.remove('active');
+    mainContainer.style.display = 'block';
   }
 });
 
-// LOGIN WITH HARD BLOCK
-loginForm.addEventListener("submit", async(e) => {
-  e.preventDefault();
-  if(maintenanceMode && !adminBypassed){
-    showToast('error','Login is currently disabled');
-    return;
-  }
+// SUBMIT WITH HARD BLOCK
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if(maintenanceMode && !adminBypassed){
+      showToast('error','Registration is currently disabled');
+      return;
+    }
 
-  loginBtn.disabled = true;
-  loginBtn.textContent = "Logging in...";
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+    button.disabled = true;
+    button.textContent = "Creating Account...";
+    const fullName = document.getElementById("fullName").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    
+    if(password !== confirmPassword){ 
+      showToast('error','Passwords do not match'); 
+      button.disabled=false; 
+      button.textContent="Submit Registration"; 
+      return; 
+    }
 
-  try{
-    await signInWithEmailAndPassword(auth, email, password);
-    window.location.href = "dashboard.html";
-  }
-  catch(error){
-    loginBtn.disabled = false;
-    loginBtn.textContent = "Login";
-    showToast('error','Login failed: ' + error.message);
-  }
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        await set(ref(database, "users/" + user.uid), {
+          uid:user.uid, fullName, email, status:"pending", role:"member", timestamp:new Date().toISOString()
+        });
+        showToast('success','Registration Successful!');
+        setTimeout(() => {window.location.href = "dashboard.html";}, 1500);
+    } catch (error) {
+        button.disabled = false;
+        button.textContent = "Submit Registration";
+        showToast('error','Registration Failed: ' + error.message);
+    }
 });
 </script>
 </body>

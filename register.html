@@ -52,6 +52,7 @@ textarea{height:120px;resize:none;grid-column:1/-1;}
 .maintenance-icon{font-size:80px;color:#d4af37;margin-bottom:20px;animation:pulse 2s infinite;}
 .maintenance-title{font-size:42px;color:#d4af37;font-family:'Playfair Display',serif;margin-bottom:15px;}
 .maintenance-text{font-size:18px;color:#ccc;max-width:500px;line-height:1.8;}
+.admin-bypass{margin-top:20px;padding:15px 25px;background:rgba(212,175,55,.1);border:1px solid #d4af37;border-radius:10px;font-size:14px;}
 @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
 
 .install-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);backdrop-filter:blur(20px);padding:30px 25px;border-radius:20px;border:2px solid #d4af37;z-index:9999;display:none;flex-direction:column;align-items:center;gap:20px;width:90%;max-width:380px;box-shadow:0 20px 60px rgba(212,175,55,.4);animation:popupIn .4s forwards;text-align:center;}
@@ -72,6 +73,7 @@ textarea{height:120px;resize:none;grid-column:1/-1;}
   <div class="maintenance-icon">◬</div>
   <h1 class="maintenance-title">Under Maintenance</h1>
   <p class="maintenance-text">Registration is currently disabled for new members.</p>
+  <div class="admin-bypass">Admin? Login first in another tab, then refresh this page.</div>
 </div>
 
 <div id="toast" class="toast"><span class="icon" id="toastIcon"></span><span class="message" id="toastMessage"></span></div>
@@ -130,28 +132,33 @@ const mainContainer = document.getElementById("mainContainer");
 const maintenanceOverlay = document.getElementById("maintenanceOverlay");
 
 let maintenanceMode = false;
-let currentUserRole = null;
+let isAdmin = false;
+let authChecked = false;
 
-// 1. CHECK MAINTENANCE + USER ROLE
+// 1. WAIT FOR AUTH TO LOAD FIRST
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    const snap = await get(ref(database, 'users/' + user.uid));
+    isAdmin = snap.exists() && snap.val().role === 'admin';
+    console.log("User role:", snap.val()?.role);
+  } else {
+    isAdmin = false;
+  }
+  authChecked = true;
+  updateUI();
+});
+
+// 2. LISTEN TO MAINTENANCE
 onValue(ref(database, 'settings/maintenance'), (snapshot) => {
   maintenanceMode = snapshot.val() === true;
   updateUI();
 });
 
-// 2. CHECK IF LOGGED IN USER IS ADMIN
-onAuthStateChanged(auth, async (user) => {
-  if(user){
-    const snap = await get(ref(database, 'users/' + user.uid));
-    currentUserRole = snap.exists() ? snap.val().role : 'member';
-  } else {
-    currentUserRole = null;
-  }
-  updateUI();
-});
-
 function updateUI(){
-  // Only show maintenance if ON AND user is NOT admin
-  if(maintenanceMode && currentUserRole !== 'admin'){
+  if(!authChecked) return; // Wait until we know who user is
+  
+  // ONLY block if maintenance ON AND not admin
+  if(maintenanceMode && !isAdmin){
     maintenanceOverlay.classList.add('active');
     mainContainer.style.display = 'none';
     document.body.style.overflow = 'hidden';
@@ -191,8 +198,7 @@ document.querySelectorAll('.toggle-password').forEach(btn => {
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
     
-    // Double check before submitting
-    if(maintenanceMode && currentUserRole !== 'admin'){
+    if(maintenanceMode && !isAdmin){
       showToast('error','Registration is currently disabled');
       return;
     }

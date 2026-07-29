@@ -33,12 +33,10 @@ textarea{height:120px;grid-column:1/-1;}
 /* MAINTENANCE OVERLAY */
 .maintenance-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(7,17,31,.98);backdrop-filter:blur(20px);z-index:99999;display:none;justify-content:center;align-items:center;flex-direction:column;text-align:center;padding:20px;}
 .maintenance-overlay.active{display:flex;}
-.maintenance-icon{font-size:80px;color:#d4af37;margin-bottom:20px;cursor:pointer;animation:pulse 2s infinite;user-select:none;}
+.maintenance-icon{font-size:80px;color:#d4af37;margin-bottom:20px;cursor:pointer;animation:pulse 2s infinite;user-select:none;transition:.2s;}
+.maintenance-icon:active{transform:scale(0.9);} /* perfect tap feedback */
 .maintenance-title{font-size:42px;color:#d4af37;margin-bottom:15px;}
 .maintenance-text{font-size:18px;color:#ccc;max-width:500px;line-height:1.8;}
-.admin-bypass-box{display:none;background:rgba(20,34,56,.9);padding:25px;border-radius:15px;border:1px solid #d4af37;max-width:400px;width:100%;margin-top:20px;}
-.admin-bypass-box.show{display:block;}
-.admin-bypass-btn{width:100%;padding:12px;background:linear-gradient(135deg,#d4af37,#b8941f);border:none;border-radius:10px;color:#111;font-weight:bold;cursor:pointer;margin-top:10px;}
 @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
 </style>
 </head>
@@ -48,12 +46,7 @@ textarea{height:120px;grid-column:1/-1;}
 <div class="maintenance-overlay" id="maintenanceOverlay">
   <div class="maintenance-icon" id="secretIcon">◬</div>
   <h1 class="maintenance-title">Under Maintenance</h1>
-  <p class="maintenance-text">Registration is currently disabled for new members.</p>
-  <div class="admin-bypass-box" id="adminBox">
-    <label style="color:#d4af37;">Admin Email</label>
-    <input type="email" id="adminBypassEmail" placeholder="Enter admin email" style="width:100%;padding:12px;margin:10px 0;background:#08111f;border:1px solid #39485f;border-radius:10px;color:white;">
-    <button class="admin-bypass-btn" id="adminBypassBtn">Unlock Access</button>
-  </div>
+  <p class="maintenance-text">Registration is currently disabled for new members.<br>Tap triangle 3 times for admin access</p>
 </div>
 
 <div id="toast" class="toast"><span class="icon" id="toastIcon">✕</span><span class="message" id="toastMessage"></span></div>
@@ -67,10 +60,10 @@ textarea{height:120px;grid-column:1/-1;}
 <div class="form-grid">
 <div class="input-group"><label>Full Name *</label><input id="fullName" type="text" required></div>
 <div class="input-group"><label>Email Address *</label><input id="email" type="email" required></div>
-<div class="input-group"><label>Country *</label><select id="country" required><option value="">Select Country</option><option>Kenya</option><option>Uganda</option><option>Tanzania</option><option>Rwanda</option><option>Other</option></select></div>
-<div class="input-group"><label>Phone Number *</label><div class="phone-wrapper"><select id="countryCode" required><option value="">Code</option><option value="+254">+254</option><option value="+256">+256</option><option value="+255">+255</option></select><input id="phone" type="tel" required></div></div>
-<div class="input-group"><label>Age Group *</label><select id="age" required><option value="">Select Age</option><option>18 - 25</option><option>26 - 40</option><option>41 - 60</option></select></div>
-<div class="input-group"><label>Area of Interest *</label><select id="interest" required><option value="">Select Interest</option><option>Brotherhood & Mentorship</option><option>Business & Growth</option></select></div>
+<div class="input-group"><label>Country *</label><select id="country" required><option value="">Select Country</option><option>Kenya</option><option>Uganda</option><option>Tanzania</option><option>Other</option></select></div>
+<div class="input-group"><label>Phone Number *</label><div class="phone-wrapper"><select id="countryCode" required><option value="">Code</option><option value="+254">+254</option><option value="+256">+256</option></select><input id="phone" type="tel" required></div></div>
+<div class="input-group"><label>Age Group *</label><select id="age" required><option value="">Select Age</option><option>18 - 25</option><option>26 - 40</option></select></div>
+<div class="input-group"><label>Area of Interest *</label><select id="interest" required><option value="">Select Interest</option><option>Brotherhood</option><option>Business</option></select></div>
 <div class="input-group"><label>Create Password *</label><input id="password" type="password" required minlength="6"></div>
 <div class="input-group"><label>Confirm Password *</label><input id="confirmPassword" type="password" required minlength="6"></div>
 <div class="input-group full"><label>Message *</label><textarea id="message" required></textarea></div>
@@ -105,15 +98,11 @@ const button = document.getElementById("submitBtn");
 const mainContainer = document.getElementById("mainContainer");
 const maintenanceOverlay = document.getElementById("maintenanceOverlay");
 const secretIcon = document.getElementById("secretIcon");
-const adminBox = document.getElementById("adminBox");
-const adminBypassBtn = document.getElementById("adminBypassBtn");
 const toast = document.getElementById("toast");
 const toastIcon = document.getElementById("toastIcon");
 const toastMessage = document.getElementById("toastMessage");
 
-const ADMIN_EMAIL = "mansoryfamilyn@gmail.com";
 let maintenanceMode = false;
-let adminBypassed = false;
 let tapCount = 0;
 let tapTimer = null;
 
@@ -121,40 +110,33 @@ function showToast(type, message){
   toast.className = `toast ${type} show`;
   toastIcon.textContent = type === 'success'? '✓' : '✕';
   toastMessage.textContent = message;
-  setTimeout(() => {toast.classList.remove('show');}, 3000);
+  setTimeout(() => {toast.classList.remove('show');}, 2000);
 }
 
-// FIXED SECRET TAP - WORKS ON MOBILE + PC
+// PERFECT TRIPLE TAP - DIRECT TO LOGIN
 function handleTap() {
   tapCount++;
+  navigator.vibrate && navigator.vibrate(50); // phone vibration feedback
+  
   clearTimeout(tapTimer);
-  tapTimer = setTimeout(() => { tapCount = 0; }, 800);
+  tapTimer = setTimeout(() => { tapCount = 0; }, 700); // 700ms to tap 3 times
   
   if(tapCount >= 3){
-    adminBox.classList.add('show');
-    showToast('success','Admin access unlocked');
+    showToast('success','Admin access granted. Redirecting...');
     tapCount = 0;
+    setTimeout(() => {
+      window.location.href = "login.html"; // DIRECT TO LOGIN
+    }, 800);
   }
 }
 
 secretIcon.addEventListener('click', handleTap);
 secretIcon.addEventListener('touchend', handleTap);
 
-// ADMIN BYPASS
-adminBypassBtn.addEventListener('click', () => {
-  if(document.getElementById("adminBypassEmail").value.toLowerCase().trim() === ADMIN_EMAIL){
-    adminBypassed = true;
-    maintenanceOverlay.classList.remove('active');
-    mainContainer.style.display = 'block';
-  } else {
-    showToast('error','Invalid admin email');
-  }
-});
-
 // LISTEN TO MAINTENANCE
 onValue(ref(database, 'settings/maintenance'), (snapshot) => {
   maintenanceMode = snapshot.val() === true;
-  if(maintenanceMode && !adminBypassed){
+  if(maintenanceMode){
     maintenanceOverlay.classList.add('active');
     mainContainer.style.display = 'none';
   } else {
@@ -166,7 +148,7 @@ onValue(ref(database, 'settings/maintenance'), (snapshot) => {
 // SUBMIT WITH HARD BLOCK
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if(maintenanceMode && !adminBypassed){
+    if(maintenanceMode){
       showToast('error','Registration is currently disabled');
       return;
     }

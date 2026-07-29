@@ -73,7 +73,7 @@ textarea{height:120px;resize:none;grid-column:1/-1;}
   <div class="maintenance-icon">◬</div>
   <h1 class="maintenance-title">Under Maintenance</h1>
   <p class="maintenance-text">Registration is currently disabled for new members.</p>
-  <div class="admin-bypass">Admin? Login first in another tab, then refresh this page.</div>
+  <div class="admin-bypass">Admin? Type your admin email to bypass</div>
 </div>
 
 <div id="toast" class="toast"><span class="icon" id="toastIcon"></span><span class="message" id="toastMessage"></span></div>
@@ -130,6 +130,7 @@ const form = document.getElementById("registrationForm");
 const button = document.getElementById("submitBtn");
 const mainContainer = document.getElementById("mainContainer");
 const maintenanceOverlay = document.getElementById("maintenanceOverlay");
+const emailInput = document.getElementById("email");
 
 let maintenanceMode = false;
 let isAdmin = false;
@@ -155,10 +156,14 @@ onValue(ref(database, 'settings/maintenance'), (snapshot) => {
 });
 
 function updateUI(){
-  if(!authChecked) return; // Wait until we know who user is
+  if(!authChecked) return;
   
-  // ONLY block if maintenance ON AND not admin
-  if(maintenanceMode && !isAdmin){
+  const adminEmails = ["mansoryfamilyn@gmail.com"]; // YOUR ADMIN EMAIL
+  const currentEmail = emailInput.value.toLowerCase().trim();
+  const isTypingAdmin = adminEmails.includes(currentEmail);
+  
+  // Allow if: NOT maintenance OR isAdmin OR typing admin email
+  if(maintenanceMode && !isAdmin && !isTypingAdmin){
     maintenanceOverlay.classList.add('active');
     mainContainer.style.display = 'none';
     document.body.style.overflow = 'hidden';
@@ -170,6 +175,9 @@ function updateUI(){
     form.querySelectorAll('input, select, textarea, button').forEach(el => el.disabled = false);
   }
 }
+
+// Re-check when admin types email
+emailInput.addEventListener("input", updateUI);
 
 const countrySelect = document.getElementById("country");
 const countryCodeSelect = document.getElementById("countryCode");
@@ -198,7 +206,11 @@ document.querySelectorAll('.toggle-password').forEach(btn => {
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
     
-    if(maintenanceMode && !isAdmin){
+    const adminEmails = ["mansoryfamilyn@gmail.com"];
+    const currentEmail = emailInput.value.toLowerCase().trim();
+    const isTypingAdmin = adminEmails.includes(currentEmail);
+    
+    if(maintenanceMode && !isAdmin && !isTypingAdmin){
       showToast('error','Registration is currently disabled');
       return;
     }
@@ -206,7 +218,7 @@ form.addEventListener("submit", async (event) => {
     button.disabled = true;
     button.textContent = "Creating Account...";
     const fullName = document.getElementById("fullName").value.trim();
-    const email = document.getElementById("email").value.trim();
+    const email = emailInput.value.trim();
     const country = document.getElementById("country").value;
     const countryCode = document.getElementById("countryCode").value;
     const phoneNumber = document.getElementById("phone").value.trim();

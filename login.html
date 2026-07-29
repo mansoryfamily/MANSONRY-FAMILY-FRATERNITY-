@@ -7,70 +7,57 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:#07111f;color:white;min-height:100vh;padding-bottom:100px;overflow-x:hidden;}
-body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-attachment:fixed;z-index:-2;}
-header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
+body{background:#07111f;color:white;min-height:100vh;}
+body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.85), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;z-index:-2;}
+header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:1000;}
 .logo{font-size:30px;font-weight:700;color:#d4af37;}
-.hero{height:45vh;display:flex;justify-content:center;align-items:center;text-align:center;padding:20px;}
+.hero{text-align:center;padding:120px 10% 40px;}
 .hero h1{font-size:55px;color:#d4af37;}
-section{padding:80px 10%;}
 .title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:40px;}
-.login-box{max-width:500px;margin:auto;background:rgba(20,34,56,.8);backdrop-filter:blur(20px);padding:45px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.25);}
-.input-group{display:flex;flex-direction:column;margin-bottom:20px;position:relative;}
-label{color:#d4af37;margin-bottom:8px;font-weight:500;}
-input{width:100%;background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;outline:none;font-size:15px;}
-input:focus{border-color:#d4af37;}
-.btn{display:block;width:220px;margin:30px auto 0;padding:15px;border:none;border-radius:40px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:bold;cursor:pointer;transition:.3s;font-size:16px;}
-.btn:hover{transform:translateY(-5px);}
-.btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
-.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);backdrop-filter:blur(20px);padding:30px 40px;border-radius:18px;border:2px solid #d4af37;z-index:9999;opacity:0;transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);text-align:center;min-width:320px;}
+.login-box{max-width:500px;margin:auto;background:rgba(20,34,56,.8);padding:45px;border-radius:20px;border:1px solid rgba(212,175,55,.25);}
+.input-group{margin-bottom:20px;}
+label{color:#d4af37;margin-bottom:8px;display:block;}
+input{width:100%;background:#08111f;border:1px solid #39485f;padding:15px;border-radius:10px;color:white;}
+.btn{width:100%;padding:15px;border:none;border-radius:40px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:bold;cursor:pointer;font-size:16px;}
+.btn:disabled{opacity:.6;}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);padding:30px 40px;border-radius:18px;border:2px solid #d4af37;z-index:9999;opacity:0;transition:.4s;text-align:center;min-width:320px;}
 .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
-.toast.success{border-color:#4cff88;}
 .toast.error{border-color:#ff5555;}
 .toast .icon{font-size:45px;margin-bottom:12px;display:block;}
-.toast .message{font-size:17px;font-weight:600;color:#fff;}
-
-/* MAINTENANCE OVERLAY */
-.maintenance-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(7,17,31,.98);backdrop-filter:blur(20px);z-index:99999;display:none;justify-content:center;align-items:center;flex-direction:column;text-align:center;padding:20px;}
+.maintenance-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(7,17,31,.98);z-index:99999;display:none;justify-content:center;align-items:center;flex-direction:column;text-align:center;}
 .maintenance-overlay.active{display:flex;}
-.maintenance-icon{font-size:80px;color:#d4af37;margin-bottom:20px;animation:pulse 2s infinite;cursor:pointer;}
-.maintenance-title{font-size:42px;color:#d4af37;font-family:'Playfair Display',serif;margin-bottom:15px;}
-.maintenance-text{font-size:18px;color:#ccc;max-width:500px;line-height:1.8;margin-bottom:25px;}
+.maintenance-icon{font-size:80px;color:#d4af37;margin-bottom:20px;cursor:pointer;}
+.maintenance-title{font-size:42px;color:#d4af37;margin-bottom:15px;}
 .admin-bypass-box{display:none;background:rgba(20,34,56,.9);padding:25px;border-radius:15px;border:1px solid #d4af37;max-width:400px;width:100%;margin-top:20px;}
 .admin-bypass-box.show{display:block;}
-.admin-bypass-box label{color:#d4af37;font-size:14px;margin-bottom:10px;display:block;}
-.admin-bypass-box input{margin-bottom:15px;}
-.admin-bypass-btn{width:100%;padding:12px;background:linear-gradient(135deg,#d4af37,#b8941f);border:none;border-radius:10px;color:#111;font-weight:bold;cursor:pointer;}
-@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+.admin-bypass-btn{width:100%;padding:12px;background:linear-gradient(135deg,#d4af37,#b8941f);border:none;border-radius:10px;color:#111;font-weight:bold;cursor:pointer;margin-top:10px;}
 </style>
 </head>
-
 <body>
 
 <div class="maintenance-overlay" id="maintenanceOverlay">
   <div class="maintenance-icon" id="secretIcon">◬</div>
   <h1 class="maintenance-title">Under Maintenance</h1>
-  <p class="maintenance-text">Login is currently disabled. Please check back later.</p>
+  <p style="color:#ccc;margin-bottom:20px;">Login is currently disabled.</p>
   
   <div class="admin-bypass-box" id="adminBox">
-    <label>Admin Access</label>
+    <label style="color:#d4af37;">Admin Email</label>
     <input type="email" id="adminBypassEmail" placeholder="Enter admin email">
     <button class="admin-bypass-btn" id="adminBypassBtn">Unlock Access</button>
   </div>
 </div>
 
-<div id="toast" class="toast"><span class="icon" id="toastIcon"></span><span class="message" id="toastMessage"></span></div>
+<div id="toast" class="toast"><span class="icon" id="toastIcon">✕</span><span class="message" id="toastMessage"></span></div>
 
 <header><div class="logo">Freemasonry Heritage</div></header>
 
-<section class="hero"><div><h1>Member Login</h1><p>Secure access for registered members</p></div></section>
+<div class="hero"><h1>Welcome Back</h1><p>Secure access for registered members</p></div>
 
 <section>
-<h2 class="title">Welcome Back</h2>
 <div class="login-box">
 <form id="loginForm">
-<div class="input-group"><label>Email Address</label><input id="email" type="email" placeholder="Enter your email" required></div>
-<div class="input-group"><label>Password</label><input id="password" type="password" placeholder="Enter password" required></div>
+<div class="input-group"><label>Email Address</label><input id="email" type="email" required></div>
+<div class="input-group"><label>Password</label><input id="password" type="password" required></div>
 <button class="btn" id="loginBtn" type="submit">Login</button>
 </form>
 </div>
@@ -78,8 +65,8 @@ input:focus{border-color:#d4af37;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -95,84 +82,57 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-const loginForm = document.getElementById("loginForm");
-const loginBtn = document.getElementById("loginBtn");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
 const maintenanceOverlay = document.getElementById("maintenanceOverlay");
 const secretIcon = document.getElementById("secretIcon");
 const adminBox = document.getElementById("adminBox");
 const adminBypassEmail = document.getElementById("adminBypassEmail");
 const adminBypassBtn = document.getElementById("adminBypassBtn");
+const loginForm = document.getElementById("loginForm");
+const loginBtn = document.getElementById("loginBtn");
 const toast = document.getElementById("toast");
-const toastIcon = document.getElementById("toastIcon");
 const toastMessage = document.getElementById("toastMessage");
 
 const ADMIN_EMAIL = "mansoryfamilyn@gmail.com";
 let maintenanceMode = false;
-let isAdmin = false;
-let authChecked = false;
+let adminBypassed = false; // <-- THIS IS THE KEY
 let tapCount = 0;
-let tapTimer = null;
 
-function showToast(type, message){
-  toast.className = `toast ${type} show`;
-  toastIcon.textContent = type === 'success' ? '✓' : '✕';
+// SHOW TOAST
+function showToast(message){
+  toast.classList.add('show');
   toastMessage.textContent = message;
-  setTimeout(() => {toast.classList.remove('show');}, 3500);
+  setTimeout(() => {toast.classList.remove('show');}, 3000);
 }
 
-// SECRET: TAP ICON 3 TIMES TO SHOW ADMIN BOX
+// SECRET: TAP 3 TIMES
 secretIcon.addEventListener('click', () => {
   tapCount++;
-  clearTimeout(tapTimer);
-  tapTimer = setTimeout(() => { tapCount = 0; }, 1000); // reset after 1 sec
-  
+  setTimeout(() => { tapCount = 0; }, 1000);
   if(tapCount >= 3){
     adminBox.classList.add('show');
-    showToast('success','Admin access unlocked');
+    showToast('Admin access unlocked');
     tapCount = 0;
   }
 });
 
-// 1. WAIT FOR AUTH TO LOAD
-onAuthStateChanged(auth, async (user) => {
-  if(user){
-    const snap = await get(ref(database, 'users/' + user.uid));
-    isAdmin = snap.exists() && snap.val().role === 'admin';
-  }
-  authChecked = true;
-  updateUI();
-});
-
-// 2. LISTEN TO MAINTENANCE
-onValue(ref(database, 'settings/maintenance'), (snapshot) => {
-  maintenanceMode = snapshot.val() === true;
-  updateUI();
-});
-
-function updateUI(){
-  if(!authChecked) return;
-  
-  if(maintenanceMode && !isAdmin){
-    maintenanceOverlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  } else {
-    maintenanceOverlay.classList.remove('active');
-    document.body.style.overflow = 'auto';
-  }
-}
-
-// 3. ADMIN BYPASS BUTTON
+// ADMIN BYPASS BUTTON
 adminBypassBtn.addEventListener('click', () => {
   const email = adminBypassEmail.value.toLowerCase().trim();
   if(email === ADMIN_EMAIL){
+    adminBypassed = true; // <-- SET FLAG
     maintenanceOverlay.classList.remove('active');
-    document.body.style.overflow = 'auto';
-    emailInput.value = ADMIN_EMAIL;
-    showToast('success','Admin access granted');
+    document.getElementById("email").value = ADMIN_EMAIL;
+    showToast('Admin access granted');
   } else {
-    showToast('error','Invalid admin email');
+    showToast('Invalid admin email');
+  }
+});
+
+// LISTEN TO MAINTENANCE
+onValue(ref(database, 'settings/maintenance'), (snapshot) => {
+  maintenanceMode = snapshot.val() === true;
+  if(maintenanceMode && !adminBypassed){
+    maintenanceOverlay.classList.add('active');
   }
 });
 
@@ -180,30 +140,25 @@ adminBypassBtn.addEventListener('click', () => {
 loginForm.addEventListener("submit", async(e) => {
   e.preventDefault();
   
-  if(maintenanceMode && !isAdmin){
-    showToast('error','Login is currently disabled');
+  // CHECK FLAG HERE TOO
+  if(maintenanceMode && !adminBypassed){
+    showToast('Login is currently disabled');
     return;
   }
 
   loginBtn.disabled = true;
   loginBtn.textContent = "Logging in...";
-
-  const email = emailInput.value.trim().toLowerCase();
-  const password = passwordInput.value;
-  const persistence = browserSessionPersistence;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
   try{
-    await setPersistence(auth, persistence);
     await signInWithEmailAndPassword(auth, email, password);
-
-    showToast('success','Login Successful! Redirecting...');
-    setTimeout(() => {window.location.href = "dashboard.html";}, 1200);
-
+    window.location.href = "dashboard.html";
   }
   catch(error){
     loginBtn.disabled = false;
     loginBtn.textContent = "Login";
-    showToast('error','Login failed: ' + error.message);
+    showToast('Login failed: ' + error.message);
   }
 });
 </script>

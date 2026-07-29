@@ -45,6 +45,7 @@ input:disabled{background:#0a1628;opacity:.5;cursor:not-allowed;}
 .maintenance-icon{font-size:80px;color:#d4af37;margin-bottom:20px;animation:pulse 2s infinite;}
 .maintenance-title{font-size:42px;color:#d4af37;font-family:'Playfair Display',serif;margin-bottom:15px;}
 .maintenance-text{font-size:18px;color:#ccc;max-width:500px;line-height:1.8;}
+.admin-bypass{margin-top:20px;padding:15px 25px;background:rgba(212,175,55,.1);border:1px solid #d4af37;border-radius:10px;font-size:14px;}
 @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
 </style>
 </head>
@@ -54,7 +55,8 @@ input:disabled{background:#0a1628;opacity:.5;cursor:not-allowed;}
 <div class="maintenance-overlay" id="maintenanceOverlay">
   <div class="maintenance-icon">◬</div>
   <h1 class="maintenance-title">Under Maintenance</h1>
-  <p class="maintenance-text">Login is currently disabled. Please check back later.</p>
+  <p class="maintenance-text">Login is currently disabled for members.</p>
+  <div class="admin-bypass">Admin? Type your admin email to bypass</div>
 </div>
 
 <div id="toast" class="toast"><span class="icon" id="toastIcon"></span><span class="message" id="toastMessage"></span></div>
@@ -80,7 +82,7 @@ input:disabled{background:#0a1628;opacity:.5;cursor:not-allowed;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
@@ -109,7 +111,9 @@ const toast = document.getElementById("toast");
 const toastIcon = document.getElementById("toastIcon");
 const toastMessage = document.getElementById("toastMessage");
 
-let isAdmin = false; // Track if current user is admin
+let maintenanceMode = false;
+let isAdmin = false;
+let authChecked = false;
 
 function showToast(type, message){
   toast.className = `toast ${type} show`;
@@ -118,30 +122,39 @@ function showToast(type, message){
   setTimeout(() => {toast.classList.remove('show');}, 3500);
 }
 
-// 1. CHECK IF USER IS ADMIN
-async function checkIfAdmin(uid){
-  const snap = await get(ref(database, 'users/' + uid));
-  return snap.exists() && snap.val().role === 'admin';
-}
+// 1. WAIT FOR AUTH TO LOAD
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    const snap = await get(ref(database, 'users/' + user.uid));
+    isAdmin = snap.exists() && snap.val().role === 'admin';
+  } else {
+    isAdmin = false;
+  }
+  authChecked = true;
+  updateUI();
+});
 
-// 2. MAINTENANCE CHECK - ALLOW ADMIN TO BYPASS
-onValue(ref(database, 'settings/maintenance'), async (snapshot) => {
-  const isMaintenance = snapshot.val() === true;
-  const user = auth.currentUser;
+// 2. LISTEN TO MAINTENANCE
+onValue(ref(database, 'settings/maintenance'), (snapshot) => {
+  maintenanceMode = snapshot.val() === true;
+  updateUI();
+});
+
+function updateUI(){
+  if(!authChecked) return;
   
-  if(isMaintenance){
-    // If maintenance ON and user is NOT admin, block them
-    if(!user || !isAdmin){
-      maintenanceOverlay.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      loginForm.querySelectorAll('input, button, a').forEach(el => {
-        el.disabled = true;
-        if(el.tagName === 'A') el.classList.add('disabled');
-      });
-    } else {
-      // Admin is logged in, let them pass
-      maintenanceOverlay.classList.remove('active');
-    }
+  const adminEmails = ["mansoryfamilyn@gmail.com"]; // YOUR ADMIN EMAIL
+  const currentEmail = emailInput.value.toLowerCase().trim();
+  const isTypingAdmin = adminEmails.includes(currentEmail);
+  
+  // Only block if maintenance ON AND not admin AND not typing admin email
+  if(maintenanceMode && !isAdmin && !isTypingAdmin){
+    maintenanceOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    loginForm.querySelectorAll('input, button, a').forEach(el => {
+      el.disabled = true;
+      if(el.tagName === 'A') el.classList.add('disabled');
+    });
   } else {
     maintenanceOverlay.classList.remove('active');
     document.body.style.overflow = 'auto';
@@ -150,14 +163,15 @@ onValue(ref(database, 'settings/maintenance'), async (snapshot) => {
       if(el.tagName === 'A') el.classList.remove('disabled');
     });
   }
-});
+}
+
+// Re-check when admin types email
+emailInput.addEventListener("input", updateUI);
 
 // 3. AUTO LOGIN IF "REMEMBER ME" WAS ON
 onAuthStateChanged(auth, async (user) => {
   if(user){
-    isAdmin = await checkIfAdmin(user.uid);
     const wasRemembered = localStorage.getItem('mff_auto_login') === 'true';
-    
     if(wasRemembered){
       showToast('success','Auto Logging in...');
       setTimeout(() => {window.location.href = "dashboard.html";}, 1000);
@@ -188,6 +202,16 @@ togglePassword.addEventListener("click", function(){
 // LOGIN
 loginForm.addEventListener("submit", async(e) => {
   e.preventDefault();
+  
+  const adminEmails = ["mansoryfamilyn@gmail.com"];
+  const currentEmail = emailInput.value.toLowerCase().trim();
+  const isTypingAdmin = adminEmails.includes(currentEmail);
+  
+  if(maintenanceMode && !isAdmin && !isTypingAdmin){
+    showToast('error','Login is currently disabled');
+    return;
+  }
+
   loginBtn.disabled = true;
   loginBtn.textContent = "Logging in...";
 
@@ -198,12 +222,12 @@ loginForm.addEventListener("submit", async(e) => {
   try{
     await setPersistence(auth, persistence);
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    isAdmin = await checkIfAdmin(userCredential.user.uid);
+    isAdmin = await get(ref(database, 'users/' + userCredential.user.uid)).then(s => s.exists() && s.val().role === 'admin');
 
-    // 4. SAVE EMAIL + PASSWORD IF REMEMBER ME IS ON
+    // SAVE EMAIL + PASSWORD IF REMEMBER ME IS ON
     if(rememberMe.checked){
       localStorage.setItem('mff_remember_email', email);
-      localStorage.setItem('mff_remember_pass', password); // SECURITY WARNING: Only for your use
+      localStorage.setItem('mff_remember_pass', password);
       localStorage.setItem('mff_remember_checked', 'true');
       localStorage.setItem('mff_auto_login', 'true');
     } else {

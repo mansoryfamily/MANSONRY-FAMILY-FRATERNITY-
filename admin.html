@@ -62,6 +62,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
 .btn-primary:hover{background:var(--gold-dark);}
 .btn-primary:disabled{opacity:0.6;cursor:not-allowed;}
 .btn-danger{background:var(--danger);color:#fff;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;}
+.connection-status{position:fixed;bottom:20px;right:20px;padding:8px 16px;border-radius:20px;font-size:12px;background:var(--success);z-index:9999;}
+.connection-status.offline{background:var(--danger);}
 </style>
 </head>
 <body>
@@ -77,6 +79,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
 <h1>Admin Control Panel</h1>
 </div>
 
+<div id="connectionStatus" class="connection-status">Connected</div>
 <div id="errorBox"></div>
 <div id="successBox"></div>
 
@@ -122,8 +125,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, update, get, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
+import { getDatabase, ref, onValue, update, get, remove, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getFunctions, httpsCallable, connectFunctionsEmulator } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -142,6 +145,8 @@ const database = getDatabase(app);
 const functions = getFunctions(app, 'europe-west1');
 const sendAnnouncementFn = httpsCallable(functions, 'sendAnnouncement');
 
+let usersListener, notifListener;
+
 const usersTable = document.getElementById('usersTable');
 const errorBox = document.getElementById('errorBox');
 const successBox = document.getElementById('successBox');
@@ -150,9 +155,21 @@ const deleteRecipientSelect = document.getElementById('deleteRecipient');
 const memberNotifList = document.getElementById('memberNotificationsList');
 const deleteAllBtn = document.getElementById('deleteAllBtn');
 const sendBtn = document.getElementById('sendNotificationBtn');
+const connectionStatus = document.getElementById('connectionStatus');
 
 function showError(msg){errorBox.innerHTML = `<div class="error-box">❌ ${msg}</div>`;setTimeout(()=>{errorBox.innerHTML = ""}, 8000);}
 function showSuccess(msg){successBox.innerHTML = `<div class="success-box">✅ ${msg}</div>`;setTimeout(()=>{successBox.innerHTML = ""}, 4000);}
+
+// Real-time connection status
+onValue(ref(database, '.info/connected'), (snap) => {
+  if(snap.val() === true){
+    connectionStatus.textContent = "Connected";
+    connectionStatus.className = "connection-status";
+  } else {
+    connectionStatus.textContent = "Offline";
+    connectionStatus.className = "connection-status offline";
+  }
+});
 
 onAuthStateChanged(auth, async (user) => {
   if(!user){window.location.href = "login.html";return;}
@@ -162,6 +179,11 @@ onAuthStateChanged(auth, async (user) => {
     setTimeout(()=>{window.location.href = "dashboard.html";}, 3000);
     return;
   }
+  // Set admin as online
+  const adminStatusRef = ref(database, `users/${user.uid}/lastSeen`);
+  onDisconnect(adminStatusRef).set(serverTimestamp());
+  update(adminStatusRef, serverTimestamp());
+
   loadUsers();
   loadRecipients();
   loadCurrentAnnouncement();
@@ -178,7 +200,8 @@ function loadCurrentAnnouncement(){
 }
 
 function loadUsers(){
-  onValue(ref(database, "users"), (snapshot) => {
+  if(usersListener) usersListener(); // unsubscribe old
+  usersListener = onValue(ref(database, "users"), (snapshot) => {
     const data = snapshot.val();
     if(!data){usersTable.innerHTML = `<tr><td colspan="7" class="loading">No members found</td></tr>`;return;}
     let html = "";let total = 0, approved = 0, pending = 0, rejected = 0;let count = 1;
@@ -187,7 +210,7 @@ function loadUsers(){
       if(status === "approved") approved++;else if(status === "rejected") rejected++;else pending++;total++;
       const appliedDate = user.timestamp? new Date(user.timestamp).toLocaleDateString() : 'N/A';
       const isAdmin = user.role === "admin";
-      const deleteBtn =!isAdmin? `<button class="danger" onclick="deleteMember('${uid}','${user.fullName}')">🗑️ Delete Member</button>` : '';
+      const deleteBtn =!isAdmin? `<button class="danger" onclick="deleteMember('${uid}','${user.fullName.replace(/'/g,"\\'")}')">🗑️ Delete Member</button>` : '';
       html += `<tr><td>${count++}</td><td>${user.fullName}</td><td>${user.email}</td><td>${user.phone || 'N/A'}</td><td>${appliedDate}</td><td><span class="badge ${status}">${status}</span></td><td><div class="dropdown"><button onclick="toggleDropdown('dropdown${uid}')" class="dropbtn">Actions ▼</button><div id="dropdown${uid}" class="dropdown-content"><button onclick="updateStatus('${uid}','approved')">Approve</button><button onclick="updateStatus('${uid}','pending')">Set Pending</button><button onclick="updateStatus('${uid}','rejected')">Reject</button>${deleteBtn}</div></div></td></tr>`;
     });
     usersTable.innerHTML = html;
@@ -195,7 +218,7 @@ function loadUsers(){
     document.getElementById('approvedUsers').textContent = approved;
     document.getElementById('pendingUsers').textContent = pending;
     document.getElementById('rejectedUsers').textContent = rejected;
-  });
+  }, (error)=>showError("DB Read Error: " + error.message));
 }
 
 function loadRecipients(){
@@ -212,6 +235,7 @@ function loadRecipients(){
 
 deleteRecipientSelect.addEventListener("change", (e) => {
   const uid = e.target.value;
+  if(notifListener) notifListener(); // unsubscribe old listener
   if(!uid){memberNotifList.style.display = "none";deleteAllBtn.style.display = "none";return;}
   deleteAllBtn.style.display = "block";
   if(uid === "all"){
@@ -221,7 +245,7 @@ deleteRecipientSelect.addEventListener("change", (e) => {
   }
   deleteAllBtn.textContent = "Delete ALL Notifications for Selected Member";
   memberNotifList.style.display = "block";
-  onValue(ref(database, `notifications/${uid}`), (snapshot) => {
+  notifListener = onValue(ref(database, `notifications/${uid}`), (snapshot) => {
     const data = snapshot.val();
     if(!data){memberNotifList.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No notifications</p>`;return;}
     let html = "";Object.keys(data).reverse().forEach(key => {
@@ -241,7 +265,7 @@ window.deleteSpecificNotification = function(uid, key){
 window.toggleDropdown = function(id) {document.getElementById(id).classList.toggle("show");}
 window.onclick = function(event) {if (!event.target.matches('.dropbtn')) {document.querySelectorAll(".dropdown-content").forEach(d => d.classList.remove('show'));}}
 window.updateStatus = function(uid, status){
-  update(ref(database, "users/" + uid), { status: status })
+  update(ref(database, "users/" + uid), { status: status, updatedAt: serverTimestamp() })
  .then(()=>showSuccess(`Status updated to ${status}`))
  .catch(err=>showError(err.message));
 }
@@ -266,7 +290,7 @@ sendBtn.addEventListener('click', async () => {
     document.getElementById('notificationMessage').value = "";
   }catch(err){
     console.error(err);
-    showError(`Failed: ${err.message}\n\nFix: Make sure Cloud Function 'sendAnnouncement' is deployed in europe-west1`);
+    showError(`Failed: ${err.message}\n\nFix: Deploy Cloud Function 'sendAnnouncement' in europe-west1`);
   }finally{
     sendBtn.disabled = false; sendBtn.innerText = "Send Announcement";
   }
@@ -288,4 +312,4 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   signOut(auth).then(() => {window.location.href = "login.html";});
 </script>
 </body>
-  </html>
+</html>

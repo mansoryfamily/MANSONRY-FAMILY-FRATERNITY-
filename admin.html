@@ -148,7 +148,7 @@ const memberNotifList = document.getElementById('memberNotificationsList');
 const deleteAllBtn = document.getElementById('deleteAllBtn');
 const sendBtn = document.getElementById('sendNotificationBtn');
 
-let notificationsListener = null; // FIX 1: track listener so we can turn it off
+let notificationsListener = null;
 
 function showError(msg){errorBox.innerHTML = `<div class="error-box">❌ ${msg}</div>`;setTimeout(()=>{errorBox.innerHTML = ""}, 8000);}
 function showSuccess(msg){successBox.innerHTML = `<div class="success-box">✅ ${msg}</div>`;setTimeout(()=>{successBox.innerHTML = ""}, 4000);}
@@ -237,28 +237,21 @@ sendBtn.addEventListener('click', async () => {
     finally {sendBtn.disabled = false;sendBtn.textContent = "📢 Send to All Members";}
 });
 
-// FIX 2: DELETE SECTION - TURN OFF OLD LISTENER FIRST
+// DELETE SECTION
 deleteRecipientSelect.addEventListener("change", (e) => {
   const uid = e.target.value;
-
-  // Turn off previous listener to prevent duplicates
   if(notificationsListener){ off(notificationsListener); notificationsListener = null; }
-
   if(!uid){memberNotifList.style.display = "none";deleteAllBtn.style.display = "none";return;}
   deleteAllBtn.style.display = "block";
-
   if(uid === "all"){
     memberNotifList.style.display = "none";
     deleteAllBtn.textContent = "Delete MAIN Announcement Board";
     return;
   }
-
   deleteAllBtn.textContent = "Delete ALL Notifications for Selected Member";
   memberNotifList.style.display = "block";
-
   const notifRef = ref(database, `notifications/${uid}`);
-  notificationsListener = notifRef; // save ref
-
+  notificationsListener = notifRef;
   onValue(notifRef, (snapshot) => {
     const data = snapshot.val();
     if(!data){memberNotifList.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No notifications</p>`;return;}
@@ -270,9 +263,9 @@ deleteRecipientSelect.addEventListener("change", (e) => {
   });
 });
 
-// FIX 3: Event delegation for delete buttons
+// Event delegation for delete buttons
 memberNotifList.addEventListener('click', async (e) => {
-  const btn = e.target.closest('.delete-one-btn'); // works even if you click on text inside button
+  const btn = e.target.closest('.delete-one-btn');
   if(btn){
     const uid = btn.dataset.uid;
     const key = btn.dataset.key;
@@ -295,19 +288,37 @@ window.deleteMember = function(uid, name){
   }
 }
 
+// FIXED: DELETE ALL NOW CLEARS DASHBOARD TOO
 document.getElementById('deleteAllBtn').addEventListener('click', async () => {
   const uid = deleteRecipientSelect.value;
   if(!uid){showError("Select a member first");return;}
   if(confirm("Delete ALL? This cannot be undone.")){
     try{
-      if(uid === "all"){await remove(ref(database, "announcements"));showSuccess("Main announcement deleted");}
-      else{await remove(ref(database, `notifications/${uid}`));showSuccess("All notifications deleted");}
+      if(uid === "all"){
+        // 1. Delete main announcement - this is what dashboard reads
+        await remove(ref(database, "announcements"));
+
+        // 2. Delete from every member's notifications
+        const usersSnap = await get(ref(database, "users"));
+        const updates = {};
+        usersSnap.forEach(child => {
+          updates[`notifications/${child.key}`] = null;
+        });
+        await update(ref(database), updates);
+
+        showSuccess("✅ Main announcement + All member notifications deleted");
+      }
+      else{
+        await remove(ref(database, `notifications/${uid}`));
+        showSuccess("All notifications deleted for selected member");
+      }
     }catch(err){showError(err.message)}
   }
 });
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
   signOut(auth).then(() => {window.location.href = "login.html";});
+});
 </script>
 </body>
 </html>

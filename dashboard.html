@@ -85,7 +85,7 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 </section>
 <div class="side-cards">
   <div class="card"><div class="card-icon">📜</div><h3>Lodge Information</h3><p>Access meeting schedules, lodge announcements, and member activities.</p></div>
-  <div class="card" id="announcementsCard"><div class="card-icon">📢</div><h3>Latest Announcements</h3><div id="announcementsList" style="margin-top:10px; max-height:300px; overflow-y:auto;"><p style="color:#a0b0c9; font-size:13px;">Loading...</p></div></div>
+  <div class="card" id="announcementsCard" style="display:none;"><div class="card-icon">📢</div><h3>Latest Announcements</h3><div id="announcementsList" style="margin-top:10px; max-height:300px; overflow-y:auto;"><p style="color:#a0b0c9; font-size:13px;">Loading...</p></div></div>
   <div class="card"><div class="card-icon">🤝</div><h3>Membership Support</h3><p>Contact your Lodge Director for guidance and fraternity assistance.</p></div>
   <div class="card admin-card" id="adminPanel"><div class="card-icon">⚙️</div><h3>Admin Panel</h3><p>Manage members, applications, and lodge settings. <a href="admin.html" style="color:var(--gold); text-decoration:underline;">Go to Dashboard →</a></p></div>
 </div>
@@ -144,10 +144,10 @@ function renderAnnouncements(){
   const all = [...mainAnnouncements,...personalNotifications];
 
   if(all.length === 0){
-    annCard.style.display = "none";
+    annCard.style.display = "none"; // VANISH CARD
     return;
   }
-  annCard.style.display = "block";
+  annCard.style.display = "block"; // SHOW CARD
 
   all.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
   let html = "";
@@ -201,7 +201,7 @@ onAuthStateChanged(auth, (user) => {
     }
   });
 
-  // 2. LISTEN TO PERSONAL NOTIFICATIONS
+  // LISTEN TO PERSONAL NOTIFICATIONS
   const personalRef = ref(database, `notifications/${user.uid}`);
   onValue(personalRef, (snapshot) => {
     const data = snapshot.val();
@@ -210,14 +210,13 @@ onAuthStateChanged(auth, (user) => {
   });
 });
 
-// 1. LISTEN TO MAIN ANNOUNCEMENT BOARD
+// LISTEN TO MAIN ANNOUNCEMENT BOARD
 onValue(ref(database, 'announcements'), (snapshot) => {
   const data = snapshot.val();
   mainAnnouncements = data && data.title? [data] : [];
   renderAnnouncements();
 }, (error) => {
   console.error("Announcements Error:", error);
-  list.innerHTML = `<p style="color:#ff6b6b; font-size:13px;">Error loading announcements</p>`;
 });
 
 document.querySelector(".logout").addEventListener("click", (e) => {
@@ -225,6 +224,5 @@ document.querySelector(".logout").addEventListener("click", (e) => {
   signOut(auth).then(() => { window.location.href = "login.html"; });
 });
 </script>
-<script type="module" src="notifications.js"></script>
 </body>
 </html>

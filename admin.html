@@ -79,7 +79,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
 <h1>Admin Control Panel</h1>
 </div>
 
-<div id="connectionStatus" class="connection-status">Connected</div>
+<div id="connectionStatus" class="connection-status">Connecting...</div>
 <div id="errorBox"></div>
 <div id="successBox"></div>
 
@@ -126,8 +126,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, onValue, update, get, remove, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-import { getFunctions, httpsCallable, connectFunctionsEmulator } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
+// YOUR CONFIG - SAME AS YOURS
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -145,7 +146,7 @@ const database = getDatabase(app);
 const functions = getFunctions(app, 'europe-west1');
 const sendAnnouncementFn = httpsCallable(functions, 'sendAnnouncement');
 
-let usersListener, notifListener;
+let usersListener, notifListener, recipientsListener;
 
 const usersTable = document.getElementById('usersTable');
 const errorBox = document.getElementById('errorBox');
@@ -196,7 +197,7 @@ function loadCurrentAnnouncement(){
     if(!data){previewDiv.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No current announcement</p>`;return;}
     const date = data.timestamp? new Date(data.timestamp).toLocaleString() : 'Just now';
     previewDiv.innerHTML = `<div class="current-ann"><h4>Current: ${data.title}</h4><p>${data.message}</p><small>By: ${data.sentByEmail} • ${date}</small></div>`;
-  });
+  }, (error)=>showError("Failed to load announcement: " + error.message));
 }
 
 function loadUsers(){
@@ -210,7 +211,8 @@ function loadUsers(){
       if(status === "approved") approved++;else if(status === "rejected") rejected++;else pending++;total++;
       const appliedDate = user.timestamp? new Date(user.timestamp).toLocaleDateString() : 'N/A';
       const isAdmin = user.role === "admin";
-      const deleteBtn =!isAdmin? `<button class="danger" onclick="deleteMember('${uid}','${user.fullName.replace(/'/g,"\\'")}')">🗑️ Delete Member</button>` : '';
+      const safeName = user.fullName.replace(/'/g,"\\'");
+      const deleteBtn =!isAdmin? `<button class="danger" onclick="deleteMember('${uid}','${safeName}')">🗑️ Delete Member</button>` : '';
       html += `<tr><td>${count++}</td><td>${user.fullName}</td><td>${user.email}</td><td>${user.phone || 'N/A'}</td><td>${appliedDate}</td><td><span class="badge ${status}">${status}</span></td><td><div class="dropdown"><button onclick="toggleDropdown('dropdown${uid}')" class="dropbtn">Actions ▼</button><div id="dropdown${uid}" class="dropdown-content"><button onclick="updateStatus('${uid}','approved')">Approve</button><button onclick="updateStatus('${uid}','pending')">Set Pending</button><button onclick="updateStatus('${uid}','rejected')">Reject</button>${deleteBtn}</div></div></td></tr>`;
     });
     usersTable.innerHTML = html;
@@ -222,7 +224,8 @@ function loadUsers(){
 }
 
 function loadRecipients(){
-  onValue(ref(database, "users"), (snapshot) => {
+  if(recipientsListener) recipientsListener();
+  recipientsListener = onValue(ref(database, "users"), (snapshot) => {
     const data = snapshot.val();
     recipientSelect.innerHTML = '<option value="all">📢 Send to ALL Members + Announcement Board</option>';
     deleteRecipientSelect.innerHTML = '<option value="">-- Select Member --</option><option value="all">🗑️ Delete from ALL Members Announcement Board</option>';

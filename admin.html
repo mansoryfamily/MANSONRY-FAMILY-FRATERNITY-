@@ -23,7 +23,7 @@ header{position:fixed;top:0;left:0;width:100%;padding:18px 5%;background:rgba(0,
 .stat-card{background:linear-gradient(145deg,rgba(20,34,56,.9),rgba(11,23,40,.9));backdrop-filter:blur(20px);padding:20px;border-radius:16px;text-align:center;border:1px solid rgba(212,175,55,.25);}
 .stat-card h2{color:var(--gold);font-size:32px;font-family:'Playfair Display',serif;}
 .stat-card p{color:#ccc;font-size:13px;margin-top:5px;}
-.table-wrapper{background:linear-gradient(145deg,rgba(20,34,56,.9),rgba(11,23,40,.9));backdrop-filter:blur(20px);border-radius:20px;padding:25px;border:1px solid rgba(212,175,55,.25);margin-bottom:30px;}
+.table-wrapper{background:linear-gradient(145deg,rgba(20,34,56,.9),rgba(11,23,40,.9));backdrop-filter:blur(20px);border-radius:20px;padding:25px;border:1px solid rgba(212,175,55,.25);}
 .table-title{color:var(--gold);margin-bottom:20px;font-family:'Playfair Display',serif;font-size:22px;}
 .table-scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;min-width:800px;}
@@ -44,7 +44,7 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 .dropdown-content button.danger:hover{background:rgba(239,68,68,.15);}
 .show{display:block;}
 .loading{text-align:center;padding:40px;color:#aaa;}
-.error-box{background:rgba(239,68,68,.15);border:1px solid var(--danger);color:#ff9999;padding:15px;border-radius:10px;margin-bottom:20px;text-align:left;white-space:pre-wrap;font-size:13px;}
+.error-box{background:rgba(239,68,68,.15);border:1px solid var(--danger);color:#ff9999;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;}
 .success-box{background:rgba(34,197,94,.15);border:1px solid var(--success);color:#4cff88;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;}
 .current-ann{background:rgba(5,12,24,.6);border:1px solid rgba(212,175,55,.3);border-left:4px solid var(--gold);padding:15px;border-radius:10px;margin-bottom:15px;}
 .current-ann h4{color:var(--gold);font-size:15px;margin-bottom:6px;}
@@ -56,14 +56,6 @@ tbody tr:hover{background:rgba(212,175,55,.05);}
 .notif-item p{color:#ddd;font-size:12px;}
 .delete-one-btn{background:var(--danger);color:#fff;border:none;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:.3s;}
 .delete-one-btn:hover{background:#dc2626;}
-input,select,textarea{padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;width:100%;}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
-.btn-primary{background:#d4af37;color:#111;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;transition:.3s;}
-.btn-primary:hover{background:var(--gold-dark);}
-.btn-primary:disabled{opacity:0.6;cursor:not-allowed;}
-.btn-danger{background:var(--danger);color:#fff;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;}
-.connection-status{position:fixed;bottom:20px;right:20px;padding:8px 16px;border-radius:20px;font-size:12px;background:var(--success);z-index:9999;}
-.connection-status.offline{background:var(--danger);}
 </style>
 </head>
 <body>
@@ -79,7 +71,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
 <h1>Admin Control Panel</h1>
 </div>
 
-<div id="connectionStatus" class="connection-status">Connecting...</div>
 <div id="errorBox"></div>
 <div id="successBox"></div>
 
@@ -90,23 +81,30 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
 <div class="stat-card"><h2 id="rejectedUsers">0</h2><p>Rejected</p></div>
 </div>
 
-<div class="table-wrapper">
+<div class="table-wrapper" style="margin-bottom:30px;">
     <h2 class="table-title">📢 Send Announcement</h2>
     <div id="currentAnnouncementPreview"><p style="color:#a0b0c9;font-size:13px;">Loading current announcement...</p></div>
     <div style="display:flex;flex-direction:column;gap:15px;">
-        <select id="notificationRecipient"></select>
-        <input type="text" id="notificationTitle" placeholder="Announcement Title">
-        <textarea id="notificationMessage" rows="5" placeholder="Write your message here..." style="resize:vertical;"></textarea>
-        <button id="sendNotificationBtn" class="btn-primary">Send Announcement</button>
+        <select id="notificationRecipient" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
+            <option value="all">📢 Send to ALL Members + Announcement Board</option>
+        </select>
+        <input type="text" id="notificationTitle" placeholder="Announcement Title" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
+        <textarea id="notificationMessage" rows="5" placeholder="Write your message here..." style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;resize:vertical;"></textarea>
+        <button id="sendNotificationBtn" style="background:#d4af37;color:#111;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;">Send Announcement</button>
     </div>
 </div>
 
-<div class="table-wrapper">
-    <h2 class="table-title">🗑️ Delete Announcement / Notifications</h2>
+<div class="table-wrapper" style="margin-bottom:30px;">
+    <h2 class="table-title">🗑️ Delete Announcement</h2>
     <div style="display:flex;flex-direction:column;gap:15px;">
-        <select id="deleteRecipient"></select>
+        <select id="deleteRecipient" style="padding:14px;border-radius:10px;border:1px solid rgba(212,175,55,.3);background:#0f1d33;color:#fff;font-size:15px;">
+            <option value="">-- Select Member to View/Delete Their Notifications --</option>
+            <option value="all">🗑️ Delete from ALL Members Announcement Board</option>
+        </select>
         <div id="memberNotificationsList" style="max-height:300px;overflow-y:auto;display:none;"></div>
-        <button id="deleteAllBtn" class="btn-danger" style="display:none;">Delete ALL Notifications</button>
+        <button id="deleteAllBtn" style="background:var(--danger);color:#fff;padding:14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px;display:none;">
+            Delete ALL Notifications
+        </button>
     </div>
 </div>
 
@@ -125,10 +123,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, update, get, remove, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, update, get, push, set, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
-// YOUR CONFIG - SAME AS YOURS
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -146,8 +143,6 @@ const database = getDatabase(app);
 const functions = getFunctions(app, 'europe-west1');
 const sendAnnouncementFn = httpsCallable(functions, 'sendAnnouncement');
 
-let usersListener, notifListener, recipientsListener;
-
 const usersTable = document.getElementById('usersTable');
 const errorBox = document.getElementById('errorBox');
 const successBox = document.getElementById('successBox');
@@ -155,39 +150,15 @@ const recipientSelect = document.getElementById('notificationRecipient');
 const deleteRecipientSelect = document.getElementById('deleteRecipient');
 const memberNotifList = document.getElementById('memberNotificationsList');
 const deleteAllBtn = document.getElementById('deleteAllBtn');
-const sendBtn = document.getElementById('sendNotificationBtn');
-const connectionStatus = document.getElementById('connectionStatus');
 
-function showError(msg){errorBox.innerHTML = `<div class="error-box">❌ ${msg}</div>`;setTimeout(()=>{errorBox.innerHTML = ""}, 8000);}
-function showSuccess(msg){successBox.innerHTML = `<div class="success-box">✅ ${msg}</div>`;setTimeout(()=>{successBox.innerHTML = ""}, 4000);}
-
-// Real-time connection status
-onValue(ref(database, '.info/connected'), (snap) => {
-  if(snap.val() === true){
-    connectionStatus.textContent = "Connected";
-    connectionStatus.className = "connection-status";
-  } else {
-    connectionStatus.textContent = "Offline";
-    connectionStatus.className = "connection-status offline";
-  }
-});
+function showError(msg){errorBox.innerHTML = `<div class="error-box">${msg}</div>`;setTimeout(()=>{errorBox.innerHTML = ""}, 5000);}
+function showSuccess(msg){successBox.innerHTML = `<div class="success-box">${msg}</div>`;setTimeout(()=>{successBox.innerHTML = ""}, 4000);}
 
 onAuthStateChanged(auth, async (user) => {
   if(!user){window.location.href = "login.html";return;}
   const userSnap = await get(ref(database, "users/" + user.uid));
-  if(!userSnap.exists() || userSnap.val().role!== "admin"){
-    showError("Access Denied. You are not an admin.");
-    setTimeout(()=>{window.location.href = "dashboard.html";}, 3000);
-    return;
-  }
-  // Set admin as online
-  const adminStatusRef = ref(database, `users/${user.uid}/lastSeen`);
-  onDisconnect(adminStatusRef).set(serverTimestamp());
-  update(adminStatusRef, serverTimestamp());
-
-  loadUsers();
-  loadRecipients();
-  loadCurrentAnnouncement();
+  if(!userSnap.exists() || userSnap.val().role!== "admin"){showError("Access Denied");setTimeout(()=>{window.location.href = "dashboard.html";}, 3000);return;}
+  loadUsers();loadRecipients();loadCurrentAnnouncement();
 });
 
 function loadCurrentAnnouncement(){
@@ -197,58 +168,46 @@ function loadCurrentAnnouncement(){
     if(!data){previewDiv.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No current announcement</p>`;return;}
     const date = data.timestamp? new Date(data.timestamp).toLocaleString() : 'Just now';
     previewDiv.innerHTML = `<div class="current-ann"><h4>Current: ${data.title}</h4><p>${data.message}</p><small>By: ${data.sentByEmail} • ${date}</small></div>`;
-  }, (error)=>showError("Failed to load announcement: " + error.message));
+  });
 }
 
 function loadUsers(){
-  if(usersListener) usersListener(); // unsubscribe old
-  usersListener = onValue(ref(database, "users"), (snapshot) => {
-    const data = snapshot.val();
-    if(!data){usersTable.innerHTML = `<tr><td colspan="7" class="loading">No members found</td></tr>`;return;}
+  onValue(ref(database, "users"), (snapshot) => {
+    const data = snapshot.val();if(!data){usersTable.innerHTML = `<tr><td colspan="7" class="loading">No members</td></tr>`;return;}
     let html = "";let total = 0, approved = 0, pending = 0, rejected = 0;let count = 1;
     Object.keys(data).forEach(uid => {
       const user = data[uid];const status = user.status || "pending";
       if(status === "approved") approved++;else if(status === "rejected") rejected++;else pending++;total++;
       const appliedDate = user.timestamp? new Date(user.timestamp).toLocaleDateString() : 'N/A';
       const isAdmin = user.role === "admin";
-      const safeName = user.fullName.replace(/'/g,"\\'");
-      const deleteBtn =!isAdmin? `<button class="danger" onclick="deleteMember('${uid}','${safeName}')">🗑️ Delete Member</button>` : '';
-      html += `<tr><td>${count++}</td><td>${user.fullName}</td><td>${user.email}</td><td>${user.phone || 'N/A'}</td><td>${appliedDate}</td><td><span class="badge ${status}">${status}</span></td><td><div class="dropdown"><button onclick="toggleDropdown('dropdown${uid}')" class="dropbtn">Actions ▼</button><div id="dropdown${uid}" class="dropdown-content"><button onclick="updateStatus('${uid}','approved')">Approve</button><button onclick="updateStatus('${uid}','pending')">Set Pending</button><button onclick="updateStatus('${uid}','rejected')">Reject</button>${deleteBtn}</div></div></td></tr>`;
+      const deleteBtn =!isAdmin? `<button class="danger" onclick="deleteMember('${uid}','${user.fullName}')">🗑️ Delete Member</button>` : '';
+      html += `<tr><td>${count++}</td><td>${user.fullName}</td><td>${user.email}</td><td>${user.phone || 'N/A'}</td><td>${appliedDate}</td><td><span class="badge ${status}">${status}</span></td><td><div class="dropdown"><button onclick="toggleDropdown('dropdown${uid}')" class="dropbtn">Actions ▼</button><div id="dropdown${uid}" class="dropdown-content"><button onclick="updateStatus('${uid}','approved')">Approve</button><button onclick="updateStatus('${uid}','pending')">Pending</button><button onclick="updateStatus('${uid}','rejected')">Rejected</button>${deleteBtn}</div></div></td></tr>`;
     });
-    usersTable.innerHTML = html;
-    document.getElementById('totalUsers').textContent = total;
-    document.getElementById('approvedUsers').textContent = approved;
-    document.getElementById('pendingUsers').textContent = pending;
-    document.getElementById('rejectedUsers').textContent = rejected;
-  }, (error)=>showError("DB Read Error: " + error.message));
+    usersTable.innerHTML = html;document.getElementById('totalUsers').textContent = total;document.getElementById('approvedUsers').textContent = approved;document.getElementById('pendingUsers').textContent = pending;document.getElementById('rejectedUsers').textContent = rejected;
+  });
 }
 
 function loadRecipients(){
-  if(recipientsListener) recipientsListener();
-  recipientsListener = onValue(ref(database, "users"), (snapshot) => {
+  onValue(ref(database, "users"), (snapshot) => {
     const data = snapshot.val();
     recipientSelect.innerHTML = '<option value="all">📢 Send to ALL Members + Announcement Board</option>';
     deleteRecipientSelect.innerHTML = '<option value="">-- Select Member --</option><option value="all">🗑️ Delete from ALL Members Announcement Board</option>';
-    if(data){Object.keys(data).forEach(uid => {
-      recipientSelect.innerHTML += `<option value="${uid}">📢 ${data[uid].fullName}</option>`;
-      deleteRecipientSelect.innerHTML += `<option value="${uid}">👤 ${data[uid].fullName}</option>`;
-    });}
+    if(data){Object.keys(data).forEach(uid => {recipientSelect.innerHTML += `<option value="${uid}">📢 ${data[uid].fullName}</option>`;deleteRecipientSelect.innerHTML += `<option value="${uid}">👤 ${data[uid].fullName}</option>`;});}
   });
 }
 
 deleteRecipientSelect.addEventListener("change", (e) => {
   const uid = e.target.value;
-  if(notifListener) notifListener(); // unsubscribe old listener
   if(!uid){memberNotifList.style.display = "none";deleteAllBtn.style.display = "none";return;}
   deleteAllBtn.style.display = "block";
   if(uid === "all"){
     memberNotifList.style.display = "none";
-    deleteAllBtn.textContent = "Delete MAIN Announcement Board";
+    deleteAllBtn.textContent = "Delete ALL Notifications for EVERYONE";
     return;
   }
   deleteAllBtn.textContent = "Delete ALL Notifications for Selected Member";
   memberNotifList.style.display = "block";
-  notifListener = onValue(ref(database, `notifications/${uid}`), (snapshot) => {
+  onValue(ref(database, `notifications/${uid}`), (snapshot) => {
     const data = snapshot.val();
     if(!data){memberNotifList.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No notifications</p>`;return;}
     let html = "";Object.keys(data).reverse().forEach(key => {
@@ -267,11 +226,7 @@ window.deleteSpecificNotification = function(uid, key){
 
 window.toggleDropdown = function(id) {document.getElementById(id).classList.toggle("show");}
 window.onclick = function(event) {if (!event.target.matches('.dropbtn')) {document.querySelectorAll(".dropdown-content").forEach(d => d.classList.remove('show'));}}
-window.updateStatus = function(uid, status){
-  update(ref(database, "users/" + uid), { status: status, updatedAt: serverTimestamp() })
- .then(()=>showSuccess(`Status updated to ${status}`))
- .catch(err=>showError(err.message));
-}
+window.updateStatus = function(uid, status){update(ref(database, "users/" + uid), { status: status }).then(()=>showSuccess("Status updated")).catch(err=>showError(err.message));}
 
 window.deleteMember = function(uid, name){
   if(confirm(`⚠️ WARNING: This will PERMANENTLY delete ${name}. Continue?`)){
@@ -279,40 +234,31 @@ window.deleteMember = function(uid, name){
   }
 }
 
-sendBtn.addEventListener('click', async () => {
+document.getElementById('sendNotificationBtn').addEventListener('click', async () => {
   const recipient = recipientSelect.value;
-  const title = document.getElementById('notificationTitle').value.trim();
-  const message = document.getElementById('notificationMessage').value.trim();
-  if(!title ||!message){showError("Title and message are required");return;}
-
-  sendBtn.disabled = true; sendBtn.innerText = "Sending...";
+  const title = document.getElementById('notificationTitle').value;
+  const message = document.getElementById('notificationMessage').value;
+  if(!title ||!message){showError("Title and message required");return;}
   try{
-    const res = await sendAnnouncementFn({recipient, title, message});
-    showSuccess(res.data?.message || "Announcement sent successfully");
+    await sendAnnouncementFn({recipient, title, message});
+    showSuccess("Announcement sent");
     document.getElementById('notificationTitle').value = "";
     document.getElementById('notificationMessage').value = "";
-  }catch(err){
-    console.error(err);
-    showError(`Failed: ${err.message}\n\nFix: Deploy Cloud Function 'sendAnnouncement' in europe-west1`);
-  }finally{
-    sendBtn.disabled = false; sendBtn.innerText = "Send Announcement";
-  }
+  }catch(err){showError(err.message)}
 });
 
-deleteAllBtn.addEventListener('click', () => {
+document.getElementById('deleteAllBtn').addEventListener('click', () => {
   const uid = deleteRecipientSelect.value;
   if(!uid){showError("Select a member first");return;}
-  if(confirm("Are you sure? This cannot be undone.")){
-    if(uid === "all"){
-      remove(ref(database, "announcements")).then(()=>showSuccess("Main announcement deleted"));
-    } else {
-      remove(ref(database, `notifications/${uid}`)).then(()=>showSuccess("All notifications deleted"));
-    }
+  if(confirm("Delete ALL notifications?")){
+    if(uid === "all"){remove(ref(database, "announcements")).then(()=>showSuccess("All announcements deleted"));}
+    else{remove(ref(database, `notifications/${uid}`)).then(()=>showSuccess("All notifications deleted"));}
   }
 });
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
   signOut(auth).then(() => {window.location.href = "login.html";});
+});
 </script>
 </body>
 </html>

@@ -134,6 +134,34 @@ const statStatus = document.getElementById("statStatus");
 const statLodge = document.getElementById("statLodge");
 const statSince = document.getElementById("statSince");
 
+const annCard = document.getElementById('announcementsCard');
+const list = document.getElementById('announcementsList');
+
+let mainAnnouncements = [];
+let personalNotifications = [];
+
+function renderAnnouncements(){
+  const all = [...mainAnnouncements,...personalNotifications];
+
+  if(all.length === 0){
+    annCard.style.display = "none";
+    return;
+  }
+  annCard.style.display = "block";
+
+  all.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+  let html = "";
+  all.slice(0,5).forEach(a => {
+    const date = a.timestamp? new Date(a.timestamp).toLocaleString() : 'Just now';
+    html += `<div class="ann-item">
+      <h4>${a.title}</h4>
+      <p>${a.message}</p>
+      <small>By: ${a.sentByEmail || 'Admin'} • ${date}</small>
+    </div>`;
+  });
+  list.innerHTML = html;
+}
+
 onAuthStateChanged(auth, (user) => {
   if(!user){ window.location.href = "login.html"; return; }
   memberEmail.textContent = user.email;
@@ -172,49 +200,24 @@ onAuthStateChanged(auth, (user) => {
       detailFullName.textContent = "Please complete registration";
     }
   });
+
+  // 2. LISTEN TO PERSONAL NOTIFICATIONS
+  const personalRef = ref(database, `notifications/${user.uid}`);
+  onValue(personalRef, (snapshot) => {
+    const data = snapshot.val();
+    personalNotifications = data? Object.values(data) : [];
+    renderAnnouncements();
+  });
 });
 
-// FIXED: REAL-TIME ANNOUNCEMENTS - NOW HIDES CARD WHEN EMPTY
-const announcementsRef = ref(database, 'announcements');
-const annCard = document.getElementById('announcementsCard'); // ADDED
-const list = document.getElementById('announcementsList');
-
-onValue(announcementsRef, (snapshot) => {
+// 1. LISTEN TO MAIN ANNOUNCEMENT BOARD
+onValue(ref(database, 'announcements'), (snapshot) => {
   const data = snapshot.val();
-
-  if(!data){
-    annCard.style.display = "none"; // HIDE WHOLE CARD
-    return;
-  }
-  annCard.style.display = "block"; // SHOW IT
-
-  let html = "";
-  let announcementsArray = [];
-
-  if(data.title){
-    announcementsArray = [data];
-  } else {
-    announcementsArray = Object.values(data).filter(item => item && item.title && item.message);
-  }
-
-  if(announcementsArray.length === 0){
-    annCard.style.display = "none"; // HIDE WHOLE CARD
-    return;
-  }
-
-  announcementsArray.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0)).slice(0,5).forEach(a => {
-    const date = a.timestamp? new Date(a.timestamp).toLocaleString() : 'Just now';
-    html += `<div class="ann-item">
-      <h4>${a.title}</h4>
-      <p>${a.message}</p>
-      <small>By: ${a.sentByEmail || 'Admin'} • ${date}</small>
-    </div>`;
-  });
-
-  list.innerHTML = html;
+  mainAnnouncements = data && data.title? [data] : [];
+  renderAnnouncements();
 }, (error) => {
   console.error("Announcements Error:", error);
-  document.getElementById('announcementsList').innerHTML = `<p style="color:#ff6b6b; font-size:13px;">Error loading announcements</p>`;
+  list.innerHTML = `<p style="color:#ff6b6b; font-size:13px;">Error loading announcements</p>`;
 });
 
 document.querySelector(".logout").addEventListener("click", (e) => {
@@ -224,4 +227,4 @@ document.querySelector(".logout").addEventListener("click", (e) => {
 </script>
 <script type="module" src="notifications.js"></script>
 </body>
-  </html>
+</html>

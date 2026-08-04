@@ -122,7 +122,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, update, get, push, set, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, update, get, push, set, remove, off } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -147,6 +147,8 @@ const deleteRecipientSelect = document.getElementById('deleteRecipient');
 const memberNotifList = document.getElementById('memberNotificationsList');
 const deleteAllBtn = document.getElementById('deleteAllBtn');
 const sendBtn = document.getElementById('sendNotificationBtn');
+
+let notificationsListener = null; // FIX 1: track listener so we can turn it off
 
 function showError(msg){errorBox.innerHTML = `<div class="error-box">❌ ${msg}</div>`;setTimeout(()=>{errorBox.innerHTML = ""}, 8000);}
 function showSuccess(msg){successBox.innerHTML = `<div class="success-box">✅ ${msg}</div>`;setTimeout(()=>{successBox.innerHTML = ""}, 4000);}
@@ -194,7 +196,7 @@ function loadRecipients(){
   });
 }
 
-// SEND ANNOUNCEMENT - DIRECT DB WRITE
+// SEND ANNOUNCEMENT
 sendBtn.addEventListener('click', async () => {
     const recipient = recipientSelect.value;
     const title = document.getElementById('notificationTitle').value.trim();
@@ -207,19 +209,11 @@ sendBtn.addEventListener('click', async () => {
     sendBtn.disabled = true; sendBtn.textContent = "Sending...";
 
     try {
-        const annData = {
-            title: title,
-            message: message,
-            sentBy: admin.uid,
-            sentByEmail: admin.email,
-            timestamp: serverTimestamp()
-        };
+        const timestamp = Date.now();
+        const annData = {title: title,message: message,sentBy: admin.uid,sentByEmail: admin.email,timestamp: timestamp};
 
-        // 1. Update main announcement board
-        await set(ref(database, 'announcements'), annData);
-
-        // 2. Push to each member's notifications
         if(recipient === "all"){
+            await set(ref(database, 'announcements'), annData);
             const usersSnap = await get(ref(database, "users"));
             const updates = {};
             usersSnap.forEach(child => {
@@ -228,12 +222,14 @@ sendBtn.addEventListener('click', async () => {
                 updates[`notifications/${uid}/${key}`] = annData;
             });
             await update(ref(database), updates);
+            showSuccess("✅ Announcement sent to ALL members!");
         } else {
-            const key = push(ref(database, `notifications/${recipient}`)).key;
-            await set(ref(database, `notifications/${recipient}/${key}`), annData);
+            const newNotifRef = push(ref(database, `notifications/${recipient}`));
+            await set(newNotifRef, annData);
+            const userName = recipientSelect.options[recipientSelect.selectedIndex].text.replace('📢 ','');
+            showSuccess(`✅ Announcement sent to ${userName}`);
         }
 
-        showSuccess("✅ Announcement sent!");
         document.getElementById('notificationTitle').value = "";
         document.getElementById('notificationMessage').value = "";
 
@@ -241,20 +237,29 @@ sendBtn.addEventListener('click', async () => {
     finally {sendBtn.disabled = false;sendBtn.textContent = "📢 Send to All Members";}
 });
 
-let currentDeleteUid = "";
+// FIX 2: DELETE SECTION - TURN OFF OLD LISTENER FIRST
 deleteRecipientSelect.addEventListener("change", (e) => {
   const uid = e.target.value;
-  currentDeleteUid = uid;
+
+  // Turn off previous listener to prevent duplicates
+  if(notificationsListener){ off(notificationsListener); notificationsListener = null; }
+
   if(!uid){memberNotifList.style.display = "none";deleteAllBtn.style.display = "none";return;}
   deleteAllBtn.style.display = "block";
+
   if(uid === "all"){
     memberNotifList.style.display = "none";
     deleteAllBtn.textContent = "Delete MAIN Announcement Board";
     return;
   }
+
   deleteAllBtn.textContent = "Delete ALL Notifications for Selected Member";
   memberNotifList.style.display = "block";
-  onValue(ref(database, `notifications/${uid}`), (snapshot) => {
+
+  const notifRef = ref(database, `notifications/${uid}`);
+  notificationsListener = notifRef; // save ref
+
+  onValue(notifRef, (snapshot) => {
     const data = snapshot.val();
     if(!data){memberNotifList.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No notifications</p>`;return;}
     let html = "";Object.keys(data).reverse().forEach(key => {
@@ -265,16 +270,17 @@ deleteRecipientSelect.addEventListener("change", (e) => {
   });
 });
 
-// FIXED: Event delegation for delete buttons
+// FIX 3: Event delegation for delete buttons
 memberNotifList.addEventListener('click', async (e) => {
-  if(e.target.classList.contains('delete-one-btn')){
-    const uid = e.target.dataset.uid;
-    const key = e.target.dataset.key;
+  const btn = e.target.closest('.delete-one-btn'); // works even if you click on text inside button
+  if(btn){
+    const uid = btn.dataset.uid;
+    const key = btn.dataset.key;
     if(confirm("Delete this specific notification?")){
       try{
         await remove(ref(database, `notifications/${uid}/${key}`));
         showSuccess("Notification deleted");
-      }catch(err){showError(err.message);}
+      }catch(err){showError("Delete failed: " + err.message);}
     }
   }
 });
@@ -302,7 +308,6 @@ document.getElementById('deleteAllBtn').addEventListener('click', async () => {
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
   signOut(auth).then(() => {window.location.href = "login.html";});
-});
 </script>
 </body>
 </html>

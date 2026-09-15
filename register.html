@@ -44,7 +44,27 @@
   href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
   rel="stylesheet"
 >
+.country-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 
+.country-flag {
+  position: absolute;
+  left: 14px;
+  width: 28px;
+  height: 20px;
+  object-fit: cover;
+  border-radius: 3px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.country-select-wrapper select {
+  width: 100%;
+  padding-left: 54px;
+}
 
 <style>
 
@@ -843,30 +863,126 @@ textarea{
 </div>
 
 <div class="form-group">
-  <label for="country">Country <span class="required">*</span></label>
+  <label for="fullName">
+    Full Name <span class="required">*</span>
+  </label>
 
-  <select id="country" name="country" required>
-    <option value="">🌍 Select your country</option>
-    <option value="Kenya">🇰🇪 Kenya</option>
-    <option value="Uganda">🇺🇬 Uganda</option>
-    <option value="Tanzania">🇹🇿 Tanzania</option>
-    <option value="Rwanda">🇷🇼 Rwanda</option>
-    <option value="Guinea-Bissau">🇬🇼 Guinea-Bissau</option>
-    <option value="DRC">🇨🇩 Democratic Republic of the Congo</option>
-    <option value="South Africa">🇿🇦 South Africa</option>
-    <option value="Nigeria">🇳🇬 Nigeria</option>
-    <option value="Ghana">🇬🇭 Ghana</option>
-    <option value="Ethiopia">🇪🇹 Ethiopia</option>
-    <option value="Zimbabwe">🇿🇼 Zimbabwe</option>
-    <option value="Zambia">🇿🇲 Zambia</option>
-    <option value="Botswana">🇧🇼 Botswana</option>
-    <option value="Namibia">🇳🇦 Namibia</option>
-    <option value="USA">🇺🇸 United States</option>
-    <option value="Canada">🇨🇦 Canada</option>
-    <option value="UK">🇬🇧 United Kingdom</option>
-    <option value="Australia">🇦🇺 Australia</option>
-    <option value="India">🇮🇳 India</option>
-  </select>
+  <input
+    type="text"
+    id="fullName"
+    name="fullName"
+    placeholder="Enter your full name"
+    required
+  >
+</div>
+
+<div class="form-group">
+  <label for="email">
+    Email Address <span class="required">*</span>
+  </label>
+
+  <input
+    type="email"
+    id="email"
+    name="email"
+    placeholder="Enter your email address"
+    required
+  >
+</div>
+
+<div class="form-group">
+  <label for="country">
+    Country <span class="required">*</span>
+  </label>
+
+  <div class="country-select-wrapper">
+    <img
+      id="countryFlag"
+      class="country-flag"
+      src="https://flagcdn.com/w40/ke.png"
+      alt="Country flag"
+    >
+
+    <select id="country" name="country" required>
+      <option value="">Select your country</option>
+
+      <option value="Kenya" data-flag="ke">
+        Kenya
+      </option>
+
+      <option value="Uganda" data-flag="ug">
+        Uganda
+      </option>
+
+      <option value="Tanzania" data-flag="tz">
+        Tanzania
+      </option>
+
+      <option value="Rwanda" data-flag="rw">
+        Rwanda
+      </option>
+
+      <option value="Guinea-Bissau" data-flag="gw">
+        Guinea-Bissau
+      </option>
+
+      <option value="DRC" data-flag="cd">
+        Democratic Republic of the Congo
+      </option>
+
+      <option value="South Africa" data-flag="za">
+        South Africa
+      </option>
+
+      <option value="Nigeria" data-flag="ng">
+        Nigeria
+      </option>
+
+      <option value="Ghana" data-flag="gh">
+        Ghana
+      </option>
+
+      <option value="Ethiopia" data-flag="et">
+        Ethiopia
+      </option>
+
+      <option value="Zimbabwe" data-flag="zw">
+        Zimbabwe
+      </option>
+
+      <option value="Zambia" data-flag="zm">
+        Zambia
+      </option>
+
+      <option value="Botswana" data-flag="bw">
+        Botswana
+      </option>
+
+      <option value="Namibia" data-flag="na">
+        Namibia
+      </option>
+
+      <option value="USA" data-flag="us">
+        United States
+      </option>
+
+      <option value="Canada" data-flag="ca">
+        Canada
+      </option>
+
+      <option value="UK" data-flag="gb">
+        United Kingdom
+      </option>
+
+      <option value="Australia" data-flag="au">
+        Australia
+      </option>
+
+      <option value="India" data-flag="in">
+        India
+      </option>
+    </select>
+  </div>
 
   <div class="currency-preview" id="currencyPreview">
     Your membership currency:
@@ -1468,7 +1584,23 @@ const countryData = {
     currencySymbol: "$",
     currencyName: "US Dollar"
   },
+const countryFlag = document.getElementById("countryFlag");
 
+countrySelect.addEventListener("change", () => {
+  const selectedOption =
+    countrySelect.options[countrySelect.selectedIndex];
+
+  const flagCode = selectedOption.dataset.flag;
+
+  if (flagCode) {
+    countryFlag.src =
+      "https://flagcdn.com/w40/" + flagCode + ".png";
+
+    countryFlag.style.display = "block";
+  } else {
+    countryFlag.style.display = "none";
+  }
+});
   Canada: {
     code: "+1",
     currencyCode: "CAD",

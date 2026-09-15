@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#d4af37">
+
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-512.png">
+
+<title>Freemasonry Heritage | Register</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:"Poppins",sans-serif;
+  background:
+    linear-gradient(
+      rgba(7,17,31,.92),
+      rgba(7,17,31,.96)
+    ),
+    url("1517026394531.jpeg") center/cover fixed;
+  color:#fff;
+  min-height:100vh;
+}
+
+header{
+  text-align:center;
+  padding:30px 20px 15px;
+}
+
+.logo{
+  color:#d4af37;
+  font-size:25px;
+  font-weight:700;
+  letter-spacing:1px;
+}
+
+.container{
+  width:100%;
+  max-width:720px;
+  margin:auto;
+  padding:20px;
+}
+
+.card{
+  background:rgba(10,25,43,.96);
+  border:1px solid rgba(212,175,55,.35);
+  border-radius:18px;
+  padding:30px;
+  box-shadow:0 15px 45px rgba(0,0,0,.4);
+}
+
+h1{
+  color:#d4af37;
+  text-align:center;
+  font-size:28px;
+  margin-bottom:10px;
+}
+
+.intro{
+  text-align:center;
+  color:#cbd5e1;
+  font-size:14px;
+  line-height:1.7;
+  margin-bottom:28px;
+}
+
+.form-group{
+  margin-bottom:18px;
+}
+
+label{
+  display:block;
+  margin-bottom:7px;
+  color:#f5d76e;
+  font-size:14px;
+  font-weight:500;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  border:1px solid #334155;
+  border-radius:10px;
+  background:#07111f;
+  color:#fff;
+  padding:13px 14px;
+  font-family:"Poppins",sans-serif;
+  font-size:14px;
+  outline:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:#d4af37;
+  box-shadow:0 0 0 2px rgba(212,175,55,.12);
+}
+
+select option{
+  background:#07111f;
+  color:#fff;
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
+}
+
+.phone-row{
+  display:grid;
+  grid-template-columns:180px 1fr;
+  gap:10px;
+}
+
+.password-wrapper{
+  position:relative;
+}
+
+.password-wrapper input{
+  padding-right:70px;
+}
+
+.toggle-password{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  border:none;
+  background:transparent;
+  color:#d4af37;
+  cursor:pointer;
+  font-family:"Poppins",sans-serif;
+  font-size:12px;
+  font-weight:600;
+}
+
+.currency-preview{
+  display:none;
+  margin:8px 0 22px;
+  padding:14px;
+  border:1px solid rgba(212,175,55,.4);
+  background:rgba(212,175,55,.08);
+  border-radius:10px;
+  color:#dbe4ee;
+  font-size:13px;
+  text-align:center;
+}
+
+.currency-preview strong{
+  color:#d4af37;
+}
+
+.currency-symbol{
+  color:#fff;
+  font-size:17px;
+  font-weight:700;
+  margin-left:5px;
+}
+
+.error{
+  color:#ff8a8a;
+  font-size:12px;
+  margin-top:6px;
+  display:none;
+}
+
+.register-btn{
+  width:100%;
+  border:none;
+  border-radius:10px;
+  padding:14px;
+  background:#d4af37;
+  color:#07111f;
+  font-family:"Poppins",sans-serif;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:5px;
+}
+
+.register-btn:hover{
+  background:#f0cc52;
+}
+
+.register-btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}.login-link{
+  text-align:center;
+  margin-top:22px;
+  font-size:13px;
+  color:#cbd5e1;
+}
+
+.login-link a{
+  color:#d4af37;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.login-link a:hover{
+  text-decoration:underline;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translateX(-50%) translateY(100px);
+  background:#10253d;
+  border:1px solid #d4af37;
+  color:#fff;
+  padding:13px 18px;
+  border-radius:10px;
+  font-size:13px;
+  max-width:90%;
+  text-align:center;
+  opacity:0;
+  transition:.3s;
+  z-index:9999;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+.toast.success{
+  border-color:#4ade80;
+}
+
+.toast.error-toast{
+  border-color:#f87171;
+}
+
+.required{
+  color:#ff7777;
+}
+
+.install-popup{
+  display:none;
+  position:fixed;
+  left:50%;
+  bottom:20px;
+  transform:translateX(-50%);
+  width:calc(100% - 30px);
+  max-width:450px;
+  background:#10253d;
+  border:1px solid #d4af37;
+  border-radius:15px;
+  padding:20px;
+  z-index:10000;
+  box-shadow:0 15px 45px rgba(0,0,0,.5);
+}
+
+.install-popup h3{
+  color:#d4af37;
+  margin-bottom:7px;
+}
+
+.install-popup p{
+  color:#cbd5e1;
+  font-size:13px;
+  line-height:1.6;
+  margin-bottom:15px;
+}
+
+.install-buttons{
+  display:flex;
+  gap:10px;
+}
+
+.install-buttons button{
+  flex:1;
+  padding:10px;
+  border-radius:8px;
+  cursor:pointer;
+  font-family:"Poppins",sans-serif;
+  font-weight:600;
+}
+
+#btnInstall{
+  border:none;
+  background:#d4af37;
+  color:#07111f;
+}
+
+#btnClose{
+  border:1px solid #64748b;
+  background:transparent;
+  color:#fff;
+}
+
+@media(max-width:600px){
+
+  .card{
+    padding:22px 17px;
+  }
+
+  h1{
+    font-size:24px;
+  }
+
+  .phone-row{
+    grid-template-columns:1fr;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Freemasonry Heritage</div>
+</header>
+
+<main class="container">
+
+<div class="card">
+
+<h1>Register Your Interest</h1>
+
+<p class="intro">
+Begin your journey with Freemasonry Heritage Fraternity.
+Complete the form below with your correct information.
+</p>
+
+<form id="registerForm"><!-- FULL NAME -->
+<div class="form-group">
+
+<label for="fullName">
+Full Name <span class="required">*</span>
+</label>
+
+<input
+  type="text"
+  id="fullName"
+  placeholder="Enter your full name"
+  autocomplete="name"
+  required
+>
+
+</div>
+
+
+<!-- EMAIL -->
+<div class="form-group">
+
+<label for="email">
+Email Address <span class="required">*</span>
+</label>
+
+<input
+  type="email"
+  id="email"
+  placeholder="Enter your email address"
+  autocomplete="email"
+  required
+>
+
+</div>
+
+
+<!-- COUNTRY -->
+<div class="form-group">
+
+<label for="country">
+Country <span class="required">*</span>
+</label>
+
+<select id="country" required>
+
+<option value="">
+Select your country
+</option>
+
+<option value="Kenya">Kenya</option>
+<option value="Uganda">Uganda</option>
+<option value="Tanzania">Tanzania</option>
+<option value="Rwanda">Rwanda</option>
+<option value="Guinea-Bissau">Guinea-Bissau</option>
+<option value="DRC">DRC</option>
+<option value="South Africa">South Africa</option>
+<option value="Nigeria">Nigeria</option>
+<option value="Ghana">Ghana</option>
+<option value="Ethiopia">Ethiopia</option>
+<option value="Zimbabwe">Zimbabwe</option>
+<option value="Zambia">Zambia</option>
+<option value="Botswana">Botswana</option>
+<option value="Namibia">Namibia</option>
+<option value="USA">USA</option>
+<option value="Canada">Canada</option>
+<option value="UK">UK</option>
+<option value="Australia">Australia</option>
+<option value="India">India</option>
+
+</select>
+
+</div>
+
+
+<!-- CURRENCY PREVIEW -->
+<div
+  class="currency-preview"
+  id="currencyPreview"
+>
+
+Your membership currency:
+
+<strong id="currencyName">-</strong>
+
+<span
+  class="currency-symbol"
+  id="currencySymbol"
+>-</span>
+
+</div>
+
+
+<!-- PHONE NUMBER -->
+<div class="form-group">
+
+<label>
+Phone Number <span class="required">*</span>
+</label>
+
+<div class="phone-row">
+
+<select id="countryCode" required>
+
+<option value="">
+Code
+</option>
+
+<option value="+254">
++254 Kenya
+</option>
+
+<option value="+256">
++256 Uganda
+</option>
+
+<option value="+255">
++255 Tanzania
+</option>
+
+<option value="+250">
++250 Rwanda
+</option>
+
+<option value="+245">
++245 Guinea-Bissau
+</option>
+
+<option value="+243">
++243 DRC
+</option>
+
+<option value="+27">
++27 South Africa
+</option>
+
+<option value="+234">
++234 Nigeria
+</option>
+
+<option value="+233">
++233 Ghana
+</option>
+
+<option value="+251">
++251 Ethiopia
+</option>
+
+<option value="+263">
++263 Zimbabwe
+</option>
+
+<option value="+260">
++260 Zambia
+</option>
+
+<option value="+267">
++267 Botswana
+</option>
+
+<option value="+264">
++264 Namibia
+</option>
+
+<option value="+1">
++1 USA / Canada
+</option>
+
+<option value="+44">
++44 UK
+</option>
+
+<option value="+61">
++61 Australia
+</option>
+
+<option value="+91">
++91 India
+</option>
+
+</select>
+
+
+<input
+  type="tel"
+  id="phoneNumber"
+  placeholder="Phone number"
+  inputmode="numeric"
+  autocomplete="tel-national"
+  required
+>
+
+</div>
+
+<div
+  class="error"
+  id="phoneError"
+>
+Please enter a valid phone number.
+</div>
+
+</div><!-- AGE GROUP -->
+<div class="form-group">
+
+<label for="age">
+Age Group <span class="required">*</span>
+</label>
+
+<select id="age" required>
+
+<option value="">
+Select your age group
+</option>
+
+<option value="18-25">
+18 - 25
+</option>
+
+<option value="26-35">
+26 - 35
+</option>
+
+<option value="36-45">
+36 - 45
+</option>
+
+<option value="46-55">
+46 - 55
+</option>
+
+<option value="56-65">
+56 - 65
+</option>
+
+<option value="66+">
+66+
+</option>
+
+</select>
+
+</div>
+
+
+<!-- AREA OF INTEREST -->
+<div class="form-group">
+
+<label for="interest">
+Area of Interest <span class="required">*</span>
+</label>
+
+<select id="interest" required>
+
+<option value="">
+Select your area of interest
+</option>
+
+<option value="Brotherhood">
+Brotherhood
+</option>
+
+<option value="Personal Development">
+Personal Development
+</option>
+
+<option value="Leadership">
+Leadership
+</option>
+
+<option value="Community Service">
+Community Service
+</option>
+
+<option value="Spiritual Growth">
+Spiritual Growth
+</option>
+
+<option value="Freemasonry Heritage">
+Freemasonry Heritage
+</option>
+
+</select>
+
+</div>
+
+
+<!-- CREATE PASSWORD -->
+<div class="form-group">
+
+<label for="password">
+Create Password <span class="required">*</span>
+</label>
+
+<div class="password-wrapper">
+
+<input
+  type="password"
+  id="password"
+  placeholder="Create a password"
+  autocomplete="new-password"
+  minlength="6"
+  required
+>
+
+<button
+  type="button"
+  class="toggle-password"
+  data-target="password"
+>
+Show
+</button>
+
+</div>
+
+<div
+  class="error"
+  id="passwordError"
+>
+Password must be at least 6 characters.
+</div>
+
+</div>
+
+
+<!-- CONFIRM PASSWORD -->
+<div class="form-group">
+
+<label for="confirmPassword">
+Confirm Password <span class="required">*</span>
+</label>
+
+<div class="password-wrapper">
+
+<input
+  type="password"
+  id="confirmPassword"
+  placeholder="Confirm your password"
+  autocomplete="new-password"
+  minlength="6"
+  required
+>
+
+<button
+  type="button"
+  class="toggle-password"
+  data-target="confirmPassword"
+>
+Show
+</button>
+
+</div>
+
+<div
+  class="error"
+  id="confirmPasswordError"
+>
+Passwords do not match.
+</div>
+
+</div><!-- AGE GROUP -->
+<div class="form-group">
+
+<label for="age">
+Age Group <span class="required">*</span>
+</label>
+
+<select id="age" required>
+
+<option value="">
+Select your age group
+</option>
+
+<option value="18-25">
+18 - 25
+</option>
+
+<option value="26-35">
+26 - 35
+</option>
+
+<option value="36-45">
+36 - 45
+</option>
+
+<option value="46-55">
+46 - 55
+</option>
+
+<option value="56-65">
+56 - 65
+</option>
+
+<option value="66+">
+66+
+</option>
+
+</select>
+
+</div>
+
+
+<!-- AREA OF INTEREST -->
+<div class="form-group">
+
+<label for="interest">
+Area of Interest <span class="required">*</span>
+</label>
+
+<select id="interest" required>
+
+<option value="">
+Select your area of interest
+</option>
+
+<option value="Brotherhood">
+Brotherhood
+</option>
+
+<option value="Personal Development">
+Personal Development
+</option>
+
+<option value="Leadership">
+Leadership
+</option>
+
+<option value="Community Service">
+Community Service
+</option>
+
+<option value="Spiritual Growth">
+Spiritual Growth
+</option>
+
+<option value="Freemasonry Heritage">
+Freemasonry Heritage
+</option>
+
+</select>
+
+</div>
+
+
+<!-- CREATE PASSWORD -->
+<div class="form-group">
+
+<label for="password">
+Create Password <span class="required">*</span>
+</label>
+
+<div class="password-wrapper">
+
+<input
+  type="password"
+  id="password"
+  placeholder="Create a password"
+  autocomplete="new-password"
+  minlength="6"
+  required
+>
+
+<button
+  type="button"
+  class="toggle-password"
+  data-target="password"
+>
+Show
+</button>
+
+</div>
+
+<div
+  class="error"
+  id="passwordError"
+>
+Password must be at least 6 characters.
+</div>
+
+</div>
+
+
+<!-- CONFIRM PASSWORD -->
+<div class="form-group">
+
+<label for="confirmPassword">
+Confirm Password <span class="required">*</span>
+</label>
+
+<div class="password-wrapper">
+
+<input
+  type="password"
+  id="confirmPassword"
+  placeholder="Confirm your password"
+  autocomplete="new-password"
+  minlength="6"
+  required
+>
+
+<button
+  type="button"
+  class="toggle-password"
+  data-target="confirmPassword"
+>
+Show
+</button>
+
+</div>
+
+<div
+  class="error"
+  id="confirmPasswordError"
+>
+Passwords do not match.
+</div>
+
+</div><!-- MESSAGE -->
+<div class="form-group">
+
+<label for="message">
+Message
+</label>
+
+<textarea
+  id="message"
+  placeholder="Tell us why you are interested in joining Freemasonry Heritage..."
+></textarea>
+
+</div>
+
+
+<!-- REGISTER BUTTON -->
+<button
+  type="submit"
+  class="register-btn"
+  id="registerBtn"
+>
+Register
+</button>
+
+</form>
+
+
+<!-- LOGIN LINK -->
+<div class="login-link">
+
+Already have an account?
+
+<a href="login.html">
+Login here
+</a>
+
+</div>
+
+</div>
+
+</main>
+
+
+<!-- TOAST MESSAGE -->
+<div
+  class="toast"
+  id="toast"
+></div>
+
+
+<!-- PWA INSTALL POPUP -->
+<div
+  class="install-popup"
+  id="installPopup"
+>
+
+<h3>
+Install Freemasonry Heritage
+</h3>
+
+<p>
+Install our website on your device for quick and easy access.
+</p>
+
+<div class="install-buttons">
+
+<button
+  type="button"
+  id="btnInstall"
+>
+Install
+</button>
+
+<button
+  type="button"<script type="module">
+
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  getDatabase,
+  ref,
+  set
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+
+/* =========================
+   FIREBASE CONFIGURATION
+   ========================= */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+
+  authDomain:
+    "mansonry-family-fraternity.firebaseapp.com",
+
+  databaseURL:
+    "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+
+  projectId:
+    "mansonry-family-fraternity",
+
+  storageBucket:
+    "mansonry-family-fraternity.firebasestorage.app",
+
+  messagingSenderId:
+    "964415179161",
+
+  appId:
+    "1:964415179161:web:c8fd1a777542932d7c6b08"
+
+};
+
+
+/* =========================
+   INITIALIZE FIREBASE
+   ========================= */
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const database = getDatabase(app);
+
+
+/* =========================
+   FORM ELEMENTS
+   ========================= */
+
+const registerForm =
+  document.getElementById("registerForm");
+
+const registerBtn =
+  document.getElementById("registerBtn");
+
+const countrySelect =
+  document.getElementById("country");
+
+const countryCodeSelect =
+  document.getElementById("countryCode");
+
+const phoneNumber =
+  document.getElementById("phoneNumber");
+
+const currencyPreview =
+  document.getElementById("currencyPreview");
+
+const currencyName =
+  document.getElementById("currencyName");
+
+const currencySymbol =
+  document.getElementById("currencySymbol");
+
+const phoneError =
+  document.getElementById("phoneError");
+
+const passwordError =
+  document.getElementById("passwordError");
+
+const confirmPasswordError =
+  document.getElementById("confirmPasswordError");
+
+const toast =
+  document.getElementById("toast");
+  id="btnClose"
+>
+Not Now
+</button>
+
+</div>
+
+</div>/* =========================
+   COUNTRY / CURRENCY DATA
+   ========================= */
+
+const countryData = {
+
+  "Kenya": {
+    code: "+254",
+    currencyCode: "KES",
+    currencySymbol: "KSh",
+    currencyName: "Kenyan Shilling"
+  },
+
+  "Uganda": {
+    code: "+256",
+    currencyCode: "UGX",
+    currencySymbol: "USh",
+    currencyName: "Ugandan Shilling"
+  },
+
+  "Tanzania": {
+    code: "+255",
+    currencyCode: "TZS",
+    currencySymbol: "TSh",
+    currencyName: "Tanzanian Shilling"
+  },
+
+  "Rwanda": {
+    code: "+250",
+    currencyCode: "RWF",
+    currencySymbol: "FRw",
+    currencyName: "Rwandan Franc"
+  },
+
+  "Guinea-Bissau": {
+    code: "+245",
+    currencyCode: "XOF",
+    currencySymbol: "CFA",
+    currencyName: "West African CFA Franc"
+  },
+
+  "DRC": {
+    code: "+243",
+    currencyCode: "CDF",
+    currencySymbol: "FC",
+    currencyName: "Congolese Franc"
+  },
+
+  "South Africa": {
+    code: "+27",
+    currencyCode: "ZAR",
+    currencySymbol: "R",
+    currencyName: "South African Rand"
+  },
+
+  "Nigeria": {
+    code: "+234",
+    currencyCode: "NGN",
+    currencySymbol: "₦",
+    currencyName: "Nigerian Naira"
+  },
+
+  "Ghana": {
+    code: "+233",
+    currencyCode: "GHS",
+    currencySymbol: "GH₵",
+    currencyName: "Ghanaian Cedi"
+  },
+
+  "Ethiopia": {
+    code: "+251",
+    currencyCode: "ETB",
+    currencySymbol: "Br",
+    currencyName: "Ethiopian Birr"
+  },
+
+  "Zimbabwe": {
+    code: "+263",
+    currencyCode: "ZWG",
+    currencySymbol: "ZiG",
+    currencyName: "Zimbabwe Gold"
+  },
+
+  "Zambia": {
+    code: "+260",
+    currencyCode: "ZMW",
+    currencySymbol: "ZK",
+    currencyName: "Zambian Kwacha"
+  },
+
+  "Botswana": {
+    code: "+267",
+    currencyCode: "BWP",
+    currencySymbol: "P",
+    currencyName: "Botswana Pula"
+  },
+
+  "Namibia": {
+    code: "+264",
+    currencyCode: "NAD",
+    currencySymbol: "N$",
+    currencyName: "Namibian Dollar"
+  },
+
+  "USA": {
+    code: "+1",
+    currencyCode: "USD",
+    currencySymbol: "$",
+    currencyName: "US Dollar"
+  },
+
+  "Canada": {
+    code: "+1",
+    currencyCode: "CAD",
+    currencySymbol: "C$",
+    currencyName: "Canadian Dollar"
+  },
+
+  "UK": {
+    code: "+44",
+    currencyCode: "GBP",
+    currencySymbol: "£",
+    currencyName: "British Pound"
+  },
+
+  "Australia": {
+    code: "+61",
+    currencyCode: "AUD",
+    currencySymbol: "A$",
+    currencyName: "Australian Dollar"
+  },
+
+  "India": {
+    code: "+91",
+    currencyCode: "INR",
+    currencySymbol: "₹",
+    currencyName: "Indian Rupee"
+  }
+
+};
+
+
+/* =========================
+   PHONE CODE LOOKUP
+   ========================= */
+
+const countriesByCode = {};
+
+Object.keys(countryData).forEach(country => {
+
+  const code = countryData[country].code;
+
+  if (!countriesByCode[code]) {
+    countriesByCode[code] = [];
+  }
+
+  countriesByCode[code].push(country);
+
+});/* =========================
+   UPDATE CURRENCY DISPLAY
+   ========================= */
+
+function updateCurrency() {
+
+  const country =
+    countrySelect.value;
+
+  const data =
+    countryData[country];
+
+  if (!data) {
+
+    currencyPreview.style.display = "none";
+
+    currencyName.textContent = "-";
+    currencySymbol.textContent = "-";
+
+    return;
+  }
+
+  currencyName.textContent =
+    `${data.currencyName} (${data.currencyCode})`;
+
+  currencySymbol.textContent =
+    data.currencySymbol;
+
+  currencyPreview.style.display =
+    "block";
+}
+
+
+/* =========================
+   COUNTRY CHANGED
+   ========================= */
+
+countrySelect.addEventListener(
+  "change",
+  () => {
+
+    const country =
+      countrySelect.value;
+
+    const data =
+      countryData[country];
+
+    if (!data) {
+
+      currencyPreview.style.display =
+        "none";
+
+      return;
+    }
+
+    /*
+     * Automatically set the
+     * correct phone country code.
+     */
+
+    countryCodeSelect.value =
+      data.code;
+
+    updateCurrency();
+
+  }
+);
+
+
+/* =========================
+   COUNTRY CODE CHANGED
+   ========================= */
+
+countryCodeSelect.addEventListener(
+  "change",
+  () => {
+
+    const code =
+      countryCodeSelect.value;
+
+    if (!code) {
+      return;
+    }
+
+    const matchingCountries =
+      countriesByCode[code] || [];
+
+
+    /*
+     * If the code belongs to
+     * only one country, select
+     * that country automatically.
+     */
+
+    if (matchingCountries.length === 1) {
+
+      countrySelect.value =
+        matchingCountries[0];
+
+      updateCurrency();
+
+      return;
+    }
+
+
+    /*
+     * +1 belongs to both USA
+     * and Canada.
+     *
+     * Do NOT automatically
+     * change the selected country.
+     */
+
+    if (code === "+1") {
+
+      const selectedCountry =
+        countrySelect.value;
+
+      if (
+        selectedCountry !== "USA" &&
+        selectedCountry !== "Canada"
+      ) {
+
+        currencyPreview.style.display =
+          "none";
+
+      } else {
+
+        updateCurrency();
+
+      }
+
+    }
+
+  }
+);
+
+
+/* =========================
+   INITIAL CURRENCY DISPLAY
+   ========================= */
+
+updateCurrency();/* =========================
+   TOAST MESSAGE
+   ========================= */
+
+function showToast(message, type = "") {
+
+  toast.textContent = message;
+
+  toast.className = "toast";
+
+  if (type === "success") {
+    toast.classList.add("success");
+  }
+
+  if (type === "error") {
+    toast.classList.add("error-toast");
+  }
+
+  toast.classList.add("show");
+
+  setTimeout(() => {
+
+    toast.classList.remove("show");
+
+  }, 4000);
+
+}
+
+
+/* =========================
+   PASSWORD TOGGLE
+   ========================= */
+
+document
+  .querySelectorAll(".toggle-password")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        const targetId =
+          button.dataset.target;
+
+        const input =
+          document.getElementById(targetId);
+
+        if (!input) {
+          return;
+        }
+
+        if (input.type === "password") {
+
+          input.type = "text";
+
+          button.textContent = "Hide";
+
+        } else {
+
+          input.type = "password";
+
+          button.textContent = "Show";
+
+        }
+
+      }
+    );
+
+  });
+
+
+/* =========================
+   PHONE VALIDATION
+   ========================= */
+
+function validatePhone() {
+
+  const country =
+    countrySelect.value;
+
+  const code =
+    countryCodeSelect.value;
+
+  const number =
+    phoneNumber.value.trim();
+
+  phoneError.style.display = "none";
+
+
+  if (!country || !code || !number) {
+
+    phoneError.textContent =
+      "Please select your country and enter your phone number.";
+
+    phoneError.style.display =
+      "block";
+
+    return false;
+  }
+
+
+  /*
+   * Remove spaces, dashes and
+   * other formatting characters.
+   */
+
+  const cleanNumber =
+    number.replace(/\D/g, "");
+
+
+  /*
+   * Phone number should contain
+   * between 7 and 15 digits.
+   */
+
+  if (
+    cleanNumber.length < 7 ||
+    cleanNumber.length > 15
+  ) {
+
+    phoneError.textContent =
+      "Phone number must contain 7 to 15 digits.";
+
+    phoneError.style.display =
+      "block";
+
+    return false;
+  }
+
+
+  const data =
+    countryData[country];
+
+  if (!data) {
+
+    phoneError.textContent =
+      "Please select a valid country.";
+
+    phoneError.style.display =
+      "block";
+
+    return false;
+  }
+
+
+  /*
+   * Make sure country and
+   * country code agree.
+   */
+
+  if (data.code !== code) {
+
+    phoneError.textContent =
+      "The selected country does not match the phone country code.";
+
+    phoneError.style.display =
+      "block";
+
+    return false;
+  }
+
+
+  return true;
+
+}
+
+
+/* =========================
+   PASSWORD VALIDATION
+   ========================= */
+
+function validatePasswords() {
+
+  const password =
+    document.getElementById("password").value;
+
+  const confirmPassword =
+    document.getElementById("confirmPassword").value;
+
+
+  passwordError.style.display =
+    "none";
+
+  confirmPasswordError.style.display =
+    "none";
+
+
+  if (password.length < 6) {
+
+    passwordError.textContent =
+      "Password must be at least 6 characters.";
+
+    passwordError.style.display =
+      "block";
+
+    return false;
+  }
+
+
+  if (password !== confirmPassword) {
+
+    confirmPasswordError.textContent =
+      "Passwords do not match.";
+
+    confirmPasswordError.style.display =
+      "block";
+
+    return false;
+  }
+
+
+  return true;
+
+}/* =========================
+   REGISTRATION
+   ========================= */
+
+registerForm.addEventListener(
+  "submit",
+  async (event) => {
+
+    event.preventDefault();
+
+
+    /* -------------------------
+       GET FORM VALUES
+       ------------------------- */
+
+    const fullName =
+      document.getElementById("fullName")
+        .value
+        .trim();
+
+    const email =
+      document.getElementById("email")
+        .value
+        .trim();
+
+    const country =
+      countrySelect.value;
+
+    const countryCode =
+      countryCodeSelect.value;
+
+    const rawPhone =
+      phoneNumber.value.trim();
+
+    const age =
+      document.getElementById("age").value;
+
+    const interest =
+      document.getElementById("interest").value;
+
+    const password =
+      document.getElementById("password").value;
+
+    const confirmPassword =
+      document.getElementById("confirmPassword").value;
+
+    const message =
+      document.getElementById("message")
+        .value
+        .trim();
+
+
+    /* -------------------------
+       VALIDATE COUNTRY
+       ------------------------- */
+
+    const currency =
+      countryData[country];
+
+    if (!currency) {
+
+      showToast(
+        "Please select your country.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    /* -------------------------
+       VALIDATE PHONE
+       ------------------------- */
+
+    if (!validatePhone()) {
+
+      showToast(
+        "Please correct your phone number.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    /* -------------------------
+       VALIDATE PASSWORD
+       ------------------------- */
+
+    if (!validatePasswords()) {
+
+      showToast(
+        "Please correct your password.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    /* -------------------------
+       CLEAN PHONE NUMBER
+       ------------------------- */
+
+    const cleanPhone =
+      rawPhone.replace(/\D/g, "");
+
+    const fullPhone =
+      countryCode + cleanPhone;
+
+
+    /* -------------------------
+       DISABLE BUTTON
+       ------------------------- */
+
+    registerBtn.disabled = true;
+
+    registerBtn.textContent =
+      "Creating Account...";
+
+
+    try {
+
+      /* -----------------------
+         CREATE FIREBASE ACCOUNT
+         ----------------------- */
+
+      const userCredential =
+        await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+      const user =
+        userCredential.user;
+
+
+      /* -----------------------
+         USER DATA
+         ----------------------- */
+
+      const userData = {
+
+        uid: user.uid,
+
+        fullName: fullName,
+
+        email: email,
+
+        country: country,
+
+        countryCode: countryCode,
+
+        phoneNumber: cleanPhone,
+
+        phone: fullPhone,
+
+        age: age,
+
+        interest: interest,
+
+        message: message,
+
+        status: "pending",
+
+        role: "member",
+
+        /* Currency information */
+
+        currencyCode:
+          currency.currencyCode,
+
+        currencySymbol:
+          currency.currencySymbol,
+
+        currencyName:
+          currency.currencyName,
+
+        timestamp:
+          new Date().toISOString()
+
+      };
+
+
+      /* -----------------------
+         SAVE USER TO DATABASE
+         ----------------------- */
+
+      await set(
+        ref(
+          database,
+          "users/" + user.uid
+        ),
+        userData
+      );
+
+
+      /* -----------------------
+         SUCCESS
+         ----------------------- */
+
+      showToast(
+        "Registration successful. Welcome to Freemasonry Heritage!",
+        "success"
+      );
+
+
+      /*
+       * Give the success message
+       * a moment to display before
+       * opening the dashboard.
+       */
+
+      setTimeout(() => {
+
+        window.location.href =
+          "dashboard.html";
+
+      }, 1200);
+
+
+    } catch (error) {
+
+      console.error(
+        "Registration error:",
+        error
+      );
+
+
+      /* -----------------------
+         FIREBASE ERROR MESSAGES
+         ----------------------- */
+
+      let errorMessage =
+        "Registration failed. Please try again.";
+
+
+      switch (error.code) {
+
+        case "auth/email-already-in-use":
+
+          errorMessage =
+            "This email address is already registered.";
+
+          break;
+
+
+        case "auth/invalid-email":
+
+          errorMessage =
+            "Please enter a valid email address.";
+
+          break;
+
+
+        case "auth/weak-password":
+
+          errorMessage =
+            "Password is too weak. Use at least 6 characters.";
+
+          break;
+
+
+        case "auth/network-request-failed":
+
+          errorMessage =
+            "Network error. Please check your internet connection.";
+
+          break;
+
+
+        case "auth/too-many-requests":
+
+          errorMessage =
+            "Too many attempts. Please wait and try again.";
+
+          break;
+
+
+        case "PERMISSION_DENIED":
+
+          errorMessage =
+            "Account created, but your database permissions need to be checked.";
+
+          break;
+
+      }
+
+
+      showToast(
+        errorMessage,
+        "error"
+      );
+
+
+    } finally {
+
+      /*
+       * Re-enable the button unless
+       * we are redirecting after success.
+       */
+
+      registerBtn.disabled = false;
+
+      registerBtn.textContent =
+        "Register";
+
+    }
+
+  }
+);/* =========================
+   PWA INSTALL
+   ========================= */
+
+let deferredPrompt = null;
+
+const installPopup =
+  document.getElementById("installPopup");
+
+const btnInstall =
+  document.getElementById("btnInstall");
+
+const btnClose =
+  document.getElementById("btnClose");
+
+
+/* =========================
+   INSTALL PROMPT
+   ========================= */
+
+window.addEventListener(
+  "beforeinstallprompt",
+  (event) => {
+
+    event.preventDefault();
+
+    deferredPrompt = event;
+
+    installPopup.style.display =
+      "block";
+
+  }
+);
+
+
+/* =========================
+   INSTALL BUTTON
+   ========================= */
+
+btnInstall.addEventListener(
+  "click",
+  async () => {
+
+    if (!deferredPrompt) {
+      return;
+    }
+
+    deferredPrompt.prompt();
+
+    const result =
+      await deferredPrompt.userChoice;
+
+    console.log(
+      "Install result:",
+      result.outcome
+    );
+
+    deferredPrompt = null;
+
+    installPopup.style.display =
+      "none";
+
+  }
+);
+
+
+/* =========================
+   CLOSE INSTALL POPUP
+   ========================= */
+
+btnClose.addEventListener(
+  "click",
+  () => {
+
+    installPopup.style.display =
+      "none";
+
+  }
+);
+
+
+/* =========================
+   APP INSTALLED
+   ========================= */
+
+window.addEventListener(
+  "appinstalled",
+  () => {
+
+    deferredPrompt = null;
+
+    installPopup.style.display =
+      "none";
+
+    showToast(
+      "Freemasonry Heritage has been installed.",
+      "success"
+    );
+
+  }
+);
+
+
+/* =========================
+   SERVICE WORKER
+   ========================= */
+
+if ("serviceWorker" in navigator) {
+
+  window.addEventListener(
+    "load",
+    () => {
+
+      navigator.serviceWorker
+        .register("sw.js")
+        .then(() => {
+
+          console.log(
+            "Service Worker registered successfully."
+          );
+
+        })
+        .catch((error) => {
+
+          console.error(
+            "Service Worker registration failed:",
+            error
+          );
+
+        });
+
+    }
+  );
+
+}
+
+</script>
+
+</body>
+  </html>

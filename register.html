@@ -44,27 +44,7 @@
   href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
   rel="stylesheet"
 >
-.country-select-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
 
-.country-flag {
-  position: absolute;
-  left: 14px;
-  width: 28px;
-  height: 20px;
-  object-fit: cover;
-  border-radius: 3px;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.country-select-wrapper select {
-  width: 100%;
-  padding-left: 54px;
-}
 
 <style>
 
@@ -88,12 +68,10 @@ body{
   font-family:"Poppins",sans-serif;
 
   background:
-
     linear-gradient(
       rgba(7,17,31,.92),
       rgba(7,17,31,.96)
     ),
-
     url("1517026394531.jpeg")
     center/cover fixed;
 
@@ -294,6 +272,59 @@ select option{
   background:#07111f;
 
   color:#fff;
+
+}
+
+
+/* =========================
+   COUNTRY SELECT + FLAG
+   ========================= */
+
+.country-select-wrapper{
+
+  position:relative;
+
+  width:100%;
+
+  display:flex;
+
+  align-items:center;
+
+}
+
+
+.country-select-wrapper select{
+
+  width:100%;
+
+  padding-left:58px;
+
+}
+
+
+.country-flag{
+
+  position:absolute;
+
+  left:14px;
+
+  width:30px;
+
+  height:21px;
+
+  object-fit:cover;
+
+  border-radius:3px;
+
+  z-index:5;
+
+  pointer-events:none;
+
+  display:none;
+
+  box-shadow:
+    0 1px 3px
+    rgba(0,0,0,.35);
 
 }
 
@@ -664,6 +695,13 @@ textarea{
 }
 
 
+.install-popup.show{
+
+  display:block;
+
+}
+
+
 .install-popup h3{
 
   color:#d4af37;
@@ -737,7 +775,7 @@ textarea{
 
 
 /* =========================
-   END OF CSS
+   END CSS
    ========================= */
 
 </style>
@@ -748,10 +786,6 @@ textarea{
 <body>
 
 
-<!-- =========================
-     HEADER
-     ========================= -->
-
 <header>
 
   <div class="logo">
@@ -761,33 +795,21 @@ textarea{
 </header>
 
 
-<!-- =========================
-     MAIN CONTENT
-     ========================= -->
-
 <main class="container">
 
-
   <div class="card">
-
 
     <h1>
       Register Your Interest
     </h1>
 
-
     <p class="intro">
-
       Begin your journey with
       Freemasonry Heritage Fraternity.
-
       Complete the form below with
       your correct information.
-
     </p>
 
-
-    <!-- REGISTRATION FORM -->
 
     <form
       id="registerForm"
@@ -841,70 +863,31 @@ textarea{
      ========================= -->
 
 <div class="form-group">
-  <label for="fullName">Full Name <span class="required">*</span></label>
-  <input
-    type="text"
-    id="fullName"
-    name="fullName"
-    placeholder="Enter your full name"
-    required
-  >
-</div>
 
-<div class="form-group">
-  <label for="email">Email Address <span class="required">*</span></label>
-  <input
-    type="email"
-    id="email"
-    name="email"
-    placeholder="Enter your email address"
-    required
-  >
-</div>
-
-<div class="form-group">
-  <label for="fullName">
-    Full Name <span class="required">*</span>
-  </label>
-
-  <input
-    type="text"
-    id="fullName"
-    name="fullName"
-    placeholder="Enter your full name"
-    required
-  >
-</div>
-
-<div class="form-group">
-  <label for="email">
-    Email Address <span class="required">*</span>
-  </label>
-
-  <input
-    type="email"
-    id="email"
-    name="email"
-    placeholder="Enter your email address"
-    required
-  >
-</div>
-
-<div class="form-group">
   <label for="country">
     Country <span class="required">*</span>
   </label>
 
+
   <div class="country-select-wrapper">
+
     <img
       id="countryFlag"
       class="country-flag"
-      src="https://flagcdn.com/w40/ke.png"
-      alt="Country flag"
+      src=""
+      alt=""
     >
 
-    <select id="country" name="country" required>
-      <option value="">Select your country</option>
+
+    <select
+      id="country"
+      name="country"
+      required
+    >
+
+      <option value="">
+        Select your country
+      </option>
 
       <option value="Kenya" data-flag="ke">
         Kenya
@@ -927,7 +910,7 @@ textarea{
       </option>
 
       <option value="DRC" data-flag="cd">
-        Democratic Republic of the Congo
+        DRC
       </option>
 
       <option value="South Africa" data-flag="za">
@@ -963,7 +946,7 @@ textarea{
       </option>
 
       <option value="USA" data-flag="us">
-        United States
+        USA
       </option>
 
       <option value="Canada" data-flag="ca">
@@ -971,7 +954,7 @@ textarea{
       </option>
 
       <option value="UK" data-flag="gb">
-        United Kingdom
+        UK
       </option>
 
       <option value="Australia" data-flag="au">
@@ -981,38 +964,33 @@ textarea{
       <option value="India" data-flag="in">
         India
       </option>
+
     </select>
+
   </div>
 
-  <div class="currency-preview" id="currencyPreview">
-    Your membership currency:
-    <strong id="currencyName">-</strong>
-    <span class="currency-symbol" id="currencySymbol">-</span>
-  </div>
-</div>
 
+  <!-- CURRENCY PREVIEW -->
 
-<!-- =========================
-     CURRENCY PREVIEW
-     ========================= -->
-
-<div
-  class="currency-preview"
-  id="currencyPreview"
->
-
-  Your membership currency:
-
-  <strong id="currencyName">
-    -
-  </strong>
-
-  <span
-    class="currency-symbol"
-    id="currencySymbol"
+  <div
+    class="currency-preview"
+    id="currencyPreview"
   >
-    -
-  </span>
+
+    Your membership currency:
+
+    <strong id="currencyName">
+      -
+    </strong>
+
+    <span
+      class="currency-symbol"
+      id="currencySymbol"
+    >
+      -
+    </span>
+
+  </div>
 
 </div><!-- =========================
      PHONE NUMBER
@@ -1023,6 +1001,7 @@ textarea{
   <label for="countryCode">
     Phone Number <span class="required">*</span>
   </label>
+
 
   <div class="phone-row">
 
@@ -1144,6 +1123,7 @@ textarea{
     Age Group <span class="required">*</span>
   </label>
 
+
   <select
     id="age"
     name="age"
@@ -1189,6 +1169,7 @@ textarea{
   <label for="interest">
     Area of Interest <span class="required">*</span>
   </label>
+
 
   <select
     id="interest"
@@ -1239,6 +1220,7 @@ textarea{
     Create Password <span class="required">*</span>
   </label>
 
+
   <div class="password-wrapper">
 
     <input
@@ -1251,6 +1233,7 @@ textarea{
       required
     >
 
+
     <button
       type="button"
       class="toggle-password"
@@ -1260,6 +1243,7 @@ textarea{
     </button>
 
   </div>
+
 
   <div
     class="error"
@@ -1281,6 +1265,7 @@ textarea{
     Confirm Password <span class="required">*</span>
   </label>
 
+
   <div class="password-wrapper">
 
     <input
@@ -1293,6 +1278,7 @@ textarea{
       required
     >
 
+
     <button
       type="button"
       class="toggle-password"
@@ -1302,6 +1288,7 @@ textarea{
     </button>
 
   </div>
+
 
   <div
     class="error"
@@ -1322,6 +1309,7 @@ textarea{
   <label for="message">
     Message
   </label>
+
 
   <textarea
     id="message"
@@ -1366,7 +1354,7 @@ textarea{
 
 
 <!-- =========================
-     TOAST MESSAGE
+     TOAST
      ========================= -->
 
 <div
@@ -1376,7 +1364,7 @@ textarea{
 
 
 <!-- =========================
-     PWA INSTALL POPUP
+     INSTALL POPUP
      ========================= -->
 
 <div
@@ -1388,10 +1376,12 @@ textarea{
     Install Freemasonry Heritage
   </h3>
 
+
   <p>
     Install our website on your device
     for quick and easy access.
   </p>
+
 
   <div class="install-buttons">
 
@@ -1402,6 +1392,7 @@ textarea{
       Install
     </button>
 
+
     <button
       type="button"
       id="btnClose"
@@ -1411,11 +1402,7 @@ textarea{
 
   </div>
 
-</div><!-- =========================
-     FIREBASE
-     ========================= -->
-
-<script type="module">
+</div><script type="module">
 
 import {
   initializeApp
@@ -1480,168 +1467,153 @@ const database =
 
 const countryData = {
 
-  Kenya: {
-    code: "+254",
-    currencyCode: "KES",
-    currencySymbol: "KSh",
-    currencyName: "Kenyan Shilling"
+  Kenya:{
+    code:"+254",
+    currencyCode:"KES",
+    currencySymbol:"KSh",
+    currencyName:"Kenyan Shilling"
   },
 
-  Uganda: {
-    code: "+256",
-    currencyCode: "UGX",
-    currencySymbol: "USh",
-    currencyName: "Ugandan Shilling"
+  Uganda:{
+    code:"+256",
+    currencyCode:"UGX",
+    currencySymbol:"USh",
+    currencyName:"Ugandan Shilling"
   },
 
-  Tanzania: {
-    code: "+255",
-    currencyCode: "TZS",
-    currencySymbol: "TSh",
-    currencyName: "Tanzanian Shilling"
+  Tanzania:{
+    code:"+255",
+    currencyCode:"TZS",
+    currencySymbol:"TSh",
+    currencyName:"Tanzanian Shilling"
   },
 
-  Rwanda: {
-    code: "+250",
-    currencyCode: "RWF",
-    currencySymbol: "FRw",
-    currencyName: "Rwandan Franc"
+  Rwanda:{
+    code:"+250",
+    currencyCode:"RWF",
+    currencySymbol:"FRw",
+    currencyName:"Rwandan Franc"
   },
 
-  "Guinea-Bissau": {
-    code: "+245",
-    currencyCode: "XOF",
-    currencySymbol: "CFA",
-    currencyName: "West African CFA Franc"
+  "Guinea-Bissau":{
+    code:"+245",
+    currencyCode:"XOF",
+    currencySymbol:"CFA",
+    currencyName:"West African CFA Franc"
   },
 
-  DRC: {
-    code: "+243",
-    currencyCode: "CDF",
-    currencySymbol: "FC",
-    currencyName: "Congolese Franc"
+  DRC:{
+    code:"+243",
+    currencyCode:"CDF",
+    currencySymbol:"FC",
+    currencyName:"Congolese Franc"
   },
 
-  "South Africa": {
-    code: "+27",
-    currencyCode: "ZAR",
-    currencySymbol: "R",
-    currencyName: "South African Rand"
+  "South Africa":{
+    code:"+27",
+    currencyCode:"ZAR",
+    currencySymbol:"R",
+    currencyName:"South African Rand"
   },
 
-  Nigeria: {
-    code: "+234",
-    currencyCode: "NGN",
-    currencySymbol: "₦",
-    currencyName: "Nigerian Naira"
+  Nigeria:{
+    code:"+234",
+    currencyCode:"NGN",
+    currencySymbol:"₦",
+    currencyName:"Nigerian Naira"
   },
 
-  Ghana: {
-    code: "+233",
-    currencyCode: "GHS",
-    currencySymbol: "GH₵",
-    currencyName: "Ghanaian Cedi"
+  Ghana:{
+    code:"+233",
+    currencyCode:"GHS",
+    currencySymbol:"GH₵",
+    currencyName:"Ghanaian Cedi"
   },
 
-  Ethiopia: {
-    code: "+251",
-    currencyCode: "ETB",
-    currencySymbol: "Br",
-    currencyName: "Ethiopian Birr"
+  Ethiopia:{
+    code:"+251",
+    currencyCode:"ETB",
+    currencySymbol:"Br",
+    currencyName:"Ethiopian Birr"
   },
 
-  Zimbabwe: {
-    code: "+263",
-    currencyCode: "ZWG",
-    currencySymbol: "ZiG",
-    currencyName: "Zimbabwe Gold"
+  Zimbabwe:{
+    code:"+263",
+    currencyCode:"ZWG",
+    currencySymbol:"ZiG",
+    currencyName:"Zimbabwe Gold"
   },
 
-  Zambia: {
-    code: "+260",
-    currencyCode: "ZMW",
-    currencySymbol: "ZK",
-    currencyName: "Zambian Kwacha"
+  Zambia:{
+    code:"+260",
+    currencyCode:"ZMW",
+    currencySymbol:"ZK",
+    currencyName:"Zambian Kwacha"
   },
 
-  Botswana: {
-    code: "+267",
-    currencyCode: "BWP",
-    currencySymbol: "P",
-    currencyName: "Botswana Pula"
+  Botswana:{
+    code:"+267",
+    currencyCode:"BWP",
+    currencySymbol:"P",
+    currencyName:"Botswana Pula"
   },
 
-  Namibia: {
-    code: "+264",
-    currencyCode: "NAD",
-    currencySymbol: "N$",
-    currencyName: "Namibian Dollar"
+  Namibia:{
+    code:"+264",
+    currencyCode:"NAD",
+    currencySymbol:"N$",
+    currencyName:"Namibian Dollar"
   },
 
-  USA: {
-    code: "+1",
-    currencyCode: "USD",
-    currencySymbol: "$",
-    currencyName: "US Dollar"
-  },
-const countryFlag = document.getElementById("countryFlag");
-
-countrySelect.addEventListener("change", () => {
-  const selectedOption =
-    countrySelect.options[countrySelect.selectedIndex];
-
-  const flagCode = selectedOption.dataset.flag;
-
-  if (flagCode) {
-    countryFlag.src =
-      "https://flagcdn.com/w40/" + flagCode + ".png";
-
-    countryFlag.style.display = "block";
-  } else {
-    countryFlag.style.display = "none";
-  }
-});
-  Canada: {
-    code: "+1",
-    currencyCode: "CAD",
-    currencySymbol: "C$",
-    currencyName: "Canadian Dollar"
+  USA:{
+    code:"+1",
+    currencyCode:"USD",
+    currencySymbol:"$",
+    currencyName:"US Dollar"
   },
 
-  UK: {
-    code: "+44",
-    currencyCode: "GBP",
-    currencySymbol: "£",
-    currencyName: "British Pound"
+  Canada:{
+    code:"+1",
+    currencyCode:"CAD",
+    currencySymbol:"C$",
+    currencyName:"Canadian Dollar"
   },
 
-  Australia: {
-    code: "+61",
-    currencyCode: "AUD",
-    currencySymbol: "A$",
-    currencyName: "Australian Dollar"
+  UK:{
+    code:"+44",
+    currencyCode:"GBP",
+    currencySymbol:"£",
+    currencyName:"British Pound"
   },
 
-  India: {
-    code: "+91",
-    currencyCode: "INR",
-    currencySymbol: "₹",
-    currencyName: "Indian Rupee"
+  Australia:{
+    code:"+61",
+    currencyCode:"AUD",
+    currencySymbol:"A$",
+    currencyName:"Australian Dollar"
+  },
+
+  India:{
+    code:"+91",
+    currencyCode:"INR",
+    currencySymbol:"₹",
+    currencyName:"Indian Rupee"
   }
 
 };
 
 
 /* =========================
-   COUNTRY LOOKUP BY CODE
+   COUNTRY CODE LOOKUP
    ========================= */
 
 const countriesByCode = {};
 
-Object.entries(countryData).forEach(
-  ([country, data]) => {
 
-    if (!countriesByCode[data.code]) {
+Object.entries(countryData).forEach(
+  ([country,data]) => {
+
+    if(!countriesByCode[data.code]){
 
       countriesByCode[data.code] = [];
 
@@ -1675,12 +1647,62 @@ const currencyName =
 const currencySymbol =
   document.getElementById("currencySymbol");
 
+const countryFlag =
+  document.getElementById("countryFlag");
+
+
+/* =========================
+   UPDATE COUNTRY FLAG
+   ========================= */
+
+function updateCountryFlag(){
+
+  const selectedOption =
+    countrySelect.options[
+      countrySelect.selectedIndex
+    ];
+
+
+  const flagCode =
+    selectedOption
+      ? selectedOption.dataset.flag
+      : "";
+
+
+  if(!flagCode){
+
+    countryFlag.src = "";
+
+    countryFlag.alt = "";
+
+    countryFlag.style.display =
+      "none";
+
+    return;
+
+  }
+
+
+  countryFlag.src =
+    "https://flagcdn.com/w40/" +
+    flagCode +
+    ".png";
+
+  countryFlag.alt =
+    countrySelect.value +
+    " flag";
+
+  countryFlag.style.display =
+    "block";
+
+}
+
 
 /* =========================
    UPDATE CURRENCY
    ========================= */
 
-function updateCurrency() {
+function updateCurrency(){
 
   const country =
     countrySelect.value;
@@ -1688,18 +1710,22 @@ function updateCurrency() {
   const data =
     countryData[country];
 
-  if (!data) {
+
+  if(!data){
 
     currencyPreview.style.display =
       "none";
 
-    currencyName.textContent = "-";
+    currencyName.textContent =
+      "-";
 
-    currencySymbol.textContent = "-";
+    currencySymbol.textContent =
+      "-";
 
     return;
 
   }
+
 
   currencyName.textContent =
     `${data.currencyName} (${data.currencyCode})`;
@@ -1727,7 +1753,11 @@ countrySelect.addEventListener(
     const data =
       countryData[country];
 
-    if (!data) {
+
+    updateCountryFlag();
+
+
+    if(!data){
 
       currencyPreview.style.display =
         "none";
@@ -1736,13 +1766,10 @@ countrySelect.addEventListener(
 
     }
 
-    /*
-     * Automatically select
-     * the correct country code.
-     */
 
     countryCodeSelect.value =
       data.code;
+
 
     updateCurrency();
 
@@ -1761,23 +1788,22 @@ countryCodeSelect.addEventListener(
     const code =
       countryCodeSelect.value;
 
-    if (!code) {
+
+    if(!code){
       return;
     }
+
 
     const matches =
       countriesByCode[code] || [];
 
 
-    /*
-     * If only one country uses
-     * this code, select it.
-     */
-
-    if (matches.length === 1) {
+    if(matches.length === 1){
 
       countrySelect.value =
         matches[0];
+
+      updateCountryFlag();
 
       updateCurrency();
 
@@ -1789,24 +1815,24 @@ countryCodeSelect.addEventListener(
     /*
      * +1 is shared by USA
      * and Canada.
-     *
-     * Do not guess which
-     * country the member means.
      */
 
-    if (code === "+1") {
+    if(code === "+1"){
 
       const selected =
         countrySelect.value;
 
-      if (
+
+      if(
         selected === "USA" ||
         selected === "Canada"
-      ) {
+      ){
+
+        updateCountryFlag();
 
         updateCurrency();
 
-      } else {
+      }else{
 
         currencyPreview.style.display =
           "none";
@@ -1823,40 +1849,62 @@ countryCodeSelect.addEventListener(
    INITIAL STATE
    ========================= */
 
-updateCurrency();/* =========================
+updateCurrency();
+
+updateCountryFlag();/* =========================
    TOAST FUNCTION
    ========================= */
 
-function showToast(message, type = "") {
+function showToast(
+  message,
+  type = ""
+){
 
   const toast =
     document.getElementById("toast");
 
+
   toast.textContent =
     message;
+
 
   toast.className =
     "toast";
 
-  if (type === "success") {
 
-    toast.classList.add("success");
+  if(type === "success"){
 
-  }
-
-  if (type === "error") {
-
-    toast.classList.add("error-toast");
+    toast.classList.add(
+      "success"
+    );
 
   }
 
-  toast.classList.add("show");
 
-  setTimeout(() => {
+  if(type === "error"){
 
-    toast.classList.remove("show");
+    toast.classList.add(
+      "error-toast"
+    );
 
-  }, 4000);
+  }
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  setTimeout(
+    () => {
+
+      toast.classList.remove(
+        "show"
+      );
+
+    },
+    4000
+  );
 
 }
 
@@ -1866,50 +1914,66 @@ function showToast(message, type = "") {
    ========================= */
 
 document
-  .querySelectorAll(".toggle-password")
-  .forEach(button => {
+  .querySelectorAll(
+    ".toggle-password"
+  )
+  .forEach(
+    button => {
 
-    button.addEventListener(
-      "click",
-      () => {
+      button.addEventListener(
+        "click",
+        () => {
 
-        const targetId =
-          button.getAttribute("data-target");
+          const targetId =
+            button.getAttribute(
+              "data-target"
+            );
 
-        const input =
-          document.getElementById(targetId);
 
-        if (!input) {
-          return;
+          const input =
+            document.getElementById(
+              targetId
+            );
+
+
+          if(!input){
+            return;
+          }
+
+
+          if(
+            input.type ===
+            "password"
+          ){
+
+            input.type =
+              "text";
+
+            button.textContent =
+              "Hide";
+
+          }else{
+
+            input.type =
+              "password";
+
+            button.textContent =
+              "Show";
+
+          }
+
         }
+      );
 
-        if (input.type === "password") {
-
-          input.type = "text";
-
-          button.textContent =
-            "Hide";
-
-        } else {
-
-          input.type = "password";
-
-          button.textContent =
-            "Show";
-
-        }
-
-      }
-    );
-
-  });
+    }
+  );
 
 
 /* =========================
    VALIDATE PHONE
    ========================= */
 
-function validatePhone() {
+function validatePhone(){
 
   const country =
     countrySelect.value;
@@ -1919,21 +1983,23 @@ function validatePhone() {
 
   const phone =
     document
-      .getElementById("phoneNumber")
+      .getElementById(
+        "phoneNumber"
+      )
       .value
       .trim();
 
   const phoneError =
-    document.getElementById("phoneError");
+    document.getElementById(
+      "phoneError"
+    );
 
 
   phoneError.style.display =
     "none";
 
 
-  /* Country required */
-
-  if (!country) {
+  if(!country){
 
     phoneError.textContent =
       "Please select your country.";
@@ -1946,9 +2012,7 @@ function validatePhone() {
   }
 
 
-  /* Country code required */
-
-  if (!countryCode) {
+  if(!countryCode){
 
     phoneError.textContent =
       "Please select your phone country code.";
@@ -1961,9 +2025,7 @@ function validatePhone() {
   }
 
 
-  /* Phone required */
-
-  if (!phone) {
+  if(!phone){
 
     phoneError.textContent =
       "Please enter your phone number.";
@@ -1976,24 +2038,17 @@ function validatePhone() {
   }
 
 
-  /*
-   * Keep digits only.
-   */
-
   const cleanPhone =
-    phone.replace(/\D/g, "");
+    phone.replace(
+      /\D/g,
+      ""
+    );
 
 
-  /*
-   * International phone numbers
-   * normally contain 7–15 digits
-   * after removing formatting.
-   */
-
-  if (
+  if(
     cleanPhone.length < 7 ||
     cleanPhone.length > 15
-  ) {
+  ){
 
     phoneError.textContent =
       "Phone number must contain 7 to 15 digits.";
@@ -2006,12 +2061,11 @@ function validatePhone() {
   }
 
 
-  /* Verify country exists */
-
   const data =
     countryData[country];
 
-  if (!data) {
+
+  if(!data){
 
     phoneError.textContent =
       "Please select a valid country.";
@@ -2024,15 +2078,10 @@ function validatePhone() {
   }
 
 
-  /*
-   * Verify country and code match.
-   *
-   * This prevents someone from
-   * selecting Kenya while using
-   * +234, for example.
-   */
-
-  if (data.code !== countryCode) {
+  if(
+    data.code !==
+    countryCode
+  ){
 
     phoneError.textContent =
       "The selected country does not match the phone country code.";
@@ -2054,22 +2103,29 @@ function validatePhone() {
    VALIDATE PASSWORDS
    ========================= */
 
-function validatePasswords() {
+function validatePasswords(){
 
   const password =
     document
-      .getElementById("password")
+      .getElementById(
+        "password"
+      )
       .value;
+
 
   const confirmPassword =
     document
-      .getElementById("confirmPassword")
+      .getElementById(
+        "confirmPassword"
+      )
       .value;
+
 
   const passwordError =
     document.getElementById(
       "passwordError"
     );
+
 
   const confirmPasswordError =
     document.getElementById(
@@ -2080,13 +2136,12 @@ function validatePasswords() {
   passwordError.style.display =
     "none";
 
+
   confirmPasswordError.style.display =
     "none";
 
 
-  /* Minimum password length */
-
-  if (password.length < 6) {
+  if(password.length < 6){
 
     passwordError.textContent =
       "Password must be at least 6 characters.";
@@ -2099,9 +2154,10 @@ function validatePasswords() {
   }
 
 
-  /* Password confirmation */
-
-  if (password !== confirmPassword) {
+  if(
+    password !==
+    confirmPassword
+  ){
 
     confirmPasswordError.textContent =
       "Passwords do not match.";
@@ -2128,7 +2184,7 @@ registerForm.addEventListener(
 
 
     /* =======================
-       GET FORM VALUES
+       GET VALUES
        ======================= */
 
     const fullName =
@@ -2137,17 +2193,21 @@ registerForm.addEventListener(
         .value
         .trim();
 
+
     const email =
       document
         .getElementById("email")
         .value
         .trim();
 
+
     const country =
       countrySelect.value;
 
+
     const countryCode =
       countryCodeSelect.value;
+
 
     const phoneNumber =
       document
@@ -2155,20 +2215,24 @@ registerForm.addEventListener(
         .value
         .trim();
 
+
     const age =
       document
         .getElementById("age")
         .value;
+
 
     const interest =
       document
         .getElementById("interest")
         .value;
 
+
     const password =
       document
         .getElementById("password")
         .value;
+
 
     const message =
       document
@@ -2178,10 +2242,10 @@ registerForm.addEventListener(
 
 
     /* =======================
-       BASIC VALIDATION
+       VALIDATION
        ======================= */
 
-    if (!fullName) {
+    if(!fullName){
 
       showToast(
         "Please enter your full name.",
@@ -2193,7 +2257,7 @@ registerForm.addEventListener(
     }
 
 
-    if (!email) {
+    if(!email){
 
       showToast(
         "Please enter your email address.",
@@ -2205,7 +2269,7 @@ registerForm.addEventListener(
     }
 
 
-    if (!country) {
+    if(!country){
 
       showToast(
         "Please select your country.",
@@ -2217,7 +2281,7 @@ registerForm.addEventListener(
     }
 
 
-    if (!age) {
+    if(!age){
 
       showToast(
         "Please select your age group.",
@@ -2229,7 +2293,7 @@ registerForm.addEventListener(
     }
 
 
-    if (!interest) {
+    if(!interest){
 
       showToast(
         "Please select your area of interest.",
@@ -2241,14 +2305,11 @@ registerForm.addEventListener(
     }
 
 
-    /* =======================
-       COUNTRY DATA
-       ======================= */
-
     const currency =
       countryData[country];
 
-    if (!currency) {
+
+    if(!currency){
 
       showToast(
         "Invalid country selected.",
@@ -2260,11 +2321,7 @@ registerForm.addEventListener(
     }
 
 
-    /* =======================
-       PHONE VALIDATION
-       ======================= */
-
-    if (!validatePhone()) {
+    if(!validatePhone()){
 
       showToast(
         "Please correct your phone number.",
@@ -2276,11 +2333,7 @@ registerForm.addEventListener(
     }
 
 
-    /* =======================
-       PASSWORD VALIDATION
-       ======================= */
-
-    if (!validatePasswords()) {
+    if(!validatePasswords()){
 
       showToast(
         "Please correct your password.",
@@ -2293,14 +2346,19 @@ registerForm.addEventListener(
 
 
     /* =======================
-       CLEAN PHONE
+       PHONE
        ======================= */
 
     const cleanPhone =
-      phoneNumber.replace(/\D/g, "");
+      phoneNumber.replace(
+        /\D/g,
+        ""
+      );
+
 
     const fullPhone =
-      countryCode + cleanPhone;
+      countryCode +
+      cleanPhone;
 
 
     /* =======================
@@ -2314,10 +2372,10 @@ registerForm.addEventListener(
       "Creating Account...";
 
 
-    try {
+    try{
 
       /* =====================
-         CREATE AUTH ACCOUNT
+         CREATE ACCOUNT
          ===================== */
 
       const userCredential =
@@ -2326,6 +2384,7 @@ registerForm.addEventListener(
           email,
           password
         );
+
 
       const user =
         userCredential.user;
@@ -2337,34 +2396,41 @@ registerForm.addEventListener(
 
       const memberData = {
 
-        uid: user.uid,
+        uid:
+          user.uid,
 
-        fullName: fullName,
+        fullName:
+          fullName,
 
-        email: email,
+        email:
+          email,
 
-        country: country,
+        country:
+          country,
 
-        countryCode: countryCode,
+        countryCode:
+          countryCode,
 
-        phoneNumber: cleanPhone,
+        phoneNumber:
+          cleanPhone,
 
-        phone: fullPhone,
+        phone:
+          fullPhone,
 
-        age: age,
+        age:
+          age,
 
-        interest: interest,
+        interest:
+          interest,
 
-        message: message,
+        message:
+          message,
 
-        status: "pending",
+        status:
+          "pending",
 
-        role: "member",
-
-
-        /* =================
-           CURRENCY
-           ================= */
+        role:
+          "member",
 
         currencyCode:
           currency.currencyCode,
@@ -2375,11 +2441,6 @@ registerForm.addEventListener(
         currencyName:
           currency.currencyName,
 
-
-        /* =================
-           REGISTRATION TIME
-           ================= */
-
         timestamp:
           new Date().toISOString()
 
@@ -2387,7 +2448,7 @@ registerForm.addEventListener(
 
 
       /* =====================
-         SAVE TO REALTIME DB
+         SAVE DATABASE
          ===================== */
 
       await set(
@@ -2413,20 +2474,18 @@ registerForm.addEventListener(
         "Registered";
 
 
-      /*
-       * Redirect to dashboard
-       * after successful database save.
-       */
+      setTimeout(
+        () => {
 
-      setTimeout(() => {
+          window.location.href =
+            "dashboard.html";
 
-        window.location.href =
-          "dashboard.html";
-
-      }, 1200);
+        },
+        1200
+      );
 
 
-    } catch (error) {
+    }catch(error){
 
       console.error(
         "Registration error:",
@@ -2434,19 +2493,15 @@ registerForm.addEventListener(
       );
 
 
-      /* =====================
-         FIREBASE ERROR
-         ===================== */
-
-      let message =
+      let errorMessage =
         "Registration failed. Please try again.";
 
 
-      switch (error.code) {
+      switch(error.code){
 
         case "auth/email-already-in-use":
 
-          message =
+          errorMessage =
             "This email address is already registered.";
 
           break;
@@ -2454,7 +2509,7 @@ registerForm.addEventListener(
 
         case "auth/invalid-email":
 
-          message =
+          errorMessage =
             "Please enter a valid email address.";
 
           break;
@@ -2462,7 +2517,7 @@ registerForm.addEventListener(
 
         case "auth/weak-password":
 
-          message =
+          errorMessage =
             "Password must contain at least 6 characters.";
 
           break;
@@ -2470,7 +2525,7 @@ registerForm.addEventListener(
 
         case "auth/network-request-failed":
 
-          message =
+          errorMessage =
             "Network error. Check your internet connection.";
 
           break;
@@ -2478,7 +2533,7 @@ registerForm.addEventListener(
 
         case "auth/too-many-requests":
 
-          message =
+          errorMessage =
             "Too many attempts. Please wait and try again.";
 
           break;
@@ -2486,7 +2541,7 @@ registerForm.addEventListener(
 
         case "PERMISSION_DENIED":
 
-          message =
+          errorMessage =
             "Your account was created, but the database could not save your information.";
 
           break;
@@ -2495,22 +2550,17 @@ registerForm.addEventListener(
 
 
       showToast(
-        message,
+        errorMessage,
         "error"
       );
 
 
-    } finally {
+    }finally{
 
-      /*
-       * Restore button if the page
-       * remains open.
-       */
-
-      if (
+      if(
         registerBtn.textContent !==
         "Registered"
-      ) {
+      ){
 
         registerBtn.disabled =
           false;
@@ -2525,83 +2575,216 @@ registerForm.addEventListener(
   }
 );/* =========================
    PWA INSTALL
-========================= */
+   ========================= */
 
 let deferredPrompt = null;
 
-const installPopup = document.getElementById("installPopup");
-const btnInstall = document.getElementById("btnInstall");
-const btnClose = document.getElementById("btnClose");
 
-window.addEventListener("beforeinstallprompt", (event) => {
-  event.preventDefault();
-  deferredPrompt = event;
+const installPopup =
+  document.getElementById(
+    "installPopup"
+  );
 
-  setTimeout(() => {
-    if (installPopup) {
-      installPopup.classList.add("show");
-    }
-  }, 1500);
-});
 
-if (btnInstall) {
-  btnInstall.addEventListener("click", async () => {
-    if (!deferredPrompt) {
-      showToast("Install is not available on this device.", "error-toast");
-      return;
-    }
+const btnInstall =
+  document.getElementById(
+    "btnInstall"
+  );
 
-    deferredPrompt.prompt();
 
-    const choice = await deferredPrompt.userChoice;
+const btnClose =
+  document.getElementById(
+    "btnClose"
+  );
 
-    if (choice.outcome === "accepted") {
-      showToast("Installing Freemasonry Heritage...", "success");
-    }
 
-    deferredPrompt = null;
+/* =========================
+   INSTALL PROMPT
+   ========================= */
 
-    if (installPopup) {
-      installPopup.classList.remove("show");
-    }
-  });
-}
+window.addEventListener(
+  "beforeinstallprompt",
+  (event) => {
 
-if (btnClose) {
-  btnClose.addEventListener("click", () => {
-    if (installPopup) {
-      installPopup.classList.remove("show");
-    }
-  });
-}
+    event.preventDefault();
 
-window.addEventListener("appinstalled", () => {
-  deferredPrompt = null;
+    deferredPrompt =
+      event;
 
-  if (installPopup) {
-    installPopup.classList.remove("show");
+
+    setTimeout(
+      () => {
+
+        if(installPopup){
+
+          installPopup.classList.add(
+            "show"
+          );
+
+        }
+
+      },
+      1500
+    );
+
   }
+);
 
-  showToast("Freemasonry Heritage installed successfully.", "success");
-});
+
+/* =========================
+   INSTALL BUTTON
+   ========================= */
+
+if(btnInstall){
+
+  btnInstall.addEventListener(
+    "click",
+    async () => {
+
+      if(!deferredPrompt){
+
+        showToast(
+          "Install is not available on this device.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      deferredPrompt.prompt();
+
+
+      const choice =
+        await deferredPrompt.userChoice;
+
+
+      if(
+        choice.outcome ===
+        "accepted"
+      ){
+
+        showToast(
+          "Installing Freemasonry Heritage...",
+          "success"
+        );
+
+      }
+
+
+      deferredPrompt =
+        null;
+
+
+      if(installPopup){
+
+        installPopup.classList.remove(
+          "show"
+        );
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================
+   CLOSE INSTALL POPUP
+   ========================= */
+
+if(btnClose){
+
+  btnClose.addEventListener(
+    "click",
+    () => {
+
+      if(installPopup){
+
+        installPopup.classList.remove(
+          "show"
+        );
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================
+   APP INSTALLED
+   ========================= */
+
+window.addEventListener(
+  "appinstalled",
+  () => {
+
+    deferredPrompt =
+      null;
+
+
+    if(installPopup){
+
+      installPopup.classList.remove(
+        "show"
+      );
+
+    }
+
+
+    showToast(
+      "Freemasonry Heritage installed successfully.",
+      "success"
+    );
+
+  }
+);
 
 
 /* =========================
    SERVICE WORKER
-========================= */
+   ========================= */
 
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", async () => {
-    try {
-      await navigator.serviceWorker.register("./service-worker.js");
-      console.log("Service Worker registered successfully.");
-    } catch (error) {
-      console.error("Service Worker registration failed:", error);
+if(
+  "serviceWorker" in
+  navigator
+){
+
+  window.addEventListener(
+    "load",
+    async () => {
+
+      try{
+
+        await navigator.serviceWorker.register(
+          "./service-worker.js"
+        );
+
+        console.log(
+          "Service Worker registered successfully."
+        );
+
+      }catch(error){
+
+        console.error(
+          "Service Worker registration failed:",
+          error
+        );
+
+      }
+
     }
-  });
+  );
+
 }
 
 </script>
 
+
 </body>
+
 </html>

@@ -1,0 +1,2058 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Freemasonry | Membership Requirements</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:
+    radial-gradient(circle at top right,rgba(212,175,55,.08),transparent 30%),
+    linear-gradient(135deg,#07111f,#0f1a2e 55%,#091321);
+  color:#fff;
+  min-height:100vh;
+  padding-bottom:130px;
+}
+
+.header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 6%;
+  background:rgba(7,17,31,.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(212,175,55,.18);
+}
+
+.logo{
+  color:#f1ca52;
+  font-size:20px;
+  font-weight:700;
+  letter-spacing:.3px;
+}
+
+.logout-btn{
+  border:1px solid rgba(212,175,55,.45);
+  background:rgba(212,175,55,.08);
+  color:#f1ca52;
+  padding:9px 18px;
+  border-radius:10px;
+  font-family:'Poppins',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.25s ease;
+}
+
+.logout-btn:hover{
+  background:#d4af37;
+  color:#111;
+}
+
+.container{
+  width:92%;
+  max-width:1000px;
+  margin:0 auto;
+  padding:45px 0 40px;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:35px;
+}
+
+.hero h1{
+  color:#f1ca52;
+  font-size:clamp(28px,5vw,44px);
+  line-height:1.2;
+  margin-bottom:12px;
+}
+
+.hero p{
+  color:#aebbd0;
+  font-size:14px;
+  max-width:650px;
+  margin:auto;
+  line-height:1.8;
+}
+
+.card{
+  background:rgba(15,26,46,.88);
+  border:1px solid rgba(212,175,55,.18);
+  border-radius:22px;
+  padding:30px;
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+  margin-bottom:28px;
+}
+
+.card-title{
+  color:#f1ca52;
+  font-size:21px;
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+.card-description{
+  color:#aebbd0;
+  font-size:13px;
+  line-height:1.8;
+  margin-bottom:25px;
+}
+
+.currency-notice{
+  background:rgba(212,175,55,.08);
+  border:1px solid rgba(212,175,55,.2);
+  border-radius:12px;
+  padding:13px 16px;
+  margin-bottom:20px;
+  color:#d9e1ed;
+  font-size:12px;
+  line-height:1.7;
+}
+
+.currency-notice strong{
+  color:#f1ca52;
+}
+
+.price-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.price-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:17px 18px;
+  border-radius:14px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.06);
+  transition:.25s ease;
+}
+
+.price-row:hover{
+  border-color:rgba(212,175,55,.3);
+  background:rgba(212,175,55,.05);
+}
+
+.price-info{
+  flex:1;
+}
+
+.price-name{
+  color:#fff;
+  font-size:14px;
+  font-weight:600;
+  margin-bottom:4px;
+}
+
+.price-description{
+  color:#8998ae;
+  font-size:11px;
+  line-height:1.6;
+}
+
+.price{
+  color:#f1ca52;
+  font-size:16px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.total-row{
+  margin-top:8px;
+  background:rgba(212,175,55,.08);
+  border:1px solid rgba(212,175,55,.3);
+}
+
+.total-row .price-name{
+  color:#f1ca52;
+}
+
+.total-row .price{
+  font-size:19px;
+}
+
+.note-box{
+  margin-top:22px;
+  padding:17px 18px;
+  border-left:3px solid #d4af37;
+  background:rgba(212,175,55,.06);
+  border-radius:0 12px 12px 0;
+}
+
+.note-box p{
+  color:#aebbd0;
+  font-size:12px;
+  line-height:1.8;
+}
+
+.note-box strong{
+  color:#f1ca52;
+}
+
+.why-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+  margin-top:20px;
+}
+
+.why-item{
+  padding:20px;
+  border-radius:15px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.06);
+}
+
+.why-icon{
+  width:38px;
+  height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+  background:rgba(212,175,55,.1);
+  color:#f1ca52;
+  margin-bottom:12px;
+  font-size:18px;
+}
+
+.why-item h3{
+  font-size:14px;
+  color:#fff;
+  margin-bottom:6px;
+}
+
+.why-item p{
+  color:#8998ae;
+  font-size:11px;
+  line-height:1.7;
+}
+
+.bottom-nav{
+  position:fixed;
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(15,26,46,.94);
+  backdrop-filter:blur(25px);
+  padding:10px;
+  border-radius:22px;
+  display:flex;
+  gap:8px;
+  border:1px solid rgba(212,175,55,.25);
+  box-shadow:0 15px 40px rgba(0,0,0,.5);
+  z-index:2000;
+}
+
+.nav-item{
+  width:90px;
+  height:70px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  color:#a0b0c9;
+  border-radius:16px;
+  font-size:11px;
+  font-weight:500;
+  transition:.25s ease;
+  font-family:'Poppins',sans-serif;
+}
+
+.nav-icon{
+  width:24px;
+  height:24px;
+  margin-bottom:5px;
+  fill:currentColor;
+  transition:.25s;
+}
+
+.nav-label{
+  line-height:1.2;
+  text-align:center;
+}
+
+.nav-item:hover{
+  background:rgba(212,175,55,.1);
+  color:#f1ca52;
+}
+
+.nav-item.active{
+  background:linear-gradient(135deg,#d4af37,#b8941f);
+  color:#111;
+  font-weight:600;
+  box-shadow:0 6px 18px rgba(212,175,55,.35);
+}
+
+.loading{
+  opacity:.65;
+}
+
+@media(max-width:900px){
+
+  .bottom-nav{
+    left:50%;
+    transform:translateX(-50%);
+    width:calc(100% - 30px);
+    max-width:600px;
+    justify-content:space-between;
+  }
+
+  .nav-item{
+    width:calc(16.66% - 7px);
+    height:65px;
+  }
+
+  .nav-label{
+    font-size:10px;
+  }
+
+}
+
+@media(max-width:650px){
+
+  .header{
+    padding:0 4%;
+  }
+
+  .logo{
+    font-size:17px;
+  }
+
+  .container{
+    width:94%;
+    padding-top:35px;
+  }
+
+  .card{
+    padding:20px;
+    border-radius:18px;
+  }
+
+  .why-grid{
+    grid-template-columns:1fr;
+  }
+
+  .price-row{
+    padding:15px;
+  }
+
+}
+
+@media(max-width:480px){
+
+  .header{
+    height:64px;
+  }
+
+  .logout-btn{
+    padding:8px 13px;
+    font-size:11px;
+  }
+
+  .hero h1{
+    font-size:27px;
+  }
+
+  .hero p{
+    font-size:12px;
+  }
+
+  .nav-item{
+    height:60px;
+  }
+
+  .nav-icon{
+    width:22px;
+    height:22px;
+  }
+
+  .nav-label{
+    font-size:9px;
+  }
+
+  .bottom-nav{
+    bottom:15px;
+    padding:7px;
+    gap:4px;
+    border-radius:18px;
+  }
+
+}
+
+</style>
+</head><body>
+
+<header class="header">
+
+  <div class="logo">
+    Freemasonry Heritage
+  </div>
+
+  <button class="logout-btn" id="logoutBtn">
+    Logout
+  </button>
+
+</header>
+
+
+<main class="container">
+
+  <!-- HERO -->
+  <section class="hero">
+
+    <h1>
+      Begin Your Journey With Us
+    </h1>
+
+    <p>
+      Discover the requirements for becoming part of our fraternity
+      and take the first step toward joining our brotherhood.
+    </p>
+
+  </section>
+
+
+  <!-- MEMBERSHIP REQUIREMENTS -->
+  <section class="card">
+
+    <h2 class="card-title">
+      Membership Requirements
+    </h2>
+
+    <p class="card-description">
+      Please review the membership fees and requirements below.
+      All applicable amounts are displayed in your local currency when available.
+    </p>
+
+
+    <!-- CURRENCY NOTICE -->
+    <div class="currency-notice" id="currencyNotice">
+
+      <strong>Currency:</strong>
+
+      <span id="currencyText">
+        Loading your local currency...
+      </span>
+
+    </div>
+
+
+    <!-- PRICE LIST -->
+    <div class="price-list">
+
+
+      <!-- INITIATION FEE -->
+      <div class="price-row">
+
+        <div class="price-info">
+
+          <div class="price-name">
+            Initiation Fee
+          </div>
+
+          <div class="price-description">
+            Initial membership initiation contribution.
+          </div>
+
+        </div>
+
+        <div
+          class="price loading"
+          data-kes="1800"
+        >
+          Loading...
+        </div>
+
+      </div>
+
+
+      <!-- GOWN / UNIFORM -->
+      <div class="price-row">
+
+        <div class="price-info">
+
+          <div class="price-name">
+            Gown / Uniform
+          </div>
+
+          <div class="price-description">
+            Official fraternity gown or uniform for members.
+          </div>
+
+        </div>
+
+        <div
+          class="price loading"
+          data-kes="1200"
+        >
+          Loading...
+        </div>
+
+      </div>
+
+
+      <!-- CAMEL BLOOD -->
+      <div class="price-row">
+
+        <div class="price-info">
+
+          <div class="price-name">
+            Camel Blood
+          </div>
+
+          <div class="price-description">
+            Required contribution listed as part of the membership requirements.
+          </div>
+
+        </div>
+
+        <div
+          class="price loading"
+          data-kes="1400"
+        >
+          Loading...
+        </div>
+
+      </div>
+
+
+      <!-- BANK CARD OPENING -->
+      <div class="price-row">
+
+        <div class="price-info">
+
+          <div class="price-name">
+            Bank Card Opening
+          </div>
+
+          <div class="price-description">
+            We open for our members a bank which he/she used to
+            withdraw the money every where, the bank card we gives
+            to our members support the withdrawal all over the country
+            both Africa and Europe countries.
+          </div>
+
+        </div>
+
+        <div
+          class="price loading"
+          data-kes="2500"
+        >
+          Loading...
+        </div>
+
+      </div>
+
+
+      <!-- REGISTRATION FEE -->
+      <div class="price-row">
+
+        <div class="price-info">
+
+          <div class="price-name">
+            Registration Fee
+          </div>
+
+          <div class="price-description">
+            Membership registration and administrative fee.
+          </div>
+
+        </div>
+
+        <div
+          class="price loading"
+          data-kes="4472.97"
+        >
+          Loading...
+        </div>
+
+      </div>
+
+
+      <!-- TOTAL -->
+      <div class="price-row total-row">
+
+        <div class="price-info">
+
+          <div class="price-name">
+            Total Amount
+          </div>
+
+          <div class="price-description">
+            Total amount required for the listed membership fees.
+          </div>
+
+        </div>
+
+        <div
+          class="price loading"
+          data-kes="11372.97"
+        >
+          Loading...
+        </div>
+
+      </div>
+
+
+    </div>
+
+
+    <!-- IMPORTANT NOTE -->
+    <div class="note-box">
+
+      <p>
+
+        <strong>Important:</strong>
+        Membership requirements and fees should be reviewed carefully
+        before submitting your application. Please ensure that all
+        information provided during registration is accurate and complete.
+
+      </p>
+
+    </div>
+
+  </section>  <!-- WHY JOIN US -->
+  <section class="card">
+
+    <h2 class="card-title">
+      Why Join Us?
+    </h2>
+
+    <p class="card-description">
+      Becoming a member gives you the opportunity to connect with other members,
+      participate in fraternity activities, and continue your personal journey
+      within the organization.
+    </p>
+
+
+    <div class="why-grid">
+
+
+      <!-- BROTHERHOOD -->
+      <div class="why-item">
+
+        <div class="why-icon">
+          ♟
+        </div>
+
+        <h3>
+          Brotherhood
+        </h3>
+
+        <p>
+          Build meaningful connections and become part of a community
+          of members who share common values.
+        </p>
+
+      </div>
+
+
+      <!-- PERSONAL GROWTH -->
+      <div class="why-item">
+
+        <div class="why-icon">
+          ★
+        </div>
+
+        <h3>
+          Personal Growth
+        </h3>
+
+        <p>
+          Develop discipline, confidence, responsibility and leadership
+          through your membership journey.
+        </p>
+
+      </div>
+
+
+      <!-- MEMBER NETWORK -->
+      <div class="why-item">
+
+        <div class="why-icon">
+          ◎
+        </div>
+
+        <h3>
+          Member Network
+        </h3>
+
+        <p>
+          Connect with members and build relationships across different
+          communities and locations.
+        </p>
+
+      </div>
+
+
+      <!-- HERITAGE -->
+      <div class="why-item">
+
+        <div class="why-icon">
+          ◆
+        </div>
+
+        <h3>
+          Heritage
+        </h3>
+
+        <p>
+          Learn about the traditions, principles and heritage associated
+          with the fraternity.
+        </p>
+
+      </div>
+
+
+    </div>
+
+  </section>
+
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav">
+
+
+    <!-- HOME -->
+    <a
+      href="dashboard.html"
+      class="nav-item"
+    >
+
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/>
+
+      </svg>
+
+      <span class="nav-label">
+        Home
+      </span>
+
+    </a>
+
+
+    <!-- REQUIREMENTS -->
+    <a
+      href="requirements.html"
+      class="nav-item active"
+    >
+
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+
+        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+
+      </svg>
+
+      <span class="nav-label">
+        Requirements
+      </span>
+
+    </a>
+
+
+    <!-- APPLICATION -->
+    <a
+      href="application.html"
+      class="nav-item"
+    >
+
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+
+        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0-1.41 0-1.02.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+
+      </svg>
+
+      <span class="nav-label">
+        Application
+      </span>
+
+    </a>
+
+
+    <!-- MEMBERS -->
+    <a
+      href="member.html"
+      class="nav-item"
+    >
+
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+
+        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+
+      </svg>
+
+      <span class="nav-label">
+        Members
+      </span>
+
+    </a>
+
+
+    <!-- HELPLINE -->
+    <a
+      href="help.html"
+      class="nav-item"
+    >
+
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+
+        <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.39-1.11-.59-2.28-.59-3.53 0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1z"/>
+
+      </svg>
+
+      <span class="nav-label">
+        Helpline
+      </span>
+
+    </a>
+
+
+    <!-- LAWS -->
+    <a
+      href="laws.html"
+      class="nav-item"
+    >
+
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+
+        <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 1.9-2 2v12c0 1.1 0 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/>
+
+      </svg>
+
+      <span class="nav-label">
+        Laws
+      </span>
+
+    </a>
+
+
+  </nav>
+
+</main><script>
+
+(function(){
+
+  /*
+   * ============================================================
+   * INSTANT CURRENCY CACHE
+   * ============================================================
+   *
+   * This runs BEFORE Firebase finishes loading.
+   *
+   * On refresh:
+   * 1. Get the last logged-in UID.
+   * 2. Get that user's cached currency.
+   * 3. Immediately display the cached currency and prices.
+   *
+   * Firebase will validate everything afterward.
+   */
+
+  const LAST_UID_KEY = "mf_last_uid";
+  const CACHE_PREFIX = "mf_currency_cache_";
+
+  const currencySymbols = {
+    KES: "KSh",
+    UGX: "USh",
+    TZS: "TSh",
+    RWF: "FRw",
+    CDF: "FC",
+    ZAR: "R",
+    NGN: "₦",
+    GHS: "GH₵",
+    ETB: "Br",
+    USD: "$",
+    ZMW: "ZK",
+    BWP: "P",
+    NAD: "N$",
+    GBP: "£",
+    CAD: "C$",
+    AUD: "A$",
+    INR: "₹"
+  };
+
+
+  function getCache(uid){
+
+    try{
+
+      const raw = localStorage.getItem(
+        CACHE_PREFIX + uid
+      );
+
+      if(!raw){
+        return null;
+      }
+
+      const data = JSON.parse(raw);
+
+      if(
+        !data ||
+        !data.currency ||
+        !Array.isArray(data.prices)
+      ){
+        return null;
+      }
+
+      return data;
+
+    }catch(error){
+
+      console.warn(
+        "Currency cache could not be read:",
+        error
+      );
+
+      return null;
+    }
+
+  }
+
+
+  function formatCachedPrice(amount, currency){
+
+    if(typeof amount !== "number"){
+      return "Unavailable";
+    }
+
+    const symbol =
+      currencySymbols[currency] || currency;
+
+    return symbol + " " +
+      amount.toLocaleString(
+        undefined,
+        {
+          minimumFractionDigits:2,
+          maximumFractionDigits:2
+        }
+      );
+
+  }
+
+
+  function renderCachedCurrency(cache){
+
+    if(!cache){
+      return false;
+    }
+
+    const currencyText =
+      document.getElementById("currencyText");
+
+    const prices =
+      document.querySelectorAll(".price");
+
+    if(currencyText){
+
+      let text =
+        currencySymbols[cache.currency] ||
+        cache.currency;
+
+      text += " (" + cache.currency + ")";
+
+      if(cache.country){
+
+        text +=
+          " — " +
+          cache.country;
+
+      }
+
+      currencyText.textContent = text;
+
+    }
+
+
+    prices.forEach(function(priceElement,index){
+
+      if(
+        Array.isArray(cache.prices) &&
+        typeof cache.prices[index] === "number"
+      ){
+
+        priceElement.textContent =
+          formatCachedPrice(
+            cache.prices[index],
+            cache.currency
+          );
+
+        priceElement.classList.remove(
+          "loading"
+        );
+
+      }
+
+    });
+
+
+    return true;
+
+  }
+
+
+  /*
+   * Try the last known member immediately.
+   */
+  try{
+
+    const lastUid =
+      localStorage.getItem(
+        LAST_UID_KEY
+      );
+
+    if(lastUid){
+
+      const cached =
+        getCache(lastUid);
+
+      if(cached){
+
+        window.__currencyCacheRendered =
+          renderCachedCurrency(cached);
+
+      }
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Instant currency cache error:",
+      error
+    );
+
+  }
+
+
+  /*
+   * Make these available to the Firebase script below.
+   */
+  window.__MF_CURRENCY_CACHE__ = {
+    LAST_UID_KEY,
+    CACHE_PREFIX,
+    currencySymbols,
+    getCache,
+    renderCachedCurrency,
+    formatCachedPrice
+  };
+
+})();
+
+</script>
+
+
+<script type="module">
+
+/*
+ * ============================================================
+ * FIREBASE
+ * ============================================================
+ */
+
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  getDatabase,
+  ref,
+  get
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+
+/*
+ * ============================================================
+ * FIREBASE CONFIG
+ * ============================================================
+ */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+
+  authDomain:
+    "mansonry-family-fraternity.firebaseapp.com",
+
+  databaseURL:
+    "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+
+  projectId:
+    "mansonry-family-fraternity",
+
+  storageBucket:
+    "mansonry-family-fraternity.firebasestorage.app",
+
+  messagingSenderId:
+    "964415179161",
+
+  appId:
+    "1:964415179161:web:c8fd1a777542932d7c6b08",
+
+  measurementId:
+    "G-Q8LC74ZFXN"
+
+};
+
+
+const app =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(app);
+
+const db =
+  getDatabase(app);
+
+
+/*
+ * ============================================================
+ * CURRENCY DATA
+ * ============================================================
+ */
+
+const countryCurrencies = {
+
+  "kenya": "KES",
+
+  "uganda": "UGX",
+
+  "tanzania": "TZS",
+
+  "rwanda": "RWF",
+
+  "drc": "CDF",
+
+  "democratic republic of the congo": "CDF",
+
+  "democratic republic of congo": "CDF",
+
+  "south africa": "ZAR",
+
+  "nigeria": "NGN",
+
+  "ghana": "GHS",
+
+  "ethiopia": "ETB",
+
+  "zimbabwe": "USD",
+
+  "zambia": "ZMW",
+
+  "botswana": "BWP",
+
+  "namibia": "NAD",
+
+  "usa": "USD",
+
+  "united states": "USD",
+
+  "united states of america": "USD",
+
+  "uk": "GBP",
+
+  "united kingdom": "GBP",
+
+  "canada": "CAD",
+
+  "australia": "AUD",
+
+  "india": "INR"
+
+};
+
+
+const currencySymbols =
+  window.__MF_CURRENCY_CACHE__.currencySymbols;
+
+
+/*
+ * ============================================================
+ * BASE KES PRICES
+ * ============================================================
+ */
+
+const basePricesKES = [
+
+  1800,
+  1200,
+  1400,
+  2500,
+  4472.97,
+  11372.97
+
+];
+
+
+/*
+ * ============================================================
+ * DOM
+ * ============================================================
+ */
+
+const currencyText =
+  document.getElementById("currencyText");
+
+const priceElements =
+  document.querySelectorAll(".price");
+
+
+/*
+ * ============================================================
+ * HELPERS
+ * ============================================================
+ */
+
+function normalizeCountry(country){
+
+  if(!country){
+    return "";
+  }
+
+  return String(country)
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g," ");
+
+}
+
+
+function getCurrencyFromMember(member){
+
+  const country =
+    normalizeCountry(
+      member.country
+    );
+
+
+  /*
+   * Zimbabwe must always use USD.
+   */
+  if(country === "zimbabwe"){
+    return "USD";
+  }
+
+
+  /*
+   * If Firebase already contains a supported
+   * currencyCode, use it.
+   */
+  const savedCurrency =
+    String(
+      member.currencyCode || ""
+    )
+    .trim()
+    .toUpperCase();
+
+
+  if(
+    savedCurrency &&
+    currencySymbols[savedCurrency]
+  ){
+
+    return savedCurrency;
+
+  }
+
+
+  /*
+   * Otherwise determine currency from country.
+   */
+  return (
+    countryCurrencies[country] ||
+    "KES"
+  );
+
+}
+
+
+function formatPrice(amount,currency){
+
+  if(
+    typeof amount !== "number" ||
+    !isFinite(amount)
+  ){
+
+    return "Unavailable";
+
+  }
+
+
+  const symbol =
+    currencySymbols[currency] ||
+    currency;
+
+
+  return (
+    symbol +
+    " " +
+    amount.toLocaleString(
+      undefined,
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    )
+  );
+
+}
+
+
+/*
+ * ============================================================
+ * DISPLAY CURRENCY
+ * ============================================================
+ */
+
+function showCurrency(
+  currency,
+  country
+){
+
+  let text =
+    currencySymbols[currency] ||
+    currency;
+
+
+  text +=
+    " (" +
+    currency +
+    ")";
+
+
+  if(country){
+
+    text +=
+      " — " +
+      country;
+
+  }
+
+
+  currencyText.textContent =
+    text;
+
+}
+
+
+/*
+ * ============================================================
+ * DISPLAY LOADING
+ * ============================================================
+ */
+
+function showLoading(){
+
+  /*
+   * Do NOT erase an already-rendered cache.
+   */
+  if(window.__currencyCacheRendered){
+    return;
+  }
+
+
+  currencyText.textContent =
+    "Loading your local currency...";
+
+
+  priceElements.forEach(function(element){
+
+    element.textContent =
+      "Loading...";
+
+    element.classList.add(
+      "loading"
+    );
+
+  });
+
+}
+
+
+/*
+ * ============================================================
+ * DISPLAY ERROR
+ * ============================================================
+ */
+
+function showCurrencyError(){
+
+  /*
+   * If cached currency exists, keep it visible.
+   */
+  if(window.__currencyCacheRendered){
+
+    currencyText.textContent +=
+      " — Unable to refresh live rates right now.";
+
+    return;
+
+  }
+
+
+  currencyText.textContent =
+    "Unable to determine your currency.";
+
+  priceElements.forEach(function(element){
+
+    element.textContent =
+      "Unavailable";
+
+    element.classList.remove(
+      "loading"
+    );
+
+  });
+
+}
+
+
+/*
+ * ============================================================
+ * CACHE
+ * ============================================================
+ */
+
+function saveCurrencyCache(
+  uid,
+  currency,
+  country,
+  prices
+){
+
+  try{
+
+    const cache = {
+
+      currency:
+        currency,
+
+      country:
+        country || "",
+
+      prices:
+        prices,
+
+      updatedAt:
+        Date.now()
+
+    };
+
+
+    localStorage.setItem(
+
+      window.__MF_CURRENCY_CACHE__
+        .CACHE_PREFIX + uid,
+
+      JSON.stringify(cache)
+
+    );
+
+
+    localStorage.setItem(
+
+      window.__MF_CURRENCY_CACHE__
+        .LAST_UID_KEY,
+
+      uid
+
+    );
+
+  }catch(error){
+
+    console.warn(
+      "Could not save currency cache:",
+      error
+    );
+
+  }
+
+}
+
+
+/*
+ * ============================================================
+ * RENDER PRICES
+ * ============================================================
+ */
+
+function renderPrices(
+  prices,
+  currency
+){
+
+  if(!Array.isArray(prices)){
+    return;
+  }
+
+
+  priceElements.forEach(
+    function(element,index){
+
+      if(
+        typeof prices[index] === "number"
+      ){
+
+        element.textContent =
+          formatPrice(
+            prices[index],
+            currency
+          );
+
+        element.classList.remove(
+          "loading"
+        );
+
+      }
+
+    }
+  );
+
+}
+
+
+/*
+ * ============================================================
+ * KES PRICES
+ * ============================================================
+ */
+
+function showKESPrices(){
+
+  renderPrices(
+    basePricesKES,
+    "KES"
+  );
+
+}
+
+
+/*
+ * ============================================================
+ * LIVE FOREX
+ * ============================================================
+ */
+
+async function getRealForexRates(){
+
+  const response =
+    await fetch(
+      "https://open.er-api.com/v6/latest/USD",
+      {
+        cache:"no-store"
+      }
+    );
+
+
+  if(!response.ok){
+
+    throw new Error(
+      "Forex request failed."
+    );
+
+  }
+
+
+  const data =
+    await response.json();
+
+
+  if(
+    !data ||
+    !data.rates
+  ){
+
+    throw new Error(
+      "Invalid forex response."
+    );
+
+  }
+
+
+  return data.rates;
+
+}
+
+
+/*
+ * ============================================================
+ * CONVERT KES → TARGET CURRENCY
+ * ============================================================
+ */
+
+async function updatePrices(
+  currency,
+  uid,
+  country
+){
+
+  /*
+   * Kenya does not require FX conversion.
+   */
+  if(currency === "KES"){
+
+    showKESPrices();
+
+    saveCurrencyCache(
+      uid,
+      currency,
+      country,
+      basePricesKES
+    );
+
+    window.__currencyCacheRendered =
+      true;
+
+    return;
+
+  }
+
+
+  try{
+
+    const rates =
+      await getRealForexRates();
+
+
+    const kesRate =
+      rates.KES;
+
+    const targetRate =
+      rates[currency];
+
+
+    if(
+      !kesRate ||
+      !targetRate
+    ){
+
+      throw new Error(
+        "Currency rate unavailable."
+      );
+
+    }
+
+
+    /*
+     * USD → target / USD → KES
+     * gives KES → target.
+     */
+    const conversionRate =
+      targetRate / kesRate;
+
+
+    const convertedPrices =
+      basePricesKES.map(
+        function(price){
+
+          return price *
+            conversionRate;
+
+        }
+      );
+
+
+    renderPrices(
+      convertedPrices,
+      currency
+    );
+
+
+    saveCurrencyCache(
+      uid,
+      currency,
+      country,
+      convertedPrices
+    );
+
+
+    window.__currencyCacheRendered =
+      true;
+
+
+  }catch(error){
+
+    console.warn(
+      "Live currency conversion failed:",
+      error
+    );
+
+
+    /*
+     * IMPORTANT:
+     *
+     * Do not replace a previously cached
+     * foreign currency with KES.
+     *
+     * Keep the cached values on screen.
+     */
+    if(
+      window.__currencyCacheRendered
+    ){
+
+      return;
+
+    }
+
+
+    priceElements.forEach(
+      function(element){
+
+        element.textContent =
+          "Unavailable";
+
+        element.classList.remove(
+          "loading"
+        );
+
+      }
+    );
+
+  }
+
+}
+
+
+/*
+ * ============================================================
+ * LOAD MEMBER CURRENCY
+ * ============================================================
+ */
+
+async function loadMemberCurrency(user){
+
+  const uid =
+    user.uid;
+
+
+  try{
+
+    /*
+     * Remember the current user.
+     */
+    localStorage.setItem(
+      window.__MF_CURRENCY_CACHE__.LAST_UID_KEY,
+      uid
+    );
+
+
+    /*
+     * First check this exact user's cache.
+     */
+    const cached =
+      window.__MF_CURRENCY_CACHE__
+        .getCache(uid);
+
+
+    if(cached){
+
+      window.__currencyCacheRendered =
+        window.__MF_CURRENCY_CACHE__
+          .renderCachedCurrency(
+            cached
+          );
+
+    }
+
+
+    /*
+     * Read member data from Firebase.
+     */
+    const userRef =
+      ref(
+        db,
+        "users/" + uid
+      );
+
+
+    const snapshot =
+      await get(userRef);
+
+
+    if(!snapshot.exists()){
+
+      /*
+       * Keep a valid cached display if available,
+       * but report the missing member record.
+       */
+      if(!window.__currencyCacheRendered){
+
+        showCurrencyError();
+
+      }
+
+      return;
+
+    }
+
+
+    const member =
+      snapshot.val() || {};
+
+
+    const country =
+      member.country || "";
+
+
+    const currency =
+      getCurrencyFromMember(
+        member
+      );
+
+
+    /*
+     * Display the validated currency.
+     */
+    showCurrency(
+      currency,
+      country
+    );
+
+
+    /*
+     * If currency changed since the cache,
+     * update the prices.
+     */
+    if(currency === "KES"){
+
+      showKESPrices();
+
+      saveCurrencyCache(
+        uid,
+        currency,
+        country,
+        basePricesKES
+      );
+
+      window.__currencyCacheRendered =
+        true;
+
+      return;
+
+    }
+
+
+    /*
+     * Foreign currency:
+     *
+     * The cache is already visible immediately.
+     * Now refresh using live FX.
+     */
+    await updatePrices(
+      currency,
+      uid,
+      country
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "Currency loading error:",
+      error
+    );
+
+
+    showCurrencyError();
+
+  }
+
+}
+
+
+/*
+ * ============================================================
+ * AUTH STATE
+ * ============================================================
+ */
+
+showLoading();
+
+
+onAuthStateChanged(
+  auth,
+  async function(user){
+
+    /*
+     * No logged-in user.
+     */
+    if(!user){
+
+      window.location.href =
+        "login.html";
+
+      return;
+
+    }
+
+
+    /*
+     * Make sure the correct user's cache
+     * is available immediately after Firebase
+     * confirms the account.
+     */
+    const uid =
+      user.uid;
+
+
+    localStorage.setItem(
+      window.__MF_CURRENCY_CACHE__
+        .LAST_UID_KEY,
+      uid
+    );
+
+
+    const cached =
+      window.__MF_CURRENCY_CACHE__
+        .getCache(uid);
+
+
+    if(cached){
+
+      window.__currencyCacheRendered =
+        window.__MF_CURRENCY_CACHE__
+          .renderCachedCurrency(
+            cached
+          );
+
+    }
+
+
+    /*
+     * Load and validate from Firebase.
+     */
+    await loadMemberCurrency(
+      user
+    );
+
+  }
+);
+
+
+/*
+ * ============================================================
+ * LOGOUT
+ * ============================================================
+ */
+
+const logoutBtn =
+  document.getElementById(
+    "logoutBtn"
+  );
+
+
+if(logoutBtn){
+
+  logoutBtn.addEventListener(
+    "click",
+    async function(){
+
+      try{
+
+        logoutBtn.disabled =
+          true;
+
+        logoutBtn.textContent =
+          "Logging out...";
+
+
+        /*
+         * Prevent old user's currency
+         * from appearing after logout.
+         */
+        localStorage.removeItem(
+          window.__MF_CURRENCY_CACHE__
+            .LAST_UID_KEY
+        );
+
+
+        await signOut(auth);
+
+
+        window.location.href =
+          "login.html";
+
+
+      }catch(error){
+
+        console.error(
+          "Logout error:",
+          error
+        );
+
+
+        logoutBtn.disabled =
+          false;
+
+        logoutBtn.textContent =
+          "Logout";
+
+      }
+
+    }
+  );
+
+}
+
+</script>
+
+</body>
+</html>

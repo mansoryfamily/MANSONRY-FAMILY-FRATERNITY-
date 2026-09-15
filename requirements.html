@@ -909,62 +909,57 @@ body{
      FIREBASE + CURRENCY SYSTEM
 ========================= -->
 
+<!-- FIREBASE -->
+
 <script type="module">
 
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
   getAuth,
   onAuthStateChanged,
   signOut
-} from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
   getDatabase,
   ref,
   get
-} from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
-/* =========================
-   FIREBASE CONFIG
-========================= */
+/* FIREBASE CONFIG */
 
 const firebaseConfig = {
 
-  apiKey:
-    "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
 
   authDomain:
-    "mansonry-family-fraternity.firebaseapp.com",
+  "mansonry-family-fraternity.firebaseapp.com",
 
   databaseURL:
-    "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+  "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
 
   projectId:
-    "mansonry-family-fraternity",
+  "mansonry-family-fraternity",
 
   storageBucket:
-    "mansonry-family-fraternity.firebasestorage.app",
+  "mansonry-family-fraternity.firebasestorage.app",
 
   messagingSenderId:
-    "964415179161",
+  "964415179161",
 
   appId:
-    "1:964415179161:web:c8fd1a777542932d7c6b08",
+  "1:964415179161:web:c8fd1a777542932d7c6b08",
 
   measurementId:
-    "G-Q8LC74ZFXN"
-
+  "G-Q8LC74ZFXN"
 };
 
 
-/* =========================
-   INITIALIZE FIREBASE
-========================= */
+/* INITIALIZE */
 
 const app = initializeApp(firebaseConfig);
 
@@ -973,204 +968,164 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 
-/* =========================
-   COUNTRY → CURRENCY
-========================= */
+/*
+ COUNTRY → CURRENCY
+*/
 
 const countryCurrencies = {
 
-  Kenya: "KES",
+  "Kenya":{
+    code:"KES",
+    symbol:"KSh",
+    name:"Kenyan Shilling"
+  },
 
-  Uganda: "UGX",
+  "Uganda":{
+    code:"UGX",
+    symbol:"USh",
+    name:"Ugandan Shilling"
+  },
 
-  Tanzania: "TZS",
+  "Tanzania":{
+    code:"TZS",
+    symbol:"TSh",
+    name:"Tanzanian Shilling"
+  },
 
-  Rwanda: "RWF",
+  "Rwanda":{
+    code:"RWF",
+    symbol:"FRw",
+    name:"Rwandan Franc"
+  },
 
-  DRC: "CDF",
+  "DRC":{
+    code:"CDF",
+    symbol:"FC",
+    name:"Congolese Franc"
+  },
 
-  "Democratic Republic of the Congo": "CDF",
+  "Democratic Republic of the Congo":{
+    code:"CDF",
+    symbol:"FC",
+    name:"Congolese Franc"
+  },
 
-  "South Africa": "ZAR",
+  "South Africa":{
+    code:"ZAR",
+    symbol:"R",
+    name:"South African Rand"
+  },
 
-  Nigeria: "NGN",
+  "Nigeria":{
+    code:"NGN",
+    symbol:"₦",
+    name:"Nigerian Naira"
+  },
 
-  Ghana: "GHS",
+  "Ghana":{
+    code:"GHS",
+    symbol:"GH₵",
+    name:"Ghanaian Cedi"
+  },
 
-  Ethiopia: "ETB",
+  "Ethiopia":{
+    code:"ETB",
+    symbol:"Br",
+    name:"Ethiopian Birr"
+  },
 
-  Zimbabwe: "USD",
+  "Zimbabwe":{
+    code:"USD",
+    symbol:"$",
+    name:"US Dollar"
+  },
 
-  Zambia: "ZMW",
+  "Zambia":{
+    code:"ZMW",
+    symbol:"ZK",
+    name:"Zambian Kwacha"
+  },
 
-  Botswana: "BWP",
+  "Botswana":{
+    code:"BWP",
+    symbol:"P",
+    name:"Botswana Pula"
+  },
 
-  Namibia: "NAD",
+  "Namibia":{
+    code:"NAD",
+    symbol:"N$",
+    name:"Namibian Dollar"
+  },
 
-  USA: "USD",
+  "USA":{
+    code:"USD",
+    symbol:"$",
+    name:"US Dollar"
+  },
 
-  "United States": "USD",
+  "United States":{
+    code:"USD",
+    symbol:"$",
+    name:"US Dollar"
+  },
 
-  UK: "GBP",
+  "UK":{
+    code:"GBP",
+    symbol:"£",
+    name:"British Pound"
+  },
 
-  "United Kingdom": "GBP",
+  "United Kingdom":{
+    code:"GBP",
+    symbol:"£",
+    name:"British Pound"
+  },
 
-  Canada: "CAD",
+  "Canada":{
+    code:"CAD",
+    symbol:"C$",
+    name:"Canadian Dollar"
+  },
 
-  Australia: "AUD",
+  "Australia":{
+    code:"AUD",
+    symbol:"A$",
+    name:"Australian Dollar"
+  },
 
-  India: "INR"
+  "India":{
+    code:"INR",
+    symbol:"₹",
+    name:"Indian Rupee"
+  }
 
 };
 
 
-/* =========================
-   CURRENCY SYMBOLS
-========================= */
-
-const currencySymbols = {
-
-  KES: "KES",
-
-  UGX: "UGX",
-
-  TZS: "TZS",
-
-  RWF: "RWF",
-
-  CDF: "CDF",
-
-  ZAR: "ZAR",
-
-  NGN: "₦",
-
-  GHS: "GHS",
-
-  ETB: "ETB",
-
-  USD: "$",
-
-  ZMW: "ZMW",
-
-  BWP: "BWP",
-
-  NAD: "N$",
-
-  GBP: "£",
-
-  CAD: "C$",
-
-  AUD: "A$",
-
-  INR: "₹"
-
-};
-
-
-/* =========================
-   FORMAT PRICE
-========================= */
-
-function formatPrice(amount, currency){
-
-  const symbol =
-    currencySymbols[currency] || currency;
-
-  return `${symbol} ${Number(amount).toLocaleString(
-    "en-US",
-    {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }
-  )}`;
-
-}
-
-
-/* =========================
-   SHOW KES PRICES
-========================= */
-
-function showKESPrices(){
-
-  document.querySelectorAll("[data-kes]")
-    .forEach(element => {
-
-      const kes =
-        Number(element.dataset.kes);
-
-      element.textContent =
-        formatPrice(kes, "KES");
-
-      element.classList.remove("loading");
-
-    });
-
-}
-
-
-/* =========================
-   UPDATE CURRENCY NOTICE
-========================= */
-
-function showCurrencyNotice(currency){
-
-  const notice =
-    document.getElementById("currencyNotice");
-
-  const text =
-    document.getElementById("currencyText");
-
-  if(!notice || !text) return;
-
-  const symbol =
-    currencySymbols[currency] || currency;
-
-  text.textContent =
-    `Prices are displayed in ${currency} (${symbol}).`;
-
-}
-
-
-/* =========================
-   FALLBACK NOTICE
-========================= */
-
-function showFallbackNotice(){
-
-  const notice =
-    document.getElementById("currencyNotice");
-
-  const text =
-    document.getElementById("currencyText");
-
-  if(!notice || !text) return;
-
-  text.innerHTML =
-    `<strong>KES:</strong> Exchange rates are temporarily unavailable.
-     Prices are currently displayed in Kenyan Shillings (KES).`;
-
-}
-
-
-/* =========================
-   GET COUNTRY CURRENCY
-========================= */
+/*
+ GET COUNTRY CURRENCY
+*/
 
 function getCountryCurrency(country){
 
-  if(!country) return null;
+  if(!country){
+    return null;
+  }
 
   const normalized =
     String(country)
-      .trim()
-      .toLowerCase();
+    .trim()
+    .toLowerCase();
 
-  for(const key of Object.keys(countryCurrencies)){
 
-    if(key.toLowerCase() === normalized){
+  for(const countryName in countryCurrencies){
 
-      return countryCurrencies[key];
+    if(
+      countryName.toLowerCase() === normalized
+    ){
+
+      return countryCurrencies[countryName];
 
     }
 
@@ -1181,9 +1136,185 @@ function getCountryCurrency(country){
 }
 
 
-/* =========================
-   GET REAL FOREX RATES
-========================= */
+/*
+ CURRENCY SYMBOL FALLBACK
+*/
+
+const currencySymbols = {
+
+  KES:"KSh",
+  UGX:"USh",
+  TZS:"TSh",
+  RWF:"FRw",
+  CDF:"FC",
+  ZAR:"R",
+  NGN:"₦",
+  GHS:"GH₵",
+  ETB:"Br",
+  USD:"$",
+  ZMW:"ZK",
+  BWP:"P",
+  NAD:"N$",
+  GBP:"£",
+  CAD:"C$",
+  AUD:"A$",
+  INR:"₹"
+
+};
+
+
+/*
+ FORMAT PRICE
+*/
+
+function formatPrice(amount,currencyCode){
+
+  try{
+
+    return new Intl.NumberFormat(
+      undefined,
+      {
+        style:"currency",
+        currency:currencyCode,
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    ).format(amount);
+
+  }catch(error){
+
+    const symbol =
+      currencySymbols[currencyCode] ||
+      currencyCode;
+
+    return symbol + " " +
+      Number(amount).toLocaleString(
+        undefined,
+        {
+          minimumFractionDigits:2,
+          maximumFractionDigits:2
+        }
+      );
+
+  }
+
+}
+
+
+/*
+ SHOW MEMBER CURRENCY
+*/
+
+function showCurrency(currency,country){
+
+  const notice =
+    document.getElementById(
+      "currencyNotice"
+    );
+
+
+  if(!notice){
+    return;
+  }
+
+
+  notice.innerHTML =
+    "Your account country: <strong>" +
+    country +
+    "</strong> &nbsp; • &nbsp; " +
+    "Currency: <strong>" +
+    currency.name +
+    " (" +
+    currency.code +
+    ")</strong>";
+
+}
+
+
+/*
+ SHOW LOADING
+
+ IMPORTANT:
+ We do NOT put KES here.
+
+ This means another country's user will
+ NEVER see KES while Firebase is loading.
+*/
+
+function showLoading(){
+
+  const prices =
+    document.querySelectorAll(
+      ".price"
+    );
+
+
+  prices.forEach(price => {
+
+    price.textContent =
+      "Loading...";
+
+  });
+
+
+  const notice =
+    document.getElementById(
+      "currencyNotice"
+    );
+
+
+  if(notice){
+
+    notice.textContent =
+      "Detecting your country and currency...";
+
+  }
+
+}
+
+
+/*
+ SHOW ERROR
+
+ We also do NOT show KES as a fake
+ currency if the member information
+ cannot be loaded.
+*/
+
+function showCurrencyError(){
+
+  const notice =
+    document.getElementById(
+      "currencyNotice"
+    );
+
+
+  if(notice){
+
+    notice.innerHTML =
+      "<strong>Currency unavailable.</strong> " +
+      "Please refresh the page or contact support.";
+
+  }
+
+
+  document
+  .querySelectorAll(".price")
+  .forEach(price => {
+
+    price.textContent =
+      "Unavailable";
+
+  });
+
+}
+
+
+/*
+ GET REAL FOREX RATES
+
+ Base currency = USD
+*/
 
 async function getRealForexRates(){
 
@@ -1191,20 +1322,23 @@ async function getRealForexRates(){
     await fetch(
       "https://open.er-api.com/v6/latest/USD",
       {
-        cache: "no-store"
+        cache:"no-store"
       }
     );
+
 
   if(!response.ok){
 
     throw new Error(
-      `Exchange-rate request failed: ${response.status}`
+      "Exchange-rate request failed"
     );
 
   }
 
+
   const data =
     await response.json();
+
 
   if(
     data.result !== "success" ||
@@ -1217,22 +1351,31 @@ async function getRealForexRates(){
 
   }
 
+
   return data;
 
 }
 
 
-/* =========================
-   UPDATE PRICES
-========================= */
+/*
+ UPDATE PRICES
 
-function updatePrices(currency, forexData){
+ Original amounts are stored in KES.
+
+ We convert:
+
+ KES → USD → MEMBER CURRENCY
+*/
+
+function updatePrices(currency,forexData){
 
   const rates =
     forexData.rates;
 
+
   const kesRate =
     Number(rates.KES);
+
 
   if(
     !Number.isFinite(kesRate) ||
@@ -1240,7 +1383,7 @@ function updatePrices(currency, forexData){
   ){
 
     throw new Error(
-      "KES exchange rate is unavailable"
+      "KES exchange rate unavailable"
     );
 
   }
@@ -1249,16 +1392,20 @@ function updatePrices(currency, forexData){
   let targetRate;
 
 
-  /* USD base rate */
+  /*
+  USD is the API base currency.
+  */
 
-  if(currency === "USD"){
+  if(currency.code === "USD"){
 
     targetRate = 1;
 
   }else{
 
     targetRate =
-      Number(rates[currency]);
+      Number(
+        rates[currency.code]
+      );
 
   }
 
@@ -1269,109 +1416,164 @@ function updatePrices(currency, forexData){
   ){
 
     throw new Error(
-      `Exchange rate unavailable for ${currency}`
+      "Currency rate unavailable"
     );
 
   }
 
 
   /*
-    Convert:
+  Example:
 
-    KES → USD → target currency
+  If:
 
-    target/KES =
-    target USD rate ÷ KES USD rate
+  1 USD = 129 KES
+  1 USD = 0.77 GBP
+
+  Then:
+
+  1 KES =
+  0.77 / 129 GBP
   */
+
 
   const conversionRate =
     targetRate / kesRate;
 
 
   document
-    .querySelectorAll("[data-kes]")
-    .forEach(element => {
+  .querySelectorAll(
+    ".price"
+  )
+  .forEach(price => {
 
-      const kes =
-        Number(element.dataset.kes);
-
-      const converted =
-        kes * conversionRate;
-
-      element.textContent =
-        formatPrice(
-          converted,
-          currency
-        );
-
-      element.classList.remove("loading");
-
-    });
+    const baseKES =
+      Number(
+        price.dataset.kes
+      );
 
 
-  showCurrencyNotice(currency);
+    if(
+      !Number.isFinite(baseKES)
+    ){
+
+      price.textContent =
+        "Unavailable";
+
+      return;
+
+    }
+
+
+    const converted =
+      baseKES *
+      conversionRate;
+
+
+    price.textContent =
+      formatPrice(
+        converted,
+        currency.code
+      );
+
+  });
 
 }
 
 
-/* =========================
-   LOAD MEMBER CURRENCY
-========================= */
+/*
+ LOAD MEMBER CURRENCY
+*/
 
-async function loadCurrency(member){
+async function loadMemberCurrency(member){
 
   /*
-    Always show KES immediately.
-    This prevents prices from remaining
-    stuck on "loading".
+  Keep prices as Loading...
+  until the member country/currency
+  is actually known.
   */
 
-  showKESPrices();
+  showLoading();
 
 
   let currency = null;
 
 
   /*
-    Zimbabwe is always USD.
+  COUNTRY
+  */
+
+  const country =
+    member.country
+      ? String(member.country).trim()
+      : "";
+
+
+  /*
+  ZIMBABWE → USD
+
+  This is forced regardless of
+  any old saved currency.
   */
 
   if(
-    member &&
-    member.country &&
-    String(member.country)
-      .trim()
-      .toLowerCase() === "zimbabwe"
+    country.toLowerCase() ===
+    "zimbabwe"
   ){
 
-    currency = "USD";
+    currency = {
+
+      code:"USD",
+      symbol:"$",
+      name:"US Dollar"
+
+    };
 
   }
 
 
   /*
-    Use member's saved currency first.
+  FIRST PRIORITY:
+
+  Saved currencyCode
+
+  But only if it is a supported
+  currency.
   */
 
   if(
     !currency &&
-    member &&
     member.currencyCode
   ){
 
-    const savedCurrency =
-      String(member.currencyCode)
-        .trim()
-        .toUpperCase();
+    const savedCode =
+      String(
+        member.currencyCode
+      )
+      .trim()
+      .toUpperCase();
+
 
     if(
       Object.prototype.hasOwnProperty.call(
         currencySymbols,
-        savedCurrency
+        savedCode
       )
     ){
 
-      currency = savedCurrency;
+      currency = {
+
+        code:savedCode,
+
+        symbol:
+          member.currencySymbol ||
+          currencySymbols[savedCode],
+
+        name:
+          member.currencyName ||
+          savedCode
+
+      };
 
     }
 
@@ -1379,42 +1581,34 @@ async function loadCurrency(member){
 
 
   /*
-    If no saved currency exists,
-    determine it from country.
+  SECOND PRIORITY:
+
+  Country → Currency
   */
 
   if(
     !currency &&
-    member &&
-    member.country
+    country
   ){
 
     currency =
-      getCountryCurrency(member.country);
+      getCountryCurrency(
+        country
+      );
 
   }
 
 
   /*
-    Final fallback.
+  If the member has no valid
+  currency information, stop.
+
+  DO NOT DISPLAY KES.
   */
 
   if(!currency){
 
-    currency = "KES";
-
-  }
-
-
-  /*
-    KES requires no conversion.
-  */
-
-  if(currency === "KES"){
-
-    showKESPrices();
-
-    showCurrencyNotice("KES");
+    showCurrencyError();
 
     return;
 
@@ -1422,13 +1616,59 @@ async function loadCurrency(member){
 
 
   /*
-    Fetch current exchange rates.
+  Show the member's currency
+  BEFORE requesting exchange rates.
+
+  This prevents KES from appearing
+  for foreign users.
+  */
+
+  showCurrency(
+    currency,
+    country || "Unknown"
+  );
+
+
+  /*
+  KES DOES NOT NEED FX CONVERSION.
+  */
+
+  if(currency.code === "KES"){
+
+    document
+    .querySelectorAll(".price")
+    .forEach(price => {
+
+      const amount =
+        Number(
+          price.dataset.kes
+        );
+
+
+      price.textContent =
+        formatPrice(
+          amount,
+          "KES"
+        );
+
+    });
+
+    return;
+
+  }
+
+
+  /*
+  FOREIGN CURRENCY
+
+  Get current exchange rates.
   */
 
   try{
 
     const forexData =
       await getRealForexRates();
+
 
     updatePrices(
       currency,
@@ -1442,70 +1682,60 @@ async function loadCurrency(member){
       error
     );
 
+
     /*
-      Keep the already displayed KES prices
-      instead of leaving the page loading.
+    IMPORTANT:
+
+    Do NOT replace the prices with KES.
+
+    The user selected another country,
+    so we leave the prices unavailable
+    rather than showing the wrong currency.
     */
 
-    showKESPrices();
+    document
+    .querySelectorAll(".price")
+    .forEach(price => {
 
-    showFallbackNotice();
+      price.textContent =
+        "Unavailable";
+
+    });
+
+
+    const notice =
+      document.getElementById(
+        "currencyNotice"
+      );
+
+
+    if(notice){
+
+      notice.innerHTML =
+        "Your currency was detected as " +
+        "<strong>" +
+        currency.code +
+        "</strong>, " +
+        "but the current exchange rate is temporarily unavailable. " +
+        "Please refresh the page.";
+
+    }
 
   }
 
 }
 
 
-/* =========================
-   LOGOUT
-========================= */
-
-const logoutBtn =
-  document.getElementById("logoutBtn");
-
-
-if(logoutBtn){
-
-  logoutBtn.addEventListener(
-    "click",
-    async () => {
-
-      try{
-
-        await signOut(auth);
-
-        window.location.href =
-          "login.html";
-
-      }catch(error){
-
-        console.error(
-          "Logout error:",
-          error
-        );
-
-        alert(
-          "Unable to logout. Please try again."
-        );
-
-      }
-
-    }
-  );
-
-}
-
-
-/* =========================
-   AUTHENTICATION
-========================= */
+/*
+ AUTHENTICATION
+*/
 
 onAuthStateChanged(
   auth,
   async (user) => {
 
     /*
-      User is not logged in.
+    No logged-in user
     */
 
     if(!user){
@@ -1519,30 +1749,35 @@ onAuthStateChanged(
 
 
     /*
-      Read the member record.
+    Keep everything in loading state
+    while Firebase retrieves the user.
     */
 
+    showLoading();
+
+
     try{
+
+      /*
+      Read:
+
+      users/{uid}
+      */
 
       const userRef =
         ref(
           db,
-          `users/${user.uid}`
+          "users/" + user.uid
         );
+
 
       const snapshot =
         await get(userRef);
 
 
-      /*
-        No member record.
-      */
-
       if(!snapshot.exists()){
 
-        showKESPrices();
-
-        showFallbackNotice();
+        showCurrencyError();
 
         return;
 
@@ -1554,25 +1789,59 @@ onAuthStateChanged(
 
 
       /*
-        Load the appropriate currency.
+      Now determine the currency
+      and display prices.
       */
 
-      await loadCurrency(member);
+      await loadMemberCurrency(
+        member
+      );
+
 
     }catch(error){
 
       console.error(
-        "Unable to load member information:",
+        "Error loading member:",
         error
       );
 
-      /*
-        Never leave prices stuck loading.
-      */
 
-      showKESPrices();
+      showCurrencyError();
 
-      showFallbackNotice();
+    }
+
+  }
+);
+
+
+/*
+ LOGOUT
+*/
+
+document
+.querySelector(".logout")
+.addEventListener(
+  "click",
+  async (e) => {
+
+    e.preventDefault();
+
+
+    try{
+
+      await signOut(auth);
+
+
+      window.location.href =
+        "login.html";
+
+
+    }catch(error){
+
+      console.error(
+        "Logout error:",
+        error
+      );
 
     }
 

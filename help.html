@@ -40,17 +40,8 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 .card h2{color:var(--gold);font-size:24px;margin-bottom:18px;font-family:'Playfair Display',serif;display:flex;align-items:center;gap:10px;}
 .card p{color:#ddd;line-height:1.8;font-size:15px;margin-bottom:12px;}
 
-.highlight-box{background:rgba(212,175,55,.1);border-left:4px solid var(--gold);padding:20px;border-radius:10px;margin:20px 0;font-size:15px;}
-.highlight-box strong{color:var(--gold);}
-
-.contact-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#111;padding:14px 28px;border-radius:30px;text-decoration:none;font-weight:700;margin-top:15px;transition:.3s;font-size:15px;}
+.contact-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#111;padding:14px 28px;border-radius:30px;text-decoration:none;font-weight:700;margin-top:15px;transition:.3s;font-size:15px;cursor:pointer;border:none;}
 .contact-btn:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(212,175,55,.4);}
-
-.chat-toggle-box {margin-top: 15px;background: rgba(7, 17, 31, 0.85);border: 1px solid rgba(212, 175, 55, 0.3);border-radius: 12px;overflow: hidden;transition: all 0.3s ease;}
-.chat-toggle-header {padding: 14px 18px;display: flex;align-items: center;justify-content: space-between;cursor: pointer;background: rgba(212, 175, 55, 0.08);transition: background 0.2s;}
-.chat-toggle-header:hover { background: rgba(212, 175, 55, 0.15); }
-.chat-toggle-title { display: flex; align-items: center; gap: 12px; color: var(--gold); font-weight: 600; font-size: 14px; }
-.custom-chat-icon { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; border: 1px solid var(--gold); }
 
 /* FULL MESSENGER OVERLAY */
 .messenger-overlay {position: fixed;top: 0; left: 0; width: 100vw; height: 100vh;background: #0b141d;z-index: 9999;display: none;flex-direction: column;}
@@ -126,19 +117,38 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 .msgr-input-bar { padding: 10px 15px 20px; display: flex; align-items: center; gap: 10px; background: #0b141d; border-top: 1px solid rgba(255,255,255,0.08); }
 .msgr-input-wrapper { flex: 1; background: rgba(255,255,255,0.08); border-radius: 22px; padding: 8px 15px; display: flex; align-items: center; }
 .msgr-input { width: 100%; background: transparent; border: none; outline: none; color: #fff; font-size: 14px; }
-.msgr-send-btn { background: var(--messenger-blue); color: #fff; border: none; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.msgr-send-btn { background: var(--messenger-blue); color: #fff; border: none; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink:0; }
 
 /* EDIT CANCEL BANNER */
 .edit-indicator { display: none; background: rgba(212,175,55,0.15); border-left: 3px solid var(--gold); padding: 6px 12px; font-size: 12px; color: var(--gold); justify-content: space-between; align-items: center; }
 .edit-indicator.active { display: flex; }
-
-.bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(15,26,46,.94);backdrop-filter:blur(25px);padding:10px;border-radius:22px;display:flex;gap:8px;border:1px solid rgba(212,175,55,.25);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;max-width:calc(100% - 30px);}
-.nav-item{width:90px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#a0b0c9;border-radius:16px;font-size:11px;font-weight:500;transition:.25s ease;}
-.nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;}
-.nav-item:hover{background:rgba(212,175,55,.1);color:#f1ca52;transform:translateY(-2px);}
-.nav-item.active{background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:600;box-shadow:0 6px 18px rgba(212,175,55,.35);}
 </style>
 </head>
+<body>
+
+<header>
+  <div class="logo">Freemasonry</div>
+  <button class="logout" id="logoutBtn">Logout</button>
+</header>
+
+<div class="container">
+  <div class="page-header">
+    <div class="fraternity-name">Freemasonry Heritage</div>
+    <h1>Helpline & Support</h1>
+  </div>
+
+  <div class="pending-banner hidden" id="pendingBanner">
+    <span class="pending-icon">⏳</span>
+    <p>Your account approval is currently pending. Some features may remain restricted until verified.</p>
+  </div>
+
+  <div class="card">
+    <h2>💬 Fraternity Messaging</h2>
+    <p>Connect directly with administration or lodge members through secure real-time communications.</p>
+    <button class="contact-btn" id="openMessengerBtn">Open Messenger</button>
+  </div>
+</div>
+
 <!-- LONG PRESS EDIT/DELETE MENU MODAL -->
 <div class="action-modal" id="actionModal">
   <div class="action-card">
@@ -151,7 +161,7 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
   </div>
 </div>
 
-<!-- MESSENGER CONVERSATION AREA UPDATE -->
+<!-- FULL MESSENGER OVERLAY -->
 <div class="messenger-overlay" id="messengerOverlay">
   <!-- Members List Screen -->
   <div style="display: flex; flex-direction: column; height: 100%; width: 100%;">
@@ -164,7 +174,7 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
     <div class="msgr-members-list" id="msgrMembersList"></div>
   </div>
 
-  <!-- Chat Screen -->
+  <!-- Chat Screen (Full-Screen Slide) -->
   <div class="msgr-chat-screen" id="msgrChatScreen">
     <div class="msgr-chat-header">
       <div style="display: flex; align-items: center; gap: 8px;">
@@ -233,10 +243,10 @@ const actionModal = document.getElementById('actionModal');
 const editIndicator = document.getElementById('editIndicator');
 const msgrInput = document.getElementById('msgrInput');
 
-// OVERLAY CONTROLS
+// NAVIGATION EVENTS
 openMessengerBtn?.addEventListener('click', () => {
   messengerOverlay?.classList.add('active');
-  if(!isAdmin){
+  if (!isAdmin && currentUser) {
     msgrChatScreen?.classList.add('active');
   }
 });
@@ -249,12 +259,10 @@ backToListBtn?.addEventListener('click', () => {
   msgrChatScreen?.classList.remove('active');
 });
 
-// CLOSE ACTION MODAL ON OUTSIDE CLICK
 actionModal?.addEventListener('click', (e) => {
-  if(e.target === actionModal) actionModal.classList.remove('active');
+  if (e.target === actionModal) actionModal.classList.remove('active');
 });
 
-// CANCEL EDIT MODE
 document.getElementById('cancelEditBtn')?.addEventListener('click', () => {
   isEditing = false;
   selectedMsgId = null;
@@ -262,10 +270,10 @@ document.getElementById('cancelEditBtn')?.addEventListener('click', () => {
   editIndicator?.classList.remove('active');
 });
 
-// AUTHENTICATION & SESSION ENGINE
+// AUTHENTICATION & REALTIME SESSION
 onAuthStateChanged(auth, (user) => {
-  if(!user){
-    console.warn("User not logged in. Using guest mode.");
+  if (!user) {
+    console.warn("Guest mode fallback initialized.");
     currentUser = { uid: "demo_guest" };
     activeChatUserId = "demo_guest";
     loadMessages("demo_guest");
@@ -277,7 +285,7 @@ onAuthStateChanged(auth, (user) => {
   const userRef = ref(database, "users/" + user.uid);
   onValue(userRef, (snapshot) => {
     const data = snapshot.val();
-    if(data && data.status !== "approved"){
+    if (data && data.status !== "approved") {
       document.getElementById('pendingBanner')?.classList.remove('hidden');
     } else {
       document.getElementById('pendingBanner')?.classList.add('hidden');
@@ -289,19 +297,17 @@ onAuthStateChanged(auth, (user) => {
     } else {
       activeChatUserId = user.uid;
       activeChatUserName = "Lodge Administration";
-      if(document.getElementById('chatHeaderName')) document.getElementById('chatHeaderName').innerText = activeChatUserName;
-      if(document.getElementById('chatHeaderAvatar')) document.getElementById('chatHeaderAvatar').innerText = "A";
-      msgrChatScreen?.classList.add('active');
+      if (document.getElementById('chatHeaderName')) document.getElementById('chatHeaderName').innerText = activeChatUserName;
+      if (document.getElementById('chatHeaderAvatar')) document.getElementById('chatHeaderAvatar').innerText = "A";
       loadMessages(user.uid);
     }
   });
 });
-
-// LOAD ADMIN MEMBERS LIST
+  // LOAD MEMBERS LIST FOR ADMIN
 function loadMembersList() {
   const usersRef = ref(database, 'users');
   const msgrMembersList = document.getElementById('msgrMembersList');
-  if(!msgrMembersList) return;
+  if (!msgrMembersList) return;
   
   onValue(usersRef, (snapshot) => {
     msgrMembersList.innerHTML = '';
@@ -351,11 +357,11 @@ function loadMembersList() {
   });
 }
 
-// LOAD & SAVE MESSAGES IN REALTIME
+// LOAD MESSAGES & HOLD-TO-EDIT/DELETE
 function loadMessages(targetUserId) {
   const chatsRef = ref(database, `chats/${targetUserId}`);
   const messagesArea = document.getElementById('msgrMessagesArea');
-  if(!messagesArea) return;
+  if (!messagesArea) return;
 
   onValue(chatsRef, (snapshot) => {
     messagesArea.innerHTML = `
@@ -380,17 +386,17 @@ function loadMessages(targetUserId) {
       bubble.className = 'msgr-msg-bubble';
       bubble.innerHTML = `${msg.text} ${msg.edited ? '<span class="edited-tag">(edited)</span>' : ''}`;
 
-      // PRESS AND HOLD GESTURE LOGIC
+      // PRESS & HOLD GESTURE LOGIC
       let pressTimer;
 
       const startPress = () => {
         pressTimer = setTimeout(() => {
-          if (isMe) { // Can edit or delete sent messages
+          if (isMe) {
             selectedMsgId = msgKey;
             selectedMsgText = msg.text;
             actionModal?.classList.add('active');
           }
-        }, 500); // 500ms long press
+        }, 500);
       };
 
       const cancelPress = () => clearTimeout(pressTimer);
@@ -406,14 +412,14 @@ function loadMessages(targetUserId) {
       bubble.addEventListener('mouseleave', cancelPress);
       bubble.addEventListener('contextmenu', (e) => {
         e.preventDefault();
-        if(isMe){
+        if (isMe) {
           selectedMsgId = msgKey;
           selectedMsgText = msg.text;
           actionModal?.classList.add('active');
         }
       });
 
-      if(!isMe) {
+      if (!isMe) {
         const avatar = document.createElement('div');
         avatar.className = 'msgr-msg-avatar';
         avatar.innerText = initial;
@@ -428,20 +434,20 @@ function loadMessages(targetUserId) {
   });
 }
 
-// EDIT ACTION TRIGGER
+// EDIT TRIGGER
 document.getElementById('actionEditBtn')?.addEventListener('click', () => {
   actionModal?.classList.remove('active');
   if (!selectedMsgId) return;
 
   isEditing = true;
-  if(msgrInput) {
+  if (msgrInput) {
     msgrInput.value = selectedMsgText;
     msgrInput.focus();
   }
   editIndicator?.classList.add('active');
 });
 
-// DELETE ACTION TRIGGER
+// DELETE TRIGGER
 document.getElementById('actionDeleteBtn')?.addEventListener('click', () => {
   actionModal?.classList.remove('active');
   if (!selectedMsgId || !activeChatUserId) return;
@@ -452,14 +458,13 @@ document.getElementById('actionDeleteBtn')?.addEventListener('click', () => {
   });
 });
 
-// SUBMIT FORM (CREATE NEW OR UPDATE EXISTING MESSAGE)
+// SUBMIT MESSAGE
 document.getElementById('msgrForm')?.addEventListener('submit', (e) => {
   e.preventDefault();
   const text = msgrInput.value.trim();
-  if(!text || !activeChatUserId) return;
+  if (!text || !activeChatUserId) return;
 
   if (isEditing && selectedMsgId) {
-    // EDIT EXISTING MESSAGE IN FIREBASE
     const msgRef = ref(database, `chats/${activeChatUserId}/${selectedMsgId}`);
     update(msgRef, {
       text: text,
@@ -470,7 +475,6 @@ document.getElementById('msgrForm')?.addEventListener('submit', (e) => {
       editIndicator?.classList.remove('active');
     });
   } else {
-    // SAVE NEW MESSAGE IN FIREBASE
     const sender = currentUser ? currentUser.uid : "demo_guest";
     const chatThreadRef = ref(database, `chats/${activeChatUserId}`);
     const newMsgRef = push(chatThreadRef);
@@ -485,12 +489,13 @@ document.getElementById('msgrForm')?.addEventListener('submit', (e) => {
   msgrInput.value = '';
 });
 
-// LOGOUT ENGINE
-document.querySelector(".logout")?.addEventListener("click", (e) => {
+// LOGOUT
+document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
   e.preventDefault();
-  signOut(auth).then(() => { window.location.href = "login.html"; }).catch(() => { window.location.reload(); });
+  signOut(auth).then(() => {
+    window.location.reload();
+  });
 });
 </script>
-
 </body>
 </html>

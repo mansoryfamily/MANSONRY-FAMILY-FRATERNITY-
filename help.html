@@ -90,7 +90,7 @@ text-decoration:none;font-weight:700;margin-top:15px;transition:.3s;font-size:15
 .note-list li{padding:10px 0;padding-left:28px;position:relative;color:#ddd;line-height:1.7;}
 .note-list li::before{content:"◬";position:absolute;left:0;top:10px;color:var(--gold);font-size:14px;}
 
-/* BOTTOM NAV - IDENTICAL BUTTONS */
+/* BOTTOM NAV */
 .bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(15,26,46,.94);backdrop-filter:blur(25px);padding:10px;border-radius:22px;display:flex;gap:8px;border:1px solid rgba(212,175,55,.25);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;max-width:calc(100% - 30px);}
 .nav-item{width:90px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#a0b0c9;border-radius:16px;font-size:11px;font-weight:500;transition:.25s ease;}
 .nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;}
@@ -161,12 +161,12 @@ WhatsApp: +254 726 126 580
 </ul>
 </div>
 
-</m<script type="module">
+</main>
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// YOUR FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -184,7 +184,6 @@ const database = getDatabase(app);
 
 const pendingBanner = document.getElementById('pendingBanner');
 
-// Check login and approval status - but always show page
 onAuthStateChanged(auth, (user) => {
   if(!user){
     window.location.href = "login.html";
@@ -195,20 +194,18 @@ onAuthStateChanged(auth, (user) => {
   onValue(userRef, (snapshot) => {
     const data = snapshot.val();
     if(data && data.status !== "approved"){
-      pendingBanner.classList.remove('hidden'); // Show pending banner
+      pendingBanner.classList.remove('hidden');
     } else {
-      pendingBanner.classList.add('hidden'); // Hide if approved
+      pendingBanner.classList.add('hidden');
     }
   });
 });
 
-// Logout
 document.querySelector(".logout").addEventListener("click",(e)=>{
   e.preventDefault();
   signOut(auth).then(()=>{window.location.href="login.html";});
 });
 
-// Auto active nav
 const currentPage = window.location.pathname.split("/").pop();
 document.querySelectorAll(".nav-item").forEach(item => {
   item.classList.toggle("active", item.getAttribute("href") === currentPage);
@@ -225,4 +222,3 @@ document.querySelectorAll(".nav-item").forEach(item => {
 
 </body>
 </html>
-

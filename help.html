@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
 <style>
-:root{--gold:#d4af37;--gold-dark:#b8941f;--dark:#07111f;}
+:root{--gold:#d4af37;--gold-dark:#b8941f;--dark:#07111f;--messenger-blue:#0084ff;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 body{background:var(--dark);color:white;min-height:100vh;padding-bottom:120px;}
 
@@ -80,17 +80,17 @@ text-decoration:none;font-weight:700;margin-top:15px;transition:.3s;font-size:15
 }
 .contact-btn:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(212,175,55,.4);}
 
-/* COMPACT COLLAPSIBLE CHAT BOX */
+/* COMPACT COLLAPSIBLE TRIGGER BOX */
 .chat-toggle-box {
   margin-top: 15px;
-  background: rgba(7, 17, 31, 0.8);
+  background: rgba(7, 17, 31, 0.85);
   border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
 }
 .chat-toggle-header {
-  padding: 12px 18px;
+  padding: 14px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -98,144 +98,167 @@ text-decoration:none;font-weight:700;margin-top:15px;transition:.3s;font-size:15
   background: rgba(212, 175, 55, 0.08);
   transition: background 0.2s;
 }
-.chat-toggle-header:hover {
-  background: rgba(212, 175, 55, 0.15);
+.chat-toggle-header:hover { background: rgba(212, 175, 55, 0.15); }
+.chat-toggle-title { display: flex; align-items: center; gap: 12px; color: var(--gold); font-weight: 600; font-size: 14px; }
+.custom-chat-icon { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; border: 1px solid var(--gold); }
+
+/* FULL PAGE MESSENGER OVERLAY */
+.messenger-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: #0b141d;
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
 }
-.chat-toggle-title {
+.messenger-overlay.active { display: flex; }
+
+/* MESSENGER LIST SCREEN (MESSAGES HOME) */
+.msgr-list-header {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.msgr-list-title { font-size: 22px; font-weight: 700; color: #fff; }
+.msgr-search-bar {
+  margin: 10px 20px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: var(--gold);
-  font-weight: 600;
-  font-size: 14px;
+  gap: 8px;
+  color: #8e8e93;
 }
+.msgr-search-input { background: transparent; border: none; outline: none; color: #fff; width: 100%; font-size: 14px; }
 
-/* CUSTOM IMAGE ICON STYLE */
-.custom-chat-icon {
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  object-fit: cover;
-  border: 1px solid var(--gold);
-}
-
-.chat-toggle-arrow {
-  font-size: 12px;
-  color: var(--gold);
-  transition: transform 0.3s ease;
-}
-.chat-toggle-box.open .chat-toggle-arrow {
-  transform: rotate(180deg);
-}
-
-.chat-toggle-body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease-out;
-}
-.chat-toggle-box.open .chat-toggle-body {
-  max-height: 480px;
-}
-
-.chat-container {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 10px;
-  height: 420px;
-  border-top: 1px solid rgba(212, 175, 55, 0.2);
-  background: rgba(0,0,0,0.2);
-}
-.chat-container.user-view { grid-template-columns: 1fr; }
-.member-list {
-  border-right: 1px solid rgba(212, 175, 55, 0.2);
-  overflow-y: auto;
-  padding: 10px;
-}
-.member-item {
-  padding: 8px 10px;
-  border-radius: 6px;
-  margin-bottom: 5px;
-  background: rgba(255,255,255,0.03);
+.msgr-members-list { flex: 1; overflow-y: auto; padding: 10px 0; }
+.msgr-member-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  gap: 12px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: background 0.2s;
 }
-.member-item:hover, .member-item.active {
-  background: rgba(212, 175, 55, 0.2);
-  border: 1px solid var(--gold);
+.msgr-member-item:hover { background: rgba(255,255,255,0.05); }
+.msgr-avatar {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #111;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 18px;
+  flex-shrink: 0;
 }
-.member-name { font-weight: 600; color: #fff; font-size: 12px; }
-.member-phone { font-size: 10px; color: #aaa; margin-top: 2px; }
-.chat-box { display: flex; flex-direction: column; height: 100%; }
-.chat-header-bar {
-  padding: 10px 12px;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-  font-weight: 600;
-  color: var(--gold);
-  background: rgba(0,0,0,0.3);
-  font-size: 13px;
+.msgr-member-info { flex: 1; overflow: hidden; }
+.msgr-member-name { font-weight: 600; font-size: 15px; color: #fff; margin-bottom: 3px; }
+.msgr-member-preview { font-size: 13px; color: #8e8e93; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* MESSENGER CONVERSATION SCREEN */
+.msgr-chat-screen {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: #0b141d;
+  display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
 }
-.messages-area {
+.msgr-chat-screen.active { transform: translateX(0); }
+
+.msgr-chat-header {
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: rgba(11,20,29,0.95);
+}
+.msgr-back-btn {
+  background: none; border: none; color: var(--gold); font-size: 24px; cursor: pointer; padding-right: 10px;
+}
+.msgr-header-user { display: flex; align-items: center; gap: 10px; flex: 1; }
+.msgr-header-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--gold); color: #111; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+.msgr-header-name { font-weight: 600; font-size: 15px; color: #fff; }
+.msgr-header-actions { display: flex; gap: 18px; color: var(--gold); font-size: 18px; }
+
+/* CHAT BODY & BUBBLES */
+.msgr-messages-area {
   flex: 1;
-  padding: 12px;
+  padding: 15px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
-.message {
-  max-width: 80%;
-  padding: 7px 12px;
-  border-radius: 10px;
-  font-size: 12px;
+.msgr-profile-card {
+  text-align: center;
+  padding: 20px 10px;
+  margin-bottom: 10px;
+}
+.msgr-profile-card-avatar {
+  width: 70px; height: 70px; border-radius: 50%; background: var(--gold); color: #111; font-size: 26px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;
+}
+.msgr-profile-card-name { font-size: 18px; font-weight: 700; color: #fff; }
+.msgr-profile-card-sub { font-size: 12px; color: #8e8e93; margin-top: 4px; }
+
+.msgr-timestamp { text-align: center; font-size: 11px; color: #8e8e93; margin: 10px 0 5px; }
+
+.msgr-msg-row { display: flex; gap: 8px; align-items: flex-end; max-width: 80%; }
+.msgr-msg-row.sent { align-self: flex-end; flex-direction: row-reverse; }
+.msgr-msg-row.received { align-self: flex-start; }
+
+.msgr-msg-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--gold); color: #111; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+.msgr-msg-bubble {
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 14px;
   line-height: 1.4;
   word-break: break-word;
 }
-.message.sent {
-  align-self: flex-end;
-  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-  color: #111;
-  border-bottom-right-radius: 2px;
-  font-weight: 500;
-}
-.message.received {
-  align-self: flex-start;
-  background: rgba(255,255,255,0.1);
-  color: #fff;
-  border-bottom-left-radius: 2px;
-}
-.chat-input-area {
-  padding: 8px 10px;
-  border-top: 1px solid rgba(212, 175, 55, 0.2);
+.sent .msgr-msg-bubble { background: var(--messenger-blue); color: #fff; border-bottom-right-radius: 4px; }
+.received .msgr-msg-bubble { background: rgba(255,255,255,0.12); color: #fff; border-bottom-left-radius: 4px; }
+
+/* INPUT BAR WITH SEND BUTTON */
+.msgr-input-bar {
+  padding: 10px 15px 20px;
   display: flex;
-  gap: 6px;
-  background: rgba(0,0,0,0.3);
+  align-items: center;
+  gap: 10px;
+  background: #0b141d;
+  border-top: 1px solid rgba(255,255,255,0.08);
 }
-.chat-input {
+.msgr-input-wrapper {
   flex: 1;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  padding: 8px 12px;
-  border-radius: 18px;
-  color: #fff;
-  outline: none;
-  font-size: 12px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 22px;
+  padding: 8px 15px;
+  display: flex;
+  align-items: center;
 }
-.chat-input:focus { border-color: var(--gold); }
-.send-btn {
-  background: var(--gold);
-  color: #111;
+.msgr-input {
+  width: 100%;
+  background: transparent;
   border: none;
-  padding: 0 18px;
-  border-radius: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-  font-size: 12px;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
 }
-.send-btn:hover { background: var(--gold-dark); }
+.msgr-send-btn {
+  background: var(--messenger-blue);
+  color: #fff;
+  border: none;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.msgr-send-btn:hover { transform: scale(1.05); }
 
 .director-info{display:grid;gap:12px;margin-top:15px;}
-.info-row{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(212,175,55,.15);padding:12px 0;}
+.info-row{display:flex;justify-space-between;align-items:center;border-bottom:1px solid rgba(212,175,55,.15);padding:12px 0;}
 .info-row:last-child{border-bottom:none;}
 .info-row span:first-child{color:#aaa;font-weight:500;}
 .info-row span:last-child{color:#fff;font-weight:600;}
@@ -244,14 +267,14 @@ text-decoration:none;font-weight:700;margin-top:15px;transition:.3s;font-size:15
 .note-list li{padding:10px 0;padding-left:28px;position:relative;color:#ddd;line-height:1.7;}
 .note-list li::before{content:"◬";position:absolute;left:0;top:10px;color:var(--gold);font-size:14px;}
 
-/* BOTTOM NAV - IDENTICAL BUTTONS */
+/* BOTTOM NAV */
 .bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(15,26,46,.94);backdrop-filter:blur(25px);padding:10px;border-radius:22px;display:flex;gap:8px;border:1px solid rgba(212,175,55,.25);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;max-width:calc(100% - 30px);}
 .nav-item{width:90px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#a0b0c9;border-radius:16px;font-size:11px;font-weight:500;transition:.25s ease;}
 .nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;}
 .nav-item:hover{background:rgba(212,175,55,.1);color:#f1ca52;transform:translateY(-2px);}
 .nav-item.active{background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:600;box-shadow:0 6px 18px rgba(212,175,55,.35);}
 @media(max-width:900px){.bottom-nav{width:calc(100% - 30px);max-width:600px;justify-content:space-between;}.nav-item{width:calc(16.66% - 7px);height:65px;}}
-@media(max-width:480px){.page-header h1{font-size:32px;}.card{padding:25px;}.nav-item{height:60px;}.nav-icon{width:22px;height:22px;}.nav-label{font-size:9px;}.chat-container { grid-template-columns: 1fr; }}
+@media(max-width:480px){.page-header h1{font-size:32px;}.card{padding:25px;}.nav-item{height:60px;}.nav-icon{width:22px;height:22px;}.nav-label{font-size:9px;}}
 </style>
 </head>
 <body>
@@ -291,34 +314,14 @@ text-decoration:none;font-weight:700;margin-top:15px;transition:.3s;font-size:15
 WhatsApp: +254 726 126 580
 </a>
 
-<!-- COMPACT CHAT BOX WITH INJECTED CUSTOM IMAGE ICON -->
+<!-- TRIGGER BOX BELOW WHATSAPP BUTTON -->
 <div class="chat-toggle-box" id="chatToggleBox">
-  <div class="chat-toggle-header" id="chatToggleHeader">
+  <div class="chat-toggle-header" id="openMessengerBtn">
     <div class="chat-toggle-title">
       <img src="masonic-icon.png" alt="Masonic Icon" class="custom-chat-icon">
       <span>Private Administration Messaging (Tap to Open)</span>
     </div>
-    <span class="chat-toggle-arrow">▼</span>
-  </div>
-
-  <div class="chat-toggle-body">
-    <div class="chat-container user-view" id="chatContainer">
-      <!-- Member List (Visible to Admin only) -->
-      <div class="member-list" id="memberList" style="display: none;">
-        <h5 style="color: var(--gold); margin-bottom: 8px; font-size: 11px; text-transform: uppercase;">Members Directory</h5>
-        <div id="membersContainer"></div>
-      </div>
-
-      <!-- Chat Box -->
-      <div class="chat-box">
-        <div class="chat-header-bar" id="chatHeader">Chat with Administration</div>
-        <div class="messages-area" id="messagesArea"></div>
-        <form class="chat-input-area" id="chatForm">
-          <input type="text" class="chat-input" id="messageInput" placeholder="Type your message..." required autocomplete="off">
-          <button type="submit" class="send-btn">Send</button>
-        </form>
-      </div>
-    </div>
+    <span style="color: var(--gold); font-size: 14px;">➔</span>
   </div>
 </div>
 
@@ -348,11 +351,10 @@ WhatsApp: +254 726 126 580
 </div>
 
 </main>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, push, set, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 // FIREBASE CONFIG
 const firebaseConfig = {
@@ -370,27 +372,31 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-const pendingBanner = document.getElementById('pendingBanner');
 let currentUser = null;
 let isAdmin = false;
 let activeChatUserId = null;
+let activeChatUserName = "";
 
-// Toggle Chat Accordion
-const chatToggleBox = document.getElementById('chatToggleBox');
-const chatToggleHeader = document.getElementById('chatToggleHeader');
+// MESSENGER OVERLAY CONTROLS
+const messengerOverlay = document.getElementById('messengerOverlay');
+const openMessengerBtn = document.getElementById('openMessengerBtn');
+const closeMessengerBtn = document.getElementById('closeMessengerBtn');
+const backToListBtn = document.getElementById('backToListBtn');
+const msgrChatScreen = document.getElementById('msgrChatScreen');
 
-chatToggleHeader.addEventListener('click', () => {
-  chatToggleBox.classList.toggle('open');
+openMessengerBtn.addEventListener('click', () => {
+  messengerOverlay.classList.add('active');
 });
 
-const chatContainer = document.getElementById('chatContainer');
-const memberList = document.getElementById('memberList');
-const membersContainer = document.getElementById('membersContainer');
-const messagesArea = document.getElementById('messagesArea');
-const chatForm = document.getElementById('chatForm');
-const messageInput = document.getElementById('messageInput');
-const chatHeader = document.getElementById('chatHeader');
+closeMessengerBtn.addEventListener('click', () => {
+  messengerOverlay.classList.remove('active');
+});
 
+backToListBtn.addEventListener('click', () => {
+  msgrChatScreen.classList.remove('active');
+});
+
+// AUTH & ROLE HANDLER
 onAuthStateChanged(auth, (user) => {
   if(!user){
     window.location.href = "login.html";
@@ -399,80 +405,123 @@ onAuthStateChanged(auth, (user) => {
   
   currentUser = user;
 
-  // Check user status and role
   const userRef = ref(database, "users/" + user.uid);
   onValue(userRef, (snapshot) => {
     const data = snapshot.val();
     if(data && data.status !== "approved"){
-      pendingBanner.classList.remove('hidden');
+      document.getElementById('pendingBanner').classList.remove('hidden');
     } else {
-      pendingBanner.classList.add('hidden');
+      document.getElementById('pendingBanner').classList.add('hidden');
     }
 
     isAdmin = data && data.role === "admin";
     if (isAdmin) {
-      chatContainer.classList.remove('user-view');
-      memberList.style.display = 'block';
-      loadMembers();
+      loadMembersList();
     } else {
+      // Regular user direct to Administration Chat Thread
       activeChatUserId = user.uid;
+      activeChatUserName = "Lodge Administration";
+      document.getElementById('chatHeaderName').innerText = activeChatUserName;
+      document.getElementById('chatHeaderAvatar').innerText = "A";
+      msgrChatScreen.classList.add('active');
       loadMessages(user.uid);
     }
   });
 });
 
-// Load member list for administrator
-function loadMembers() {
+// LOAD MESSENGER MEMBER LIST (ADMIN)
+function loadMembersList() {
   const usersRef = ref(database, 'users');
+  const msgrMembersList = document.getElementById('msgrMembersList');
+  
   onValue(usersRef, (snapshot) => {
-    membersContainer.innerHTML = '';
+    msgrMembersList.innerHTML = '';
     snapshot.forEach((childSnapshot) => {
       const member = childSnapshot.val();
       const memberId = childSnapshot.key;
 
       if (member.role !== 'admin') {
         const item = document.createElement('div');
-        item.className = `member-item ${activeChatUserId === memberId ? 'active' : ''}`;
+        item.className = 'msgr-member-item';
+        const initial = (member.fullName || 'M').charAt(0).toUpperCase();
+        
         item.innerHTML = `
-          <div class="member-name">${member.fullName || 'Member'}</div>
-          <div class="member-phone">${member.phone || 'No Phone'}</div>
+          <div class="msgr-avatar">${initial}</div>
+          <div class="msgr-member-info">
+            <div class="msgr-member-name">${member.fullName || 'Member'}</div>
+            <div class="msgr-member-preview" id="preview-${memberId}">Loading preview...</div>
+          </div>
         `;
+
         item.onclick = () => {
-          document.querySelectorAll('.member-item').forEach(el => el.classList.remove('active'));
-          item.classList.add('active');
           activeChatUserId = memberId;
-          chatHeader.innerText = `Chat: ${member.fullName || 'Member'} (${member.phone || 'N/A'})`;
+          activeChatUserName = member.fullName || 'Member';
+          document.getElementById('chatHeaderName').innerText = activeChatUserName;
+          document.getElementById('chatHeaderAvatar').innerText = initial;
+          msgrChatScreen.classList.add('active');
           loadMessages(memberId);
         };
-        membersContainer.appendChild(item);
+
+        msgrMembersList.appendChild(item);
+
+        // Fetch last message preview
+        const lastMsgRef = query(ref(database, `chats/${memberId}`), limitToLast(1));
+        onValue(lastMsgRef, (msgSnap) => {
+          const previewElem = document.getElementById(`preview-${memberId}`);
+          if (previewElem && msgSnap.exists()) {
+            msgSnap.forEach((msgChild) => {
+              const msgData = msgChild.val();
+              previewElem.innerText = (msgData.senderId === currentUser.uid ? "You: " : "") + msgData.text;
+            });
+          } else if (previewElem) {
+            previewElem.innerText = "No messages yet";
+          }
+        });
       }
     });
   });
 }
 
-// Load messages for specific chat thread
+// LOAD CONVERSATION MESSAGES
 function loadMessages(targetUserId) {
   const chatsRef = ref(database, `chats/${targetUserId}`);
+  const messagesArea = document.getElementById('msgrMessagesArea');
+
   onValue(chatsRef, (snapshot) => {
-    messagesArea.innerHTML = '';
+    messagesArea.innerHTML = `
+      <div class="msgr-profile-card">
+        <div class="msgr-profile-card-avatar">${activeChatUserName.charAt(0).toUpperCase()}</div>
+        <div class="msgr-profile-card-name">${activeChatUserName}</div>
+        <div class="msgr-profile-card-sub">Secured Fraternity Communications</div>
+      </div>
+      <div class="msgr-timestamp">MESSAGES ARE SECURED WITH END-TO-END ENCRYPTION</div>
+    `;
+
     snapshot.forEach((childSnapshot) => {
       const msg = childSnapshot.val();
-      const msgDiv = document.createElement('div');
-      
       const isMe = msg.senderId === currentUser.uid;
-      msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
-      msgDiv.innerText = msg.text;
-      
-      messagesArea.appendChild(msgDiv);
+      const initial = isMe ? 'Y' : activeChatUserName.charAt(0).toUpperCase();
+
+      const row = document.createElement('div');
+      row.className = `msgr-msg-row ${isMe ? 'sent' : 'received'}`;
+
+      row.innerHTML = `
+        ${!isMe ? `<div class="msgr-msg-avatar">${initial}</div>` : ''}
+        <div class="msgr-msg-bubble">${msg.text}</div>
+      `;
+
+      messagesArea.appendChild(row);
     });
+
     messagesArea.scrollTop = messagesArea.scrollHeight;
   });
 }
 
-// Send Message
-chatForm.addEventListener('submit', (e) => {
+// SEND MESSAGE
+document.getElementById('msgrForm').addEventListener('submit', (e) => {
   e.preventDefault();
-  const text = messageInput.value.trim();
+  const input = document.getElementById('msgrInput');
+  const text = input.value.trim();
   if(!text || !activeChatUserId) return;
 
   const chatThreadRef = ref(database, `chats/${activeChatUserId}`);
@@ -484,30 +533,21 @@ chatForm.addEventListener('submit', (e) => {
     timestamp: Date.now()
   });
 
-  messageInput.value = '';
+  input.value = '';
 });
 
-// Logout
+// LOGOUT
 document.querySelector(".logout").addEventListener("click",(e)=>{
   e.preventDefault();
   signOut(auth).then(()=>{window.location.href="login.html";});
 });
 
-// Auto active nav
+// AUTO ACTIVE NAV
 const currentPage = window.location.pathname.split("/").pop();
 document.querySelectorAll(".nav-item").forEach(item => {
   item.classList.toggle("active", item.getAttribute("href") === currentPage);
 });
 </script>
-
-<nav class="bottom-nav">
-  <a href="dashboard.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="nav-label">Home</span></a>
-  <a href="requirements.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span class="nav-label">Requirements</span></a>
-  <a href="application.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg><span class="nav-label">Application</span></a>
-  <a href="member.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span class="nav-label">Members</span></a>
-  <a href="help.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.39-1.11-.59-2.28-.59-3.53 0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1z"/></svg><span class="nav-label">Helpline</span></a>
-  <a href="laws.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg><span class="nav-label">Laws</span></a>
-</nav>
 
 </body>
 </html>

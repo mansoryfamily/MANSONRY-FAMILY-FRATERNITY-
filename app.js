@@ -1,4 +1,3 @@
-// Country & Language Mapping
 const countryLanguageData = {
   "Kenya": [
     { name: "English (Main)", code: "en" },
@@ -68,12 +67,12 @@ const countryLanguageData = {
 
 let selectedCountry = "";
 
-// Initialize Google Translate
+// Initialize Google Translate Engine
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false }, 'google_translate_element');
 }
 
-// Render Country List
+// Render Country Options
 function renderCountries() {
   const countryListEl = document.getElementById('countryList');
   if (!countryListEl) return;
@@ -138,7 +137,15 @@ function applyLanguage(langCode) {
   localStorage.setItem('user_lang', langCode);
 }
 
-// On DOM load, render countries and re-apply user choice if saved
+// Close modals when clicking background overlay
+document.addEventListener('click', (e) => {
+  const countryModal = document.getElementById('countryModal');
+  const languageModal = document.getElementById('languageModal');
+  
+  if (e.target === countryModal) countryModal.classList.remove('active');
+  if (e.target === languageModal) languageModal.classList.remove('active');
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   renderCountries();
   

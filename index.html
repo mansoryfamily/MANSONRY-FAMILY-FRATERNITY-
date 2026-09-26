@@ -22,10 +22,14 @@
   <style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;scroll-behavior:smooth;}
   html,body{height:100%;}
-  body{background:#07111f;color:white;overflow-x:hidden;padding-bottom:90px;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: calc(90px + env(safe-area-inset-bottom));
-  top: 0 !important;
+  body{
+    background:#07111f;
+    color:white;
+    overflow-x:hidden;
+    padding-bottom:90px;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: calc(90px + env(safe-area-inset-bottom));
+    top: 0 !important;
   }
   
   /* Hide default Google Translate bar frame */
@@ -36,30 +40,65 @@
   body::before{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:300px;color:rgba(212,175,55,.04);z-index:-1;pointer-events:none;white-space:nowrap;}
   img{max-width:100%;height:auto;display:block;border-radius:18px;}
 
-  header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;padding-top: calc(20px + env(safe-area-inset-top));
-  background:rgba(0,0,0,.75);backdrop-filter:blur(10px);display:flex;justify-content:space-between;align-items:center;z-index:1000;}
-  .logo{font-size:30px;font-weight:700;color:#d4af37;}
-  header nav a{color:white;text-decoration:none;margin-left:20px;font-size:15px;transition:.3s;}
-  header nav a:hover{color:#d4af37;}
+  header{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    padding:15px 5%;
+    padding-top: calc(15px + env(safe-area-inset-top));
+    background:rgba(0,0,0,.85);
+    backdrop-filter:blur(10px);
+    display:flex;
+    justify-style:space-between;
+    align-items:center;
+    z-index:1000;
+  }
+  .logo{font-size:20px;font-weight:700;color:#d4af37;}
 
-  /* Language trigger button in top navigation bar */
+  /* Header Navigation Container */
+  .nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  /* Header Language Button */
   .lang-trigger-btn {
     background: rgba(212, 175, 55, 0.15);
     color: #d4af37;
     border: 1px solid #d4af37;
-    padding: 8px 16px;
+    padding: 6px 12px;
     border-radius: 20px;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 600;
     transition: 0.3s;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
+    white-space: nowrap;
   }
   .lang-trigger-btn:hover {
     background: #d4af37;
     color: #07111f;
+  }
+
+  /* Header Logout Button */
+  .logout-btn {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+  .logout-btn:hover {
+    background: #c0392b;
   }
 
   .hero{height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.65)),url("images.jpeg");background-size:cover;background-position:center;}
@@ -75,13 +114,18 @@
   .title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:50px;}
   .grid,.info{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;width:100%;}
   .history{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
-  @media(max-width:900px){.grid,.info,.history{grid-template-columns:1fr;}section{padding:80px 5%;}.hero h1{font-size:38px;}}
+  @media(max-width:900px){
+    .grid,.info,.history{grid-template-columns:1fr;}
+    section{padding:80px 5%;}
+    .hero h1{font-size:34px;}
+    .logo{font-size:16px;}
+  }
 
   .info{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;max-width:1100px;margin:40px auto 0;}
   .card{
-  background:linear-gradient(145deg,#142238,#0b1728);
-  padding:30px;border-radius:18px;border:1px solid rgba(212,175,55,.18);
-  box-shadow:0 15px 35px rgba(0,0,0,.35);transition:.4s;min-height:190px;
+    background:linear-gradient(145deg,#142238,#0b1728);
+    padding:30px;border-radius:18px;border:1px solid rgba(212,175,55,.18);
+    box-shadow:0 15px 35px rgba(0,0,0,.35);transition:.4s;min-height:190px;
   }
   .card:hover{transform:translateY(-10px);border-color:#d4af37;box-shadow:0 20px 45px rgba(212,175,55,.15);}
   .card h3{color:#d4af37;font-size:22px;margin-bottom:15px;}
@@ -91,12 +135,12 @@
 
   /* INSTALL POPUP - FIXED TO CENTER */
   .install-popup{
-  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);
-  background:rgba(20,34,56,.98);backdrop-filter:blur(20px);padding:30px 25px;
-  border-radius:20px;border:2px solid #d4af37;z-index:100000;display:none;
-  flex-direction:column;align-items:center;gap:20px;width:90%;max-width:380px;
-  box-shadow:0 20px 60px rgba(212,175,55,.4);text-align:center;opacity:0;
-  transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);
+    background:rgba(20,34,56,.98);backdrop-filter:blur(20px);padding:30px 25px;
+    border-radius:20px;border:2px solid #d4af37;z-index:100000;display:none;
+    flex-direction:column;align-items:center;gap:20px;width:90%;max-width:380px;
+    box-shadow:0 20px 60px rgba(212,175,55,.4);text-align:center;opacity:0;
+    transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
   .install-popup.show{display:flex;opacity:1;transform:translate(-50%,-50%) scale(1);}
   .install-popup img{width:70px;height:70px;border-radius:18px;border:2px solid #d4af37;}
@@ -118,7 +162,7 @@
     });
   </script>
 
-  <!-- Google Translate Universal Engine -->
+  <!-- Google Translate Engine -->
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 
@@ -141,8 +185,9 @@
 
 <header>
   <div class="logo">Freemasonry Heritage</div>
-  <div>
-    <button class="lang-trigger-btn" onclick="openCountryModal()">🌐 Select Country / Language</button>
+  <div class="nav-menu">
+    <button class="lang-trigger-btn" onclick="openCountryModal()">🌐 Language</button>
+    <button class="logout-btn" onclick="location.href='login.html'">Logout</button>
   </div>
 </header>
 
@@ -194,7 +239,6 @@
   <p>© 2026 Mansonry Family Fraternity. All Rights Reserved.</p>
 </footer>
 
-<!-- App Translation Engine Logic -->
 <script src="app.js" defer></script>
 
 </body>

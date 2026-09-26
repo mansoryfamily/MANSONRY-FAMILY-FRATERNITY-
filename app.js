@@ -1,7 +1,7 @@
-// Dictionary containing full page translations
+// --- GLOBAL TRANSLATION DICTIONARY ---
 const TRANSLATIONS = {
   sw: {
-    // Navigation & Buttons
+    // Navigation Links
     "Home": "Nyumbani",
     "Requirements": "Mahitaji",
     "Application": "Ombi",
@@ -9,70 +9,52 @@ const TRANSLATIONS = {
     "Helpline": "Nambari ya Msaada",
     "Laws": "Sheria",
     "Logout": "Ondoka",
-    "Language": "Lugha",
-    
-    // Dashboard & Profile
-    "Welcome Back": "Karibu Tena",
-    "Member Portal": "Tovuti ya Wanachama",
-    "Secure Access": "Ufikiaji Salama",
-    "Real-time Updates": "Taarifa za Hivi Punde",
-    "Membership Status": "Hali ya Uanachama",
-    "Lodge": "Loji",
-    "Member Since": "Mwanachama Tangu",
-    "Full Name": "Jina Kamili",
-    "Email Address": "Anwani ya Barua Pepe",
-    "Phone Number": "Nambari ya Simu",
-    "Country": "Nchi",
-    "Area of Interest": "Eneo la Nia",
-    "ACTIVE": "ANAFANYA KAZI",
-    "PENDING": "INASUBIRI",
-    "Active": "Anafanya Kazi",
-    "Pending": "Inasubiri",
-    
-    // Cards & Panels
-    "Lodge Information": "Taarifa za Loji",
-    "Access meeting schedules, lodge announcements, and member activities.": "Pata ratiba za mikutano, matangazo ya loji, na shughuli za wanachama.",
-    "Latest Announcements": "Matangazo ya Hivi Punde",
-    "Membership Support": "Msaada wa Uanachama",
-    "Contact your Lodge Director for guidance and fraternity assistance.": "Wasiliana na Mkurugenzi wa Loji yako kwa mwongozo na msaada wa undugu.",
-    "Admin Panel": "Paneli ya Utawala",
-    "Manage members, applications, and lodge settings.": "Dhibiti wanachama, maombi, na mipangilio ya loji.",
-    "Go to Dashboard →": "Nenda kwenye Dashibodi →",
-    "Loading...": "Inapakia...",
-    "No announcements yet": "Hakuna matangazo bado"
+
+    // Members Page Specific
+    "Our Esteemed Members": "Wanachama Wetu Wanaoheshimika",
+    "Celebrating the brotherhood, service, and unity of Freemasonry Heritage. Each photo captures a moment of our journey together.": 
+      "Kusheherekea undugu, huduma, na umoja wa Urithi wa Freemasonry. Kila picha inanaswa wakati wa safari yetu pamoja.",
+    "Total Members": "Jumla ya Wanachama",
+    "Active Lodges": "Loji Zinazofanya Kazi",
+    "Community Projects": "Miradi ya Jamii",
+    "Lodge Harmony Meeting": "Mkutano wa Loji ya Harmony",
+    "Community Service Initiative": "Mpango wa Huduma kwa Jamii",
+    "Initiation Ceremony": "Sherehe ya Uingizaji",
+    "Business Grant Award": "Tuzo ya Ruzuku ya Biashara",
+    "Brotherhood Fellowship": "Ushirika wa Undugu",
+    "Mentorship & Learning": "Ushauri na Masomo",
+    "Lodge Building Project": "Mradi wa Ujenzi wa Loji",
+    "Official Meeting": "Mkutano Rasmi",
+    "Charity Work": "Kazi ya Hisani",
+    "Initiation": "Uingizaji",
+    "Empowerment": "Uwezeshaji",
+    "Fellowship": "Ushirika",
+    "Mentorship": "Ushauri",
+    "Teamwork": "Kazi ya Pamoja"
   }
 };
 
-// 1. Automatically run translation when any page loads
+// --- AUTOMATIC TRANSLATION ENGINE ---
+// Runs on EVERY page when it loads
 document.addEventListener("DOMContentLoaded", () => {
-  const savedLang = localStorage.getItem("user_lang") || "en";
-  if (savedLang !== "en") {
-    translatePage(savedLang);
-  }
+  autoApplyTranslation();
 });
 
-// 2. Core Translation Engine: Translates all text nodes on the page
-function translatePage(langCode) {
-  if (!TRANSLATIONS[langCode]) return;
+function autoApplyTranslation() {
+  const currentLang = localStorage.getItem("user_lang") || "en";
+  if (currentLang === "en" || !TRANSLATIONS[currentLang]) return;
 
-  const dictionary = TRANSLATIONS[langCode];
+  const dict = TRANSLATIONS[currentLang];
 
   function traverseAndTranslate(node) {
     if (node.nodeType === Node.TEXT_NODE) {
       const text = node.nodeValue.trim();
-      if (text && dictionary[text]) {
-        node.nodeValue = node.nodeValue.replace(text, dictionary[text]);
+      if (text && dict[text]) {
+        node.nodeValue = node.nodeValue.replace(text, dict[text]);
       }
     } else if (node.nodeType === Node.ELEMENT_NODE) {
-      // Do not break inline scripts or styling tags
-      if (node.tagName === "SCRIPT" || node.tagName === "STYLE") return;
-      
-      // Translate element attributes like placeholder or alt
-      if (node.hasAttribute("placeholder")) {
-        const ph = node.getAttribute("placeholder").trim();
-        if (dictionary[ph]) node.setAttribute("placeholder", dictionary[ph]);
-      }
-      
+      // Skip script tags, inputs, and style tags
+      if (["SCRIPT", "STYLE", "INPUT", "TEXTAREA"].includes(node.tagName)) return;
       for (let child of node.childNodes) {
         traverseAndTranslate(child);
       }
@@ -82,60 +64,63 @@ function translatePage(langCode) {
   traverseAndTranslate(document.body);
 }
 
-// 3. Country & Language Selection Functions
+// --- DASHBOARD-ONLY MODAL & LANGUAGE CONTROLS ---
 const COUNTRY_DATA = [
   { name: "Kenya", code: "KE", flag: "🇰🇪", languages: [{ name: "English", code: "en" }, { name: "Swahili (Kiswahili)", code: "sw" }] },
   { name: "Tanzania", code: "TZ", flag: "🇹🇿", languages: [{ name: "Swahili (Kiswahili)", code: "sw" }, { name: "English", code: "en" }] },
-  { name: "Uganda", code: "UG", flag: "🇺🇬", languages: [{ name: "English", code: "en" }, { name: "Swahili", code: "sw" }] },
+  { name: "Uganda", code: "UG", flag: "🇺🇬", languages: [{ name: "English", code: "en" }] },
   { name: "United Kingdom", code: "GB", flag: "🇬🇧", languages: [{ name: "English", code: "en" }] },
   { name: "United States", code: "US", flag: "🇺🇸", languages: [{ name: "English", code: "en" }] }
 ];
 
 let selectedCountry = null;
 
-function openCountryModal() {
+// Functions invoked ONLY by the button on dashboard.html
+window.openCountryModal = function() {
   const modal = document.getElementById("countryModal");
   const list = document.getElementById("countryList");
   if (!modal || !list) return;
 
   list.innerHTML = COUNTRY_DATA.map(c => `
-    <li class="country-item" onclick="selectCountry('${c.code}')" style="display:flex; justify-content:space-between; align-items:center; padding:12px; cursor:pointer; border-bottom:1px solid rgba(212,175,55,0.1);">
+    <li onclick="selectCountry('${c.code}')" style="display:flex; justify-content:space-between; align-items:center; padding:12px; cursor:pointer; border-bottom:1px solid rgba(212,175,55,0.1);">
       <span>${c.flag} ${c.name}</span>
-      <span style="color:var(--gold);">→</span>
+      <span style="color:#d4af37;">→</span>
     </li>
   `).join("");
 
   modal.classList.add("active");
-}
+};
 
-function selectCountry(code) {
+window.selectCountry = function(code) {
   selectedCountry = COUNTRY_DATA.find(c => c.code === code);
-  document.getElementById("countryModal").classList.remove("active");
+  document.getElementById("countryModal")?.classList.remove("active");
 
   const langModal = document.getElementById("languageModal");
   const langList = document.getElementById("languageList");
-  
+
+  if (!langModal || !langList) return;
+
   langList.innerHTML = selectedCountry.languages.map(l => `
-    <li class="lang-item" onclick="applyLanguage('${l.code}')" style="padding:12px; cursor:pointer; border-bottom:1px solid rgba(212,175,55,0.1);">
+    <li onclick="applyLanguage('${l.code}')" style="padding:12px; cursor:pointer; border-bottom:1px solid rgba(212,175,55,0.1);">
       ${l.name}
     </li>
   `).join("");
 
   langModal.classList.add("active");
-}
+};
 
-function applyLanguage(langCode) {
-  // Save permanently across browser reloads & page navigations
+window.applyLanguage = function(langCode) {
+  // Save selection globally to localStorage
   localStorage.setItem("user_lang", langCode);
   
   // Close modals
-  document.getElementById("languageModal").classList.remove("active");
+  document.getElementById("languageModal")?.classList.remove("active");
   
-  // Reload page to apply full translation state cleanly
+  // Reload dashboard to apply changes immediately
   window.location.reload();
-}
+};
 
-function backToCountries() {
-  document.getElementById("languageModal").classList.remove("active");
+window.backToCountries = function() {
+  document.getElementById("languageModal")?.classList.remove("active");
   openCountryModal();
-}
+};

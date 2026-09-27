@@ -19,12 +19,9 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 .logout{background:linear-gradient(135deg,var(--gold),#b8941f);color:#111;padding:11px 28px;border-radius:40px;text-decoration:none;font-weight:600;transition:.3s;box-shadow:0 5px 20px rgba(212,175,55,.3);}
 .logout:hover{background:linear-gradient(135deg,var(--gold-light),var(--gold));transform:translateY(-3px);}
 .dashboard{padding:60px 8% 140px;max-width:1500px;margin:auto;}
-.welcome{margin-bottom:20px;}
+.welcome{margin-bottom:45px;}
 .welcome h1{font-size:42px;color:var(--gold);font-weight:700;font-family:'Cinzel',serif;}
 .welcome p{color:#a0b0c9;margin-top:10px;font-size:15px;}
-.lang-bar{display:flex;gap:10px;margin-bottom:30px;flex-wrap:wrap;}
-.lang-btn{background:rgba(15,26,46,.8);border:1px solid rgba(212,175,55,.25);color:#a0b0c9;padding:8px 18px;border-radius:30px;font-size:13px;cursor:pointer;transition:.25s;font-weight:500;}
-.lang-btn.active{background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:700;border-color:#d4af37;box-shadow:0 4px 15px rgba(212,175,55,.3);}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:25px;margin-bottom:45px;}
 .stat-card{background:rgba(15,26,46,.6);backdrop-filter:blur(20px);border:1px solid rgba(212,175,55,.25);border-radius:18px;padding:30px;transition:.4s;}
 .stat-card:hover{transform:translateY(-8px);border-color:var(--gold);}
@@ -48,7 +45,8 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 .card-icon{width:50px;height:50px;background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.1));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;}
 .card h3{color:var(--gold);margin-bottom:10px;font-size:18px;font-family:'Cinzel',serif;}
 .card p{color:#a0b0c9;line-height:1.7;font-size:14px;}
-.ann-item{background:rgba(5,12,24,.6); padding:12px; border-radius:10px; margin-bottom:10px; border-left:3px solid var(--gold);}
+.ann-item{background:rgba(5,12,24,.6); padding:12px; border-radius:10px; margin-bottom:10px; border-left:3px solid var(--gold); animation:fadeIn 0.3s ease;}
+@keyframes fadeIn {from{opacity:0; transform:translateY(-5px);} to{opacity:1; transform:translateY(0);}}
 .ann-item h4{color:var(--gold); font-size:14px; margin-bottom:4px;}
 .ann-item p{color:#ddd; font-size:13px; line-height:1.5;}
 .ann-item small{color:#8a9bb0; font-size:11px;}
@@ -65,10 +63,16 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 </style>
 </head>
 <body>
-<header><div class="logo">FREEMASONRY HERITAGE</div><div class="header-actions"><a href="#" class="logout" data-i18n="logout">Logout</a></div></header>
+<header>
+<div class="logo">FREEMASONRY HERITAGE</div>
+<div class="header-actions" style="display:flex;align-items:center;gap:12px;position:relative;">
+<button id="langBtn" style="background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.3);width:42px;height:42px;border-radius:50%;cursor:pointer;color:#d4af37;font-size:20px;display:flex;align-items:center;justify-content:center;">🌐</button>
+<div id="langMenu" style="display:none;position:absolute;top:55px;right:110px;background:#0f1a2e;border:1px solid rgba(212,175,55,.3);border-radius:12px;padding:8px;z-index:2000;min-width:160px;box-shadow:0 10px 30px rgba(0,0,0,.5);"></div>
+<a href="#" class="logout" data-i18n="logout">Logout</a>
+</div>
+</header>
 <main class="dashboard">
 <div class="welcome"><h1 data-i18n="welcome">Welcome Back, <span id="greetingName">Member</span></h1><p data-i18n="welcome_sub">Member Portal • Secure Access • Real-time Updates</p></div>
-<div class="lang-bar" id="langBar"></div>
 <section class="stats">
 <div class="stat-card"><h4 data-i18n="stat_status">Membership Status</h4><h2 id="statStatus">Pending</h2></div>
 <div class="stat-card"><h4 data-i18n="stat_lodge">Lodge</h4><h2 id="statLodge">No:9701</h2></div>
@@ -103,7 +107,7 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
   <a href="laws.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2-1.9-2-2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg><span class="nav-label" data-i18n="laws">Laws</span></a>
 </nav>
 <script>
-// LANGUAGE FROM REGISTRATION
+// LANGUAGE SYSTEM FROM REGISTRATION PAGE
 const LANG_NAMES={en:"English",sw:"Kiswahili",lg:"Luganda"};
 const T={
 en:{logout:"Logout",home:"Home",req:"Requirements",app:"Application",members:"Members",help:"Helpline",laws:"Laws",welcome:"Welcome Back,",welcome_sub:"Member Portal • Secure Access • Real-time Updates",stat_status:"Membership Status",stat_lodge:"Lodge",stat_since:"Member Since",full_name:"Full Name",email:"Email Address",phone:"Phone Number",country:"Country",interest:"Area of Interest",mem_status:"Membership Status",lodge_info:"Lodge Information",lodge_p:"Access meeting schedules, lodge announcements, and member activities.",ann_title:"Latest Announcements",loading:"Loading...",support:"Membership Support",support_p:"Contact your Lodge Director for guidance and fraternity assistance."},
@@ -111,43 +115,43 @@ sw:{logout:"Toka",home:"Nyumbani",req:"Mahitaji",app:"Maombi",members:"Wanachama
 lg:{logout:"Fuluma",home:"Awaka",req:"Ebyetaago",app:"Okusaba",members:"Bammemba",help:"Obuyambi",laws:"Amateeka",welcome:"Tukwanirizza,",welcome_sub:"Portal ya Mmemba • Okuyingira Okwakuumibwa • Ebipya Ebikwatagana",stat_status:"Embeera y'Obwammemba",stat_lodge:"Lodge",stat_since:"Mmemba Okuva",full_name:"Amannya Goonna",email:"Email",phone:"Namba y'Essimu",country:"Ensi",interest:"Ekitundu Ky'oyagala",mem_status:"Embeera y'Obwammemba",lodge_info:"Ebikwata ku Lodge",lodge_p:"Funa enteekateeka z'enkuŋŋaana, ebirango bya lodge, n'emirimu gya bammemba.",ann_title:"Ebirango Ebipya",loading:"Biteekebwa...",support:"Obuyambi bw'Obwammemba",support_p:"Tukwatagane ne Dayirekita wo wa Lodge okufuna obulagirizi n'obuyambi."}
 };
 function getLang(){return localStorage.getItem('siteLang')||'';}
-function setLang(l){localStorage.setItem('siteLang',l);applyLang();}
+function setLang(l){localStorage.setItem('siteLang',l);applyLang();document.getElementById('langMenu').style.display='none';}
 function applyLang(){
  const lang=getLang()||'en';
  document.querySelectorAll('[data-i18n]').forEach(el=>{
   const k=el.dataset.i18n;
   if(T[lang]&&T[lang][k]){
    if(el.id==='greetingName') return;
-   if(el.tagName==='H1'&&el.innerHTML.includes('greetingName')){
-    const name=document.getElementById('greetingName')?.textContent||'Member';
-    el.innerHTML=T[lang][k]+' <span id="greetingName">'+name+'</span>';
-   } else { el.textContent=T[lang][k]; }
+   if(el.tagName==='H1'&&el.innerHTML.includes('greetingName')){const n=document.getElementById('greetingName')?.textContent||'Member';el.innerHTML=T[lang][k]+' <span id="greetingName">'+n+'</span>';}
+   else el.textContent=T[lang][k];
   }
  });
- document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+ document.querySelectorAll('#langMenu div').forEach(d=>{const isActive=d.dataset.lang===lang; d.style.background=isActive?'#d4af37':'transparent'; d.style.color=isActive?'#111':'#a0b0c9';});
 }
-function buildLangBarFromRegister(userData){
+function buildLangMenu(userData){
  let langs=userData.availableLangs||null;
  let def=userData.preferredLang||null;
  if(!langs){
-   if(userData.country==="Tanzania"){ langs=["sw","en"]; def="sw"; }
-   else if(userData.country==="Uganda"){ langs=["en","sw","lg"]; def="en"; }
-   else if(userData.country==="Kenya"){ langs=["en","sw"]; def="en"; }
-   else { langs=["en","sw"]; def="en"; }
+  if(userData.country==="Tanzania"){langs=["sw","en"];def="sw";}
+  else if(userData.country==="Uganda"){langs=["en","sw","lg"];def="en";}
+  else if(userData.country==="Kenya"){langs=["en","sw"];def="en";}
+  else{langs=["en","sw"];def="en";}
  }
- if(!getLang() && def){ localStorage.setItem('siteLang',def); }
- const bar=document.getElementById('langBar'); bar.innerHTML='';
+ if(!getLang()&&def){localStorage.setItem('siteLang',def);}
+ const menu=document.getElementById('langMenu');menu.innerHTML='';
  langs.forEach(l=>{
-  const btn=document.createElement('button');
-  btn.className='lang-btn'+(getLang()===l?' active':'');
-  btn.dataset.lang=l;
-  btn.textContent=LANG_NAMES[l]||l;
-  btn.onclick=()=>setLang(l);
-  bar.appendChild(btn);
+  const div=document.createElement('div');
+  div.dataset.lang=l;
+  div.textContent=LANG_NAMES[l]||l;
+  div.style.cssText='padding:10px 14px;cursor:pointer;border-radius:8px;margin-bottom:4px;font-size:13px;transition:.2s;';
+  div.onclick=()=>setLang(l);
+  menu.appendChild(div);
  });
  applyLang();
 }
-window.buildLangBarFromRegister=buildLangBarFromRegister;
+document.getElementById('langBtn').onclick=(e)=>{e.stopPropagation();const m=document.getElementById('langMenu');m.style.display=m.style.display==='none'?'block':'none';};
+document.addEventListener('click',()=>{document.getElementById('langMenu').style.display='none';});
+window.buildLangMenu=buildLangMenu;
 </script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -157,7 +161,7 @@ const firebaseConfig={apiKey:"AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",authDomai
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const database=getDatabase(app);
 const greetingName=document.getElementById("greetingName");const memberName=document.getElementById("memberName");const memberEmail=document.getElementById("memberEmail");const profileInitial=document.getElementById("profileInitial");const detailFullName=document.getElementById("detailFullName");const detailEmail=document.getElementById("detailEmail");const detailPhone=document.getElementById("detailPhone");const detailCountry=document.getElementById("detailCountry");const detailInterest=document.getElementById("detailInterest");const memberStatus=document.getElementById("memberStatus");const statStatus=document.getElementById("statStatus");const statLodge=document.getElementById("statLodge");const statSince=document.getElementById("statSince");
 onAuthStateChanged(auth,(user)=>{
-  if(!user){ window.location.href="login.html"; return; }
+  if(!user){window.location.href="login.html";return;}
   memberEmail.textContent=user.email;detailEmail.textContent=user.email;
   const userRef=ref(database,"users/"+user.uid);
   onValue(userRef,(snapshot)=>{
@@ -171,14 +175,14 @@ onAuthStateChanged(auth,(user)=>{
       detailPhone.textContent=data.phone||"Not Provided";
       detailCountry.textContent=data.country||"Not Set";
       detailInterest.textContent=data.interest||"Not Set";
-      if(window.buildLangBarFromRegister) window.buildLangBarFromRegister(data);
+      if(window.buildLangMenu) window.buildLangMenu(data);
       if(data.timestamp){const y=new Date(data.timestamp).getFullYear();statSince.textContent=isNaN(y)?"-":y;}
       if(data.status==="approved"||data.status==="active"){memberStatus.textContent="ACTIVE";memberStatus.className="status-active";statStatus.textContent="Active";}else{memberStatus.textContent="PENDING";memberStatus.className="status-pending";statStatus.textContent="Pending";}
       statLodge.textContent=data.lodgeNumber||"NO:9701";
       if(data.role==="admin") document.getElementById("adminPanel").style.display="block";
     }else{
       memberName.textContent="Profile Not Found";
-      if(window.buildLangBarFromRegister) window.buildLangBarFromRegister({country:"default"});
+      if(window.buildLangMenu) window.buildLangMenu({country:"default"});
     }
   });
 });

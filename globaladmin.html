@@ -12,11 +12,11 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 .insta-ring-top{width:44px;height:44px;border-radius:14px;padding:2.5px;background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);display:grid;place-items:center}
 .insta-inner-top{width:100%;height:100%;background:#0b1728;border-radius:11px;display:grid;place-items:center;overflow:hidden}
 .insta-inner-top img{width:28px;height:28px;object-fit:contain}
-.top h1{color:var(--gold);font-size:14px;line-height:1.1;letter-spacing:1px;font-family:Georgia,serif}
+.top h1{color:var(--gold);font-size:14px;line-height:1.1}
 .gold-btn{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#000;border:none;padding:8px 14px;border-radius:20px;font-weight:800;font-size:11px;cursor:pointer}
 #membersList{flex:1;overflow-y:auto;padding-bottom:20px}
-.member-item{display:flex;align-items:center;gap:12px;padding:13px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin:8px 12px;cursor:pointer;transition:.2s}
-.member-item:hover{border-color:var(--gold);transform:translateY(-1px)}
+.member-item{display:flex;align-items:center;gap:12px;padding:13px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin:8px 12px;cursor:pointer}
+.member-item:hover{border-color:var(--gold)}
 .member-item img{width:46px;height:46px;border-radius:50%;border:2px solid var(--gold)}
 .member-item b{color:var(--gold);font-size:13px}.member-item span{color:var(--muted);font-size:10px}
 .admin-badge{background:var(--gold);color:#000;font-size:8px;padding:2px 6px;border-radius:10px;font-weight:800;margin-left:6px}
@@ -26,7 +26,7 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 .msg{max-width:78%;padding:9px 13px;border-radius:14px;margin:5px 0;font-size:13.5px;word-break:break-word}
 .my-msg{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#000;margin-left:auto;border-bottom-right-radius:3px;align-self:flex-end}
 .other-msg{background:var(--card);border:1px solid var(--border);margin-right:auto;border-bottom-left-radius:3px;align-self:flex-start}
-.input-area{background:var(--card);border-top:1px solid var(--border);padding:8px 10px;display:flex;gap:8px;align-items:center}
+.input-area{background:var(--card);border-top:1px solid var(--border);padding:8px 10px;display:flex;gap:8px}
 .input-area input{flex:1;background:#0A1428;border:1px solid var(--border);color:#fff;padding:11px 15px;border-radius:25px;outline:none;font-size:13px}
 .icon-btn{background:var(--gold);color:#000;width:42px;height:42px;border-radius:50%;border:none;display:grid;place-items:center;cursor:pointer}
 </style>
@@ -36,32 +36,27 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
   <div class="top-left">
     <i class="fa fa-arrow-left" style="color:var(--gold);font-size:18px;cursor:pointer" onclick="location.href='help.html'"></i>
     <div class="insta-ring-top"><div class="insta-inner-top"><img src="masonic-icon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2091/2091665.png'"></div></div>
-    <div><h1 id="panelTitle">GLOBAL ADMIN<br>PANEL</h1><small id="panelSub" style="color:#00ff88;font-size:10px">Checking auth...</small></div>
+    <div><h1 id="panelTitle">GLOBAL ADMIN<br>PANEL</h1><small id="panelSub" style="color:#00ff88;font-size:10px">● SYNCING</small></div>
   </div>
-  <button id="adminEmailShow" class="gold-btn" style="background:#0A1428;color:var(--muted);border:1px solid var(--border)">...</button>
+  <button id="roleBtn" class="gold-btn">...</button>
 </div>
 
 <div style="padding:10px 12px">
-  <input id="search" onkeyup="filterM()" placeholder="Search registered members..." style="width:100%;background:#0A1428;border:1px solid #1E2E4F;color:#fff;padding:11px 14px;border-radius:22px;outline:none;font-size:12px;display:none">
-  <p id="infoText" style="color:var(--muted);font-size:9px;margin-top:6px;text-align:center;letter-spacing:.5px"></p>
+  <input id="search" onkeyup="filterM()" placeholder="Search members..." style="width:100%;background:#0A1428;border:1px solid #1E2E4F;color:#fff;padding:11px 14px;border-radius:22px;outline:none;font-size:12px;display:none">
+  <p id="infoText" style="color:var(--muted);font-size:9px;margin-top:6px;text-align:center"></p>
 </div>
 
-<div id="membersList"><div style="text-align:center;padding:40px;color:var(--muted)">Loading from Realtime DB...</div></div>
+<div id="membersList"><div style="text-align:center;padding:40px;color:var(--muted)">Connecting to your Realtime Database...</div></div>
 
 <div id="chatPage">
   <div class="chat-head">
     <i class="fa fa-arrow-left" style="color:var(--gold);font-size:20px;cursor:pointer" onclick="closeChat()"></i>
     <img id="chatImg" style="width:40px;height:40px;border-radius:50%;border:2px solid var(--gold)">
-    <div style="flex:1"><h4 id="chatName" style="color:var(--gold);font-size:14px"></h4><small style="color:#00ff88;font-size:10px">● Encrypted • Real-time</small></div>
+    <div style="flex:1"><h4 id="chatName" style="color:var(--gold)"></h4><small style="color:#00ff88">● Encrypted • Real-time</small></div>
   </div>
   <div id="messages"></div>
-  <div class="input-area">
-    <input id="msgInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter')sendMsg()">
-    <button class="icon-btn" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button>
-  </div>
+  <div class="input-area"><input id="msgInput" placeholder="Type message..." onkeypress="if(event.key==='Enter')sendMsg()"><button class="icon-btn" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button></div>
 </div>
-
-<audio id="snd" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" preload="auto"></audio>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
@@ -83,84 +78,78 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
-// ✅ ADMIN GMAIL - ONLY THIS EMAIL SEES ALL CONTACTS
 const ADMIN_EMAIL = "mansoryfamilyn@gmail.com";
-
-let myId = localStorage.getItem('mansoryId') || 'user_'+Date.now();
-localStorage.setItem('mansoryId', myId);
-let currentChatId=null;
+let myId = localStorage.getItem('mansoryId') || null;
+let myEmail = "";
 let isAdmin = false;
-let currentUserEmail = "";
+let currentChatId=null;
 
 onAuthStateChanged(auth, (user)=>{
   if(user){
     myId = user.uid;
-    currentUserEmail = user.email || "";
-    // ✅ CHECK ADMIN BY GMAIL
-    if(currentUserEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()){
-      isAdmin = true;
-    }
-    document.getElementById('adminEmailShow').innerText = isAdmin? 'ADMIN: '+currentUserEmail : currentUserEmail;
-    document.getElementById('adminEmailShow').style.background = isAdmin? 'linear-gradient(180deg,#F0D185,#D4B16A)' : '#0A1428';
-    document.getElementById('adminEmailShow').style.color = isAdmin? '#000' : '#8A9BB5';
-    loadMembers();
+    myEmail = (user.email||"").toLowerCase();
+    isAdmin = (myEmail === ADMIN_EMAIL.toLowerCase());
+    // Also check role field later from DB
+    document.getElementById('roleBtn').innerText = isAdmin? 'ADMIN' : 'MEMBER';
+    loadFromRoot();
   } else {
-    // Not logged in - treat as member, but still show admin contact
-    // Optional: redirect to login
-    // window.location.href='login.html';
-    currentUserEmail = "guest";
-    document.getElementById('adminEmailShow').innerText = "Member Mode";
-    loadMembers();
+    // For testing without login, allow admin via code?admin=GLOBAL2024
+    if(window.location.search.includes('admin=GLOBAL2024')){ isAdmin=true; myId='ADMIN_TEST'; }
+    document.getElementById('roleBtn').innerText = isAdmin? 'ADMIN (TEST)' : 'Guest';
+    loadFromRoot();
   }
 });
 
-function updateUI(){
-  document.getElementById('panelTitle').innerHTML = isAdmin? 'GLOBAL ADMIN<br>PANEL' : 'ADMIN<br>SUPPORT';
-  document.getElementById('panelSub').innerText = isAdmin? '● ADMIN MODE: '+ADMIN_EMAIL : '● Chat with Administration';
-  document.getElementById('infoText').innerText = isAdmin? '🔒 ADMIN MODE • YOU SEE ALL CONTACTS • REALTIME DB /members' : '🔒 SECURE • Your messages go directly to mansoryfamilyn@gmail.com';
+function loadFromRoot(){
+  document.getElementById('panelSub').innerText = isAdmin? '● ADMIN: '+ADMIN_EMAIL : '● MEMBER MODE';
+  document.getElementById('infoText').innerText = isAdmin? 'ADMIN MODE - YOU SEE ALL CONTACTS - ROOT DB SYNC' : 'SECURE - Chat only with Administration';
   document.getElementById('search').style.display = isAdmin? 'block' : 'none';
-}
+  document.getElementById('panelTitle').innerHTML = isAdmin? 'GLOBAL ADMIN<br>PANEL' : 'ADMIN<br>SUPPORT';
 
-function loadMembers(){
-  updateUI();
-  onValue(ref(db,'members'), (snap)=>{
+  // ✅ YOUR DB IS AT ROOT, NOT /members - Fix for your screenshot
+  onValue(ref(db, '/'), (snap)=>{
     const list=document.getElementById('membersList');
-    const data=snap.val()||{};
+    const raw=snap.val()||{};
     list.innerHTML="";
-    const allMembers = Object.keys(data).map(k=> ({key:k,...data[k]}));
 
-    // Find admin user - flagged or Gmail matches
-    let adminUsers = allMembers.filter(u =>
-      u.email && u.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ||
-      u.isAdmin === true ||
-      (u.name && (u.name.toUpperCase().includes('ADMIN') || u.name.toUpperCase().includes('DIRECTOR')))
+    // Filter only objects that look like users (have email or fullName or phone)
+    const allUsers = Object.keys(raw).filter(k=> typeof raw[k]==='object' && raw[k]!==null && (raw[k].email || raw[k].fullName || raw[k].phone) ).map(k=> ({dbKey:k,...raw[k]}));
+
+    // Find admin users: email matches OR role == admin
+    let adminUsers = allUsers.filter(u =>
+      (u.email && u.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) ||
+      (u.role && u.role.toLowerCase() === 'admin')
     );
 
-    // Fallback default admin if not in DB
     if(adminUsers.length===0){
-      adminUsers = [{key:'ADMIN_DEFAULT', name:'Lodge Director', email:ADMIN_EMAIL, phone:'+254 726 126 580', photo:'', isAdmin:true, uid:'ADMIN_DEFAULT'}];
+      adminUsers=[{dbKey:'ADMIN', fullName:'Mansory Family - Director', email:ADMIN_EMAIL, phone:'0794280683', role:'admin'}];
     }
 
+    // If current user is admin by DB role, upgrade
+    const meFromDB = allUsers.find(u=> u.uid===myId || u.email?.toLowerCase()===myEmail);
+    if(meFromDB && meFromDB.role && meFromDB.role.toLowerCase()==='admin'){ isAdmin=true; document.getElementById('roleBtn').innerText='ADMIN'; document.getElementById('panelSub').innerText='● ADMIN: '+ADMIN_EMAIL+' (role=admin)'; document.getElementById('search').style.display='block'; }
+
     if(isAdmin){
-      // ✅ ADMIN SEES ALL CONTACTS
-      if(allMembers.length===0){
-        list.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--muted)"><p style="color:var(--gold);font-weight:700">ADMIN: ${ADMIN_EMAIL}</p><p style="font-size:12px;margin-top:8px">No members yet in /members</p></div>`;
-        return;
-      }
-      allMembers.forEach(u=>{
-        if(u.uid===myId || (u.email && u.email.toLowerCase()===ADMIN_EMAIL.toLowerCase())) return; // don't show self
-        list.innerHTML+=`<div class="member-item" onclick="openChat('${u.uid||u.key}','${(u.name||'Member').replace(/'/g,'')}','${u.photo||''}')">
-          <img src="${u.photo||'https://ui-avatars.com/api/?name='+encodeURIComponent(u.name||'Member')+'&background=121D33&color=D4B16A'}">
-          <div style="flex:1"><b>${u.name||'Member'} ${u.isAdmin?'<span class=admin-badge>ADMIN</span>':''}</b><br><span>${u.phone||''} ${u.email||''} • Tap to chat</span></div>
-          <i class="fa fa-chevron-right" style="color:var(--gold);font-size:12px"></i>
+      // ADMIN SEES ALL
+      if(allUsers.length===0){ list.innerHTML='<div style="text-align:center;padding:30px">No users found</div>'; return; }
+      allUsers.forEach(u=>{
+        if(u.uid===myId) return;
+        const name = u.fullName || u.name || 'Member';
+        const phone = u.phone || u.countryCode || '';
+        const isUserAdmin = (u.role==='admin' || u.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase());
+        list.innerHTML+=`<div class="member-item" onclick="openChat('${u.uid||u.dbKey}','${name.replace(/'/g,'')}','')">
+          <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=121D33&color=D4B16A">
+          <div style="flex:1"><b>${name} ${isUserAdmin?'<span class=admin-badge>ADMIN</span>':''}</b><br><span>${u.email||''} • ${phone} • ${u.country||''}</span><br><small style="color:var(--muted)">${u.status||''} • ${u.age||''}</small></div>
+          <i class="fa fa-chevron-right" style="color:var(--gold)"></i>
         </div>`;
       });
     } else {
-      // ✅ MEMBER SEES ONLY ADMIN (mansoryfamilyn@gmail.com)
+      // MEMBER SEES ONLY ADMIN
       adminUsers.forEach(u=>{
-        list.innerHTML+=`<div class="member-item" style="border-color:var(--gold);background:linear-gradient(145deg,#1a2a4a,#121D33)" onclick="openChat('${u.uid||u.key}','${(u.name||'Administration').replace(/'/g,'')}','${u.photo||''}')">
-          <img src="${u.photo||'https://cdn-icons-png.flaticon.com/512/2091/2091665.png'}">
-          <div style="flex:1"><b>${u.name||'Administration'} <span class="admin-badge">ADMIN</span></b><br><span>${u.email||ADMIN_EMAIL} • ${u.phone||'+254 726 126 580'}</span><br><small style="color:#00ff88">● Online • Official Admin</small></div>
+        const name = u.fullName || 'Lodge Director - Administration';
+        list.innerHTML+=`<div class="member-item" style="border-color:var(--gold);background:linear-gradient(145deg,#1a2a4a,#121D33)" onclick="openChat('${u.uid||u.dbKey}','${name.replace(/'/g,'')}','')">
+          <img src="https://cdn-icons-png.flaticon.com/512/2091/2091665.png">
+          <div style="flex:1"><b>${name} <span class=admin-badge>ADMIN</span></b><br><span>${u.email||ADMIN_EMAIL} • ${u.phone||''}</span><br><small style="color:#00ff88">● Official • Tap to message Administration</small></div>
           <i class="fa fa-comment-dots" style="color:var(--gold);font-size:18px"></i>
         </div>`;
       });
@@ -168,10 +157,11 @@ function loadMembers(){
   });
 }
 
-window.openChat=(uid,name,photo)=>{
+window.openChat=(uid,name)=>{
+  if(!myId){ myId = localStorage.getItem('mansoryId') || 'user_'+Date.now(); localStorage.setItem('mansoryId', myId); }
   currentChatId=[myId,uid].sort().join("_");
   document.getElementById('chatName').innerText=name;
-  document.getElementById('chatImg').src=photo||'https://cdn-icons-png.flaticon.com/512/2091/2091665.png';
+  document.getElementById('chatImg').src='https://cdn-icons-png.flaticon.com/512/2091/2091665.png';
   document.getElementById('chatPage').style.display='flex';
   onValue(ref(db,`chats/${currentChatId}/messages`), (snap)=>{
     const box=document.getElementById('messages'); box.innerHTML="";
@@ -183,21 +173,13 @@ window.openChat=(uid,name,photo)=>{
       box.appendChild(div);
     });
     box.scrollTop=box.scrollHeight;
-    if(Object.keys(data).length>0){
-      const last = data[Object.keys(data).pop()];
-      if(last.senderId!==myId){ document.getElementById('snd').play().catch(()=>{}); }
-    }
   });
 }
-
 window.sendMsg=async()=>{
   const i=document.getElementById('msgInput'); const txt=i.value.trim(); if(!txt||!currentChatId) return;
-  const r=push(ref(db,`chats/${currentChatId}/messages`)); await set(r,{text:txt,senderId:myId,senderEmail:currentUserEmail,time:Date.now()}); i.value="";
+  const r=push(ref(db,`chats/${currentChatId}/messages`)); await set(r,{text:txt,senderId:myId,senderEmail:myEmail,time:Date.now()}); i.value="";
 }
 window.closeChat=()=>document.getElementById('chatPage').style.display='none';
 window.filterM=()=>{ const v=document.getElementById('search').value.toLowerCase(); document.querySelectorAll('.member-item').forEach(el=>el.style.display=el.innerText.toLowerCase().includes(v)?"flex":"none"); }
-
-// Initial load for guests (if not logged in via auth)
-setTimeout(()=>{ if(document.getElementById('membersList').innerHTML.includes('Loading')) loadMembers(); }, 2000);
 </script>
 </body></html>

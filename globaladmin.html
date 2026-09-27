@@ -4,12 +4,14 @@
 <title>GLOBAL ADMIN PANEL</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
-:root{--bg:#080E1F;--card:#121D33;--border:#1E2E4F;--gold:#D4B16A;--gold2:#F0D185}
+:root{--bg:#080E1F;--card:#121D33;--border:#1E2E4F;--gold:#D4B16A;--gold2:#F0D185;--green:#00ff88}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:column}
+body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 .top{padding:12px;background:var(--card);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
 #membersList{flex:1;overflow-y:auto;padding:8px}
-.member-item{display:flex;align-items:center;gap:12px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin:8px 0;cursor:pointer}
+.member-item{display:flex;align-items:center;gap:12px;padding:13px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin:8px 0;cursor:pointer;position:relative}
+.member-item.new-msg{border:2px solid var(--green);background:linear-gradient(145deg,#0f2a1f,#121D33);order:-1}
+.badge{position:absolute;top:-6px;right:-6px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:22px;height:22px;border-radius:50%;display:grid;place-items:center;padding:0 5px;border:2px solid var(--bg)}
 #chatPage{position:fixed;inset:0;background:var(--bg);z-index:50;display:none;flex-direction:column}
 #messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;background:#080E1F}
 .msg{max-width:78%;padding:10px 13px;border-radius:14px;margin:5px 0;font-size:13px;cursor:pointer}
@@ -25,14 +27,14 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 </head><body>
 
 <div class="top">
-  <div style="display:flex;align-items:center;gap:10px"><i class="fa fa-arrow-left" style="color:var(--gold)" onclick="location.href='help.html'"></i><div style="color:var(--gold);font-weight:800;font-size:12px">GLOBAL ADMIN<br><small id="sub" style="color:#00ff88;font-size:9px">Loading...</small></div></div>
-  <div id="roleBtn" style="font-size:8px;background:var(--gold);color:#000;padding:6px 10px;border-radius:15px;font-weight:800"></div>
+  <div style="display:flex;align-items:center;gap:10px"><i class="fa fa-arrow-left" style="color:var(--gold)" onclick="location.href='help.html'"></i><div style="color:var(--gold);font-weight:800;font-size:12px">GLOBAL ADMIN<br><small id="sub" style="color:var(--green);font-size:9px">Loading...</small></div></div>
+  <div style="display:flex;align-items:center;gap:8px"><div id="notifIcon" style="position:relative;display:none"><i class="fa fa-bell" style="color:var(--green);font-size:20px"></i><span id="notifCount" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:grid;place-items:center"></span></div><div id="roleBtn" style="font-size:8px;background:var(--gold);color:#000;padding:6px 10px;border-radius:15px;font-weight:800">ADMIN MODE</div></div>
 </div>
 
-<div id="membersList"><div style="text-align:center;padding:30px;color:#aaa">Syncing...</div></div>
+<div id="membersList"></div>
 
 <div id="chatPage">
-  <div style="background:var(--card);padding:10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)"><i class="fa fa-arrow-left" style="color:var(--gold)" onclick="closeChat()"></i><img id="chatAvatar" src="https://cdn-icons-png.flaticon.com/512/2091/2091665.png" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--gold)"><h4 id="chatName" style="color:var(--gold);flex:1"></h4></div>
+  <div style="background:var(--card);padding:10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)"><i class="fa fa-arrow-left" style="color:var(--gold)" onclick="closeChat()"></i><img src="https://cdn-icons-png.flaticon.com/512/2091/2091665.png" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--gold)"><div style="flex:1"><h4 id="chatName" style="color:var(--gold)"></h4><small id="chatSub" style="color:#aaa;font-size:9px"></small></div></div>
   <div id="messages"></div>
   <div class="input-area"><input id="msgInput" placeholder="Type message..."><button class="icon-btn" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button></div>
 </div>
@@ -65,107 +67,152 @@ const auth = getAuth(app);
 const ADMIN_EMAIL = "mansoryfamilyn@gmail.com";
 const ADMIN_UID = "DMeM2UuLgDOusNvmzRGZygBdxOG2";
 
-let myId=null, myEmail="", isAdmin=false, currentChatId=null;
+let myId=null, myEmail="", isAdmin=false, currentChatId=null, myInfo=null;
 let selId=null, selText=null;
 
 onAuthStateChanged(auth, (user)=>{
-  if(!user){ document.getElementById('membersList').innerHTML='<div style="text-align:center;padding:40px"><a href="login.html" style="color:var(--gold)">Login first</a></div>'; return; }
+  if(!user) return;
   myId=user.uid; myEmail=(user.email||"").toLowerCase(); isAdmin=(myEmail===ADMIN_EMAIL);
-  document.getElementById('roleBtn').innerText=isAdmin? 'ADMIN MODE' : 'MEMBER MODE';
-  document.getElementById('roleBtn').style.display = isAdmin? 'block' : 'none';
-  document.getElementById('sub').innerText=isAdmin? 'ADMIN MODE - See All Members' : 'ADMINISTRATION CHANNEL';
+  document.getElementById('sub').innerText=isAdmin?'ADMIN MODE - See All Members':'ADMINISTRATION CHANNEL';
   loadAll();
 });
 
 async function loadAll(){
   const list=document.getElementById('membersList');
+
+  // Get my info for sending
+  const snapMy = await get(ref(db, myId));
+  const snapMy2 = await get(ref(db, `members/${myId}`));
+  const snapMy3 = await get(ref(db, `users/${myId}`));
+  myInfo = snapMy.val() || snapMy2.val() || snapMy3.val() || {fullName:'Member', phone:'', country:'', email:myEmail};
+
   onValue(ref(db,'/'), async (snapRoot)=>{
     const rawRoot=snapRoot.val()||{};
-    const snapMembers = await get(ref(db,'members')); const rawMembers=snapMembers.val()||{};
-    const snapUsers = await get(ref(db,'users')); const rawUsers=snapUsers.val()||{};
-    const snapChats = await get(ref(db,'chats')); const chatsRaw=snapChats.val()||{};
-
-    let all=[];
-    [rawRoot, rawMembers, rawUsers].forEach(raw=>{
+    const chatsRaw = rawRoot.chats||{};
+    // merge users
+    let users=[];
+    const collect = (raw)=>{
       Object.keys(raw).forEach(k=>{
         const v=raw[k];
-        if(typeof v==='object' && v!==null && v.email){
-          all.push({dbKey:k, uid:v.uid||k,...v});
+        if(typeof v==='object' && v!==null && v.email && k!=='chats'){
+          users.push({dbKey:k, uid:v.uid||k,...v});
         }
       });
-    });
-    const seen=new Set(); const users=[];
-    all.forEach(u=>{ const key=(u.uid||u.email).toLowerCase(); if(!seen.has(key)){ seen.add(key); users.push(u); } });
+    };
+    collect(rawRoot);
+    if(rawRoot.members) collect(rawRoot.members);
+    if(rawRoot.users) collect(rawRoot.users);
+
+    // Deduplicate
+    const seen=new Set(); let uniq=[];
+    users.forEach(u=>{ const key=(u.uid||u.dbKey).toLowerCase(); if(!seen.has(key)){ seen.add(key); uniq.push(u);} });
+    users=uniq;
 
     list.innerHTML="";
+    let totalNew=0;
+    let chatCards=[];
 
     if(isAdmin){
-      // Show users from DB
-      users.forEach(u=>{
-        if((u.uid||u.dbKey)===myId || u.email.toLowerCase()===ADMIN_EMAIL) return;
-        const name=u.fullName||u.name||'Member';
-        list.innerHTML+=`<div class="member-item" onclick="openChat('${u.uid||u.dbKey}','${name.replace(/'/g,'')}','member')">
-          <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=121D33&color=D4B16A" style="width:42px;height:42px;border-radius:50%;border:2px solid var(--gold)">
-          <div style="flex:1"><b style="color:var(--gold)">${name}</b><br><small style="color:#aaa">${u.email} • ${u.phone||''} • ${u.country||''}</small></div>
-        </div>`;
-      });
-      // ALSO show all chats that exist - FIX for No other members yet
+      // Build chat cards with name + number
       Object.keys(chatsRaw).forEach(chatId=>{
-        const msgs=chatsRaw[chatId].messages||{};
-        const count=Object.keys(msgs).length;
+        const chat = chatsRaw[chatId];
+        const msgs = chat.messages||{};
+        const count = Object.keys(msgs).length;
         if(count===0) return;
-        // Find other UID
-        let otherUid = chatId.replace(ADMIN_UID,'').replace(/_/g,'').trim();
-        // If chatId is ADMIN_UID_memberId
-        if(chatId.startsWith(ADMIN_UID+'_')) otherUid = chatId.split('_').pop();
-        else if(chatId.endsWith('_'+ADMIN_UID)) otherUid = chatId.split('_')[0];
-        else otherUid = chatId; // fallback
+        let otherUid = chatId.startsWith(ADMIN_UID+'_')? chatId.split('_').slice(1).join('_') : chatId;
+        if(otherUid===ADMIN_UID) return;
 
-        // Check if already displayed
-        if(list.innerHTML.includes(otherUid)) return;
+        const info = chat.info || {};
+        const member = users.find(u=> (u.uid||u.dbKey)===otherUid) || info;
+        const name = info.fullName || member?.fullName || member?.name || 'Member '+otherUid.slice(0,6);
+        const phone = info.phone || member?.phone || '';
+        const country = info.country || member?.country || '';
+        const email = info.email || member?.email || '';
 
-        const lastKey = Object.keys(msgs).pop();
-        const lastText = lastKey? msgs[lastKey].text : 'New message';
-        const memberInfo = users.find(u=> (u.uid||u.dbKey)===otherUid);
-        const displayName = memberInfo? (memberInfo.fullName||'Member') : 'Member '+otherUid.slice(0,6);
+        const lastKey = Object.keys(msgs).sort((a,b)=> (msgs[b].time||0)-(msgs[a].time||0))[0];
+        const lastMsg = msgs[lastKey];
+        const lastTime = lastMsg?.time || chat.lastTime || 0;
+        const lastText = lastMsg?.text || '';
 
-        list.innerHTML+=`<div class="member-item" style="border-color:#00ff88" onclick="openChat('${otherUid}','${displayName}','member')">
-          <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=121D33&color=00ff88" style="width:42px;height:42px;border-radius:50%;border:2px solid #00ff88">
-          <div style="flex:1"><b style="color:#00ff88">${displayName} • ${count} msgs</b><br><small style="color:#fff">${lastText.slice(0,30)}</small><br><small style="color:#aaa">Tap to reply - ${otherUid.slice(0,8)}</small></div>
-          <i class="fa fa-envelope" style="color:#00ff88"></i>
-        </div>`;
+        const isUnread =!chat.seenByAdmin || (lastMsg && lastMsg.senderId!==ADMIN_UID && lastMsg.time > (chat.seenByAdmin||0));
+        if(isUnread) totalNew++;
+
+        chatCards.push({
+          chatId, otherUid, name, phone, country, email, lastText, lastTime, count, isUnread,
+          initials: name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase()
+        });
       });
 
-      if(list.innerHTML==="") list.innerHTML='<div style="text-align:center;padding:20px;color:#aaa">No members and no chats yet<br><small>Chats will appear here when members message</small></div>';
+      // Sort by lastTime DESC - newest at TOP
+      chatCards.sort((a,b)=> b.lastTime - a.lastTime);
+
+      // Render chats at top
+      chatCards.forEach(c=>{
+        const unreadClass = c.isUnread? 'new-msg' : '';
+        const badge = c.isUnread? `<div class="badge">${c.count}</div>` : '';
+        const phoneDisplay = c.phone? ` • ${c.phone}` : '';
+        list.innerHTML+=`
+          <div class="member-item ${unreadClass}" onclick="openChat('${c.otherUid}','${c.name.replace(/'/g,'')}','${c.phone}','${c.country}')">
+            <div style="width:42px;height:42px;border-radius:50%;background:#121D33;border:2px solid ${c.isUnread?'#00ff88':'#D4B16A'};display:grid;place-items:center;font-weight:800;color:${c.isUnread?'#00ff88':'#D4B16A'}">${c.initials}</div>
+            <div style="flex:1;overflow:hidden">
+              <b style="color:${c.isUnread?'#00ff88':'#D4B16A'}">${c.name}${phoneDisplay}</b><br>
+              <small style="color:${c.isUnread?'#fff':'#aaa'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small>
+              <small style="color:#666">${c.country} • ${c.count} msgs</small>
+            </div>
+            ${c.isUnread? `<i class="fa fa-envelope" style="color:#00ff88"></i>` : `<i class="fa fa-chevron-right" style="color:#D4B16A"></i>`}
+            ${badge}
+          </div>`;
+      });
+
+      // Then regular users without chats at bottom
+      users.forEach(u=>{
+        if((u.uid||u.dbKey)===ADMIN_UID || u.email.toLowerCase()===ADMIN_EMAIL) return;
+        if(chatCards.find(c=> c.otherUid===(u.uid||u.dbKey))) return; // already shown
+        const name=u.fullName||'Member';
+        const initials=name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+        list.innerHTML+=`
+          <div class="member-item" onclick="openChat('${u.uid||u.dbKey}','${name.replace(/'/g,'')}','${u.phone||''}','${u.country||''}')">
+            <div style="width:42px;height:42px;border-radius:50%;background:#121D33;border:2px solid #D4B16A;display:grid;place-items:center;color:#D4B16A;font-weight:800">${initials}</div>
+            <div style="flex:1"><b style="color:#D4B16A">${name}</b><br><small style="color:#aaa">${u.email} • ${u.phone||''} • ${u.country||''}</small></div>
+            <i class="fa fa-chevron-right" style="color:#D4B16A"></i>
+          </div>`;
+      });
+
+      // Notification icon
+      if(totalNew>0){
+        document.getElementById('notifIcon').style.display='block';
+        document.getElementById('notifCount').innerText=totalNew;
+      } else {
+        document.getElementById('notifIcon').style.display='none';
+      }
+
     } else {
-      // ✅ MEMBER VIEW - NO GMAIL, NO NUMBER, ONLY ADMINISTRATION CHANNEL
+      // MEMBER - ADMINISTRATION CHANNEL only, NO gmail/number
       list.innerHTML=`
-        <div class="member-item" style="border:2px solid var(--gold);background:linear-gradient(145deg,#1a2a4a,#121D33);padding:16px" onclick="openChat('${ADMIN_UID}','ADMINISTRATION CHANNEL','admin')">
-          <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);padding:2px;display:grid;place-items:center"><div style="width:100%;height:100%;background:#0b1728;border-radius:50%;display:grid;place-items:center"><img src="https://cdn-icons-png.flaticon.com/512/2091/2091665.png" style="width:28px;height:28px"></div></div>
-          <div style="flex:1">
-            <b style="color:var(--gold);font-size:14px">ADMINISTRATION CHANNEL</b><br>
-            <small style="color:#00ff88">● Official • Encrypted • Real-time</small><br>
-            <small style="color:#aaa">Tap to message Administration</small>
-          </div>
-          <i class="fa fa-shield-alt" style="color:var(--gold);font-size:20px"></i>
-        </div>
-        <div style="text-align:center;padding:20px;color:#555;font-size:10px">Secure channel • Messages are end-to-end encrypted<br>Only Administration can see your messages</div>
-      `;
+        <div class="member-item" style="border:2px solid var(--gold);background:linear-gradient(145deg,#1a2a4a,#121D33)" onclick="openChat('${ADMIN_UID}','ADMINISTRATION CHANNEL','','')">
+          <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);padding:2px;display:grid;place-items:center"><div style="width:100%;height:100%;background:#0b1728;border-radius:50%;display:grid;place-items:center"><i class="fa fa-shield-alt" style="color:var(--gold)"></i></div></div>
+          <div style="flex:1"><b style="color:var(--gold);font-size:14px">ADMINISTRATION CHANNEL</b><br><small style="color:#00ff88">● Official • Encrypted</small><br><small style="color:#aaa">Tap to message Administration</small></div>
+          <i class="fa fa-lock" style="color:var(--gold)"></i>
+        </div>`;
     }
   });
 }
 
-window.openChat=(otherUid, name, type)=>{
-  currentChatId = (type==='admin' ||!isAdmin)? (ADMIN_UID + "_" + myId) : (ADMIN_UID + "_" + otherUid);
-  if(isAdmin && type==='member') currentChatId = ADMIN_UID + "_" + otherUid;
-
+window.openChat=async (otherUid, name, phone, country)=>{
+  currentChatId = isAdmin? (ADMIN_UID + "_" + otherUid) : (ADMIN_UID + "_" + myId);
   document.getElementById('chatName').innerText=name;
+  document.getElementById('chatSub').innerText = phone? `${phone} • ${country}` : (country||'');
   document.getElementById('chatPage').style.display='flex';
+
+  // ✅ Remove notification when opened
+  if(isAdmin){
+    await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:Date.now()});
+  }
 
   onValue(ref(db,`chats/${currentChatId}/messages`), (snap)=>{
     const box=document.getElementById('messages'); box.innerHTML="";
     const data=snap.val()||{};
-    Object.keys(data).forEach(mid=>{
+    Object.keys(data).sort((a,b)=> (data[a].time||0)-(data[b].time||0)).forEach(mid=>{
       const m=data[mid]; const isMe=m.senderId===myId;
       const div=document.createElement('div');
       div.className='msg '+(isMe?'my-msg':'other-msg');
@@ -186,14 +233,31 @@ function showMenu(e, mid, text, isMine){
   document.getElementById('editBtn').style.display=isMine?'flex':'none';
 }
 window.copyMsg=()=>{ navigator.clipboard.writeText(selText); hideMenu(); }
-window.deleteMsg=async()=>{ if(confirm('Delete message?')) await remove(ref(db,`chats/${currentChatId}/messages/${selId}`)); hideMenu(); }
-window.editMsg=async()=>{ const nt=prompt('Edit message:',selText); if(nt) await update(ref(db,`chats/${currentChatId}/messages/${selId}`),{text:nt, edited:true}); hideMenu(); }
+window.deleteMsg=async()=>{ if(confirm('Delete?')) await remove(ref(db,`chats/${currentChatId}/messages/${selId}`)); hideMenu(); }
+window.editMsg=async()=>{ const nt=prompt('Edit:',selText); if(nt) await update(ref(db,`chats/${currentChatId}/messages/${selId}`),{text:nt}); hideMenu(); }
 function hideMenu(){ document.getElementById('ctxMenu').style.display='none'; }
 document.addEventListener('click', e=>{ if(!e.target.closest('#ctxMenu')) hideMenu(); });
+
 window.sendMsg=async()=>{
   const i=document.getElementById('msgInput'); const txt=i.value.trim(); if(!txt||!currentChatId) return;
   const r=push(ref(db,`chats/${currentChatId}/messages`));
   await set(r,{text:txt, senderId:myId, senderEmail:myEmail, time:Date.now()});
+  // ✅ Save user info + lastTime so admin sees NAME + NUMBER at TOP
+  await update(ref(db,`chats/${currentChatId}`),{
+    lastTime: Date.now(),
+    lastMessage: txt,
+    info: {
+      fullName: myInfo.fullName||myInfo.name||'Member',
+      phone: myInfo.phone||'',
+      country: myInfo.country||'',
+      email: myInfo.email||myEmail,
+      uid: myId
+    }
+  });
+  // If member sent, reset seenByAdmin so notification shows
+  if(!isAdmin){
+    await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0});
+  }
   i.value="";
 }
 window.closeChat=()=>document.getElementById('chatPage').style.display='none';

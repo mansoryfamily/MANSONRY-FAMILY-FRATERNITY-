@@ -27,8 +27,6 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 .form-group input,.form-group select{width:100%;max-width:100%;background:#08111f;border:1px solid rgba(212,175,55,.25);border-radius:12px;padding:14px 18px;color:white;font-size:15px;outline:none;box-sizing:border-box;min-width:0;}
 .form-group input:focus,.form-group select:focus{border-color:var(--gold);}
 .phone-wrapper{display:grid;grid-template-columns:100px 1fr;gap:10px;width:100%;max-width:100%;}
-.phone-wrapper select{width:100%;min-width:0;padding:14px 10px;}
-.phone-wrapper input{width:100%;min-width:0;}
 .btn-submit{width:100%;padding:18px;border:none;border-radius:15px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#111;font-size:18px;font-weight:700;cursor:pointer;margin-top:30px;}
 .btn-submit:disabled{opacity:.6;cursor:not-allowed;}
 .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);padding:30px 40px;border-radius:18px;border:2px solid var(--gold);z-index:9999;opacity:0;transition:.4s;text-align:center;min-width:320px;}
@@ -39,16 +37,10 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 </head>
 <body>
 <div id="toast" class="toast"><span class="icon" id="toastIcon"></span><span class="message" id="toastMessage"></span></div>
-
 <header>
 <div class="logo">Freemasonry Heritage</div>
-<div style="display:flex;align-items:center;gap:12px;position:relative;">
-<button id="langBtn" style="background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.3);width:42px;height:42px;border-radius:50%;cursor:pointer;color:#d4af37;font-size:20px;display:flex;align-items:center;justify-content:center;">🌐</button>
-<div id="langMenu" style="display:none;position:absolute;top:55px;right:80px;background:#0f1a2e;border:1px solid rgba(212,175,55,.3);border-radius:12px;padding:8px;z-index:2000;min-width:190px;box-shadow:0 10px 30px rgba(0,0,0,.5);"></div>
 <a href="#" class="logout" data-i18n="logout">Logout</a>
-</div>
 </header>
-
 <main class="container">
 <div class="fraternity-header"><h1 data-i18n="app_title">Membership Application Form</h1></div>
 <form class="form-card" id="applicationForm">
@@ -91,24 +83,7 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 <div class="phone-wrapper">
 <select id="countryCode" required>
 <option value="">Code</option>
-<option value="+254">+254</option>
-<option value="+256">+256</option>
-<option value="+255">+255</option>
-<option value="+250">+250</option>
-<option value="+245">+245</option>
-<option value="+243">+243</option>
-<option value="+27">+27</option>
-<option value="+234">+234</option>
-<option value="+233">+233</option>
-<option value="+251">+251</option>
-<option value="+263">+263</option>
-<option value="+260">+260</option>
-<option value="+267">+267</option>
-<option value="+264">+264</option>
-<option value="+1">+1</option>
-<option value="+44">+44</option>
-<option value="+61">+61</option>
-<option value="+91">+91</option>
+<option value="+254">+254</option><option value="+256">+256</option><option value="+255">+255</option><option value="+250">+250</option><option value="+245">+245</option><option value="+243">+243</option><option value="+27">+27</option><option value="+234">+234</option><option value="+233">+233</option><option value="+251">+251</option><option value="+263">+263</option><option value="+260">+260</option><option value="+267">+267</option><option value="+264">+264</option><option value="+1">+1</option><option value="+44">+44</option><option value="+61">+61</option><option value="+91">+91</option>
 </select>
 <input type="tel" id="phone" placeholder="712345678" required pattern="[0-9]{7,15}">
 </div>
@@ -128,46 +103,35 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 </div>
 <button type="submit" class="btn-submit" id="submitBtn" data-i18n="submit">Submit Application</button>
 </form>
-</main>
-
-<script>
-// === LANGUAGE SYSTEM - EACH COUNTRY = EN + SW + LOCAL ===
-const LANG_NAMES={en:"English",sw:"Kiswahili",lg:"Luganda",rw:"Kinyarwanda",pt:"Português",fr:"Français",zu:"Zulu",ha:"Hausa",tw:"Twi",am:"Amharic",sn:"Shona",bem:"Bemba",tn:"Setswana",ng:"Oshiwambo",hi:"Hindi"};
-const COUNTRY_LANGS_MAP={"Kenya":["en","sw"],"Uganda":["en","sw","lg"],"Tanzania":["sw","en"],"Rwanda":["en","sw","rw"],"Guinea-Bissau":["en","pt"],"DRC":["en","sw","fr"],"South Africa":["en","zu"],"Nigeria":["en","ha"],"Ghana":["en","tw"],"Ethiopia":["en","am"],"Zimbabwe":["en","sn"],"Zambia":["en","bem"],"Botswana":["en","tn"],"Namibia":["en","ng"],"USA":["en"],"Canada":["en","fr"],"UK":["en"],"Australia":["en"],"India":["en","hi"]};
+</main><script>
+// SILENT LISTENER - ALL 15 LANGUAGES - follows dashboard, NO button
 const T={
 en:{logout:"Logout",app_title:"Membership Application Form",personal:"Personal Details",full_name:"Full Name *",dob:"Date of Birth *",id_num:"ID Number *",gender:"Gender *",birth_town:"Birth Town *",nickname:"Nickname",country:"Country *",phone:"Phone Number *",business:"Business Information",business_type:"Type of Business *",business_loc:"Business Location *",lodge:"Lodge Preference",nearest:"Nearest Lodge *",submit:"Submit Application",update:"Update Application"},
 sw:{logout:"Toka",app_title:"Fomu ya Maombi ya Uanachama",personal:"Maelezo Binafsi",full_name:"Jina Kamili *",dob:"Tarehe ya Kuzaliwa *",id_num:"Nambari ya Kitambulisho *",gender:"Jinsia *",birth_town:"Mji wa Kuzaliwa *",nickname:"Jina la Utani",country:"Nchi *",phone:"Nambari ya Simu *",business:"Taarifa za Biashara",business_type:"Aina ya Biashara *",business_loc:"Mahali pa Biashara *",lodge:"Upendeleo wa Lodge",nearest:"Lodge ya Karibu *",submit:"Tuma Maombi",update:"Sasisha Maombi"},
-lg:{logout:"Fuluma",app_title:"Fomu y'Okusaba Obwammemba",personal:"Ebikukwatako",full_name:"Amannya Goonna *",dob:"Ennaku z'Amazaalibwa *",id_num:"Namba ya ID *",gender:"Ekikula *",birth_town:"Kibuga ky'Amazaalibwa *",nickname:"Erinnya Ery'ekisa",country:"Ensi *",phone:"Namba y'Essimu *",business:"Ebikwata ku Bizinensi",business_type:"Ekika kya Bizinensi *",business_loc:"Bizinesi Esangibwa Wa *",lodge:"Lodge Gy'oyagala",nearest:"Lodge Esinga Okumpi *",submit:"Weereza Okusaba",update:"Kyusa Okusaba"}
+lg:{logout:"Fuluma",app_title:"Fomu y'Okusaba Obwammemba",personal:"Ebikukwatako",full_name:"Amannya Goonna *",dob:"Ennaku z'Amazaalibwa *",id_num:"Namba ya ID *",gender:"Ekikula *",birth_town:"Kibuga ky'Amazaalibwa *",nickname:"Erinnya Ery'ekisa",country:"Ensi *",phone:"Namba y'Essimu *",business:"Ebikwata ku Bizinensi",business_type:"Ekika kya Bizinensi *",business_loc:"Bizinesi Esangibwa Wa *",lodge:"Lodge Gy'oyagala",nearest:"Lodge Esinga Okumpi *",submit:"Weereza Okusaba",update:"Kyusa Okusaba"},
+rw:{logout:"Sohoka",app_title:"Ifishi yo Gusaba Ubumwe",personal:"Ibisobanuro Bwite",full_name:"Amazina Yose *",dob:"Itariki y'Amavuko *",id_num:"Numero y'Indangamuntu *",gender:"Igitsina *",birth_town:"Umujyi w'Amavuko *",nickname:"Akazina",country:"Igihugu *",phone:"Numero ya Telefone *",business:"Amakuru y'Ubucuruzi",business_type:"Ubwoko bw'Ubucuruzi *",business_loc:"Aho Ubucuruzi Buherereye *",lodge:"Lodge Uhitemo",nearest:"Lodge Ikuribu *",submit:"Ohereza Gusaba",update:"Vugurura Gusaba"},
+pt:{logout:"Sair",app_title:"Formulário de Candidatura",personal:"Detalhes Pessoais",full_name:"Nome Completo *",dob:"Data de Nascimento *",id_num:"Número de ID *",gender:"Género *",birth_town:"Cidade Natal *",nickname:"Apelido",country:"País *",phone:"Número de Telefone *",business:"Informação Comercial",business_type:"Tipo de Negócio *",business_loc:"Localização do Negócio *",lodge:"Preferência de Lodge",nearest:"Lodge Mais Próximo *",submit:"Enviar Candidatura",update:"Atualizar Candidatura"},
+fr:{logout:"Déconnexion",app_title:"Formulaire de Candidature",personal:"Détails Personnels",full_name:"Nom Complet *",dob:"Date de Naissance *",id_num:"Numéro ID *",gender:"Genre *",birth_town:"Ville Natale *",nickname:"Surnom",country:"Pays *",phone:"Numéro Téléphone *",business:"Info Entreprise",business_type:"Type d'Entreprise *",business_loc:"Emplacement Entreprise *",lodge:"Préférence Loge",nearest:"Loge la Plus Proche *",submit:"Soumettre Candidature",update:"Mettre à Jour"},
+zu:{logout:"Phuma",app_title:"Ifomu Lesicelo Sobulungu",personal:"Imininingwane Yakho",full_name:"Igama Eligcwele *",dob:"Usuku Lokuzalwa *",id_num:"Inombolo Kamazisi *",gender:"Ubulili *",birth_town:"Idolobha Lokuzalwa *",nickname:"Isiteketiso",country:"Izwe *",phone:"Inombolo Yocingo *",business:"Ulwazi Lwebhizinisi",business_type:"Uhlobo Lwebhizinisi *",business_loc:"Indawo Yebhizinisi *",lodge:"Okuthandayo Lodge",nearest:"Lodge Esondele *",submit:"Thumela Isicelo",update:"Buyekeza Isicelo"},
+ha:{logout:"Fita",app_title:"Fom ɗin Memba",personal:"Bayanan Kai",full_name:"Cikakken Suna *",dob:"Ranar Haihuwa *",id_num:"Lambar ID *",gender:"Jinsi *",birth_town:"Garin Haihuwa *",nickname:"Lakabi",country:"Ƙasa *",phone:"Lambar Waya *",business:"Bayanin Kasuwanci",business_type:"Nau'in Kasuwanci *",business_loc:"Wurin Kasuwanci *",lodge:"Zaɓin Lodge",nearest:"Lodge Mafi Kusa *",submit:"Aika Aikace",update:"Sabunta Aikace"},
+tw:{logout:"Fi mu",app_title:"Agbatɔfoɔ Abisadeɛ Fɔm",personal:"Wo Ho Nsɛm",full_name:"Din Paa *",dob:"Awoda *",id_num:"ID Nɔma *",gender:"Bɔbeasu *",birth_town:"Kuromu Bawoe *",nickname:"Abusudin",country:"Ɔman *",phone:"Telefon Nɔma *",business:"Adwadie Ho Nsɛm",business_type:"Adwadie Ko *",business_loc:"Adwadie Beae *",lodge:"Lodge Pɛ",nearest:"Lodge a Ɛbɛn *",submit:"Fa Abisadeɛ Kɔ",update:"Yɛ Abisadeɛ Foforo"},
+am:{logout:"ውጣ",app_title:"የአባልነት ማመልከቻ ቅጽ",personal:"የግል ዝርዝሮች",full_name:"ሙሉ ስም *",dob:"የትውልድ ቀን *",id_num:"መታወቂያ ቁጥር *",gender:"ጾታ *",birth_town:"የትውልድ ከተማ *",nickname:"ቅጽል ስም",country:"ሀገር *",phone:"ስልክ ቁጥር *",business:"የንግድ መረጃ",business_type:"የንግድ አይነት *",business_loc:"የንግድ ቦታ *",lodge:"የሎጅ ምርጫ",nearest:"ቅርብ ሎጅ *",submit:"ማመልከቻ አስገባ",update:"ማመልከቻ አዘምን"},
+sn:{logout:"Buda",app_title:"Fomu Yekunyorera Nhengo",personal:"Ruzivo Rwako",full_name:"Zita Rizere *",dob:"Zuva rekuzvarwa *",id_num:"Nhamba yeID *",gender:"Murume/Mukadzi *",birth_town:"Guta Rekuzvarwa *",nickname:"Zita remadunhurirwa",country:"Nyika *",phone:"Nhamba dzeNhare *",business:"Ruzivo rweBhizinesi",business_type:"Mhando yeBhizinesi *",business_loc:"Nzvimbo yeBhizinesi *",lodge:"Lodge Yaunoda",nearest:"Lodge Iri Pedyo *",submit:"Tumira Chikumbiro",update:"Gadzirisa Chikumbiro"},
+bem:{logout:"Fuma",app_title:"Fomu ya Kupempula Ub member",personal:"Ifikwata Kuli Imwe",full_name:"Ishina Lyonse *",dob:"Ubusuku bwa Kufyalwa *",id_num:"Namba ya ID *",gender:"Umwaume/Umukashi *",birth_town:"Musumba wa Kufyalwa *",nickname:"Ishina lyakuseka",country:"Caro *",phone:"Namba ya Lamba *",business:"Ulubuto lwa Bizinensi",business_type:"Mutundu wa Bizinensi *",business_loc:"Bizinensi Ili Kwi? *",lodge:"Lodge Mupanga",nearest:"Lodge Ipepi *",submit:"Tumeni Ukupempula",update:"Cinjenipo Ukupempula"},
+tn:{logout:"Tswa",app_title:"Foromo ya Kopo ya Botho",personal:"Dintlha tsa Gago",full_name:"Leina le le Feletseng *",dob:"Letsatsi la Matsalo *",id_num:"Nomore ya ID *",gender:"Bong *",birth_town:"Toropo ya Matsalo *",nickname:"Leina la Tshameko",country:"Naga *",phone:"Nomore ya Mogala *",business:"Tshedimosetso ya Kgwebo",business_type:"Mofuta wa Kgwebo *",business_loc:"Lefelo la Kgwebo *",lodge:"Kgetho ya Lodge",nearest:"Lodge e e Gaufi *",submit:"Romela Kopo",update:"Tshwaraganya Kopo"},
+ng:{logout:"Zapo",app_title:"Oformu ya Epulo lyOohambe",personal:"Iiyemo Yoye",full_name:"Edhina Alihe *",dob:"Esiku Lyokuningwa *",id_num:"Onomola yO ID *",gender:"Oshinima *",birth_town:"Oshitopolwa Shokuningwa *",nickname:"Edhina Lyokutseya",country:"Oshilongo *",phone:"Onomola yOngodi *",business:"Ouyele wOshitopolwa",business_type:"Oshigwana shOshitopolwa *",business_loc:"Ehala Lyoshitopolwa *",lodge:"Oshipopiwa shO lodge",nearest:"Olodge Lili Popepi *",submit:"Tuma Epulo",update:"Longekidha Epulo"},
+hi:{logout:"लॉगआउट",app_title:"सदस्यता आवेदन पत्र",personal:"व्यक्तिगत विवरण",full_name:"पूरा नाम *",dob:"जन्म तिथि *",id_num:"आईडी नंबर *",gender:"लिंग *",birth_town:"जन्म शहर *",nickname:"उपनाम",country:"देश *",phone:"फोन नंबर *",business:"व्यापार जानकारी",business_type:"व्यापार का प्रकार *",business_loc:"व्यापार स्थान *",lodge:"लॉज वरीयता",nearest:"निकटतम लॉज *",submit:"आवेदन जमा करें",update:"आवेदन अपडेट करें"}
 };
 function getLang(){return localStorage.getItem('siteLang')||'en';}
-function setLang(l){localStorage.setItem('siteLang',l);applyLang();document.getElementById('langMenu').style.display='none';}
 function tr(k){const lang=getLang();return (T[lang]&&T[lang][k])||T.en[k]||k;}
 function applyLang(){
  const lang=getLang();const dict=T[lang]||T.en;
- document.querySelectorAll('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(dict[key]) el.innerText=dict[key];});
- document.querySelectorAll('#langMenu div').forEach(d=>{
-  if(d.dataset.lang===lang){d.style.background='#d4af37';d.style.color='#111';} else {d.style.background='transparent';d.style.color='#a0b0c9';}
- });
+ document.querySelectorAll('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(dict[key]) el.textContent=dict[key];});
  const btn=document.getElementById('submitBtn');
- if(btn){const isEdit=btn.textContent.includes('Update')||btn.textContent.includes('Sasisha')||btn.textContent.includes('Kyusa'); btn.textContent=isEdit?tr('update'):tr('submit');}
+ if(btn){btn.textContent=btn.textContent.includes('Update')||btn.textContent.includes('Sasisha')||btn.textContent.includes('Kyusa')?tr('update'):tr('submit');}
 }
-function buildLangMenuForCountry(country){
- const langs=COUNTRY_LANGS_MAP[country]||["en","sw"];
- const menu=document.getElementById('langMenu');menu.innerHTML='';
- langs.forEach(l=>{
-  const div=document.createElement('div');
-  div.dataset.lang=l;
-  div.textContent=LANG_NAMES[l]||l;
-  div.style.cssText='padding:10px 14px;cursor:pointer;border-radius:8px;margin-bottom:4px;font-size:13px;';
-  div.onclick=()=>setLang(l);
-  menu.appendChild(div);
- });
- applyLang();
-}
-document.getElementById('langBtn').onclick=(e)=>{e.stopPropagation();const m=document.getElementById('langMenu');m.style.display=m.style.display==='none'?'block':'none';};
-document.addEventListener('click',()=>{document.getElementById('langMenu').style.display='none';});
-document.getElementById('country').addEventListener('change',function(){buildLangMenuForCountry(this.value);});
-buildLangMenuForCountry('Kenya');applyLang();
+applyLang();
+document.addEventListener('DOMContentLoaded',applyLang);
 </script>
 
 <script type="module">
@@ -202,9 +166,8 @@ function fillForm(data){
   document.getElementById('phone').value = data.phoneNumber || '';
   existingStatus = data.status || "pending";
   isEditMode = true;
-  submitBtn.textContent = (function(){const l=localStorage.getItem('siteLang')||'en'; if(l==='sw') return 'Sasisha Maombi'; if(l==='lg') return 'Kyusa Okusaba'; return 'Update Application';})();
+  submitBtn.textContent = tr('update');
   form.classList.add('submitted');
-  if(data.country){const ev=new Event('change');document.getElementById('country').value=data.country;buildLangMenuForCountry(data.country);}
 }
 onAuthStateChanged(auth, async (user) => {
   if (user) {

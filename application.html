@@ -33,27 +33,36 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 .btn-submit:disabled{opacity:.6;cursor:not-allowed;}
 .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);padding:30px 40px;border-radius:18px;border:2px solid var(--gold);z-index:9999;opacity:0;transition:.4s;text-align:center;min-width:320px;}
 .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
-.toast.success{border-color:#4cff88;} .toast.error{border-color:#ff5555;}
+.toast.success{border-color:#4cff88;}.toast.error{border-color:#ff5555;}
 @media(max-width:600px){.form-grid{grid-template-columns:1fr;}.phone-wrapper{grid-template-columns:85px 1fr;gap:8px;}.container{padding:120px 4% 50px;}.form-card{padding:25px 16px;}.fraternity-header h1{font-size:28px;}}
 </style>
 </head>
 <body>
 <div id="toast" class="toast"><span class="icon" id="toastIcon"></span><span class="message" id="toastMessage"></span></div>
-<header><div class="logo">Freemasonry Heritage</div><a href="#" class="logout">Logout</a></header>
+
+<header>
+<div class="logo">Freemasonry Heritage</div>
+<div style="display:flex;align-items:center;gap:12px;position:relative;">
+<button id="langBtn" style="background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.3);width:42px;height:42px;border-radius:50%;cursor:pointer;color:#d4af37;font-size:20px;display:flex;align-items:center;justify-content:center;">🌐</button>
+<div id="langMenu" style="display:none;position:absolute;top:55px;right:80px;background:#0f1a2e;border:1px solid rgba(212,175,55,.3);border-radius:12px;padding:8px;z-index:2000;min-width:190px;box-shadow:0 10px 30px rgba(0,0,0,.5);"></div>
+<a href="#" class="logout" data-i18n="logout">Logout</a>
+</div>
+</header>
+
 <main class="container">
-<div class="fraternity-header"><h1>Membership Application Form</h1></div>
+<div class="fraternity-header"><h1 data-i18n="app_title">Membership Application Form</h1></div>
 <form class="form-card" id="applicationForm">
 <div class="section">
-<h2 class="section-title"><span>1</span>Personal Details</h2>
+<h2 class="section-title"><span>1</span><span data-i18n="personal" style="background:transparent;width:auto;height:auto;border-radius:0;color:var(--gold);">Personal Details</span></h2>
 <div class="form-grid">
-<div class="form-group"><label>Full Name *</label><input type="text" id="fullName" required></div>
-<div class="form-group"><label>Date of Birth *</label><input type="date" id="dob" required></div>
-<div class="form-group"><label>ID Number *</label><input type="text" id="idNumber" required></div>
-<div class="form-group"><label>Gender *</label><select id="gender" required><option value="">Select</option><option>Male</option><option>Female</option></select></div>
-<div class="form-group"><label>Birth Town *</label><input type="text" id="birthTown" required></div>
-<div class="form-group"><label>Nickname</label><input type="text" id="nickname"></div>
+<div class="form-group"><label data-i18n="full_name">Full Name *</label><input type="text" id="fullName" required></div>
+<div class="form-group"><label data-i18n="dob">Date of Birth *</label><input type="date" id="dob" required></div>
+<div class="form-group"><label data-i18n="id_num">ID Number *</label><input type="text" id="idNumber" required></div>
+<div class="form-group"><label data-i18n="gender">Gender *</label><select id="gender" required><option value="">Select</option><option>Male</option><option>Female</option></select></div>
+<div class="form-group"><label data-i18n="birth_town">Birth Town *</label><input type="text" id="birthTown" required></div>
+<div class="form-group"><label data-i18n="nickname">Nickname</label><input type="text" id="nickname"></div>
 <div class="form-group">
-<label>Country *</label>
+<label data-i18n="country">Country *</label>
 <select id="country" required>
 <option value="">Select Country</option>
 <option value="Kenya">🇰🇪 Kenya</option>
@@ -78,28 +87,28 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 </select>
 </div>
 <div class="form-group">
-<label>Phone Number *</label>
+<label data-i18n="phone">Phone Number *</label>
 <div class="phone-wrapper">
 <select id="countryCode" required>
 <option value="">Code</option>
-<option value="+254">+254 Kenya</option>
-<option value="+256">+256 Uganda</option>
-<option value="+255">+255 Tanzania</option>
-<option value="+250">+250 Rwanda</option>
-<option value="+245">+245 Guinea-Bissau</option>
-<option value="+243">+243 DRC</option>
-<option value="+27">+27 SA</option>
-<option value="+234">+234 Nigeria</option>
-<option value="+233">+233 Ghana</option>
-<option value="+251">+251 Ethiopia</option>
-<option value="+263">+263 Zimbabwe</option>
-<option value="+260">+260 Zambia</option>
-<option value="+267">+267 Botswana</option>
-<option value="+264">+264 Namibia</option>
-<option value="+1">+1 USA/Canada</option>
-<option value="+44">+44 UK</option>
-<option value="+61">+61 Australia</option>
-<option value="+91">+91 India</option>
+<option value="+254">+254</option>
+<option value="+256">+256</option>
+<option value="+255">+255</option>
+<option value="+250">+250</option>
+<option value="+245">+245</option>
+<option value="+243">+243</option>
+<option value="+27">+27</option>
+<option value="+234">+234</option>
+<option value="+233">+233</option>
+<option value="+251">+251</option>
+<option value="+263">+263</option>
+<option value="+260">+260</option>
+<option value="+267">+267</option>
+<option value="+264">+264</option>
+<option value="+1">+1</option>
+<option value="+44">+44</option>
+<option value="+61">+61</option>
+<option value="+91">+91</option>
 </select>
 <input type="tel" id="phone" placeholder="712345678" required pattern="[0-9]{7,15}">
 </div>
@@ -107,27 +116,66 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 </div>
 </div>
 <div class="section">
-<h2 class="section-title"><span>2</span>Business Information</h2>
+<h2 class="section-title"><span>2</span><span data-i18n="business" style="background:transparent;width:auto;height:auto;border-radius:0;color:var(--gold);">Business Information</span></h2>
 <div class="form-grid">
-<div class="form-group"><label>Type of Business *</label><input type="text" id="businessType" required></div>
-<div class="form-group"><label>Business Location *</label><input type="text" id="businessLocation" required></div>
+<div class="form-group"><label data-i18n="business_type">Type of Business *</label><input type="text" id="businessType" required></div>
+<div class="form-group"><label data-i18n="business_loc">Business Location *</label><input type="text" id="businessLocation" required></div>
 </div>
 </div>
 <div class="section">
-<h2 class="section-title"><span>3</span>Lodge Preference</h2>
-<div class="form-group"><label>Nearest Lodge *</label><input type="text" id="nearestLodge" required></div>
+<h2 class="section-title"><span>3</span><span data-i18n="lodge" style="background:transparent;width:auto;height:auto;border-radius:0;color:var(--gold);">Lodge Preference</span></h2>
+<div class="form-group"><label data-i18n="nearest">Nearest Lodge *</label><input type="text" id="nearestLodge" required></div>
 </div>
-<button type="submit" class="btn-submit" id="submitBtn">Submit Application</button>
+<button type="submit" class="btn-submit" id="submitBtn" data-i18n="submit">Submit Application</button>
 </form>
 </main>
+
+<script>
+// === LANGUAGE SYSTEM - EACH COUNTRY = EN + SW + LOCAL ===
+const LANG_NAMES={en:"English",sw:"Kiswahili",lg:"Luganda",rw:"Kinyarwanda",pt:"Português",fr:"Français",zu:"Zulu",ha:"Hausa",tw:"Twi",am:"Amharic",sn:"Shona",bem:"Bemba",tn:"Setswana",ng:"Oshiwambo",hi:"Hindi"};
+const COUNTRY_LANGS_MAP={"Kenya":["en","sw"],"Uganda":["en","sw","lg"],"Tanzania":["sw","en"],"Rwanda":["en","sw","rw"],"Guinea-Bissau":["en","pt"],"DRC":["en","sw","fr"],"South Africa":["en","zu"],"Nigeria":["en","ha"],"Ghana":["en","tw"],"Ethiopia":["en","am"],"Zimbabwe":["en","sn"],"Zambia":["en","bem"],"Botswana":["en","tn"],"Namibia":["en","ng"],"USA":["en"],"Canada":["en","fr"],"UK":["en"],"Australia":["en"],"India":["en","hi"]};
+const T={
+en:{logout:"Logout",app_title:"Membership Application Form",personal:"Personal Details",full_name:"Full Name *",dob:"Date of Birth *",id_num:"ID Number *",gender:"Gender *",birth_town:"Birth Town *",nickname:"Nickname",country:"Country *",phone:"Phone Number *",business:"Business Information",business_type:"Type of Business *",business_loc:"Business Location *",lodge:"Lodge Preference",nearest:"Nearest Lodge *",submit:"Submit Application",update:"Update Application"},
+sw:{logout:"Toka",app_title:"Fomu ya Maombi ya Uanachama",personal:"Maelezo Binafsi",full_name:"Jina Kamili *",dob:"Tarehe ya Kuzaliwa *",id_num:"Nambari ya Kitambulisho *",gender:"Jinsia *",birth_town:"Mji wa Kuzaliwa *",nickname:"Jina la Utani",country:"Nchi *",phone:"Nambari ya Simu *",business:"Taarifa za Biashara",business_type:"Aina ya Biashara *",business_loc:"Mahali pa Biashara *",lodge:"Upendeleo wa Lodge",nearest:"Lodge ya Karibu *",submit:"Tuma Maombi",update:"Sasisha Maombi"},
+lg:{logout:"Fuluma",app_title:"Fomu y'Okusaba Obwammemba",personal:"Ebikukwatako",full_name:"Amannya Goonna *",dob:"Ennaku z'Amazaalibwa *",id_num:"Namba ya ID *",gender:"Ekikula *",birth_town:"Kibuga ky'Amazaalibwa *",nickname:"Erinnya Ery'ekisa",country:"Ensi *",phone:"Namba y'Essimu *",business:"Ebikwata ku Bizinensi",business_type:"Ekika kya Bizinensi *",business_loc:"Bizinesi Esangibwa Wa *",lodge:"Lodge Gy'oyagala",nearest:"Lodge Esinga Okumpi *",submit:"Weereza Okusaba",update:"Kyusa Okusaba"}
+};
+function getLang(){return localStorage.getItem('siteLang')||'en';}
+function setLang(l){localStorage.setItem('siteLang',l);applyLang();document.getElementById('langMenu').style.display='none';}
+function tr(k){const lang=getLang();return (T[lang]&&T[lang][k])||T.en[k]||k;}
+function applyLang(){
+ const lang=getLang();const dict=T[lang]||T.en;
+ document.querySelectorAll('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(dict[key]) el.innerText=dict[key];});
+ document.querySelectorAll('#langMenu div').forEach(d=>{
+  if(d.dataset.lang===lang){d.style.background='#d4af37';d.style.color='#111';} else {d.style.background='transparent';d.style.color='#a0b0c9';}
+ });
+ const btn=document.getElementById('submitBtn');
+ if(btn){const isEdit=btn.textContent.includes('Update')||btn.textContent.includes('Sasisha')||btn.textContent.includes('Kyusa'); btn.textContent=isEdit?tr('update'):tr('submit');}
+}
+function buildLangMenuForCountry(country){
+ const langs=COUNTRY_LANGS_MAP[country]||["en","sw"];
+ const menu=document.getElementById('langMenu');menu.innerHTML='';
+ langs.forEach(l=>{
+  const div=document.createElement('div');
+  div.dataset.lang=l;
+  div.textContent=LANG_NAMES[l]||l;
+  div.style.cssText='padding:10px 14px;cursor:pointer;border-radius:8px;margin-bottom:4px;font-size:13px;';
+  div.onclick=()=>setLang(l);
+  menu.appendChild(div);
+ });
+ applyLang();
+}
+document.getElementById('langBtn').onclick=(e)=>{e.stopPropagation();const m=document.getElementById('langMenu');m.style.display=m.style.display==='none'?'block':'none';};
+document.addEventListener('click',()=>{document.getElementById('langMenu').style.display='none';});
+document.getElementById('country').addEventListener('change',function(){buildLangMenuForCountry(this.value);});
+buildLangMenuForCountry('Kenya');applyLang();
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, set, get, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 const firebaseConfig = {apiKey:"AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",authDomain:"mansonry-family-fraternity.firebaseapp.com",databaseURL:"https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",projectId:"mansonry-family-fraternity",storageBucket:"mansonry-family-fraternity.firebasestorage.app",messagingSenderId:"964415179161",appId:"1:964415179161:web:c8fd1a777542932d7c6b08"};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
+const app = initializeApp(firebaseConfig);const auth = getAuth(app);const database = getDatabase(app);
 let currentUser = null;let isEditMode = false;let existingStatus = "pending";
 const form = document.getElementById("applicationForm");
 const submitBtn = document.getElementById("submitBtn");
@@ -154,8 +202,9 @@ function fillForm(data){
   document.getElementById('phone').value = data.phoneNumber || '';
   existingStatus = data.status || "pending";
   isEditMode = true;
-  submitBtn.textContent = "Update Application";
+  submitBtn.textContent = (function(){const l=localStorage.getItem('siteLang')||'en'; if(l==='sw') return 'Sasisha Maombi'; if(l==='lg') return 'Kyusa Okusaba'; return 'Update Application';})();
   form.classList.add('submitted');
+  if(data.country){const ev=new Event('change');document.getElementById('country').value=data.country;buildLangMenuForCountry(data.country);}
 }
 onAuthStateChanged(auth, async (user) => {
   if (user) {
@@ -193,7 +242,6 @@ form.addEventListener("submit", async (e) => {
   } catch(error){
     showToast('error','Save Failed: ' + error.message);
     submitBtn.disabled = false;
-    submitBtn.textContent = isEditMode? "Update Application" : "Submit Application";
   }
 });
 document.querySelector(".logout").addEventListener("click",(e)=>{e.preventDefault();signOut(auth).then(()=>{window.location.href="login.html";});});

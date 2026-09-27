@@ -1,151 +1,106 @@
 <!DOCTYPE html>
 <html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FREEMASONRY HERITAGE - WhatsApp Chat</title>
-<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRnJlZW1hc29ucnkgQ2hhdCIsInNob3J0X25hbWUiOiJGcmVlTWFnIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwODBFMUYiLCJ0aGVtZV9jb2xvciI6IiNEOEIxNkEifQ==">
+<title>GLOBAL ADMIN PANEL - Freemasonry Heritage</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
 :root{--bg:#080E1F;--card:#121D33;--border:#1E2E4F;--gold:#D4B16A;--gold2:#F0D185;--muted:#8A9BB5}
 *{margin:0;padding:0;box-sizing:border-box;font-family:Georgia,serif}
 body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:column}
-.top{padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
-.top h1{color:var(--gold);letter-spacing:2px;font-size:20px;line-height:1.1}
-.gold-btn{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#000;border:none;padding:9px 18px;border-radius:20px;font-weight:800;cursor:pointer}
+.top{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;background:var(--card);border-bottom:1px solid var(--border)}
+.top-left{display:flex;align-items:center;gap:12px}
+.insta-ring-top{width:44px;height:44px;border-radius:14px;padding:2.5px;background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);display:grid;place-items:center}
+.insta-inner-top{width:100%;height:100%;background:#0b1728;border-radius:11px;display:grid;place-items:center;overflow:hidden}
+.insta-inner-top img{width:28px;height:28px;object-fit:contain}
+.top h1{color:var(--gold);letter-spacing:1px;font-size:14px;line-height:1.1}
+.gold-btn{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#000;border:none;padding:9px 18px;border-radius:20px;font-weight:800;cursor:pointer;font-size:11px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin:10px 20px}
 .card small{color:var(--muted);letter-spacing:2px;font-size:10px}.card h3{color:var(--gold);font-size:26px}
 #membersList{flex:1;overflow-y:auto;padding-bottom:110px}
-.member-item{display:flex;align-items:center;gap:12px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin:8px 15px;cursor:pointer;position:relative}
+.member-item{display:flex;align-items:center;gap:12px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin:8px 15px;cursor:pointer}
 .member-item img{width:48px;height:48px;border-radius:50%;border:2px solid var(--gold)}
 .member-item b{color:var(--gold)}.member-item span{color:var(--muted);font-size:11px}
-.notif-badge{position:absolute;top:10px;right:10px;background:#ff3b30;color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;display:none}
 #chatPage{position:fixed;inset:0;background:var(--bg);z-index:20;display:none;flex-direction:column}
 .chat-head{background:var(--card);border-bottom:1px solid var(--border);padding:12px;display:flex;align-items:center;gap:12px}
-#messages{flex:1;overflow-y:auto;padding:18px;background:radial-gradient(circle,#111E36,#080E1F)}
+#messages{flex:1;overflow-y:auto;padding:18px;background:radial-gradient(circle,#111E36,#080E1F);display:flex;flex-direction:column}
 .msg{max-width:78%;padding:10px 14px;border-radius:14px;margin:8px 0;font-family:sans-serif;font-size:14px}
-.my-msg{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#000;margin-left:auto;border-bottom-right-radius:3px}
-.other-msg{background:var(--card);border:1px solid var(--border);margin-right:auto;border-bottom-left-radius:3px}
+.my-msg{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#000;margin-left:auto;border-bottom-right-radius:3px;align-self:flex-end}
+.other-msg{background:var(--card);border:1px solid var(--border);margin-right:auto;border-bottom-left-radius:3px;align-self:flex-start}
 .input-area{background:var(--card);border-top:1px solid var(--border);padding:10px;display:flex;gap:8px}
 .input-area input{flex:1;background:#0A1428;border:1px solid var(--border);color:#fff;padding:12px 16px;border-radius:25px;outline:none}
 .icon-btn{background:var(--gold);color:#000;width:44px;height:44px;border-radius:50%;border:none;display:grid;place-items:center;cursor:pointer}
-.bottom-nav{position:fixed;bottom:12px;left:10px;right:10px;background:rgba(18,29,51,.98);border:1px solid var(--border);border-radius:28px;display:flex;justify-content:space-around;padding:8px;z-index:10}
-.bottom-nav a{color:var(--muted);font-size:10px;text-decoration:none;padding:7px 14px;border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
-.bottom-nav a.active{background:var(--gold);color:#000}
 </style>
 </head><body>
 
-<div class="top"><h1>FREEMASONRY<br>HERITAGE</h1><button class="gold-btn" onclick="enableNotify()"><i class="fa fa-bell"></i> Notify</button></div>
+<div class="top">
+<div class="top-left">
+<i class="fa fa-arrow-left" style="color:var(--gold);font-size:18px;cursor:pointer" onclick="location.href='help.html'"></i>
+<div class="insta-ring-top"><div class="insta-inner-top"><img src="masonic-icon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2091/2091665.png'"></div></div>
+<div><h1>GLOBAL ADMIN<br>PANEL</h1><small style="color:#00ff88;font-size:9px">● LIVE • Encrypted • Real-time</small></div>
+</div>
+<button class="gold-btn" onclick="enableNotify()"><i class="fa fa-bell"></i> Notify</button>
+</div>
 
 <div id="homeView">
-  <div style="padding:10px 20px"><h2 style="color:var(--gold);font-size:32px">WELCOME BACK,<br>MANSORY</h2><p style="color:var(--muted);font-size:11px">Secure Portal • Admin sees all messages instantly</p></div>
+  <div style="padding:15px 20px"><h2 style="color:var(--gold);font-size:28px">WELCOME BACK,<br>MANSORY</h2><p style="color:var(--muted);font-size:11px">Secure Portal • Admin sees all messages instantly</p></div>
   <div class="card"><small>MEMBERSHIP STATUS</small><h3>ACTIVE</h3></div>
-  <div class="card"><small>LODGE</small><h3>NO:9701</h3></div>
   <div class="card"><small>TOTAL REGISTERED</small><h3 id="totalCount">Live Syncing...</h3></div>
+  <div style="padding:10px 20px"><button onclick="showTab('members')" style="width:100%;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;padding:14px;border-radius:12px;border:none;font-weight:800">OPEN GLOBAL CHAT <i class="fa fa-arrow-right"></i></button></div>
 </div>
 
 <div id="membersView" style="display:none;flex-direction:column;flex:1;overflow:hidden">
-  <div style="padding:10px 15px"><input id="search" onkeyup="filterMembers()" placeholder="Tap number to chat (like WhatsApp)..." style="width:100%;background:#0A1428;border:1px solid #1E2E4F;color:#fff;padding:12px;border-radius:22px"></div>
+  <div style="padding:10px 15px"><input id="search" onkeyup="filterMembers()" placeholder="Search members..." style="width:100%;background:#0A1428;border:1px solid #1E2E4F;color:#fff;padding:12px;border-radius:22px"></div>
   <div id="membersList"></div>
 </div>
 
 <div id="chatPage">
   <div class="chat-head">
-    <i class="fa fa-arrow-left" style="color:var(--gold);font-size:20px" onclick="closeChat()"></i>
+    <i class="fa fa-arrow-left" style="color:var(--gold);font-size:20px;cursor:pointer" onclick="closeChat()"></i>
     <img id="chatImg" style="width:42px;height:42px;border-radius:50%;border:2px solid var(--gold)">
     <div style="flex:1"><h4 id="chatName" style="color:var(--gold)"></h4><small style="color:#00ff88">● Online • Real-time • Encrypted</small></div>
   </div>
   <div id="messages"></div>
-  <div class="input-area"><input id="msgInput" placeholder="Type message..."><button class="icon-btn" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button></div>
-</div>
-
-<div class="bottom-nav">
-  <a id="bHome" class="active" onclick="showTab('home')"><i class="fa fa-home"></i>Home</a>
-  <a id="bMembers" onclick="showTab('members')"><span id="msgBadge" style="position:absolute;top:-4px;right:0;background:red;color:#fff;border-radius:50%;width:18px;height:18px;display:none;place-items:center;font-size:10px">0</span><i class="fa fa-users"></i>Members</a>
-  <a><i class="fa fa-file"></i>Req.</a><a><i class="fa fa-comments"></i>Chat</a><a><i class="fa fa-headset"></i>Help</a>
+  <div class="input-area"><input id="msgInput" placeholder="Type message..." onkeypress="if(event.key==='Enter')sendMsg()"><button class="icon-btn" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button></div>
 </div>
 
 <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" preload="auto"></audio>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, push, set, remove, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
-  authDomain: "mansonry-family-fraternity.firebaseapp.com",
-  databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "mansonry-family-fraternity",
-  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
-  messagingSenderId: "964415179161",
-  appId: "1:964415179161:web:c8fd1a777542932d7c6b08"
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-let myId = localStorage.getItem('mansoryId') || 'admin_'+Date.now(); // Change to user_ for members, admin_ for admin
-if(!localStorage.getItem('mansoryId')) localStorage.setItem('mansoryId', myId);
-let isAdmin = myId.startsWith('admin_') || localStorage.getItem('isAdmin')==='true';
-let currentChatId=null, lastMsgCount=0, unread=0;
-
-// ASK FOR NOTIFICATION PERMISSION
-window.enableNotify=()=>{ Notification.requestPermission().then(p=>{ if(p==='granted') alert('Notifications ON - You will get alert when admin replies'); }); }
+import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+const firebaseConfig = { apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM", authDomain: "mansonry-family-fraternity.firebaseapp.com", databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app", projectId: "mansonry-family-fraternity", storageBucket: "mansonry-family-fraternity.firebasestorage.app", messagingSenderId: "964415179161", appId: "1:964415179161:web:c8fd1a777542932d7c6b08" };
+const app = initializeApp(firebaseConfig); const db = getDatabase(app);
+let myId = localStorage.getItem('mansoryId') || 'user_'+Date.now(); localStorage.setItem('mansoryId', myId);
+let currentChatId=null, lastMsgCount=0;
+window.enableNotify=()=>{ Notification.requestPermission().then(p=>{ if(p==='granted') alert('Notifications ON'); }); }
 if(Notification.permission!=='granted') Notification.requestPermission();
-
-// REAL-TIME SYNC ALL REGISTERED CONTACTS
 onValue(ref(db,'members'), (snap)=>{
-  const data=snap.val()||{};
-  document.getElementById('totalCount').innerText = Object.keys(data).length + " MEMBERS LIVE";
+  const data=snap.val()||{}; document.getElementById('totalCount').innerText = Object.keys(data).length + " MEMBERS LIVE";
   const list=document.getElementById('membersList'); list.innerHTML="";
   Object.keys(data).forEach(k=>{
-    const u=data[k];
-    // RULE: If you are NOT admin, you only see admin (CYNTHIA) - users cannot chat each other
-    if(!isAdmin &&!u.name.toUpperCase().includes('CYNTHIA') &&!u.name.toUpperCase().includes('ADMIN')){
-      // Skip non-admin users for normal members - This makes it User->Admin only
-      if(Object.values(data).some(x=>x.name.toUpperCase().includes('CYNTHIA'))) return;
-    }
-    list.innerHTML+=`<div class="member-item" onclick="openChat('${u.uid||k}','${u.name}','${u.photo||''}','${u.phone||''}')">
+    const u=data[k]; if(!u.name) return;
+    list.innerHTML+=`<div class="member-item" onclick="openChat('${u.uid||k}','${u.name.replace(/'/g,'')}','${u.photo||''}')">
       <img src="${u.photo||'https://ui-avatars.com/api/?name='+encodeURIComponent(u.name)+'&background=121D33&color=D4B16A'}">
       <div style="flex:1"><b>${u.name}</b><br><span><i class="fa fa-phone"></i> ${u.phone||''} • Tap to chat</span></div>
-      <div class="notif-badge" id="badge-${u.uid||k}">1</div>
       <i class="fa fa-comment-dots" style="color:var(--gold)"></i>
     </div>`;
   });
 });
-
-window.showTab=(t)=>{
-  document.getElementById('homeView').style.display=t==='home'?'block':'none';
-  document.getElementById('membersView').style.display=t==='members'?'flex':'none';
-  document.getElementById('bHome').classList.toggle('active',t==='home');
-  document.getElementById('bMembers').classList.toggle('active',t==='members');
-  if(t==='members'){ unread=0; document.getElementById('msgBadge').style.display='none'; }
-}
-
+window.showTab=(t)=>{ document.getElementById('homeView').style.display=t==='home'?'block':'none'; document.getElementById('membersView').style.display=t==='members'?'flex':'none'; }
 window.openChat=(uid,name,photo)=>{
   currentChatId=[myId,uid].sort().join("_");
   document.getElementById('chatName').innerText=name;
-  document.getElementById('chatImg').src=photo||'https://ui-avatars.com/api/?name='+name;
+  document.getElementById('chatImg').src=photo||'https://ui-avatars.com/api/?name='+encodeURIComponent(name)+'&background=D4B16A&color=000';
   document.getElementById('chatPage').style.display='flex';
-
   onValue(ref(db,`chats/${currentChatId}/messages`), (snap)=>{
-    const box=document.getElementById('messages');
-    const data=snap.val()||{};
-    const keys=Object.keys(data);
-    // NOTIFICATION WHEN ADMIN REPLIES
+    const box=document.getElementById('messages'); box.innerHTML=""; const data=snap.val()||{}; const keys=Object.keys(data);
     if(keys.length > lastMsgCount && lastMsgCount!==0){
-      const last = data[keys[keys.length-1]];
-      if(last.senderId!== myId){
-        // New reply!
-        document.getElementById('notifSound').play();
-        if(navigator.vibrate) navigator.vibrate(200);
-        if(Notification.permission==='granted'){
-          new Notification('New reply from '+name, {body:last.text, icon:photo});
-        }
-        if(document.getElementById('chatPage').style.display==='none'){
-          unread++; document.getElementById('msgBadge').style.display='grid'; document.getElementById('msgBadge').innerText=unread;
-        }
+      const last = data[keys[keys.length-1]]; if(last.senderId!== myId){
+        document.getElementById('notifSound').play().catch(()=>{});
+        if(Notification.permission==='granted' && document.hidden) new Notification('Reply from '+name,{body:last.text});
       }
     }
     lastMsgCount=keys.length;
-    box.innerHTML="";
     keys.forEach(mid=>{
       const m=data[mid]; const isMe=m.senderId===myId;
       const div=document.createElement('div'); div.className='msg '+(isMe?'my-msg':'other-msg');
@@ -155,13 +110,7 @@ window.openChat=(uid,name,photo)=>{
     box.scrollTop=box.scrollHeight;
   });
 }
-
-window.sendMsg=async()=>{
-  const i=document.getElementById('msgInput'); if(!i.value.trim()||!currentChatId) return;
-  const r=push(ref(db,`chats/${currentChatId}/messages`));
-  await set(r,{text:i.value, senderId:myId, time:Date.now()});
-  i.value="";
-}
+window.sendMsg=async()=>{ const i=document.getElementById('msgInput'); if(!i.value.trim()||!currentChatId) return; const r=push(ref(db,`chats/${currentChatId}/messages`)); await set(r,{text:i.value, senderId:myId, time:Date.now()}); i.value=""; }
 window.closeChat=()=>document.getElementById('chatPage').style.display='none';
 window.filterMembers=()=>{ const v=document.getElementById('search').value.toLowerCase(); document.querySelectorAll('.member-item').forEach(el=>el.style.display=el.innerText.toLowerCase().includes(v)?"flex":"none"); }
 </script>

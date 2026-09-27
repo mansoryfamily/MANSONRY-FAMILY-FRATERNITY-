@@ -73,22 +73,22 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
 <div class="stat-card"><h2 id="rejectedUsers">0</h2><p data-i18n="rejected">Rejected</p></div>
 </div>
 <div class="table-wrapper">
-    <h2 class="table-title" data-i18n="send_ann">📢 Send Announcement</h2>
-    <div id="currentAnnouncementPreview"><p style="color:#a0b0c9;font-size:13px;" data-i18n="loading">Loading current announcement...</p></div>
-    <div style="display:flex;flex-direction:column;gap:15px;">
-        <select id="notificationRecipient"></select>
-        <input type="text" id="notificationTitle" data-i18n-placeholder="ann_title" placeholder="Announcement Title">
-        <textarea id="notificationMessage" rows="5" data-i18n-placeholder="ann_message" placeholder="Write your message here..." style="resize:vertical;"></textarea>
-        <button id="sendNotificationBtn" class="btn-primary" data-i18n="send_all">📢 Send to All Members</button>
-    </div>
+<h2 class="table-title" data-i18n="send_ann">📢 Send Announcement</h2>
+<div id="currentAnnouncementPreview"><p style="color:#a0b0c9;font-size:13px;" data-i18n="loading">Loading current announcement...</p></div>
+<div style="display:flex;flex-direction:column;gap:15px;">
+<select id="notificationRecipient"></select>
+<input type="text" id="notificationTitle" data-i18n-placeholder="ann_title" placeholder="Announcement Title">
+<textarea id="notificationMessage" rows="5" data-i18n-placeholder="ann_message" placeholder="Write your message here..." style="resize:vertical;"></textarea>
+<button id="sendNotificationBtn" class="btn-primary" data-i18n="send_all">📢 Send to All Members</button>
+</div>
 </div>
 <div class="table-wrapper">
-    <h2 class="table-title" data-i18n="delete_ann">🗑️ Delete Announcement / Notifications</h2>
-    <div style="display:flex;flex-direction:column;gap:15px;">
-        <select id="deleteRecipient"></select>
-        <div id="memberNotificationsList" style="max-height:300px;overflow-y:auto;display:none;"></div>
-        <button id="deleteAllBtn" class="btn-danger" style="display:none;" data-i18n="delete_all">Delete ALL Notifications</button>
-    </div>
+<h2 class="table-title" data-i18n="delete_ann">🗑️ Delete Announcement / Notifications</h2>
+<div style="display:flex;flex-direction:column;gap:15px;">
+<select id="deleteRecipient"></select>
+<div id="memberNotificationsList" style="max-height:300px;overflow-y:auto;display:none;"></div>
+<button id="deleteAllBtn" class="btn-danger" style="display:none;" data-i18n="delete_all">Delete ALL Notifications</button>
+</div>
 </div>
 <div class="table-wrapper">
 <h2 class="table-title" data-i18n="member_apps">Member Applications - REAL TIME</h2>
@@ -100,17 +100,31 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
 </div>
 </div>
 </main><script>
-// SILENT LANGUAGE SYSTEM - NO ICON, follows dashboard
+// SILENT LISTENER - ALL 15 LANGUAGES - follows dashboard, NO button
 const TRANSLATIONS={
 en:{logout:"Logout",admin_panel:"Admin Control Panel",total_members:"Total Members",approved:"Approved",pending:"Pending",rejected:"Rejected",send_ann:"📢 Send Announcement",loading:"Loading current announcement...",ann_title:"Announcement Title",ann_message:"Write your message here...",send_all:"📢 Send to All Members",delete_ann:"🗑️ Delete Announcement / Notifications",delete_all:"Delete ALL Notifications",member_apps:"Member Applications - REAL TIME",full_name:"Full Name",phone:"Phone",applied_on:"Applied On",status:"Status",actions:"Actions",connecting:"Connecting to Firebase..."},
-sw:{logout:"Toka",admin_panel:"Jopo la Kudhibiti la Msimamizi",total_members:"Wanachama Wote",approved:"Waliokubaliwa",pending:"Inasubiri",rejected:"Waliokataliwa",send_ann:"📢 Tuma Tangazo",loading:"Inapakia tangazo la sasa...",ann_title:"Kichwa cha Tangazo",ann_message:"Andika ujumbe wako hapa...",send_all:"📢 Tuma kwa Wanachama Wote",delete_ann:"🗑️ Futa Tangazo",delete_all:"Futa Arifa Zote",member_apps:"Maombi ya Wanachama - MOJA KWA MOJA",full_name:"Jina Kamili",phone:"Simu",applied_on:"Aliyeomba Tarehe",status:"Hali",actions:"Vitendo",connecting:"Inaunganisha..."},
-lg:{logout:"Fuluma",admin_panel:"Paneli y'Abayinzii",total_members:"Bammemba Bonna",approved:"Bakkiriziddwa",pending:"Bakyali",rejected:"Bagaaniddwa",send_ann:"📢 Weereza Ebilangiriro",loading:"Kiteekebwa...",ann_title:"Omutwe gw'Ekirangiriro",ann_message:"Wandiika obubaka bwo...",send_all:"📢 Weereza eri Bammemba Bonna",delete_ann:"🗑️ Saza Ebirangiriro",delete_all:"Saza Ebiteesa Byonna",member_apps:"Okusaba kwa Bammemba",full_name:"Amannya Goonna",phone:"Essimu",applied_on:"Yasabye Luli",status:"Embeera",actions:"Ebikolwa",connecting:"Kigatta..."},
-fr:{logout:"Déconnexion",admin_panel:"Panneau d'Administration",total_members:"Total Membres",approved:"Approuvés",pending:"En Attente",rejected:"Rejetés",send_ann:"📢 Envoyer Annonce",loading:"Chargement annonce...",ann_title:"Titre Annonce",ann_message:"Écrivez message...",send_all:"📢 Envoyer à Tous",delete_ann:"🗑️ Supprimer Annonces",delete_all:"Supprimer Tout",member_apps:"Candidatures - TEMPS RÉEL",full_name:"Nom Complet",phone:"Téléphone",applied_on:"Postulé Le",status:"Statut",actions:"Actions",connecting:"Connexion..."},
-pt:{logout:"Sair",admin_panel:"Painel Admin",total_members:"Total Membros",approved:"Aprovados",pending:"Pendente",rejected:"Rejeitados",send_ann:"📢 Enviar Anúncio",loading:"Carregando...",ann_title:"Título Anúncio",ann_message:"Escreva mensagem...",send_all:"📢 Enviar para Todos",delete_ann:"🗑️ Deletar Anúncios",delete_all:"Deletar Tudo",member_apps:"Aplicações - TEMPO REAL",full_name:"Nome Completo",phone:"Telefone",applied_on:"Aplicado Em",status:"Status",actions:"Ações",connecting:"Conectando..."}
+sw:{logout:"Toka",admin_panel:"Jopo la Kudhibiti la Msimamizi",total_members:"Wanachama Wote",approved:"Waliokubaliwa",pending:"Inasubiri",rejected:"Waliokataliwa",send_ann:"📢 Tuma Tangazo",loading:"Inapakia tangazo...",ann_title:"Kichwa cha Tangazo",ann_message:"Andika ujumbe wako hapa...",send_all:"📢 Tuma kwa Wanachama Wote",delete_ann:"🗑️ Futa Tangazo",delete_all:"Futa Arifa Zote",member_apps:"Maombi ya Wanachama - MOJA KWA MOJA",full_name:"Jina Kamili",phone:"Simu",applied_on:"Aliyeomba Tarehe",status:"Hali",actions:"Vitendo",connecting:"Inaunganisha..."},
+lg:{logout:"Fuluma",admin_panel:"Paneli y'Abayinzii",total_members:"Bammemba Bonna",approved:"Bakkiriziddwa",pending:"Bakyali",rejected:"Bagaaniddwa",send_ann:"📢 Weereza Ebilangiriro",loading:"Kiteekebwa...",ann_title:"Omutwe gw'Ekirangiriro",ann_message:"Wandiika obubaka...",send_all:"📢 Weereza eri Bonna",delete_ann:"🗑️ Saza Ebirangiriro",delete_all:"Saza Byonna",member_apps:"Okusaba kwa Bammemba",full_name:"Amannya Goonna",phone:"Essimu",applied_on:"Yasabye Luli",status:"Embeera",actions:"Ebikolwa",connecting:"Kigatta..."},
+rw:{logout:"Sohoka",admin_panel:"Paneli y'Ubuyobozi",total_members:"Abanyamuryango Bose",approved:"Bemejwe",pending:"Bitegereje",rejected:"Banze",send_ann:"📢 Ohereza Itangazo",loading:"Birapakiye...",ann_title:"Umutwe w'Itangazo",ann_message:"Andika ubutumwa...",send_all:"📢 Ohereza kuri Bose",delete_ann:"🗑️ Siba Amatangazo",delete_all:"Siba Byose",member_apps:"Gusaba kw'Abanyamuryango",full_name:"Amazina Yose",phone:"Telefone",applied_on:"Yasabye",status:"Imiterere",actions:"Ibikorwa",connecting:"Irahuza..."},
+pt:{logout:"Sair",admin_panel:"Painel Admin",total_members:"Total Membros",approved:"Aprovados",pending:"Pendente",rejected:"Rejeitados",send_ann:"📢 Enviar Anúncio",loading:"Carregando...",ann_title:"Título Anúncio",ann_message:"Escreva mensagem...",send_all:"📢 Enviar para Todos",delete_ann:"🗑️ Deletar Anúncios",delete_all:"Deletar Tudo",member_apps:"Aplicações - TEMPO REAL",full_name:"Nome Completo",phone:"Telefone",applied_on:"Aplicado Em",status:"Status",actions:"Ações",connecting:"Conectando..."},
+fr:{logout:"Déconnexion",admin_panel:"Panneau d'Administration",total_members:"Total Membres",approved:"Approuvés",pending:"En Attente",rejected:"Rejetés",send_ann:"📢 Envoyer Annonce",loading:"Chargement...",ann_title:"Titre Annonce",ann_message:"Écrivez message...",send_all:"📢 Envoyer à Tous",delete_ann:"🗑️ Supprimer Annonces",delete_all:"Supprimer Tout",member_apps:"Candidatures - TEMPS RÉEL",full_name:"Nom Complet",phone:"Téléphone",applied_on:"Postulé Le",status:"Statut",actions:"Actions",connecting:"Connexion..."},
+zu:{logout:"Phuma",admin_panel:"Iphaneli Yokuphatha",total_members:"Amalungu Onke",approved:"Kuvunyiwe",pending:"Kusalindile",rejected:"Kwaliwe",send_ann:"📢 Thumela Isimemezelo",loading:"Iyalayisha...",ann_title:"Isihloko",ann_message:"Bhala umlayezo...",send_all:"📢 Thumela Kubo Bonke",delete_ann:"🗑️ Susa Izimemezelo",delete_all:"Susa Konke",member_apps:"Izicelo - ISIKHATHI SANGEMPELA",full_name:"Igama Eligcwele",phone:"Ucingo",applied_on:"Ufake Isicelo",status:"Isimo",actions:"Izenzo",connecting:"Iyaxhuma..."},
+ha:{logout:"Fita",admin_panel:"Kwamitin Gudanarwa",total_members:"Jimlar Membobi",approved:"An Amince",pending:"Ana Jira",rejected:"An Ki",send_ann:"📢 Aika Sanarwa",loading:"Ana Lodawa...",ann_title:"Taken Sanarwa",ann_message:"Rubuta sako...",send_all:"📢 Aika ga Dukka",delete_ann:"🗑️ Goge Sanarwa",delete_all:"Goge Dukka",member_apps:"Aikace-aikace - LOKACI NA GASKIYA",full_name:"Cikakken Suna",phone:"Waya",applied_on:"Ya Nema A Ranar",status:"Matsayi",actions:"Ayyuka",connecting:"Ana Haɗawa..."},
+tw:{logout:"Fi mu",admin_panel:"Admin Panel",total_members:"Agbatɔfo Nyinaa",approved:"Wɔapene",pending:"Ɛretwɛn",rejected:"Wɔapo",send_ann:"📢 Fa Abɔnten",loading:"Ɛreda ase...",ann_title:"Ti Abɔnten",ann_message:"Kyerɛw nkra...",send_all:"📢 Fa kɔma Obiara",delete_ann:"🗑️ Popa Abɔnten",delete_all:"Popa Ne Nyinaa",member_apps:"Abisade - BERE ANKASA",full_name:"Din Paa",phone:"Telefon",applied_on:"Ɔbisae Da",status:"Gyinabea",actions:"Nneyɛe",connecting:"Ɛreconnect..."},
+am:{logout:"ውጣ",admin_panel:"የአስተዳደር ፓነል",total_members:"ጠቅላላ አባላት",approved:"ፀድቋል",pending:"በመጠባበቅ ላይ",rejected:"ውድቅ",send_ann:"📢 ማስታወቂያ ላክ",loading:"በመጫን ላይ...",ann_title:"የማስታወቂያ ርዕስ",ann_message:"መልዕክትዎን እዚህ ይጻፉ...",send_all:"📢 ለሁሉም ላክ",delete_ann:"🗑️ ማስታወቂያ ሰርዝ",delete_all:"ሁሉንም ሰርዝ",member_apps:"የአባል ማመልከቻዎች - በቀጥታ",full_name:"ሙሉ ስም",phone:"ስልክ",applied_on:"ጠይቋል",status:"ሁኔታ",actions:"እርምጃዎች",connecting:"በመገናኘት ላይ..."},
+sn:{logout:"Buda",admin_panel:"Paneli yeAdmin",total_members:"Nhengo Dzese",approved:"Zvatenderwa",pending:"Zvakamirira",rejected:"Zvarambwa",send_ann:"📢 Tumira Chiziviso",loading:"Kurodha...",ann_title:"Musoro weChiziviso",ann_message:"Nyora meseji...",send_all:"📢 Tumira kune Vese",delete_ann:"🗑️ Dzima Zviziviso",delete_all:"Dzima Zvese",member_apps:"Zvikumbiro - NGUVA CHAIYO",full_name:"Zita Rizere",phone:"Nhare",applied_on:"Akakumbira Pa",status:"Mamiriro",actions:"Zviito",connecting:"Kubatanidza..."},
+bem:{logout:"Fuma",admin_panel:"Paneli ya Admin",total_members:"Ba Member Bonse",approved:"Basuminishiwa",pending:"Balelolela",rejected:"Bakaniwe",send_ann:"📢 Tumeni Amabiko",loading:"Kulapakia...",ann_title:"Umutwe wa Biko",ann_message:"Lembeni ubutumwa...",send_all:"📢 Tumeni ku Bonse",delete_ann:"🗑️ Fumyeni Amabiko",delete_all:"Fumyeni Yonse",member_apps:"Ukupempula - NGELO INSHITA",full_name:"Ishina Lyonse",phone:"Lamba",applied_on:"Apempwile",status:"Ubu",actions:"Ifikupangwa",connecting:"Kulekutana..."},
+tn:{logout:"Tswa",admin_panel:"Phanele ya Admin",total_members:"Maloko Otlhe",approved:"E Dumeletswe",pending:"E Emetse",rejected:"E Ganetswe",send_ann:"📢 Romela Kitsiso",loading:"E A Layisha...",ann_title:"Setlhogo",ann_message:"Kwala molaetsa...",send_all:"📢 Romela go Botlhe",delete_ann:"🗑️ Phimola Dikitsiso",delete_all:"Phimola Tsotlhe",member_apps:"Dikopo - NAKO YA NNETE",full_name:"Leina",phone:"Mogala",applied_on:"O Kopile Ka",status:"Maemo",actions:"Ditiro",connecting:"E A Golagana..."},
+ng:{logout:"Zapo",admin_panel:"Panela ya Admin",total_members:"Oohambe Ayehe",approved:"Ziminikwa",pending:"Otega Elela",rejected:"Yaanwa",send_ann:"📢 Tuma Etsitho",loading:"Otali Londa...",ann_title:"Omutwe",ann_message:"Shanga omukanda...",send_all:"📢 Tuma kaAyehe",delete_ann:"🗑️ Dhima Iitsitho",delete_all:"Dhima Ayihe",member_apps:"Omapulo - ETHIMBO LYA SHILI",full_name:"Edhina",phone:"Ongodi",applied_on:"Apula",status:"Omhala",actions:"Iilonga",connecting:"Tayi Kumangwa..."},
+hi:{logout:"लॉगआउट",admin_panel:"एडमिन नियंत्रण कक्ष",total_members:"कुल सदस्य",approved:"स्वीकृत",pending:"लंबित",rejected:"अस्वीकृत",send_ann:"📢 घोषणा भेजें",loading:"लोड हो रहा है...",ann_title:"घोषणा शीर्षक",ann_message:"अपना संदेश लिखें...",send_all:"📢 सभी को भेजें",delete_ann:"🗑️ घोषणा हटाएं",delete_all:"सभी हटाएं",member_apps:"सदस्य आवेदन - रीयल टाइम",full_name:"पूरा नाम",phone:"फोन",applied_on:"आवेदन तिथि",status:"स्थिति",actions:"कार्रवाइयाँ",connecting:"कनेक्ट हो रहा है..."}
 };
 function getLang(){return localStorage.getItem('siteLang')||'en';}
-function tr(k){const l=getLang();return (TRANSLATIONS[l]&&TRANSLATIONS[l][k])||TRANSLATIONS.en[k]||k;}
-function applyLang(){document.querySelectorAll('[data-i18n]').forEach(el=>el.innerText=tr(el.dataset.i18n));document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>el.placeholder=tr(el.dataset.i18nPlaceholder));}
+function applyLang(){
+ const lang=getLang(); const dict=TRANSLATIONS[lang]||TRANSLATIONS.en;
+ document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n; if(dict[k]) el.textContent=dict[k];});
+ document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{const k=el.dataset.i18nPlaceholder; if(dict[k]) el.placeholder=dict[k];});
+}
+applyLang();
 document.addEventListener('DOMContentLoaded',applyLang);
 </script>
 
@@ -165,10 +179,14 @@ function loadUsers(){
       if(status === "approved") approved++;else if(status === "rejected") rejected++;else pending++;total++;
       const appliedDate = user.timestamp? new Date(user.timestamp).toLocaleDateString() : 'N/A';
       const isAdmin = user.role === "admin";
-      const deleteBtn =!isAdmin? `<button class="danger" onclick="deleteMember('${uid}','${user.fullName.replace(/'/g,"\\'")}')">🗑️ Delete Member</button>` : '';
+      const deleteBtn =!isAdmin? `<button style="background:#ef4444;color:#fff;border:none;padding:5px 10px;border-radius:6px;margin-left:5px;cursor:pointer;" onclick="deleteMember('${uid}','${user.fullName.replace(/'/g,"\\'")}')">🗑️ Delete</button>` : '';
       html += `<tr><td>${count++}</td><td>${user.fullName}</td><td>${user.email}</td><td>${user.phone || 'N/A'}</td><td>${appliedDate}</td><td><span class="badge ${status}">${status}</span></td><td><div class="dropdown"><button onclick="toggleDropdown('dropdown${uid}')" class="dropbtn">Actions ▼</button><div id="dropdown${uid}" class="dropdown-content"><button onclick="updateStatus('${uid}','approved')">Approve</button><button onclick="updateStatus('${uid}','pending')">Pending</button><button onclick="updateStatus('${uid}','rejected')">Rejected</button>${deleteBtn}</div></div></td></tr>`;
     });
-    usersTable.innerHTML = html;document.getElementById('totalUsers').textContent = total;document.getElementById('approvedUsers').textContent = approved;document.getElementById('pendingUsers').textContent = pending;document.getElementById('rejectedUsers').textContent = rejected;
+    usersTable.innerHTML = html;
+    document.getElementById('totalUsers').textContent = total;
+    document.getElementById('approvedUsers').textContent = approved;
+    document.getElementById('pendingUsers').textContent = pending;
+    document.getElementById('rejectedUsers').textContent = rejected;
   });
 }
 function loadRecipients(){
@@ -186,8 +204,7 @@ sendBtn.addEventListener('click', async () => {
     const admin = auth.currentUser;
     if(!title ||!message){showError("Please enter both Title and Message");return;}
     if(!admin){showError("You must be logged in as admin");return;}
-    sendBtn.disabled = true;
-    sendBtn.textContent = "Sending...";
+    sendBtn.disabled = true;sendBtn.textContent = "Sending...";
     try {
         const timestamp = serverTimestamp();
         const annData = {title: title,message: message,sentBy: admin.uid,sentByEmail: admin.email,timestamp: timestamp};
@@ -229,29 +246,45 @@ deleteRecipientSelect.addEventListener("change", (e) => {
   });
 });
 window.deleteSpecificNotification = function(uid, key){
-  if(confirm("Delete this specific notification?")){
-    remove(ref(database, `notifications/${uid}/${key}`)).then(() => showSuccess("Notification deleted")).catch(err => showError(err.message));
+  if(confirm("Delete this notification?")){
+    remove(ref(database, `notifications/${uid}/${key}`)).then(() => showSuccess("Deleted")).catch(err => showError(err.message));
   }
 }
-window.toggleDropdown = function(id) {document.getElementById(id).classList.toggle("show");}
-window.onclick = function(event) {if (!event.target.matches('.dropbtn')) {document.querySelectorAll(".dropdown-content").forEach(d => d.classList.remove('show'));}}
-window.updateStatus = function(uid, status){update(ref(database, "users/" + uid), { status: status }).then(()=>showSuccess("Status updated")).catch(err=>showError(err.message));}
 window.deleteMember = function(uid, name){
-  if(confirm(`⚠️ WARNING: This will PERMANENTLY delete ${name}. Continue?`)){
-    remove(ref(database, "users/" + uid)).then(()=>showSuccess("Member deleted")).catch(err=>showError(err.message));
+  if(confirm(`Delete ${name}? This cannot be undone.`)){
+    remove(ref(database, `users/${uid}`)).then(()=>showSuccess("Member deleted")).catch(err=>showError(err.message));
   }
 }
-document.getElementById('deleteAllBtn').addEventListener('click', () => {
-  const uid = deleteRecipientSelect.value;
-  if(!uid){showError("Select a member first");return;}
-  if(confirm("Delete ALL notifications?")){
-    if(uid === "all"){remove(ref(database, "announcements")).then(()=>showSuccess("All announcements deleted"));}
-    else{remove(ref(database, `notifications/${uid}`)).then(()=>showSuccess("All notifications deleted"));}
+window.updateStatus = function(uid, status){
+  update(ref(database, `users/${uid}`), {status: status}).then(()=>showSuccess(`Status updated to ${status}`)).catch(err=>showError(err.message));
+  document.querySelectorAll(".dropdown-content").forEach(d=>d.classList.remove("show"));
+}
+window.toggleDropdown = function(id) {
+  document.getElementById(id).classList.toggle("show");
+}
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    document.querySelectorAll(".dropdown-content").forEach(d=>{d.classList.remove("show")});
   }
+}
+deleteAllBtn.addEventListener("click", async()=>{
+  const uid = deleteRecipientSelect.value;
+  if(!uid){showError("Select member");return;}
+  if(!confirm("Are you sure? This will delete ALL notifications.")) return;
+  try{
+    if(uid==="all"){
+      await remove(ref(database, "announcements"));
+      const usersSnap = await get(ref(database, "users"));
+      const updates={};
+      usersSnap.forEach(child=>{updates[`notifications/${child.key}`]=null});
+      await update(ref(database), updates);
+    } else {
+      await remove(ref(database, `notifications/${uid}`));
+    }
+    showSuccess("Deleted successfully");
+  }catch(e){showError(e.message);}
 });
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  signOut(auth).then(() => {window.location.href = "login.html";});
-});
+document.getElementById('logoutBtn').addEventListener('click',()=>{signOut(auth).then(()=>{window.location.href="login.html";});});
 </script>
 </body>
 </html>

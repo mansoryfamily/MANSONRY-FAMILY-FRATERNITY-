@@ -26,7 +26,6 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 .menu button{background:var(--card);border:1px solid var(--border);color:#fff;padding:11px;border-radius:9px;text-align:left;display:flex;gap:10px;align-items:center;cursor:pointer;font-size:13px}
 .menu button:hover{background:var(--gold);color:#000}
 .menu button.danger{color:#ff5a5a}
-/* ✅ Toast */
 #toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:#121D33;border:1px solid var(--gold);color:#fff;padding:12px 20px;border-radius:25px;display:flex;align-items:center;gap:10px;z-index:9999;opacity:0;transition:all.35s ease;box-shadow:0 8px 25px rgba(0,0,0,.7);font-size:13px;font-weight:600}
 #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 #toast i{color:var(--green)}
@@ -34,7 +33,7 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 </head><body>
 
 <div class="top">
-  <div style="display:flex;align-items:center;gap:10px"><i class="fa fa-arrow-left" style="color:var(--gold)" onclick="location.href='help.html'"></i><div style="width:40px;height:40px;border-radius:12px;padding:2px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:grid;place-items:center"><div style="width:100%;height:100%;background:#0b1728;border-radius:10px;display:grid;place-items:center;overflow:hidden"><img src="masonic-icon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2091/2091665.png'" style="width:26px;height:26px"></div></div><div style="color:var(--gold);font-weight:800;font-size:12px">GLOBAL ADMIN<br><small id="sub" style="color:#00ff88;font-size:9px">Only messaged members</small></div></div>
+  <div style="display:flex;align-items:center;gap:10px"><i class="fa fa-arrow-left" style="color:var(--gold)" onclick="location.href='help.html'"></i><div style="width:40px;height:40px;border-radius:12px;padding:2px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:grid;place-items:center"><div style="width:100%;height:100%;background:#0b1728;border-radius:10px;display:grid;place-items:center;overflow:hidden"><img src="masonic-icon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2091/2091665.png'" style="width:26px;height:26px"></div></div><div style="color:var(--gold);font-weight:800;font-size:12px">GLOBAL ADMIN<br><small id="sub" style="color:#00ff88;font-size:9px">Real-time - fetching registration</small></div></div>
   <div id="notifIcon" style="position:relative;display:none"><i class="fa fa-bell" style="color:var(--green);font-size:20px"></i><span id="notifCount" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:grid;place-items:center"></span></div>
 </div>
 
@@ -67,7 +66,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebas
 import { getDatabase, ref, onValue, push, set, remove, update, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-// ✅ CONFIG INJECTED
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -89,41 +87,91 @@ let myId=null, myEmail="", isAdmin=false, currentChatId=null, myInfo=null;
 let selId=null, selText=null, selIsMine=false, replyData=null, selChatId=null;
 
 function showToast(msg="Deleted successfully"){
-  const toast=document.getElementById('toast');
   document.getElementById('toastText').innerText=msg;
-  toast.classList.add('show');
-  setTimeout(()=> toast.classList.remove('show'), 2500);
+  const t=document.getElementById('toast'); t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 2500);
 }
 
 onAuthStateChanged(auth, (u)=>{
   if(!u) return;
   myId=u.uid; myEmail=(u.email||"").toLowerCase(); isAdmin=(myEmail===ADMIN_EMAIL);
-  document.getElementById('sub').innerText=isAdmin?'ADMIN - Only members who messaged':'ADMINISTRATION CHANNEL';
   loadAll();
 });
 
 async function loadAll(){
-  const snapMy = await get(ref(db, myId));
-  myInfo = snapMy.val() || {fullName:'Member', phone:'', country:'', email:myEmail};
+  // ✅ Get my registration from ANY path
+  onValue(ref(db,'/'), (snapRoot)=>{
+    const root = snapRoot.val()||{};
+    const chatsRaw = root.chats||{};
 
-  onValue(ref(db,'chats'), (snapChats)=>{
-    const chatsRaw = snapChats.val()||{};
+    // Build 2 maps: by direct key AND by uid field
+    const byUid = {};
+    const byKey = {};
+
+    function scanCollection(obj){
+      if(!obj || typeof obj!=='object') return;
+      Object.values(obj).forEach(v=>{
+        if(!v || typeof v!=='object') return;
+        // if this is a user record
+        if(v.fullName || v.name || v.phone || v.email){
+          const uid = v.uid || v.userId || v.id;
+          if(uid){
+            byUid[uid] = {...byUid[uid],...v};
+            byUid[uid.toLowerCase?.()||uid] = byUid[uid];
+          }
+        }
+        // nested scan for sub-collections
+        if(v.fullName || v.phone) {
+          // already captured
+        }
+      });
+    }
+
+    // Scan all possible locations
+    scanCollection(root);
+    if(root.users) scanCollection(root.users);
+    if(root.members) scanCollection(root.members);
+    if(root.Members) scanCollection(root.Members);
+    if(root.Users) scanCollection(root.Users);
+    if(root.accounts) scanCollection(root.accounts);
+
+    // Also direct key = uid
+    Object.keys(root).forEach(k=>{
+      const v=root[k];
+      if(v && typeof v==='object' && (v.fullName || v.name || v.phone)){
+        byKey[k]=v;
+        if(v.uid) byUid[v.uid]=v;
+        byUid[k]=v;
+      }
+    });
+
+    // My info real-time
+    myInfo = byUid[myId] || byKey[myId] || root[myId] || (root.users&&root.users[myId]) || (root.members&&root.members[myId]) || myInfo || {fullName:'Member'};
+
     const list=document.getElementById('membersList');
     list.innerHTML=""; let cards=[]; let totalNew=0;
 
     Object.keys(chatsRaw).forEach(chatId=>{
       const chat=chatsRaw[chatId];
+      if(!chat) return;
       if(chat.hiddenFor && chat.hiddenFor[myId]) return;
       if(!chatId.includes(ADMIN_UID)) return;
       let otherUid=chatId.replace(ADMIN_UID+'_','');
       if(!otherUid || otherUid===ADMIN_UID) return;
+      if(!isAdmin && otherUid!==myId) return;
+
       const msgs=chat.messages||{};
       const visibleCount=Object.keys(msgs).filter(mid=>!(msgs[mid].deletedFor && msgs[mid].deletedFor[myId])).length;
-      if(visibleCount===0 &&!chat.lastMessage) return;
+      if(isAdmin && visibleCount===0 &&!chat.lastMessage) return;
+
       const info=chat.info||{};
-      const name=info.fullName||'Member '+otherUid.slice(0,6);
-      const phone=info.phone||'No phone';
-      const country=info.country||'No country';
+      // ✅ REAL REGISTRATION FETCH - priority byUid
+      const reg = byUid[otherUid] || byKey[otherUid] || {};
+
+      const name = reg.fullName || reg.name || reg.username || info.fullName || info.name || 'Member';
+      const phone = reg.phone || reg.phoneNumber || reg.mobile || reg.tel || info.phone || 'No phone';
+      const country = reg.country || reg.Country || reg.location || info.country || 'No country';
+
       let lastMsg=null;
       Object.keys(msgs).sort((a,b)=>(msgs[b].time||0)-(msgs[a].time||0)).forEach(mid=>{
         const m=msgs[mid];
@@ -131,30 +179,32 @@ async function loadAll(){
         if(!lastMsg) lastMsg=m;
       });
       if(!lastMsg) lastMsg={text:chat.lastMessage||'', time:chat.lastTime||0, senderId:''};
+
       const lastTime=lastMsg.time||chat.lastTime||0;
       const isReceived=lastMsg.senderId!==myId && lastMsg.senderId!=='';
       const isUnread=isReceived && (!chat.seenByAdmin || (isAdmin && lastTime > (chat.seenByAdmin||0)));
       if(isAdmin && isUnread) totalNew++;
-      cards.push({chatId, otherUid, name, phone, country, lastText:lastMsg.text||'', lastTime, count:visibleCount, isUnread, isReceived, initials:name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase()});
+
+      cards.push({chatId, otherUid, name, phone, country, lastText:lastMsg.text||'', lastTime, count:visibleCount, isUnread, isReceived, initials:name.slice(0,2).toUpperCase()});
     });
 
     cards.sort((a,b)=> b.lastTime - a.lastTime);
 
     if(isAdmin){
       if(cards.length===0){
-        list.innerHTML='<div style="text-align:center;padding:50px;color:#666"><i class="fa fa-comments" style="font-size:50px;margin-bottom:15px"></i><br>No messages yet<br><small>Only members who message Administration will appear</small></div>';
+        list.innerHTML='<div style="text-align:center;padding:50px;color:#666"><i class="fa fa-comments" style="font-size:50px"></i><br>No messages yet</div>';
       } else {
         cards.forEach(c=>{
           const green=c.isUnread && c.isReceived;
           list.innerHTML+=`
             <div class="member-item ${green?'new-msg':''}" data-chatid="${c.chatId}" data-other="${c.otherUid}">
-              <div style="width:46px;height:46px;border-radius:50%;background:#121D33;border:2px solid ${green?'#00ff88':'#D4B16A'};display:grid;place-items:center;color:${green?'#00ff88':'#D4B16A'};font-weight:800;font-size:15px">${c.initials}</div>
+              <div style="width:46px;height:46px;border-radius:50%;background:#121D33;border:2px solid ${green?'#00ff88':'#D4B16A'};display:grid;place-items:center;color:${green?'#00ff88':'#D4B16A'};font-weight:800">${c.initials}</div>
               <div style="flex:1;overflow:hidden">
                 <b style="color:${green?'#00ff88':'#D4B16A'}">${c.name}</b><br>
                 <small style="color:#D4B16A"><i class="fa fa-phone"></i> ${c.phone} • <i class="fa fa-globe"></i> ${c.country}</small><br>
-                <small style="color:${green?'#fff':'#aaa'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small>
+                <small style="color:${green?'#fff':'#aaa'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText} • ${c.count} msgs</small>
               </div>
-              ${green? `<div style="display:flex;flex-direction:column;align-items:center;gap:2px"><i class="fa fa-envelope" style="color:#00ff88"></i><div class="badge" style="position:static">${c.count}</div></div>` : `<i class="fa fa-chevron-right" style="color:#D4B16A"></i>`}
+              ${green? `<div class="badge" style="position:static">${c.count}</div>` : `<i class="fa fa-chevron-right" style="color:#D4B16A"></i>`}
             </div>`;
         });
       }
@@ -166,14 +216,14 @@ async function loadAll(){
         list.innerHTML=`
           <div class="member-item" data-chatid="${c.chatId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold)">
             <div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center;overflow:hidden"><img src="masonic-icon.png" style="width:28px;height:28px"></div>
-            <div style="flex:1"><b style="color:var(--gold)">ADMINISTRATION CHANNEL</b><br><small style="color:#00ff88">● Official • ${c.count} messages</small><br><small style="color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>
+            <div style="flex:1"><b style="color:var(--gold)">ADMINISTRATION CHANNEL</b><br><small style="color:#00ff88">● Official • ${c.count} messages</small><br><small style="color:#aaa">${c.lastText}</small></div>
             <i class="fa fa-shield-alt" style="color:var(--gold)"></i>
           </div>`;
       } else {
         list.innerHTML=`
-          <div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold);background:linear-gradient(145deg,#1a2a4a,#121D33)">
-            <div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center;overflow:hidden"><img src="masonic-icon.png" style="width:30px;height:30px"></div>
-            <div style="flex:1"><b style="color:var(--gold)">ADMINISTRATION CHANNEL</b><br><small style="color:#00ff88">● Official • Encrypted</small><br><small style="color:#aaa">Tap to message Administration</small></div>
+          <div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold)">
+            <div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center;overflow:hidden"><img src="masonic-icon.png" style="width:28px;height:28px"></div>
+            <div style="flex:1"><b style="color:var(--gold)">ADMINISTRATION CHANNEL</b><br><small style="color:#00ff88">● Official</small><br><small style="color:#aaa">Tap to message</small></div>
             <i class="fa fa-lock" style="color:var(--gold)"></i>
           </div>`;
       }
@@ -186,17 +236,14 @@ async function loadAll(){
           e.preventDefault();
           selChatId=el.dataset.chatid;
           const menu=document.getElementById('chatMenu');
-          const x=e.touches?e.touches[0].clientX:e.clientX; const y=e.touches?e.touches[0].clientY:e.clientY;
-          menu.style.left=(x-120)+'px'; menu.style.top=y+'px'; menu.style.display='flex';
+          menu.style.left=(e.touches?e.touches[0].clientX:e.clientX)-120+'px';
+          menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';
+          menu.style.display='flex';
         };
         el.addEventListener('contextmenu', showChatM);
         el.addEventListener('touchstart', e=>{ timer=setTimeout(()=>showChatM(e),700); });
         el.addEventListener('touchend', ()=>clearTimeout(timer));
-        el.addEventListener('click', (e)=>{
-          if(e.target.closest('#chatMenu')) return;
-          const b=el.querySelector('b');
-          openChat(el.dataset.other, b?b.innerText:'ADMINISTRATION CHANNEL');
-        });
+        el.addEventListener('click', ()=> openChat(el.dataset.other, el.querySelector('b').innerText));
       });
     },100);
   });
@@ -204,8 +251,7 @@ async function loadAll(){
 
 window.openChat=async (otherUid, displayName)=>{
   currentChatId = isAdmin? (ADMIN_UID+"_"+otherUid) : (ADMIN_UID+"_"+myId);
-  document.getElementById('chatName').innerText= displayName.split('•')[0].trim();
-  document.getElementById('chatSub').innerText= displayName.includes('•')? displayName.split('•').slice(1).join('•') : 'Tap hold to reply';
+  document.getElementById('chatName').innerText=displayName;
   document.getElementById('chatPage').style.display='flex';
   if(isAdmin){ await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:Date.now()}); }
 
@@ -223,9 +269,8 @@ window.openChat=async (otherUid, displayName)=>{
       html+=`${m.text}<span style="font-size:8px;opacity:.6;float:right;margin-left:6px;margin-top:4px">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;
       div.innerHTML=html;
       div.addEventListener('contextmenu', e=>{ e.preventDefault(); showMsgMenu(e,mid,m.text,isMe); });
-      let t, startX=0;
-      div.addEventListener('touchstart', e=>{ startX=e.touches[0].clientX; t=setTimeout(()=>showMsgMenu(e,mid,m.text,isMe),600); });
-      div.addEventListener('touchend', e=>{ clearTimeout(t); const diff=e.changedTouches[0].clientX-startX; if(Math.abs(diff)>70){ setReply(m.text, isMe?'You':document.getElementById('chatName').innerText); } });
+      let t; div.addEventListener('touchstart', e=>{ t=setTimeout(()=>showMsgMenu(e,mid,m.text,isMe),600); });
+      div.addEventListener('touchend', ()=>clearTimeout(t));
       box.appendChild(div);
     });
     box.scrollTop=box.scrollHeight;
@@ -235,11 +280,12 @@ window.openChat=async (otherUid, displayName)=>{
 function showMsgMenu(e, mid, text, isMine){
   selId=mid; selText=text; selIsMine=isMine;
   const menu=document.getElementById('msgMenu');
-  const x=e.touches?e.touches[0].clientX:e.clientX; const y=e.touches?e.touches[0].clientY:e.clientY;
-  menu.style.left=(x-100)+'px'; menu.style.top=y+'px'; menu.style.display='flex';
+  menu.style.left=(e.touches?e.touches[0].clientX:e.clientX)-100+'px';
+  menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';
+  menu.style.display='flex';
   document.getElementById('editBtn').style.display=isMine?'flex':'none';
 }
-window.copyMsg=()=>{ navigator.clipboard.writeText(selText); hideMenus(); showToast('Copied to clipboard'); }
+window.copyMsg=()=>{ navigator.clipboard.writeText(selText); hideMenus(); showToast('Copied'); }
 window.editMsg=async()=>{ const nt=prompt('Edit:',selText); if(nt){ await update(ref(db,`chats/${currentChatId}/messages/${selId}`),{text:nt}); showToast('Edited successfully'); } hideMenus(); }
 window.replyMsg=()=>{ setReply(selText, selIsMine?'You':document.getElementById('chatName').innerText); hideMenus(); }
 function setReply(text, name){
@@ -249,15 +295,11 @@ function setReply(text, name){
   document.getElementById('replyToText').innerText=text.slice(0,50);
 }
 window.cancelReply=()=>{ replyData=null; document.getElementById('replyBar').style.display='none'; }
-
 window.deleteForMe=async()=>{
-  if(!selId||!currentChatId) return;
   await update(ref(db,`chats/${currentChatId}/messages/${selId}/deletedFor`),{[myId]:true});
-  hideMenus();
-  showToast('Deleted successfully');
+  hideMenus(); showToast('Deleted successfully');
 }
 window.deleteForEveryone=async()=>{
-  if(!selId||!currentChatId) return;
   if(confirm('Delete for everyone?')){
     await remove(ref(db,`chats/${currentChatId}/messages/${selId}`));
     showToast('Deleted successfully');
@@ -265,10 +307,8 @@ window.deleteForEveryone=async()=>{
   hideMenus();
 }
 window.deleteChatForMe=async()=>{
-  if(!selChatId) selChatId=currentChatId;
-  if(!selChatId) return;
   if(confirm('Delete conversation? It will remain on the other side.')){
-    await update(ref(db,`chats/${selChatId}/hiddenFor`),{[myId]:true});
+    await update(ref(db,`chats/${selChatId||currentChatId}/hiddenFor`),{[myId]:true});
     showToast('Deleted successfully');
   }
   hideMenus();
@@ -282,7 +322,7 @@ window.sendMsg=async()=>{
   if(replyData) payload.replyTo=replyData;
   const r=push(ref(db,`chats/${currentChatId}/messages`));
   await set(r,payload);
-  await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(), lastMessage:txt, info:{fullName:myInfo.fullName||myInfo.name||'Member', phone:myInfo.phone||'', country:myInfo.country||'', email:myInfo.email||myEmail, uid:myId}, hiddenFor:{}});
+  await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(), lastMessage:txt, info:{fullName:myInfo.fullName||myInfo.name||'Member', phone:myInfo.phone||myInfo.phoneNumber||'', country:myInfo.country||'', email:myInfo.email||myEmail, uid:myId}, hiddenFor:{}});
   if(!isAdmin){ await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}); }
   i.value=""; cancelReply();
 }

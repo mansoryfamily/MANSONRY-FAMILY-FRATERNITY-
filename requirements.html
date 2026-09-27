@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freemasonry | Membership Requirements</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'Poppins',sans-serif;background:radial-gradient(circle at top right,rgba(212,175,55,.08),transparent 30%),linear-gradient(135deg,#07111f,#0f1a2e 55%,#091321);color:#fff;min-height:100vh;padding-bottom:130px;}
+.header{position:sticky;top:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;background:rgba(7,17,31,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,175,55,.18);}
+.logo{color:#f1ca52;font-size:20px;font-weight:700;letter-spacing:.3px;}
+.logout-btn{border:1px solid rgba(212,175,55,.45);background:rgba(212,175,55,.08);color:#f1ca52;padding:9px 18px;border-radius:10px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:.25s ease;}
+.logout-btn:hover{background:#d4af37;color:#111;}
+.container{width:92%;max-width:1000px;margin:0 auto;padding:45px 0 40px;}
+.hero{text-align:center;margin-bottom:35px;}
+.hero h1{color:#f1ca52;font-size:clamp(28px,5vw,44px);line-height:1.2;margin-bottom:12px;}
+.hero p{color:#aebbd0;font-size:14px;max-width:650px;margin:auto;line-height:1.8;}
+.card{background:rgba(15,26,46,.88);border:1px solid rgba(212,175,55,.18);border-radius:22px;padding:30px;box-shadow:0 20px 50px rgba(0,0,0,.35);margin-bottom:28px;}
+.card-title{color:#f1ca52;font-size:21px;font-weight:600;margin-bottom:10px;}
+.card-description{color:#aebbd0;font-size:13px;line-height:1.8;margin-bottom:25px;}
+.currency-notice{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.2);border-radius:12px;padding:13px 16px;margin-bottom:20px;color:#d9e1ed;font-size:12px;line-height:1.7;}
+.currency-notice strong{color:#f1ca52;}
+.price-list{display:flex;flex-direction:column;gap:12px;}
+.price-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 18px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);transition:.25s ease;}
+.price-row:hover{border-color:rgba(212,175,55,.3);background:rgba(212,175,55,.05);}
+.price-info{flex:1;}
+.price-name{color:#fff;font-size:14px;font-weight:600;margin-bottom:4px;}
+.price-description{color:#8998ae;font-size:11px;line-height:1.6;}
+.price{color:#f1ca52;font-size:16px;font-weight:700;white-space:nowrap;}
+.total-row{margin-top:8px;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.3);}
+.total-row.price-name{color:#f1ca52;}
+.total-row.price{font-size:19px;}
+.note-box{margin-top:22px;padding:17px 18px;border-left:3px solid #d4af37;background:rgba(212,175,55,.06);border-radius:0 12px 12px 0;}
+.note-box p{color:#aebbd0;font-size:12px;line-height:1.8;}
+.note-box strong{color:#f1ca52;}
+.why-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-top:20px;}
+.why-item{padding:20px;border-radius:15px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);}
+.why-icon{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(212,175,55,.1);color:#f1ca52;margin-bottom:12px;font-size:18px;}
+.why-item h3{font-size:14px;color:#fff;margin-bottom:6px;}
+.why-item p{color:#8998ae;font-size:11px;line-height:1.7;}
+.bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(15,26,46,.94);backdrop-filter:blur(25px);padding:10px;border-radius:22px;display:flex;gap:8px;border:1px solid rgba(212,175,55,.25);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;}
+.nav-item{width:90px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#a0b0c9;border-radius:16px;font-size:11px;font-weight:500;transition:.25s ease;font-family:'Poppins',sans-serif;}
+.nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;transition:.25s;}
+.nav-label{line-height:1.2;text-align:center;}
+.nav-item:hover{background:rgba(212,175,55,.1);color:#f1ca52;}
+.nav-item.active{background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:600;box-shadow:0 6px 18px rgba(212,175,55,.35);}
+.loading{opacity:.65;}
+@media(max-width:900px){.bottom-nav{left:50%;transform:translateX(-50%);width:calc(100% - 30px);max-width:600px;justify-content:space-between;}.nav-item{width:calc(16.66% - 7px);height:65px;}.nav-label{font-size:10px;}}
+@media(max-width:650px){.header{padding:0 4%;}.logo{font-size:17px;}.container{width:94%;padding-top:35px;}.card{padding:20px;border-radius:18px;}.why-grid{grid-template-columns:1fr;}.price-row{padding:15px;}}
+@media(max-width:480px){.header{height:64px;}.logout-btn{padding:8px 13px;font-size:11px;}.hero h1{font-size:27px;}.hero p{font-size:12px;}.nav-item{height:60px;}.nav-icon{width:22px;height:22px;}.nav-label{font-size:9px;}.bottom-nav{bottom:15px;padding:7px;gap:4px;border-radius:18px;}}
+</style>
+</head><body>
+<header class="header">
+  <div class="logo">Freemasonry Heritage</div>
+  <button class="logout-btn" id="logoutBtn" data-i18n="logout">Logout</button>
+</header>
+<main class="container">
+  <section class="hero">
+    <h1 data-i18n="begin_journey">Begin Your Journey With Us</h1>
+    <p data-i18n="begin_desc">Discover the requirements for becoming part of our fraternity and take the first step toward joining our brotherhood.</p>
+  </section>
+  <section class="card">
+    <h2 class="card-title" data-i18n="membership_req">Membership Requirements</h2>
+    <p class="card-description" data-i18n="membership_desc">Please review the membership fees and requirements below. All applicable amounts are displayed in your local currency when available.</p>
+    <div class="currency-notice" id="currencyNotice">
+      <strong data-i18n="currency">Currency:</strong>
+      <span id="currencyText" data-i18n="loading_currency">Loading your local currency...</span>
+    </div>
+    <div class="price-list">
+      <div class="price-row"><div class="price-info"><div class="price-name" data-i18n="initiation_fee">Initiation Fee</div><div class="price-description" data-i18n="initiation_desc">In Freemasonry, initiation fee is required,the purpose of initiation is to symbolically transform a candidate from darkness to light through a ritual that represents death of his old ignorant self and rebirth as a better, moral man...</div></div><div class="price loading" data-kes="1800">Loading...</div></div>
+      <div class="price-row"><div class="price-info"><div class="price-name" data-i18n="gown">Gown / Uniform</div><div class="price-description" data-i18n="gown_desc">The purpose of a uniform is to create equality, identity, discipline and unity by removing outward differences in status, wealth or background...</div></div><div class="price loading" data-kes="1200">Loading...</div></div>
+      <div class="price-row"><div class="price-info"><div class="price-name" data-i18n="camel">Camel Blood</div><div class="price-description" data-i18n="camel_desc">In Freemasonry, Camel blood is used during initiation; blood is only symbolic, representing life, commitment and the seriousness of the oath...</div></div><div class="price loading" data-kes="1400">Loading...</div></div>
+      <div class="price-row"><div class="price-info"><div class="price-name" data-i18n="bank_card">Bank Card Opening</div><div class="price-description" data-i18n="bank_desc">We open for our members a bank which he/she used to withdraw the money every where...</div></div><div class="price loading" data-kes="2500">Loading...</div></div>
+      <div class="price-row"><div class="price-info"><div class="price-name" data-i18n="registration">Registration Fee</div><div class="price-description" data-i18n="registration_desc">In Freemasonry, the registration fee is a one-time payment required to join that covers lodge expenses, charity and membership materials...</div></div><div class="price loading" data-kes="4472.97">Loading...</div></div>
+      <div class="price-row total-row"><div class="price-info"><div class="price-name" data-i18n="total">Total Amount</div><div class="price-description" data-i18n="total_desc">Total amount required for the listed membership fees.</div></div><div class="price loading" data-kes="11372.97">Loading...</div></div>
+    </div>
+    <div class="note-box">
+      <p><strong data-i18n="important">Important:</strong> <span data-i18n="important_desc">Membership requirements and fees should be reviewed carefully before submitting your application. Please ensure that all information provided during registration is accurate and complete. NOTE‼️ its not amust for member to pay all the amount at once, only registration fee is the first and a must, others are done in steps as instructions given by lodge director depending on activity to be done.</span></p>
+    </div>
+  </section>
+  <section class="card">
+    <h2 class="card-title" data-i18n="why_join">Why Join Us?</h2>
+    <p class="card-description" data-i18n="why_desc">Becoming a member gives you the opportunity to connect with other members, participate in fraternity activities, and continue your personal journey within the organization...</p>
+    <div class="why-grid">
+      <div class="why-item"><div class="why-icon">♟</div><h3 data-i18n="brotherhood">Brotherhood</h3><p data-i18n="brotherhood_desc">Build meaningful connections and become part of a community of members who share common values.</p></div>
+      <div class="why-item"><div class="why-icon">★</div><h3 data-i18n="growth">Personal Growth</h3><p data-i18n="growth_desc">Develop discipline, confidence, responsibility and leadership through your membership journey.</p></div>
+      <div class="why-item"><div class="why-icon">◎</div><h3 data-i18n="network">Member Network</h3><p data-i18n="network_desc">Connect with members and build relationships across different communities and locations.</p></div>
+      <div class="why-item"><div class="why-icon">◆</div><h3 data-i18n="heritage">Heritage</h3><p data-i18n="heritage_desc">Learn about the traditions, principles and heritage associated with the fraternity.</p></div>
+    </div>
+  </section>
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="nav-label" data-i18n="home">Home</span></a>
+    <a href="requirements.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span class="nav-label" data-i18n="requirements">Requirements</span></a>
+    <a href="application.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg><span class="nav-label" data-i18n="application">Application</span></a>
+    <a href="member.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span class="nav-label" data-i18n="members">Members</span></a>
+    <a href="help.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.39-1.11-.59-2.28-.59-3.53 0-.55-.45-1-1-1H4c-.55 0-1.45-1 1 0 9.39 7.61 17 17 17.55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1z"/></svg><span class="nav-label" data-i18n="helpline">Helpline</span></a>
+    <a href="laws.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 1.9-2 2v12c0 1.1 0 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg><span class="nav-label" data-i18n="laws">Laws</span></a>
+  </nav>
+</main><script>
+// SILENT TRANSLATION - follows dashboard
+const TRANSLATIONS={
+en:{logout:"Logout",home:"Home",requirements:"Requirements",application:"Application",members:"Members",helpline:"Helpline",laws:"Laws",begin_journey:"Begin Your Journey With Us",begin_desc:"Discover the requirements for becoming part of our fraternity and take the first step toward joining our brotherhood.",membership_req:"Membership Requirements",membership_desc:"Please review the membership fees and requirements below. All applicable amounts are displayed in your local currency when available.",currency:"Currency:",loading_currency:"Loading your local currency...",initiation_fee:"Initiation Fee",initiation_desc:"In Freemasonry, initiation fee is required,the purpose of initiation is to symbolically transform a candidate from darkness to light...",gown:"Gown / Uniform",gown_desc:"The purpose of a uniform is to create equality, identity, discipline and unity...",camel:"Camel Blood",camel_desc:"In Freemasonry, Camel blood is used during initiation; blood is only symbolic...",bank_card:"Bank Card Opening",bank_desc:"We open for our members a bank which he/she used to withdraw the money every where...",registration:"Registration Fee",registration_desc:"In Freemasonry, the registration fee is a one-time payment required to join...",total:"Total Amount",total_desc:"Total amount required for the listed membership fees.",important:"Important:",important_desc:"Membership requirements and fees should be reviewed carefully before submitting your application. NOTE‼️ its not amust for member to pay all the amount at once, only registration fee is the first and a must.",why_join:"Why Join Us?",why_desc:"Becoming a member gives you the opportunity to connect with other members...",brotherhood:"Brotherhood",brotherhood_desc:"Build meaningful connections and become part of a community of members who share common values.",growth:"Personal Growth",growth_desc:"Develop discipline, confidence, responsibility and leadership through your membership journey.",network:"Member Network",network_desc:"Connect with members and build relationships across different communities and locations.",heritage:"Heritage",heritage_desc:"Learn about the traditions, principles and heritage associated with the fraternity."},
+sw:{logout:"Toka",home:"Nyumbani",requirements:"Mahitaji",application:"Maombi",members:"Wanachama",helpline:"Msaada",laws:"Sheria",begin_journey:"Anza Safari Yako Nasi",begin_desc:"Gundua mahitaji ya kuwa sehemu ya undugu wetu na chukua hatua ya kwanza.",membership_req:"Mahitaji ya Uanachama",membership_desc:"Tafadhali kagua ada na mahitaji ya uanachama hapa chini.",currency:"Sarafu:",loading_currency:"Inapakia sarafu yako...",initiation_fee:"Ada ya Kuanzishwa",initiation_desc:"Katika Freemasonry, ada ya kuanzishwa inahitajika, kusudi ni kumgeuza mwombaji kutoka gizani hadi mwangaza...",gown:"Gauni / Sare",gown_desc:"Kusudi la sare ni kuunda usawa, utambulisho, nidhamu na umoja...",camel:"Damu ya Ngamia",camel_desc:"Katika Freemasonry, damu ya ngamia hutumiwa wakati wa kuanzishwa; damu ni ishara tu...",bank_card:"Kufungua Kadi ya Benki",bank_desc:"Tunawafungulia wanachama wetu benki ambayo huitumia kutoa pesa kila mahali...",registration:"Ada ya Usajili",registration_desc:"Katika Freemasonry, ada ya usajili ni malipo ya mara moja...",total:"Jumla ya Kiasi",total_desc:"Jumla ya kiasi kinachohitajika kwa ada zilizoorodheshwa.",important:"Muhimu:",important_desc:"Mahitaji ya uanachama yanapaswa kukaguliwa kwa uangalifu kabla ya kutuma maombi. Sio lazima kulipa kiasi chote mara moja.",why_join:"Kwa Nini Ujiunge Nasi?",why_desc:"Kuwa mwanachama kunakupa fursa ya kuungana na wanachama wengine...",brotherhood:"Udugu",brotherhood_desc:"Jenga miunganisho yenye maana na kuwa sehemu ya jamii ya wanachama.",growth:"Ukuaji Binafsi",growth_desc:"Kuza nidhamu, ujasiri, uwajibikaji na uongozi.",network:"Mtandao wa Wanachama",network_desc:"Ungana na wanachama na jenga uhusiano.",heritage:"Urithi",heritage_desc:"Jifunze kuhusu mila, kanuni na urithi wa undugu."}
+};
+function getLang(){return localStorage.getItem('siteLang')||'en';}
+function tr(k){const l=getLang();return (TRANSLATIONS[l]&&TRANSLATIONS[l][k])||TRANSLATIONS.en[k]||k;}
+function applyLang(){document.querySelectorAll('[data-i18n]').forEach(el=>el.innerText=tr(el.dataset.i18n));}
+document.addEventListener('DOMContentLoaded',applyLang);
+</script>
+<script>
+(function(){
+  const LAST_UID_KEY = "mf_last_uid";
+  const CACHE_PREFIX = "mf_currency_cache_";
+  const currencySymbols = {KES:"KSh",UGX:"UGx",TZS:"TSh",RWF:"FRw",CDF:"FC",ZAR:"R",NGN:"₦",GHS:"GH₵",ETB:"Br",USD:"$",ZMW:"ZK",BWP:"P",NAD:"N$",GBP:"£",CAD:"C$",AUD:"A$",INR:"₹"};
+  function getCache(uid){try{const raw=localStorage.getItem(CACHE_PREFIX+uid);if(!raw)return null;const data=JSON.parse(raw);if(!data||!data.currency||!Array.isArray(data.prices))return null;return data;}catch(e){return null;}}
+  function formatCachedPrice(amount,currency){if(typeof amount!=="number")return "Unavailable";const symbol=currencySymbols[currency]||currency;return symbol+" "+amount.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
+  function renderCachedCurrency(cache){if(!cache)return false;const currencyText=document.getElementById("currencyText");const prices=document.querySelectorAll(".price");if(currencyText){let text=currencySymbols[cache.currency]||cache.currency;text+=" ("+cache.currency+")";if(cache.country){text+=" — "+cache.country;}currencyText.textContent=text;}prices.forEach(function(priceElement,index){if(Array.isArray(cache.prices)&&typeof cache.prices[index]==="number"){priceElement.textContent=formatCachedPrice(cache.prices[index],cache.currency);priceElement.classList.remove("loading");}});return true;}
+  try{const lastUid=localStorage.getItem(LAST_UID_KEY);if(lastUid){const cached=getCache(lastUid);if(cached){window.__currencyCacheRendered=renderCachedCurrency(cached);}}}catch(e){}
+  window.__MF_CURRENCY_CACHE__={LAST_UID_KEY,CACHE_PREFIX,currencySymbols,getCache,renderCachedCurrency,formatCachedPrice};
+})();
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+const firebaseConfig = { apiKey:"AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM", authDomain:"mansonry-family-fraternity.firebaseapp.com", databaseURL:"https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app", projectId:"mansonry-family-fraternity", storageBucket:"mansonry-family-fraternity.firebasestorage.app", messagingSenderId:"964415179161", appId:"1:964415179161:web:c8fd1a777542932d7c6b08" };
+const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getDatabase(app);
+const countryCurrencies={"kenya":"KES","uganda":"UGX","tanzania":"TZS","rwanda":"RWF","drc":"CDF","democratic republic of the congo":"CDF","south africa":"ZAR","nigeria":"NGN","ghana":"GHS","ethiopia":"ETB","zimbabwe":"USD","zambia":"ZMW","botswana":"BWP","namibia":"NAD","usa":"USD","uk":"GBP","canada":"CAD","australia":"AUD","india":"INR"};
+const currencySymbols=window.__MF_CURRENCY_CACHE__.currencySymbols;
+const basePricesKES=[1800,1200,1400,2500,4472.97,11372.97];
+const currencyText=document.getElementById("currencyText");const priceElements=document.querySelectorAll(".price");
+function normalizeCountry(country){if(!country)return "";return String(country).trim().toLowerCase().replace(/\s+/g," ");}
+function getCurrencyFromMember(member){const country=normalizeCountry(member.country);if(country==="zimbabwe")return "USD";const savedCurrency=String(member.currencyCode||"").trim().toUpperCase();if(savedCurrency&&currencySymbols[savedCurrency])return savedCurrency;return (countryCurrencies[country]||"KES");}
+function formatPrice(amount,currency){if(typeof amount!=="number"||!isFinite(amount))return "Unavailable";const symbol=currencySymbols[currency]||currency;return symbol+" "+amount.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
+function showCurrency(currency,country){let text=currencySymbols[currency]||currency;text+=" ("+currency+")";if(country){text+=" — "+country;}currencyText.textContent=text;}
+function showLoading(){if(window.__currencyCacheRendered)return;currencyText.textContent="Loading your local currency...";priceElements.forEach(function(element){element.textContent="Loading...";element.classList.add("loading");});}
+function showCurrencyError(){if(window.__currencyCacheRendered){currencyText.textContent+=" — Unable to refresh live rates right now.";return;}currencyText.textContent="Unable to determine your currency.";priceElements.forEach(function(element){element.textContent="Unavailable";element.classList.remove("loading");});}
+function saveCurrencyCache(uid,currency,country,prices){try{const cache={currency:country,country:country||"",prices:prices,updatedAt:Date.now()};const realCache={currency:currency,country:country||"",prices:prices,updatedAt:Date.now()};localStorage.setItem(window.__MF_CURRENCY_CACHE__.CACHE_PREFIX+uid,JSON.stringify(realCache));localStorage.setItem(window.__MF_CURRENCY_CACHE__.LAST_UID_KEY,uid);}catch(e){}}
+function renderPrices(prices,currency){if(!Array.isArray(prices))return;priceElements.forEach(function(element,index){if(typeof prices[index]==="number"){element.textContent=formatPrice(prices[index],currency);element.classList.remove("loading");}});}
+function showKESPrices(){renderPrices(basePricesKES,"KES");}
+async function getRealForexRates(){const response=await fetch("https://open.er-api.com/v6/latest/USD",{cache:"no-store"});if(!response.ok)throw new Error("Forex request failed.");const data=await response.json();if(!data||!data.rates)throw new Error("Invalid forex response.");return data.rates;}
+async function updatePrices(currency,uid,country){if(currency==="KES"){showKESPrices();saveCurrencyCache(uid,currency,country,basePricesKES);window.__currencyCacheRendered=true;return;}try{const rates=await getRealForexRates();const kesRate=rates.KES;const targetRate=rates[currency];if(!kesRate||!targetRate)throw new Error("Currency rate unavailable.");const conversionRate=targetRate/kesRate;const convertedPrices=basePricesKES.map(function(price){return price*conversionRate;});renderPrices(convertedPrices,currency);saveCurrencyCache(uid,currency,country,convertedPrices);window.__currencyCacheRendered=true;}catch(error){if(window.__currencyCacheRendered)return;priceElements.forEach(function(element){element.textContent="Unavailable";element.classList.remove("loading");});}}
+async function loadMemberCurrency(user){const uid=user.uid;try{localStorage.setItem(window.__MF_CURRENCY_CACHE__.LAST_UID_KEY,uid);const cached=window.__MF_CURRENCY_CACHE__.getCache(uid);if(cached){window.__currencyCacheRendered=window.__MF_CURRENCY_CACHE__.renderCachedCurrency(cached);}const userRef=ref(db,"users/"+uid);const snapshot=await get(userRef);if(!snapshot.exists()){if(!window.__currencyCacheRendered){showCurrencyError();}return;}const member=snapshot.val()||{};const country=member.country||"";const currency=getCurrencyFromMember(member);showCurrency(currency,country);if(currency==="KES"){showKESPrices();saveCurrencyCache(uid,currency,country,basePricesKES);window.__currencyCacheRendered=true;return;}await updatePrices(currency,uid,country);}catch(error){console.error("Currency loading error:",error);showCurrencyError();}}
+showLoading();
+onAuthStateChanged(auth,async function(user){if(!user){window.location.href="login.html";return;}const uid=user.uid;localStorage.setItem(window.__MF_CURRENCY_CACHE__.LAST_UID_KEY,uid);const cached=window.__MF_CURRENCY_CACHE__.getCache(uid);if(cached){window.__currencyCacheRendered=window.__MF_CURRENCY_CACHE__.renderCachedCurrency(cached);}await loadMemberCurrency(user);});
+const logoutBtn=document.getElementById("logoutBtn");
+if(logoutBtn){logoutBtn.addEventListener("click",async function(){try{logoutBtn.disabled=true;logoutBtn.textContent="Logging out...";localStorage.removeItem(window.__MF_CURRENCY_CACHE__.LAST_UID_KEY);await signOut(auth);window.location.href="login.html";}catch(error){logoutBtn.disabled=false;logoutBtn.textContent="Logout";}});}
+</script>
+</body>
+</html>

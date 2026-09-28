@@ -31,8 +31,10 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 #toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:#121D33;border:1px solid var(--gold);color:#fff;padding:12px 20px;border-radius:25px;display:flex;align-items:center;gap:10px;z-index:9999;opacity:0;transition:all.35s ease}
 #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .media-box{border-radius:12px;overflow:hidden;margin-bottom:6px;position:relative;background:#000}
-.media-box img,.media-box video{width:100%;max-width:260px;max-height:300px;border-radius:12px;display:block;object-fit:cover}
-.media-down{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.8);border:1px solid var(--gold);color:var(--gold);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.media-box img,.media-box video{width:100%;max-width:260px;max-height:320px;border-radius:12px;display:block;object-fit:cover}
+.media-down{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.85);border:1px solid var(--gold);color:var(--gold);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:5}
+.tick{font-size:11px;margin-left:4px;font-weight:900}
+.tick-sent{color:#555}.tick-delivered{color:#888}.tick-read{color:#53bdeb}
 </style>
 </head><body>
 <div class="top">
@@ -62,7 +64,6 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 <button onclick="hideMenus()"><i class="fa fa-times"></i> <span data-i18n="cancel">Cancel</span></button>
 </div>
 <div id="toast"><i class="fa fa-check-circle" style="color:#00ff88"></i><span id="toastText">Deleted successfully</span></div><script>
-// SILENT LANGUAGE - YOUR ORIGINAL
 const TRANSLATIONS={
 en:{global_admin:"GLOBAL ADMIN",loading_chats:"Loading chats...",swipe_hint:"Swipe right to reply",type_message:"Type message...",reply:"Reply",copy:"Copy",edit:"Edit",delete_me:"Delete for me",delete_all:"Delete for everyone",delete:"Delete",cancel:"Cancel",admin:"ADMIN",admin_channel:"ADMINISTRATION CHANNEL",tap_admin:"Tap to message Administration",no_members:"No members yet"},
 sw:{global_admin:"ADMIN Mkuu",loading_chats:"Inapakia mazungumzo...",swipe_hint:"Telezesha kulia kujibu",type_message:"Andika ujumbe...",reply:"Jibu",copy:"Nakili",edit:"Hariri",delete_me:"Futa kwangu",delete_all:"Futa kwa wote",delete:"Futa",cancel:"Ghairi",admin:"MSIMAMIZI",admin_channel:"CHIMBO LA UTAWALA",tap_admin:"Gusa kutuma ujumbe kwa Utawala",no_members:"Hakuna wanachama bado"},
@@ -188,6 +189,14 @@ document.getElementById('chatPage').style.display='flex';
 try{
 if(isAdmin){ await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:Date.now()}); }
 else{ await update(ref(db,`chats/${currentChatId}`),{seenByMember:Date.now()}); }
+const snapRead=await get(ref(db,`chats/${currentChatId}/messages`));
+if(snapRead.exists()){
+ for(let k in snapRead.val()){
+  if(snapRead.val()[k].senderId!==myId && snapRead.val()[k].status!=='read'){
+   await update(ref(db,`chats/${currentChatId}/messages/${k}`),{status:'read'}).catch(()=>{});
+  }
+ }
+}
 }catch(e){}
 onValue(ref(db,`chats/${currentChatId}/messages`), (snap)=>{
 const box=document.getElementById('messages'); box.innerHTML="";
@@ -196,11 +205,13 @@ Object.keys(data).sort((a,b)=>(data[a].time||0)-(data[b].time||0)).forEach(mid=>
 const m=data[mid];
 if(m.deletedFor&&m.deletedFor[myId]) return;
 const isMe=m.senderId===myId;
+if(!isMe && m.status==='sent'){
+ update(ref(db,`chats/${currentChatId}/messages/${mid}`),{status:'delivered'}).catch(()=>{});
+}
 const wrap=document.createElement('div'); wrap.className='msg-wrap'; wrap.style.justifyContent=isMe?'flex-end':'flex-start';
 const icon=document.createElement('div'); icon.className='reply-icon'; icon.innerHTML='<i class="fa fa-reply"></i>';
 const div=document.createElement('div'); div.className='msg '+(isMe?'my-msg':'other-msg');
 let html=''; if(m.replyTo){ html+=`<div class="reply-preview"><b style="color:var(--gold)">${m.replyTo.name}</b><br>${m.replyTo.text}</div>`; }
-// MEDIA - SHOW AS IMAGE/VIDEO + DOWNLOAD BUTTON
 if(m.mediaUrl){
  if(m.mediaType==='video'){
   html+=`<div class="media-box"><video src="${m.mediaUrl}" controls></video><div class="media-down" onclick="event.stopPropagation(); window.downloadUrl('${m.mediaUrl}','video.mp4')"><i class="fa fa-download"></i></div></div>`;
@@ -208,7 +219,13 @@ if(m.mediaUrl){
   html+=`<div class="media-box"><img src="${m.mediaUrl}"><div class="media-down" onclick="event.stopPropagation(); window.downloadUrl('${m.mediaUrl}','photo.jpg')"><i class="fa fa-download"></i></div></div>`;
  }
 }
-html+=`${m.text||''}<span style="font-size:8px;opacity:.6;float:right;margin-left:6px;margin-top:4px">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;
+let tick='';
+if(isMe){
+ if(m.status==='read') tick=`<span class="tick tick-read">✓✓</span>`;
+ else if(m.status==='delivered') tick=`<span class="tick tick-delivered">✓✓</span>`;
+ else tick=`<span class="tick tick-sent">✓</span>`;
+}
+html+=`${m.text||''}<span style="font-size:8px;opacity:.6;float:right;margin-left:6px;margin-top:4px">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>${tick}`;
 div.innerHTML=html; wrap.appendChild(icon); wrap.appendChild(div); box.appendChild(wrap);
 div.addEventListener('contextmenu', e=>{ e.preventDefault(); showMsgMenu(e,mid,m.text||'Media',isMe,m.mediaUrl||null); });
 let startX=0, curX=0, swiping=false, longT=null;
@@ -225,46 +242,76 @@ window.editMsg=async()=>{ const nt=prompt('Edit:',selText); if(nt){ await update
 window.replyMsg=()=>{ setReply(selText, selIsMine?'You':document.getElementById('chatName').innerText); hideMenus(); }
 function setReply(text, name){ replyData={text, name}; document.getElementById('replyBar').style.display='flex'; document.getElementById('replyToName').innerText=name; document.getElementById('replyToText').innerText=text.slice(0,50); document.getElementById('msgInput').focus(); }
 window.cancelReply=()=>{ replyData=null; document.getElementById('replyBar').style.display='none'; }
-window.deleteForMe=async()=>{ await update(ref(db,`chats/${currentChatId}/messages/${selId}/deletedFor`),{[myId]:true}); hideMenus(); showToast('Deleted successfully'); }
-window.deleteForEveryone=async()=>{ if(confirm('Delete for everyone?')){ await remove(ref(db,`chats/${currentChatId}/messages/${selId}`)); showToast('Deleted successfully'); } hideMenus(); }
-window.deleteChatForMe=async()=>{ if(confirm('Delete conversation?')){ await update(ref(db,`chats/${selChatId||currentChatId}/hiddenFor`),{[myId]:true}); showToast('Deleted successfully'); } hideMenus(); if(document.getElementById('chatPage').style.display==='flex') closeChat(); }
+window.deleteForMe=async()=>{ await update(ref(db,`chats/${currentChatId}/messages/${selId}/deletedFor`),{[myId]:true}); hideMenus(); showToast('Deleted for you'); }
+window.deleteForEveryone=async()=>{ if(confirm('Delete for everyone?')){ await remove(ref(db,`chats/${currentChatId}/messages/${selId}`)); showToast('Deleted for everyone'); } hideMenus(); }
+window.deleteChatForMe=async()=>{ if(confirm('Delete this conversation?')){ await update(ref(db,`chats/${selChatId||currentChatId}/hiddenFor`),{[myId]:true}); showToast('Chat deleted'); } hideMenus(); if(document.getElementById('chatPage').style.display==='flex') closeChat(); }
 window.hideMenus=()=>{ document.getElementById('msgMenu').style.display='none'; document.getElementById('chatMenu').style.display='none'; }
 document.addEventListener('click', e=>{ if(!e.target.closest('.menu')) hideMenus(); });
 window.downloadUrl=(url,name)=>{ const a=document.createElement('a'); a.href=url; a.download=name; a.target='_blank'; document.body.appendChild(a); a.click(); a.remove(); showToast('Downloading...'); }
 window.downloadMedia=()=>{ if(selMediaUrl) window.downloadUrl(selMediaUrl, selMediaUrl.includes('.mp4')?'video.mp4':'photo.jpg'); hideMenus(); }
 
-// MEDIA SUPPORT - ADMIN & MEMBER CAN SEND AND DOWNLOAD - FIXED NO DISAPPEAR
+// INSTANT IMAGE SEND - NO DELAY - SHOWS SENT INSTANTLY
 document.getElementById('mediaInput').addEventListener('change', async (e)=>{
  const file=e.target.files[0]; if(!file||!currentChatId) return;
- showToast('Uploading...');
+ const box=document.getElementById('messages');
+ const tempId='temp_'+Date.now();
+ const localUrl=URL.createObjectURL(file);
+ const isVideo=file.type.startsWith('video');
+
+ // Show instantly with sent ✓
+ const wrap=document.createElement('div');
+ wrap.id=tempId; wrap.className='msg-wrap'; wrap.style.justifyContent='flex-end';
+ wrap.innerHTML=`<div class="msg my-msg"><div class="media-box">${isVideo?`<video src="${localUrl}" style="max-width:260px;border-radius:12px" muted></video>`:`<img src="${localUrl}" style="max-width:260px;border-radius:12px">`}</div><span style="font-size:8px;opacity:.6;float:right;margin-left:6px;margin-top:4px">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><span class="tick tick-sent">✓</span></div>`;
+ box.appendChild(wrap); box.scrollTop=box.scrollHeight;
+
  try{
-   const ext=file.name.split('.').pop();
-   const path=`chats/${currentChatId}/${Date.now()}_${myId}.${ext}`;
-   const storageRef=sRef(storage, path);
-   const snapUp=await uploadBytes(storageRef, file);
-   const url=await getDownloadURL(snapUp.ref);
-   const type=file.type.startsWith('video')?'video':'image';
-   const payload={ senderId:myId, senderEmail:myEmail, text:document.getElementById('msgInput').value.trim(), mediaUrl:url, mediaType:type, time:Date.now() };
+   let finalUrl='';
+   let mediaType=isVideo?'video':'image';
+   if(isVideo){
+     if(file.size>15*1024*1024){ showToast('Video max 15MB'); document.getElementById(tempId)?.remove(); return; }
+     const ext=file.name.split('.').pop()||'mp4';
+     const storageRef=sRef(storage, `chats/${currentChatId}/${Date.now()}_${myId}.${ext}`);
+     const up=await uploadBytes(storageRef, file);
+     finalUrl=await getDownloadURL(up.ref);
+   } else {
+     finalUrl=await new Promise((res,rej)=>{
+       const rd=new FileReader();
+       rd.onload=ev=>{
+         const img=new Image();
+         img.onload=()=>{
+           const c=document.createElement('canvas');
+           let w=img.width,h=img.height; const MAX=700;
+           if(w>MAX||h>MAX){ if(w>h){ h=h*(MAX/w); w=MAX; } else { w=w*(MAX/h); h=MAX; } }
+           c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h);
+           res(c.toDataURL('image/jpeg',0.55));
+         };
+         img.onerror=()=>res(ev.target.result);
+         img.src=ev.target.result;
+       };
+       rd.onerror=rej; rd.readAsDataURL(file);
+     });
+   }
+   const payload={ senderId:myId, senderEmail:myEmail, text:document.getElementById('msgInput').value.trim(), mediaUrl:finalUrl, mediaType:mediaType, time:Date.now(), status:'sent' };
    if(replyData) payload.replyTo=replyData;
    const r=push(ref(db,`chats/${currentChatId}/messages`));
    await set(r,payload);
-   await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(), lastMessage: type==='video'?'🎥 Video':'📷 Photo', info:{fullName:myInfo.fullName||'Member', phone:myInfo.phone||'', country:myInfo.country||'', email:myInfo.email||myEmail, uid:myId}, hiddenFor:{}});
-   if(isAdmin){ try{ await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}); }catch(e){} } else { try{ await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}); }catch(e){} }
-   document.getElementById('msgInput').value=''; cancelReply(); showToast('Sent ✓');
+   await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(), lastMessage: mediaType==='video'?'🎥 Video':'📷 Photo', info:{fullName:myInfo.fullName||'Member', uid:myId}, hiddenFor:{}}).catch(()=>{});
+   if(isAdmin){ await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}).catch(()=>{}); } else { await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}).catch(()=>{}); }
+   document.getElementById(tempId)?.remove();
+   document.getElementById('msgInput').value=''; cancelReply();
  }catch(err){
-   console.error(err); showToast('Upload failed: check Storage rules');
+   console.error(err); showToast('Failed: '+err.message); document.getElementById(tempId)?.remove();
  }
  e.target.value='';
 });
 
 window.sendMsg=async()=>{
 const i=document.getElementById('msgInput'); const txt=i.value.trim(); if(!txt||!currentChatId) return;
-const payload={text:txt, senderId:myId, senderEmail:myEmail, time:Date.now()};
+const payload={text:txt, senderId:myId, senderEmail:myEmail, time:Date.now(), status:'sent'};
 if(replyData) payload.replyTo=replyData;
 const r=push(ref(db,`chats/${currentChatId}/messages`)); await set(r,payload);
-await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(), lastMessage:txt, info:{fullName:myInfo.fullName||'Member', phone:myInfo.phone||'', country:myInfo.country||'', email:myInfo.email||myEmail, uid:myId}, hiddenFor:{}});
-if(isAdmin){ try{ await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}); }catch(e){} }
-else{ try{ await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}); }catch(e){} }
+await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(), lastMessage:txt, info:{fullName:myInfo.fullName||'Member', phone:myInfo.phone||'', country:myInfo.country||'', email:myInfo.email||myEmail, uid:myId}, hiddenFor:{}}).catch(()=>{});
+if(isAdmin){ await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}).catch(()=>{}); } else { await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}).catch(()=>{}); }
 i.value=""; cancelReply();
 }
 window.closeChat=()=>{ document.getElementById('chatPage').style.display='none'; currentChatId=null; }

@@ -103,7 +103,7 @@ function showToast(msg){ document.getElementById('toastText').innerText=msg; con
 function attachItemEvents(){
 document.querySelectorAll('.member-item').forEach(el=>{
 let timer;
-const showChatM=(e)=>{ e.preventDefault(); selChatId=el.dataset.chatid; const menu=document.getElementById('chatMenu'); menu.style.left=((e.touches?e.touches[0].clientX:e.clientX)-120+'px'; menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px'; menu.style.display='flex'; };
+const showChatM=(e)=>{ e.preventDefault(); selChatId=el.dataset.chatid; const menu=document.getElementById('chatMenu'); menu.style.left=((e.touches?e.touches[0].clientX:e.clientX)-120)+'px'; menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px'; menu.style.display='flex'; };
 el.addEventListener('contextmenu', showChatM);
 el.addEventListener('touchstart', e=>{ timer=setTimeout(()=>showChatM(e),700); });
 el.addEventListener('touchend', ()=>clearTimeout(timer));
@@ -242,26 +242,24 @@ window.editMsg=async()=>{ const nt=prompt('Edit:',selText); if(nt){ await update
 window.replyMsg=()=>{ setReply(selText, selIsMine?'You':document.getElementById('chatName').innerText); hideMenus(); }
 function setReply(text, name){ replyData={text, name}; document.getElementById('replyBar').style.display='flex'; document.getElementById('replyToName').innerText=name; document.getElementById('replyToText').innerText=text.slice(0,50); document.getElementById('msgInput').focus(); }
 window.cancelReply=()=>{ replyData=null; document.getElementById('replyBar').style.display='none'; }
+
+// CLEAN - NO CONFIRM POPUP - DIRECT TOAST
 window.deleteForMe=async()=>{ await update(ref(db,`chats/${currentChatId}/messages/${selId}/deletedFor`),{[myId]:true}); hideMenus(); showToast('Deleted for you'); }
-window.deleteForEveryone=async()=>{ if(confirm('Delete for everyone?')){ await remove(ref(db,`chats/${currentChatId}/messages/${selId}`)); showToast('Deleted for everyone'); hideMenus(); } else { hideMenus(); showToast('Cancelled'); } }
+window.deleteForEveryone=async()=>{ await remove(ref(db,`chats/${currentChatId}/messages/${selId}`)); hideMenus(); showToast('Deleted successfully'); }
+
 window.hideMenus=()=>{ document.getElementById('msgMenu').style.display='none'; document.getElementById('chatMenu').style.display='none'; }
 
-// FIXED DELETE CONVERSATION - CLEAN TOASTS - DELETE + CANCEL BOTH WORK
+// FIXED - NO mansoryfamily.github.io says POPUP - CLEAN TOAST ONLY
 window.deleteChatForMe=async()=>{
- if(confirm('Delete this conversation?')){
-   try{
-     await update(ref(db,`chats/${selChatId||currentChatId}/hiddenFor`),{[myId]:true});
-     showToast('Deleted successfully');
-     hideMenus();
-     if(document.getElementById('chatPage').style.display==='flex') closeChat();
-   }catch(e){
-     showToast('Failed to delete');
-     hideMenus();
-   }
- } else {
-   hideMenus();
-   showToast('Cancelled');
- }
+  try{
+    await update(ref(db,`chats/${selChatId||currentChatId}/hiddenFor`),{[myId]:true});
+    hideMenus();
+    showToast('Deleted successfully');
+    if(document.getElementById('chatPage').style.display==='flex') closeChat();
+  }catch(e){
+    hideMenus();
+    showToast('Failed to delete');
+  }
 }
 window.cancelChatDelete=()=>{
  hideMenus();

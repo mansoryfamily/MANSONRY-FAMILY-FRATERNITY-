@@ -4,7 +4,7 @@
 <title>GLOBAL ADMIN PANEL</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
-:root{--bg:#080E1F;--card:#121D33;--border:#1E2E4F;--gold:#D4B16A;--gold2:#F0D185;--green:#00ff88}
+:root{--bg:#080E1F;--card:#121D33;--border:#1E2E4F;--gold:#D4B16A;--gold2:#F0D185;--green:#00ff88;--blue:#53bdeb}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
 body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 .top{padding:12px;background:var(--card);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
@@ -34,6 +34,11 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 .media-box img{width:100%;max-width:260px;max-height:320px;border-radius:12px;display:block;object-fit:cover}
 .media-box video{width:100%;max-width:260px;max-height:320px;border-radius:12px;display:block;background:#000}
 .media-down{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.8);border:1px solid var(--gold);color:var(--gold);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:5}
+.tick{font-size:12px;margin-left:4px;font-weight:900}
+.tick-sent{color:#888}
+.tick-delivered{color:#888}
+.tick-read{color:var(--blue)}
+.msg-footer{display:flex;justify-content:flex-end;align-items:center;margin-top:4px;gap:2px}
 </style>
 </head><body>
 <div class="top">
@@ -183,6 +188,13 @@ list.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" dat
 }
 attachItemEvents();
 });
+}
+function getTickHtml(status, isMe){
+ if(!isMe) return '';
+ if(status==='sent') return `<span class="tick tick-sent">✓</span>`;
+ if(status==='delivered') return `<span class="tick tick-delivered">✓✓</span>`;
+ if(status==='read') return `<span class="tick tick-read">✓✓</span>`;
+ return `<span class="tick tick-sent">✓</span>`;
 }window.openChat=async (otherUid, displayName)=>{
 currentChatId = isAdmin? (ADMIN_UID+"_"+otherUid) : (ADMIN_UID+"_"+myId);
 document.getElementById('chatName').innerText=displayName;
@@ -190,14 +202,33 @@ document.getElementById('chatPage').style.display='flex';
 try{
 if(isAdmin){ await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:Date.now()}); }
 else{ await update(ref(db,`chats/${currentChatId}`),{seenByMember:Date.now()}); }
+// MARK ALL RECEIVED AS READ (blue ticks)
+const snapRead=await get(ref(db,`chats/${currentChatId}/messages`));
+if(snapRead.exists()){
+ const all=snapRead.val();
+ Object.keys(all).forEach(mid=>{
+   const m=all[mid];
+   if(m.senderId!==myId && m.status!=='read'){
+     update(ref(db,`chats/${currentChatId}/messages/${mid}`),{status:'read'});
+   }
+ });
+}
 }catch(e){}
-onValue(ref(db,`chats/${currentChatId}/messages`), (snap)=>{
+onValue(ref(db,`chats/${currentChatId}/messages`), async (snap)=>{
 const box=document.getElementById('messages'); box.innerHTML="";
 const data=snap.val()||{};
-Object.keys(data).sort((a,b)=>(data[a].time||0)-(data[b].time||0)).forEach(mid=>{
+const mids=Object.keys(data).sort((a,b)=>(data[a].time||0)-(data[b].time||0));
+for(let mid of mids){
 const m=data[mid];
-if(m.deletedFor&&m.deletedFor[myId]) return;
+if(m.deletedFor&&m.deletedFor[myId]) continue;
 const isMe=m.senderId===myId;
+// AUTO MARK DELIVERED when receiver gets it with data (grey ticks)
+if(!isMe && m.status==='sent'){
+  try{ await update(ref(db,`chats/${currentChatId}/messages/${mid}`),{status:'delivered'}); }catch(e){}
+  if(currentChatId){
+    try{ await update(ref(db,`chats/${currentChatId}/messages/${mid}`),{status:'read'}); }catch(e){}
+  }
+}
 const wrap=document.createElement('div'); wrap.className='msg-wrap'; wrap.style.justifyContent=isMe?'flex-end':'flex-start';
 const icon=document.createElement('div'); icon.className='reply-icon'; icon.innerHTML='<i class="fa fa-reply"></i>';
 const div=document.createElement('div'); div.className='msg '+(isMe?'my-msg':'other-msg');
@@ -210,14 +241,14 @@ if(m.mediaUrl){
   html+=`<div class="media-down" onclick="event.stopPropagation(); downloadUrl('${m.mediaUrl}','${(m.mediaName||'media')}')"><i class="fa fa-download"></i></div></div>`;
 }
 if(m.text){ html+=`<div style="margin-top:${m.mediaUrl?'6px':''}">${m.text}</div>`; }
-html+=`<span style="font-size:8px;opacity:.6;float:right;margin-left:6px;margin-top:4px">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;
+html+=`<div class="msg-footer"><span style="font-size:8px;opacity:.6">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>${getTickHtml(m.status||'sent', isMe)}</div>`;
 div.innerHTML=html; wrap.appendChild(icon); wrap.appendChild(div); box.appendChild(wrap);
 div.addEventListener('contextmenu', e=>{ e.preventDefault(); showMsgMenu(e,mid,m.text||'',isMe,m.mediaUrl||null,m.mediaType||null); });
 let startX=0, curX=0, swiping=false, longT=null;
 div.addEventListener('touchstart', e=>{ startX=e.touches[0].clientX; swiping=true; div.classList.add('swiping'); longT=setTimeout(()=>{ showMsgMenu(e,mid,m.text||'',isMe,m.mediaUrl||null,m.mediaType||null); swiping=false; },600); },{passive:true});
 div.addEventListener('touchmove', e=>{ if(!swiping) return; const diff=e.touches[0].clientX-startX; if(diff>15) clearTimeout(longT); if(diff>0&&diff<110){ curX=diff; div.style.transform=`translateX(${curX}px)`; icon.style.opacity=Math.min(curX/60,1); } },{passive:true});
 div.addEventListener('touchend', ()=>{ clearTimeout(longT); if(!swiping) return; swiping=false; div.classList.remove('swiping'); if(curX>55){ setReply(m.text||'📷 Photo', isMe?'You':document.getElementById('chatName').innerText); } div.style.transform='translateX(0)'; icon.style.opacity='0'; curX=0; });
-});
+}
 box.scrollTop=box.scrollHeight;
 });
 }
@@ -234,19 +265,17 @@ window.hideMenus=()=>{ document.getElementById('msgMenu').style.display='none'; 
 document.addEventListener('click', e=>{ if(!e.target.closest('.menu')) hideMenus(); });
 window.downloadUrl=(url,name)=>{ const a=document.createElement('a'); a.href=url; a.download=name||'media'; a.target='_blank'; document.body.appendChild(a); a.click(); a.remove(); showToast('Downloading...'); }
 window.downloadMedia=()=>{ if(selMediaUrl){ window.downloadUrl(selMediaUrl, selMediaType==='image'?'photo.jpg':'video.mp4'); } hideMenus(); }
-// INSTANT SEND - IMAGE SHOWS AS IMAGE FOR BOTH
 document.getElementById('mediaInput').addEventListener('change', async (e)=>{
  const file=e.target.files[0]; if(!file||!currentChatId) return;
  if(file.size>50*1024*1024){ showToast('File too large (max 50MB)'); return; }
  const type=file.type.startsWith('video')?'video':'image';
- // Instant local preview so sender sees immediately
  const box=document.getElementById('messages');
  const wrap=document.createElement('div'); wrap.className='msg-wrap'; wrap.style.justifyContent='flex-end';
  const div=document.createElement('div'); div.className='msg my-msg';
  const localUrl=URL.createObjectURL(file);
  let html=`<div class="media-box">`;
  if(type==='image'){ html+=`<img src="${localUrl}" style="opacity:.7">`; } else { html+=`<video src="${localUrl}" muted></video>`; }
- html+=`<div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.6);padding:2px 6px;border-radius:10px;font-size:9px;color:var(--gold)">sending...</div></div>`;
+ html+=`</div><div class="msg-footer"><span style="font-size:8px;opacity:.6">now</span><span class="tick tick-sent">✓</span></div>`;
  div.innerHTML=html; wrap.appendChild(div); box.appendChild(wrap); box.scrollTop=box.scrollHeight;
  try{
    const path=`chats/${currentChatId}/${Date.now()}_${file.name}`;
@@ -254,18 +283,18 @@ document.getElementById('mediaInput').addEventListener('change', async (e)=>{
    const uploaded=await uploadBytes(storageRef, file);
    const url=await getDownloadURL(uploaded.ref);
    wrap.remove();
-   const payload={text:document.getElementById('msgInput').value.trim(), mediaUrl:url, mediaType:type, mediaName:file.name, senderId:myId, senderEmail:myEmail, time:Date.now()};
+   const payload={text:document.getElementById('msgInput').value.trim(), mediaUrl:url, mediaType:type, mediaName:file.name, senderId:myId, senderEmail:myEmail, time:Date.now(), status:'sent'};
    if(replyData) payload.replyTo=replyData;
    const r=push(ref(db,`chats/${currentChatId}/messages`)); await set(r,payload);
    await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(), lastMessage: type==='image'?'📷 Photo':'🎥 Video', info:{fullName:myInfo.fullName||'Member', phone:myInfo.phone||'', country:myInfo.country||'', email:myInfo.email||myEmail, uid:myId}, hiddenFor:{}});
    if(isAdmin){ await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}); } else { await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}); }
    document.getElementById('msgInput').value=""; cancelReply();
- }catch(err){ wrap.remove(); showToast('Failed to send'); console.log(err); }
+ }catch(err){ wrap.remove(); showToast('Failed to send'); }
  e.target.value='';
 });
 window.sendMsg=async()=>{
 const i=document.getElementById('msgInput'); const txt=i.value.trim(); if(!txt||!currentChatId) return;
-const payload={text:txt, senderId:myId, senderEmail:myEmail, time:Date.now()};
+const payload={text:txt, senderId:myId, senderEmail:myEmail, time:Date.now(), status:'sent'};
 if(replyData) payload.replyTo=replyData;
 const r=push(ref(db,`chats/${currentChatId}/messages`)); await set(r,payload);
 await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(), lastMessage:txt, info:{fullName:myInfo.fullName||'Member', phone:myInfo.phone||'', country:myInfo.country||'', email:myInfo.email||myEmail, uid:myId}, hiddenFor:{}});

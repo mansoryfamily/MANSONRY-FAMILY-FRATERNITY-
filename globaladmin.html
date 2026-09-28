@@ -30,12 +30,10 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 .menu button.danger{color:#ff5a5a}
 #toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:#121D33;border:1px solid var(--gold);color:#fff;padding:12px 20px;border-radius:25px;display:flex;align-items:center;gap:10px;z-index:9999;opacity:0;transition:all.35s ease}
 #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-/* --- MEDIA SUPPORT ONLY --- */
 .media-box{border-radius:12px;overflow:hidden;margin-bottom:6px;position:relative;background:#000}
-.media-box img{max-width:100%;max-height:280px;border-radius:12px;display:block;cursor:pointer}
-.media-box video{max-width:100%;max-height:300px;border-radius:12px;display:block}
-.media-down{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.7);border:1px solid var(--gold);color:var(--gold);width:32px;height:32px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
-.upload-progress{font-size:10px;color:var(--gold);margin:0 6px}
+.media-box img{max-width:240px;max-height:280px;border-radius:12px;display:block;object-fit:cover}
+.media-box video{max-width:260px;max-height:300px;border-radius:12px;display:block}
+.media-down{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.75);border:1px solid var(--gold);color:var(--gold);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
 </style>
 </head><body>
 <div class="top">
@@ -48,8 +46,7 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 <div class="reply-bar" id="replyBar"><div><small id="replyToName" style="color:var(--gold);font-weight:800"></small><div id="replyToText" style="color:#aaa;font-size:11px"></div></div><i class="fa fa-times" style="color:#fff;cursor:pointer" onclick="cancelReply()"></i></div>
 <div class="input-area">
 <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none">
-<button class="icon-btn" style="background:var(--card);border:1px solid var(--border);color:var(--gold)" onclick="document.getElementById('mediaInput').click()"><i class="fa fa-paperclip"></i></button>
-<span id="uploadProg" class="upload-progress" style="display:none">0%</span>
+<button class="icon-btn" style="background:var(--card);border:1px solid var(--border);color:var(--gold);min-width:42px" onclick="document.getElementById('mediaInput').click()"><i class="fa fa-paperclip"></i></button>
 <input id="msgInput" data-i18n-placeholder="type_message" placeholder="Type message...">
 <button class="icon-btn" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button>
 </div>
@@ -68,11 +65,10 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 </div>
 <div id="toast"><i class="fa fa-check-circle" style="color:#00ff88"></i><span id="toastText">Deleted successfully</span></div>
 <script>
-// SILENT LANGUAGE
 const TRANSLATIONS={
 en:{global_admin:"GLOBAL ADMIN",loading_chats:"Loading chats...",swipe_hint:"Swipe right to reply",type_message:"Type message...",reply:"Reply",copy:"Copy",edit:"Edit",download:"Download",delete_me:"Delete for me",delete_all:"Delete for everyone",delete:"Delete",cancel:"Cancel",admin:"ADMIN",admin_channel:"ADMINISTRATION CHANNEL",tap_admin:"Tap to message Administration",no_members:"No members yet"},
 sw:{global_admin:"ADMIN Mkuu",loading_chats:"Inapakia mazungumzo...",swipe_hint:"Telezesha kulia kujibu",type_message:"Andika ujumbe...",reply:"Jibu",copy:"Nakili",edit:"Hariri",download:"Pakua",delete_me:"Futa kwangu",delete_all:"Futa kwa wote",delete:"Futa",cancel:"Ghairi",admin:"MSIMAMIZI",admin_channel:"CHIMBO LA UTAWALA",tap_admin:"Gusa kutuma ujumbe kwa Utawala",no_members:"Hakuna wanachama bado"},
-lg:{global_admin:"ADMIN MUKUU",loading_chats:"Emboozi ziteekebwa...",swipe_hint:"Sikiriza ku ddyo okuddamu",type_message:"Wandiika obubaka...",reply:"Ddamu",copy:"Koppa",edit:"Kyusa",download:"Download",delete_me:"Saza gyendi",delete_all:"Saza eri bonna",delete:"Saza",cancel:"Sazaamu",admin:"ADMIN",admin_channel:"EKITONGOLE KY'OBUYINZA",tap_admin:"Nyiga okutumira obubaka",no_members:"Tewali bammemba"},
+lg:{global_admin:"ADMIN MUKUU",loading_chats:"Emboozi ziteekebwa...",swipe_hint:"Sikiriza ku ddyo okuddamu",type_message:"Wandiika obubaka...",reply:"Ddamu",copy:"Koppa",edit:"Kyusa",download:"Wulula",delete_me:"Saza gyendi",delete_all:"Saza eri bonna",delete:"Saza",cancel:"Sazaamu",admin:"ADMIN",admin_channel:"EKITONGOLE KY'OBUYINZA",tap_admin:"Nyiga okutumira obubaka",no_members:"Tewali bammemba"},
 fr:{global_admin:"ADMIN GLOBAL",loading_chats:"Chargement chats...",swipe_hint:"Glissez à droite pour répondre",type_message:"Tapez message...",reply:"Répondre",copy:"Copier",edit:"Modifier",download:"Télécharger",delete_me:"Supprimer pour moi",delete_all:"Supprimer pour tous",delete:"Supprimer",cancel:"Annuler",admin:"ADMIN",admin_channel:"CANAL D'ADMINISTRATION",tap_admin:"Appuyez pour écrire à l'Administration",no_members:"Pas encore de membres"},
 pt:{global_admin:"ADMIN GLOBAL",loading_chats:"Carregando conversas...",swipe_hint:"Deslize para responder",type_message:"Digite mensagem...",reply:"Responder",copy:"Copiar",edit:"Editar",download:"Baixar",delete_me:"Apagar para mim",delete_all:"Apagar para todos",delete:"Apagar",cancel:"Cancelar",admin:"ADMIN",admin_channel:"CANAL DE ADMINISTRAÇÃO",tap_admin:"Toque para enviar mensagem",no_members:"Nenhum membro ainda"}
 };
@@ -84,7 +80,7 @@ document.addEventListener('DOMContentLoaded',applyLang);
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getDatabase, ref, onValue, push, set, remove, update, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 const firebaseConfig = {
 apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
 authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -205,21 +201,20 @@ const wrap=document.createElement('div'); wrap.className='msg-wrap'; wrap.style.
 const icon=document.createElement('div'); icon.className='reply-icon'; icon.innerHTML='<i class="fa fa-reply"></i>';
 const div=document.createElement('div'); div.className='msg '+(isMe?'my-msg':'other-msg');
 let html=''; if(m.replyTo){ html+=`<div class="reply-preview"><b style="color:var(--gold)">${m.replyTo.name}</b><br>${m.replyTo.text}</div>`; }
-// MEDIA RENDER
 if(m.mediaUrl){
   html+=`<div class="media-box">`;
-  if(m.mediaType==='image'){ html+=`<img src="${m.mediaUrl}" onclick="window.open('${m.mediaUrl}','_blank')">`; }
-  else { html+=`<video src="${m.mediaUrl}" controls></video>`; }
-  html+=`<div class="media-down" onclick="downloadUrl('${m.mediaUrl}','${(m.mediaName||'media')}')"><i class="fa fa-download"></i></div></div>`;
+  if(m.mediaType==='image'){ html+=`<img src="${m.mediaUrl}" loading="lazy">`; }
+  else { html+=`<video src="${m.mediaUrl}" controls playsinline></video>`; }
+  html+=`<div class="media-down" onclick="event.stopPropagation(); downloadUrl('${m.mediaUrl}','${(m.mediaName||'media')}')"><i class="fa fa-download"></i></div></div>`;
 }
-if(m.text){ html+=`${m.text}`; }
+if(m.text){ html+=`<div>${m.text}</div>`; }
 html+=`<span style="font-size:8px;opacity:.6;float:right;margin-left:6px;margin-top:4px">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;
 div.innerHTML=html; wrap.appendChild(icon); wrap.appendChild(div); box.appendChild(wrap);
 div.addEventListener('contextmenu', e=>{ e.preventDefault(); showMsgMenu(e,mid,m.text||'',isMe,m.mediaUrl||null,m.mediaType||null); });
 let startX=0, curX=0, swiping=false, longT=null;
 div.addEventListener('touchstart', e=>{ startX=e.touches[0].clientX; swiping=true; div.classList.add('swiping'); longT=setTimeout(()=>{ showMsgMenu(e,mid,m.text||'',isMe,m.mediaUrl||null,m.mediaType||null); swiping=false; },600); },{passive:true});
 div.addEventListener('touchmove', e=>{ if(!swiping) return; const diff=e.touches[0].clientX-startX; if(diff>15) clearTimeout(longT); if(diff>0&&diff<110){ curX=diff; div.style.transform=`translateX(${curX}px)`; icon.style.opacity=Math.min(curX/60,1); } },{passive:true});
-div.addEventListener('touchend', ()=>{ clearTimeout(longT); if(!swiping) return; swiping=false; div.classList.remove('swiping'); if(curX>55){ setReply(m.text||(m.mediaType?'📷 Media':''), isMe?'You':document.getElementById('chatName').innerText); } div.style.transform='translateX(0)'; icon.style.opacity='0'; curX=0; });
+div.addEventListener('touchend', ()=>{ clearTimeout(longT); if(!swiping) return; swiping=false; div.classList.remove('swiping'); if(curX>55){ setReply(m.text||(m.mediaType?'📷 Photo':''), isMe?'You':document.getElementById('chatName').innerText); } div.style.transform='translateX(0)'; icon.style.opacity='0'; curX=0; });
 });
 box.scrollTop=box.scrollHeight;
 });
@@ -227,7 +222,7 @@ box.scrollTop=box.scrollHeight;
 function showMsgMenu(e, mid, text, isMine, mediaUrl, mediaType){ selId=mid; selText=text; selIsMine=isMine; selMediaUrl=mediaUrl; selMediaType=mediaType; const menu=document.getElementById('msgMenu'); menu.style.left=(e.touches?e.touches[0].clientX:e.clientX)-100+'px'; menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px'; menu.style.display='flex'; document.getElementById('editBtn').style.display=(isMine&&!mediaUrl)?'flex':'none'; document.getElementById('downBtn').style.display=mediaUrl?'flex':'none'; }
 window.copyMsg=()=>{ if(selText) navigator.clipboard.writeText(selText); hideMenus(); showToast('Copied'); }
 window.editMsg=async()=>{ const nt=prompt('Edit:',selText); if(nt){ await update(ref(db,`chats/${currentChatId}/messages/${selId}`),{text:nt}); showToast('Edited successfully'); } hideMenus(); }
-window.replyMsg=()=>{ setReply(selText||'Media', selIsMine?'You':document.getElementById('chatName').innerText); hideMenus(); }
+window.replyMsg=()=>{ setReply(selText||'Photo', selIsMine?'You':document.getElementById('chatName').innerText); hideMenus(); }
 function setReply(text, name){ replyData={text, name}; document.getElementById('replyBar').style.display='flex'; document.getElementById('replyToName').innerText=name; document.getElementById('replyToText').innerText=text.slice(0,50); document.getElementById('msgInput').focus(); }
 window.cancelReply=()=>{ replyData=null; document.getElementById('replyBar').style.display='none'; }
 window.deleteForMe=async()=>{ await update(ref(db,`chats/${currentChatId}/messages/${selId}/deletedFor`),{[myId]:true}); hideMenus(); showToast('Deleted successfully'); }
@@ -235,29 +230,36 @@ window.deleteForEveryone=async()=>{ if(confirm('Delete for everyone?')){ await r
 window.deleteChatForMe=async()=>{ if(confirm('Delete conversation?')){ await update(ref(db,`chats/${selChatId||currentChatId}/hiddenFor`),{[myId]:true}); showToast('Deleted successfully'); } hideMenus(); if(document.getElementById('chatPage').style.display==='flex') closeChat(); }
 window.hideMenus=()=>{ document.getElementById('msgMenu').style.display='none'; document.getElementById('chatMenu').style.display='none'; }
 document.addEventListener('click', e=>{ if(!e.target.closest('.menu')) hideMenus(); });
-// MEDIA UPLOAD LOGIC
+window.downloadUrl=(url,name)=>{ const a=document.createElement('a'); a.href=url; a.download=name||'media'; a.target='_blank'; document.body.appendChild(a); a.click(); a.remove(); showToast('Downloading...'); }
+window.downloadMedia=()=>{ if(selMediaUrl){ window.downloadUrl(selMediaUrl, selMediaType==='image'?'photo.jpg':'video.mp4'); } hideMenus(); }
 document.getElementById('mediaInput').addEventListener('change', async (e)=>{
  const file=e.target.files[0]; if(!file||!currentChatId) return;
  if(file.size>50*1024*1024){ showToast('File too large (max 50MB)'); return; }
  const type=file.type.startsWith('video')?'video':'image';
- const prog=document.getElementById('uploadProg'); prog.style.display='inline'; prog.innerText='0%';
- const path=`chats/${currentChatId}/${Date.now()}_${file.name}`;
- const storageRef=sRef(storage, path);
- const task=uploadBytesResumable(storageRef, file);
- task.on('state_changed', (s)=>{ prog.innerText=Math.round((s.bytesTransferred/s.totalBytes)*100)+'%'; }, (err)=>{ prog.style.display='none'; showToast('Upload failed'); }, async ()=>{
-   const url=await getDownloadURL(task.snapshot.ref);
-   prog.style.display='none';
+ const box=document.getElementById('messages');
+ const wrap=document.createElement('div'); wrap.className='msg-wrap'; wrap.style.justifyContent='flex-end';
+ const div=document.createElement('div'); div.className='msg my-msg';
+ const localUrl=URL.createObjectURL(file);
+ let html=`<div class="media-box">`;
+ if(type==='image'){ html+=`<img src="${localUrl}" style="max-width:240px;max-height:280px;border-radius:12px;display:block;opacity:.8">`; }
+ else { html+=`<video src="${localUrl}" style="max-width:260px;border-radius:12px;display:block" muted></video>`; }
+ html+=`<div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.6);padding:2px 6px;border-radius:10px;font-size:9px;color:var(--gold)">sending...</div></div>`;
+ div.innerHTML=html; wrap.appendChild(div); box.appendChild(wrap); box.scrollTop=box.scrollHeight;
+ try{
+   const path=`chats/${currentChatId}/${Date.now()}_${file.name}`;
+   const storageRef=sRef(storage, path);
+   const task=await uploadBytes(storageRef, file);
+   const url=await getDownloadURL(task.ref);
+   wrap.remove();
    const payload={text:document.getElementById('msgInput').value.trim(), mediaUrl:url, mediaType:type, mediaName:file.name, senderId:myId, senderEmail:myEmail, time:Date.now()};
    if(replyData) payload.replyTo=replyData;
    const r=push(ref(db,`chats/${currentChatId}/messages`)); await set(r,payload);
    await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(), lastMessage: type==='image'?'📷 Photo':'🎥 Video', info:{fullName:myInfo.fullName||'Member', phone:myInfo.phone||'', country:myInfo.country||'', email:myInfo.email||myEmail, uid:myId}, hiddenFor:{}});
    if(isAdmin){ try{ await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}); }catch(e){} } else { try{ await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}); }catch(e){} }
    document.getElementById('msgInput').value=""; cancelReply();
- });
+ }catch(err){ wrap.remove(); showToast('Failed'); }
  e.target.value='';
 });
-window.downloadUrl=(url,name)=>{ const a=document.createElement('a'); a.href=url; a.download=name||'media'; a.target='_blank'; document.body.appendChild(a); a.click(); a.remove(); }
-window.downloadMedia=()=>{ if(selMediaUrl){ downloadUrl(selMediaUrl, selMediaType==='image'?'photo.jpg':'video.mp4'); } hideMenus(); }
 window.sendMsg=async()=>{
 const i=document.getElementById('msgInput'); const txt=i.value.trim(); if(!txt||!currentChatId) return;
 const payload={text:txt, senderId:myId, senderEmail:myEmail, time:Date.now()};

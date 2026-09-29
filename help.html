@@ -106,7 +106,7 @@ applyLang();
 document.addEventListener('DOMContentLoaded',applyLang);
 window.addEventListener('storage',applyLang);
 setInterval(applyLang,1000);
-  </script><script src="notification-system.js"></script>
+    </script><script src="notification-system.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -119,8 +119,19 @@ const db=getDatabase(app);
 const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
 const ADMIN_EMAIL="mansoryfamilyn@gmail.com";
 
-// RESTORE BADGE AFTER REFRESH - KEEP UNTIL OPENED
+// RESTORE ONLY IF NOT ALREADY OPENED - PERMANENT DISAPPEAR AFTER OPEN
 (function(){
+  // If user already opened chat, don't restore ghost
+  if(localStorage.getItem("chatOpened")==="true"){
+    // Check if there is newer message after opened time
+    const openedAt=parseInt(localStorage.getItem("chatOpenedAt")||"0");
+    const lastMsgTime=parseInt(localStorage.getItem("lastMsgTime")||"0");
+    if(lastMsgTime<=openedAt){
+      localStorage.removeItem("globalChatBadge_count");
+      localStorage.removeItem("notifBadge_count");
+      return;
+    }
+  }
   const c=localStorage.getItem("globalChatBadge_count");
   if(c && parseInt(c)>0){
     const el=document.getElementById("globalChatBadge");
@@ -139,19 +150,23 @@ function showBadge(id,count){
   el.textContent=count>99?"99+":count;
   el.style.display="grid";
   localStorage.setItem(id+"_count",count);
-  if(window.LodgeNotifier) window.LodgeNotifier.setAppIconBadge(parseInt(localStorage.getItem("globalChatBadge_count")||"0")+parseInt(localStorage.getItem("notifBadge_count")||"0"));
+  localStorage.setItem("lastMsgTime",Date.now().toString());
 }
-function hideBadge(id){
+function hideBadgePermanent(id){
   const el=document.getElementById(id);
   if(!el) return;
   el.style.display="none";
   el.textContent="0";
   localStorage.removeItem(id+"_count");
-  if(id==="globalChatBadge") localStorage.removeItem("globalChatBadge_count");
-  if(id==="notifBadge") localStorage.removeItem("notifBadge_count");
-  const c1=parseInt(localStorage.getItem("globalChatBadge_count")||"0");
-  const c2=parseInt(localStorage.getItem("notifBadge_count")||"0");
-  if(window.LodgeNotifier) window.LodgeNotifier.setAppIconBadge(c1+c2);
+  if(id==="globalChatBadge"){
+    localStorage.removeItem("globalChatBadge_count");
+    localStorage.setItem("chatOpened","true");
+    localStorage.setItem("chatOpenedAt",Date.now().toString());
+  }
+  if(id==="notifBadge"){
+    localStorage.removeItem("notifBadge_count");
+  }
+  if(window.LodgeNotifier) window.LodgeNotifier.setAppIconBadge(0);
 }onAuthStateChanged(auth, (user) => {
 if(!user){ window.location.href="login.html"; return; }
 const uid=user.uid;
@@ -160,6 +175,7 @@ onValue(ref(db,`chats`),(snap)=>{
   let total=0;
   let latest=null;
   let isNew=false;
+  let newestTime=0;
   if(snap.exists()){
     snap.forEach(cs=>{
       const chatId=cs.key;
@@ -179,25 +195,31 @@ onValue(ref(db,`chats`),(snap)=>{
       const seen=chat.seenByMember||0;
       visible.forEach(mid=>{
         const m=msgs[mid];
+        if(m.time) newestTime=Math.max(newestTime,m.time);
         if(m.senderId!==uid && (m.time||0)>seen){
           total++;
-          if(!latest || m.time>latest.time){ latest=m; if(Date.now()-m.time<15000) isNew=true; }
+          if(!latest || m.time>latest.time){ latest=m; if(Date.now()-m.time<20000) isNew=true; }
         }
       });
     });
   }
+  localStorage.setItem("lastMsgTime",newestTime.toString());
+  const openedAt=parseInt(localStorage.getItem("chatOpenedAt")||"0");
+
   if(total>0){
+    // NEW message after last open -> show again
+    if(newestTime>openedAt){
+      localStorage.removeItem("chatOpened");
+      localStorage.removeItem("chatOpenedAt");
+    }
     showBadge("globalChatBadge",total);
     if(isNew && latest && window.LodgeNotifier){
       const fromAdmin=(latest.senderEmail||"").toLowerCase()===ADMIN_EMAIL;
-      if(fromAdmin){
-        // VOICE KEPT - Hello member...
-        window.LodgeNotifier.showPopup("Director", latest.text||"📷 Photo", "admin_message");
-      }
+      if(fromAdmin) window.LodgeNotifier.showPopup("Director", latest.text||"📷 Photo", "admin_message");
     }
   }else{
-    // SERIOUS FIX: If total is 0, HIDE IMMEDIATELY - don't keep ghost
-    hideBadge("globalChatBadge");
+    // NO unread -> disappear permanently
+    hideBadgePermanent("globalChatBadge");
   }
 });
 
@@ -212,18 +234,18 @@ onValue(ref(db,`notifications/${uid}`),(snap)=>{
     });
   }
   if(unread>0) showBadge("notifBadge",unread);
-  else hideBadge("notifBadge");
+  else hideBadgePermanent("notifBadge");
 });
 });
 
-// CLICK -> MARK SEEN + HIDE NOW
-async function markChatSeenAndHide(){
+// CLICK -> MARK SEEN + PERMANENT HIDE
+async function openAndClear(){
   const u=auth.currentUser; if(!u) return;
   try{ await update(ref(db,`chats/${ADMIN_UID+"_"+u.uid}`),{seenByMember:Date.now()}); }catch(e){}
-  hideBadge("globalChatBadge");
+  hideBadgePermanent("globalChatBadge");
 }
-document.getElementById("chatLink")?.addEventListener("click", markChatSeenAndHide);
-document.querySelectorAll('a[href="globaladmin.html"]').forEach(a=>{ a.addEventListener("click", markChatSeenAndHide); });
+document.getElementById("chatLink")?.addEventListener("click", openAndClear);
+document.querySelectorAll('a[href="globaladmin.html"]').forEach(a=>{ a.addEventListener("click", openAndClear); });
 document.querySelector(".logout").addEventListener("click",(e)=>{ e.preventDefault(); signOut(auth).then(()=>{window.location.href="login.html";}); });
 </script>
 </body>

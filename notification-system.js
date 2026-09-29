@@ -1,67 +1,88 @@
-// Freemasonry - Global Notification System with Sound
+// Freemasonry Heritage - 2-Way Voice Notifications
+// Member <-> Admin + Announcement all with voice
+
 class LodgeNotifier {
   constructor() {
-    this.audio = new Audio('/sounds/notification.mp3');
-    this.audio.volume = 0.8;
     this.unreadCount = 0;
-    this.initBadgeAPI();
+    this.audio = new Audio('/sounds/notification.mp3');
+    this.audio.volume = 0.7;
+    window.speechSynthesis.getVoices();
+    setTimeout(()=>window.speechSynthesis.getVoices(), 500);
   }
-  initBadgeAPI(){
-    // For PWA badge like Messages 1
-    if('setAppBadge' in navigator){
-      console.log("Badge API supported");
-    }
+
+  speak(text){
+    try{
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'en-US';
+      utter.volume = 1;
+      utter.rate = 0.92;
+      utter.pitch = 1.05;
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = voices.find(v =>
+        v.name.includes('Google UK English Female') ||
+        v.name.includes('Samantha') ||
+        v.name.includes('Zira') ||
+        v.name.toLowerCase().includes('female')
+      ) || voices.find(v=> v.lang==='en-US') || voices[0];
+      if(preferred) utter.voice = preferred;
+      window.speechSynthesis.speak(utter);
+    }catch(e){}
   }
-  async playSound(){
-    try{ 
-      this.audio.currentTime=0; 
-      await this.audio.play(); 
-      // Vibrate on phone
-      if(navigator.vibrate) navigator.vibrate([200,100,200]);
-    }catch(e){ console.log("Sound blocked, user must interact first"); }
+
+  async playSound(type="admin_message"){
+    try{ this.audio.currentTime=0; await this.audio.play(); }catch(e){}
+    if(navigator.vibrate) navigator.vibrate([200,100,200]);
+
+    setTimeout(()=>{
+      if(type==="member_message"){
+        // ADMIN hears this when member sends
+        this.speak("Hello Director, reply the message");
+      } else if(type==="admin_message"){
+        // MEMBER hears this when admin sends message to member
+        this.speak("Hello, you have a new message from Lodge Director, please reply");
+      } else if(type==="announcement"){
+        this.speak("New announcement from Lodge Director, please check");
+      } else {
+        this.speak("You have a new notification");
+      }
+    }, 300);
   }
+
   async setAppIconBadge(count){
     this.unreadCount = count;
-    // 1. Update header chat badge
     const chatBadge = document.getElementById("globalChatBadge");
     const notifBadge = document.getElementById("notifBadge");
     if(chatBadge){ chatBadge.textContent=count>99?"99+":count; chatBadge.style.display=count>0?"grid":"none"; }
     if(notifBadge){ notifBadge.textContent=count>99?"99+":count; notifBadge.style.display=count>0?"grid":"none"; }
-    // 2. Update PWA app icon badge like your screenshot
     if('setAppBadge' in navigator){
-      try{
-        if(count>0) await navigator.setAppBadge(count);
-        else await navigator.clearAppBadge();
-      }catch(e){}
+      try{ if(count>0) await navigator.setAppBadge(count); else await navigator.clearAppBadge(); }catch(e){}
     }
-    // 3. Update document title
-    document.title = count>0 ? `(${count}) Freemasonry Heritage` : "Freemasonry Heritage";
+    document.title = count>0? `(${count}) Freemasonry Heritage` : "Freemasonry Heritage";
   }
-  showPopup(title, message, type="message"){
-    // Remove old popup
+
+  showPopup(title, message, type="admin_message"){
     const old = document.getElementById("lodgePopup");
     if(old) old.remove();
-
     const popup = document.createElement("div");
     popup.id="lodgePopup";
-    popup.style=`position:fixed;top:80px;right:20px;left:20px;max-width:350px;margin-left:auto;background:linear-gradient(145deg,#142238,#0b1728);border:1px solid #d4af37;border-radius:16px;padding:15px;display:flex;gap:12px;z-index:9999;box-shadow:0 15px 40px rgba(0,0,0,.6);animation:slideIn .3s ease;`;
+    popup.style=`position:fixed;top:80px;right:20px;left:20px;max-width:350px;margin-left:auto;background:linear-gradient(145deg,#142238,#0b1728);border:1px solid #d4af37;border-radius:16px;padding:15px;display:flex;gap:12px;z-index:9999;box-shadow:0 15px 40px rgba(0,0,0,.6);animation:slideIn.3s ease;`;
     popup.innerHTML=`
-      <div style="width:45px;height:45px;background:rgba(212,175,55,.2);border-radius:12px;display:grid;place-items:center;color:#d4af37;flex-shrink:0;"><i class="fa ${type==="announcement"?"fa-bullhorn":type==="chat"?"fa-comments":"fa-bell"}"></i></div>
-      <div style="flex:1;"><div style="font-weight:700;color:white;font-size:14px;">${title}</div><div style="font-size:12px;color:#ccc;margin-top:4px;line-height:1.4;">${message}</div></div>
+      <div style="width:45px;height:45px;background:rgba(212,175,55,.2);border-radius:12px;display:grid;place-items:center;color:#d4af37;flex-shrink:0;"><i class="fa ${type==="announcement"?"fa-bullhorn":"fa-comments"}"></i></div>
+      <div style="flex:1;"><div style="font-weight:700;color:white;font-size:14px;">${title}</div><div style="font-size:12px;color:#ccc;margin-top:4px;">${message}</div></div>
       <div onclick="this.parentElement.remove()" style="color:#777;cursor:pointer;"><i class="fa fa-times"></i></div>
     `;
     document.body.appendChild(popup);
-    this.playSound();
-    setTimeout(()=>{ if(popup) popup.remove(); }, 6000);
+    this.playSound(type);
+    setTimeout(()=>{ if(popup.parentElement) popup.remove(); }, 6500);
   }
 }
 
 const notifier = new LodgeNotifier();
-
-// Add CSS animation
 const style=document.createElement("style");
 style.innerHTML=`@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}`;
 document.head.appendChild(style);
-
-// Export globally
 window.LodgeNotifier = notifier;
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged = ()=>{ speechSynthesis.getVoices(); };
+}

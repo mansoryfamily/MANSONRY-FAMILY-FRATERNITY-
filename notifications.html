@@ -33,7 +33,6 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 .nav-item.active{background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:600;}
 .nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;}
 #empty{padding:80px 20px;text-align:center;color:#888;}
-/* PURE TOAST */
 .toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#000;padding:12px 24px;border-radius:30px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:.3s;pointer-events:none;box-shadow:0 10px 30px rgba(212,175,55,.4);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
@@ -66,21 +65,21 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 
 <script>
 const TRANSLATIONS={
-en:{logout:"Logout",notif_title:"Notifications",notif_sub:"All updates from Lodge Director",loading:"Loading notifications...",empty_title:"No notifications yet",empty_sub:"Director announcements will appear here",copy:"Copy",delete:"Delete",copied:"Notification copied",deleted:"Notification deleted successfully",mark_read:"Mark read",new_badge:"New",home:"Home",req:"Requirements",app:"Application",members:"Members",help:"Helpline",laws:"Laws"},
-sw:{logout:"Toka",notif_title:"Arifa",notif_sub:"Sasisho zote kutoka kwa Mkurugenzi",loading:"Inapakia arifa...",empty_title:"Hakuna arifa bado",empty_sub:"Matangazo ya Mkurugenzi yataonekana hapa",copy:"Nakili",delete:"Futa",copied:"Arifa imenakiliwa",deleted:"Arifa imefutwa kwa mafanikio",mark_read:"Soma",new_badge:"Mpya",home:"Nyumbani",req:"Mahitaji",app:"Maombi",members:"Wanachama",help:"Msaada",laws:"Sheria"},
-lg:{logout:"Fuluma",notif_title:"Okutegeeza",notif_sub:"Zonna okuva eri Director",loading:"Kiteekateeka...",empty_title:"Tewali kutegeeza",empty_sub:"Zinaalabikira wano",copy:"Koppa",delete:"Sangula",copied:"Okutegeeza kukopiddwa",deleted:"Okutegeeza kusanguddwa bulungi",mark_read:"Soma",new_badge:"Mpya",home:"Awaka",req:"Ebyetaago",app:"Okusaba",members:"Bammemba",help:"Obuyambi",laws:"Amateeka"},
-rw:{logout:"Sohoka",notif_title:"Amakuru",notif_sub:"Ibyavuguruwe na Director",loading:"Irakura...",empty_title:"Nta makuru",empty_sub:"Bizagaragara hano",copy:"Koporora",delete:"Siba",copied:"Itangazo ryakoporowe",deleted:"Itangazo ryasibwe neza",mark_read:"Soma",new_badge:"Gishya",home:"Ahabanza",req:"Ibisabwa",app:"Gusaba",members:"Abanyamuryango",help:"Ubufasha",laws:"Amategeko"},
-pt:{logout:"Sair",notif_title:"Notificações",notif_sub:"Todas atualizações do Diretor",loading:"Carregando...",empty_title:"Nenhuma notificação",empty_sub:"Anúncios aparecerão aqui",copy:"Copiar",delete:"Deletar",copied:"Notificação copiada",deleted:"Notificação deletada com sucesso",mark_read:"Ler",new_badge:"Novo",home:"Início",req:"Requisitos",app:"Aplicação",members:"Membros",help:"Ajuda",laws:"Leis"},
-fr:{logout:"Déconnexion",notif_title:"Notifications",notif_sub:"Toutes les mises à jour du Directeur",loading:"Chargement...",empty_title:"Pas de notifications",empty_sub:"Les annonces apparaîtront ici",copy:"Copier",delete:"Supprimer",copied:"Notification copiée",deleted:"Notification supprimée avec succès",mark_read:"Lire",new_badge:"Nouveau",home:"Accueil",req:"Exigences",app:"Application",members:"Membres",help:"Aide",laws:"Lois"},
-zu:{logout:"Phuma",notif_title:"Izaziso",notif_sub:"Zonke izibuyekezo zika Director",loading:"Iyalayisha...",empty_title:"Azikho izaziso",empty_sub:"Zizovela lapha",copy:"Kopisha",delete:"Susa",copied:"Isaziso sikhopishiwe",deleted:"Isaziso sisuswe ngempumelelo",mark_read:"Funda",new_badge:"Okusha",home:"Ekhaya",req:"Okudingekayo",app:"Isicelo",members:"Amalungu",help:"Usizo",laws:"Imithetho"},
-ha:{logout:"Fita",notif_title:"Sanarwa",notif_sub:"Duk sabuntawa daga Director",loading:"Ana lodawa...",empty_title:"Babu sanarwa",empty_sub:"Za su bayyana anan",copy:"Kwafi",delete:"Share",copied:"An kwafi sanarwa",deleted:"An share sanarwa cikin nasara",mark_read:"Karanta",new_badge:"Sabo",home:"Gida",req:"Abubuwan",app:"Aikace",members:"Membobi",help:"Taimako",laws:"Dokoki"},
-tw:{logout:"Fi mu",notif_title:"Nsɛm",notif_sub:"Director nsɛm nyinaa",loading:"Ɛreloada...",empty_title:"Nsɛm biara nni hɔ",empty_sub:"Ɛbɛba ha",copy:"Kɔpi",delete:"Pepa",copied:"Nsɛm no akɔpi",deleted:"Nsɛm no apepa yiye",mark_read:"Kenkan",new_badge:"Foforo",home:"Fi",req:"Ahwehwɛde",app:"Abisade",members:"Agbatɔfo",help:"Mmoa",laws:"Mmara"},
-am:{logout:"ውጣ",notif_title:"ማሳወቂያዎች",notif_sub:"ከዳይሬክተር የተሰጡ ዝመናዎች",loading:"በመጫን ላይ...",empty_title:"ምንም ማሳወቂያ የለም",empty_sub:"እዚህ ይታያል",copy:"ቅዳ",delete:"ሰርዝ",copied:"ማሳወቂያ ተቀድቷል",deleted:"ማሳወቂያ በተሳካ ሁኔታ ተሰርዟል",mark_read:"አንብብ",new_badge:"አዲስ",home:"መነሻ",req:"መስፈርቶች",app:"ማመልከቻ",members:"አባላት",help:"እገዛ",laws:"ሕጎች"},
-sn:{logout:"Buda",notif_title:"Ziziviso",notif_sub:"Zvese kubva kuna Director",loading:"Kurodha...",empty_title:"Hakuna ziziviso",empty_sub:"Zichaonekwa pano",copy:"Kopa",delete:"Dzima",copied:"Chiziviso chakopwa",deleted:"Chiziviso chadzimwa zvakanaka",mark_read:"Verenga",new_badge:"Itsva",home:"Kumba",req:"Zvinodiwa",app:"Chikumbiro",members:"Nhengo",help:"Rubatsiro",laws:"Mitemo"},
-bem:{logout:"Fuma",notif_title:"Insoselo",notif_sub:"Fyonse ukufuma ku Director",loading:"Ukupakisha...",empty_title:"Takuli insoselo",empty_sub:"Fikaloleshwa pano",copy:"Kopola",delete:"Futa",copied:"Insoselo nakopwa",deleted:"Insoselo nafutiwa bwino",mark_read:"Belenga",new_badge:"Ipye",home:"Ku Ng'anda",req:"Ifikabilwa",app:"Ukupempula",members:"Ba Member",help:"Ubwafwilisho",laws:"Amalango"},
-tn:{logout:"Tswa",notif_title:"Dikitsiso",notif_sub:"Tsotlhe go tswa go Director",loading:"Go laolwa...",empty_title:"Ga go na dikitsiso",empty_sub:"Di tla bonala fa",copy:"Kopola",delete:"Phimola",copied:"Kitsiso e kopolotse",deleted:"Kitsiso e phimotswe ka katlego",mark_read:"Bala",new_badge:"Ntsha",home:"Gae",req:"Dikgato",app:"Kopo",members:"Maloko",help:"Thuso",laws:"Melao"},
-ng:{logout:"Zapo",notif_title:"Omakwatathano",notif_sub:"Ayihe gokwa Director",loading:"Otayi longwa...",empty_title:"Kape na omakwatathano",empty_sub:"Otaga monika mpano",copy:"Kopa",delete:"Dhana po",copied:"Omakwatathano ga kopa",deleted:"Omakwatathano ga dhana po nawa",mark_read:"Lesha",new_badge:"Ipe",home:"Pehaya",req:"Oshinakugwanithwa",app:"Epulo",members:"Oohambe",help:"Ekwatho",laws:"Ompango"},
-hi:{logout:"लॉगआउट",notif_title:"सूचनाएं",notif_sub:"निदेशक से सभी अपडेट",loading:"लोड हो रहा है...",empty_title:"कोई सूचना नहीं",empty_sub:"घोषणाएं यहां दिखेंगी",copy:"कॉपी",delete:"हटाएं",copied:"सूचना कॉपी की गई",deleted:"सूचना सफलतापूर्वक हटाई गई",mark_read:"पढ़ा",new_badge:"नया",home:"होम",req:"आवश्यकताएँ",app:"आवेदन",members:"सदस्य",help:"सहायता",laws:"कानून"}
+en:{logout:"Logout",notif_title:"Notifications",notif_sub:"All updates from Lodge Director",loading:"Loading notifications...",empty_title:"No notifications yet",empty_sub:"Director announcements will appear here",copy:"Copy",delete:"Delete",copied:"Notification copied",deleted:"Notification deleted successfully",new_badge:"New",home:"Home",req:"Requirements",app:"Application",members:"Members",help:"Helpline",laws:"Laws"},
+sw:{logout:"Toka",notif_title:"Arifa",notif_sub:"Sasisho zote kutoka kwa Mkurugenzi",loading:"Inapakia arifa...",empty_title:"Hakuna arifa bado",empty_sub:"Matangazo ya Mkurugenzi yataonekana hapa",copy:"Nakili",delete:"Futa",copied:"Arifa imenakiliwa",deleted:"Arifa imefutwa kwa mafanikio",new_badge:"Mpya",home:"Nyumbani",req:"Mahitaji",app:"Maombi",members:"Wanachama",help:"Msaada",laws:"Sheria"},
+lg:{logout:"Fuluma",notif_title:"Okutegeeza",notif_sub:"Zonna okuva eri Director",loading:"Kiteekateeka...",empty_title:"Tewali kutegeeza",empty_sub:"Zinaalabikira wano",copy:"Koppa",delete:"Sangula",copied:"Okutegeeza kukopiddwa",deleted:"Okutegeeza kusanguddwa bulungi",new_badge:"Mpya",home:"Awaka",req:"Ebyetaago",app:"Okusaba",members:"Bammemba",help:"Obuyambi",laws:"Amateeka"},
+rw:{logout:"Sohoka",notif_title:"Amakuru",notif_sub:"Ibyavuguruwe na Director",loading:"Irakura...",empty_title:"Nta makuru",empty_sub:"Bizagaragara hano",copy:"Koporora",delete:"Siba",copied:"Itangazo ryakoporowe",deleted:"Itangazo ryasibwe neza",new_badge:"Gishya",home:"Ahabanza",req:"Ibisabwa",app:"Gusaba",members:"Abanyamuryango",help:"Ubufasha",laws:"Amategeko"},
+pt:{logout:"Sair",notif_title:"Notificações",notif_sub:"Todas atualizações do Diretor",loading:"Carregando...",empty_title:"Nenhuma notificação",empty_sub:"Anúncios aparecerão aqui",copy:"Copiar",delete:"Deletar",copied:"Notificação copiada",deleted:"Notificação deletada com sucesso",new_badge:"Novo",home:"Início",req:"Requisitos",app:"Aplicação",members:"Membros",help:"Ajuda",laws:"Leis"},
+fr:{logout:"Déconnexion",notif_title:"Notifications",notif_sub:"Toutes les mises à jour du Directeur",loading:"Chargement...",empty_title:"Pas de notifications",empty_sub:"Les annonces apparaîtront ici",copy:"Copier",delete:"Supprimer",copied:"Notification copiée",deleted:"Notification supprimée avec succès",new_badge:"Nouveau",home:"Accueil",req:"Exigences",app:"Application",members:"Membres",help:"Aide",laws:"Lois"},
+zu:{logout:"Phuma",notif_title:"Izaziso",notif_sub:"Zonke izibuyekezo zika Director",loading:"Iyalayisha...",empty_title:"Azikho izaziso",empty_sub:"Zizovela lapha",copy:"Kopisha",delete:"Susa",copied:"Isaziso sikhopishiwe",deleted:"Isaziso sisuswe ngempumelelo",new_badge:"Okusha",home:"Ekhaya",req:"Okudingekayo",app:"Isicelo",members:"Amalungu",help:"Usizo",laws:"Imithetho"},
+ha:{logout:"Fita",notif_title:"Sanarwa",notif_sub:"Duk sabuntawa daga Director",loading:"Ana lodawa...",empty_title:"Babu sanarwa",empty_sub:"Za su bayyana anan",copy:"Kwafi",delete:"Share",copied:"An kwafi sanarwa",deleted:"An share sanarwa cikin nasara",new_badge:"Sabo",home:"Gida",req:"Abubuwan",app:"Aikace",members:"Membobi",help:"Taimako",laws:"Dokoki"},
+tw:{logout:"Fi mu",notif_title:"Nsɛm",notif_sub:"Director nsɛm nyinaa",loading:"Ɛreloada...",empty_title:"Nsɛm biara nni hɔ",empty_sub:"Ɛbɛba ha",copy:"Kɔpi",delete:"Pepa",copied:"Nsɛm no akɔpi",deleted:"Nsɛm no apepa yiye",new_badge:"Foforo",home:"Fi",req:"Ahwehwɛde",app:"Abisade",members:"Agbatɔfo",help:"Mmoa",laws:"Mmara"},
+am:{logout:"ውጣ",notif_title:"ማሳወቂያዎች",notif_sub:"ከዳይሬክተር የተሰጡ ዝመናዎች",loading:"በመጫን ላይ...",empty_title:"ምንም ማሳወቂያ የለም",empty_sub:"እዚህ ይታያል",copy:"ቅዳ",delete:"ሰርዝ",copied:"ማሳወቂያ ተቀድቷል",deleted:"ማሳወቂያ በተሳካ ሁኔታ ተሰርዟል",new_badge:"አዲስ",home:"መነሻ",req:"መስፈርቶች",app:"ማመልከቻ",members:"አባላት",help:"እገዛ",laws:"ሕጎች"},
+sn:{logout:"Buda",notif_title:"Ziziviso",notif_sub:"Zvese kubva kuna Director",loading:"Kurodha...",empty_title:"Hakuna ziziviso",empty_sub:"Zichaonekwa pano",copy:"Kopa",delete:"Dzima",copied:"Chiziviso chakopwa",deleted:"Chiziviso chadzimwa zvakanaka",new_badge:"Itsva",home:"Kumba",req:"Zvinodiwa",app:"Chikumbiro",members:"Nhengo",help:"Rubatsiro",laws:"Mitemo"},
+bem:{logout:"Fuma",notif_title:"Insoselo",notif_sub:"Fyonse ukufuma ku Director",loading:"Ukupakisha...",empty_title:"Takuli insoselo",empty_sub:"Fikaloleshwa pano",copy:"Kopola",delete:"Futa",copied:"Insoselo nakopwa",deleted:"Insoselo nafutiwa bwino",new_badge:"Ipye",home:"Ku Ng'anda",req:"Ifikabilwa",app:"Ukupempula",members:"Ba Member",help:"Ubwafwilisho",laws:"Amalango"},
+tn:{logout:"Tswa",notif_title:"Dikitsiso",notif_sub:"Tsotlhe go tswa go Director",loading:"Go laolwa...",empty_title:"Ga go na dikitsiso",empty_sub:"Di tla bonala fa",copy:"Kopola",delete:"Phimola",copied:"Kitsiso e kopolotse",deleted:"Kitsiso e phimotswe ka katlego",new_badge:"Ntsha",home:"Gae",req:"Dikgato",app:"Kopo",members:"Maloko",help:"Thuso",laws:"Melao"},
+ng:{logout:"Zapo",notif_title:"Omakwatathano",notif_sub:"Ayihe gokwa Director",loading:"Otayi longwa...",empty_title:"Kape na omakwatathano",empty_sub:"Otaga monika mpano",copy:"Kopa",delete:"Dhana po",copied:"Omakwatathano ga kopa",deleted:"Omakwatathano ga dhana po nawa",new_badge:"Ipe",home:"Pehaya",req:"Oshinakugwanithwa",app:"Epulo",members:"Oohambe",help:"Ekwatho",laws:"Ompango"},
+hi:{logout:"लॉगआउट",notif_title:"सूचनाएं",notif_sub:"निदेशक से सभी अपडेट",loading:"लोड हो रहा है...",empty_title:"कोई सूचना नहीं",empty_sub:"घोषणाएं यहां दिखेंगी",copy:"कॉपी",delete:"हटाएं",copied:"सूचना कॉपी की गई",deleted:"सूचना सफलतापूर्वक हटाई गई",new_badge:"नया",home:"होम",req:"आवश्यकताएँ",app:"आवेदन",members:"सदस्य",help:"सहायता",laws:"कानून"}
 };
 function getLang(){return localStorage.getItem('siteLang')||'en';}
 function applyLang(){
@@ -101,9 +100,10 @@ function showToast(msg){
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 const firebaseConfig={apiKey:"AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",authDomain:"mansonry-family-fraternity.firebaseapp.com",databaseURL:"https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",projectId:"mansonry-family-fraternity",storageBucket:"mansonry-family-fraternity.firebasestorage.app",messagingSenderId:"964415179161",appId:"1:964415179161:web:c8fd1a777542932d7c6b08"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getDatabase(app);
+
 function setBadge(id,count){const el=document.getElementById(id);if(!el)return;if(count>0){el.textContent=count>99?"99+":count;el.style.display="grid";localStorage.setItem(id+"_count",count);}else{el.style.display="none";localStorage.removeItem(id+"_count");}}
 function updateAppIcon(){const c1=parseInt(document.getElementById("globalChatBadge")?.textContent||"0");const c2=parseInt(document.getElementById("notifBadge")?.textContent||"0");const total=(isNaN(c1)?0:c1)+(isNaN(c2)?0:c2);if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(total);}
 
@@ -111,29 +111,36 @@ onAuthStateChanged(auth,(user)=>{
 if(!user){location.href="login.html";return;}
 const uid=user.uid;
 
+// 1. NOTIFICATIONS = ONLY DIRECTOR ANNOUNCEMENTS
 onValue(ref(db,`notifications/${uid}`),(snap)=>{
 const list=document.getElementById("notifList");
 const lang=getLang(); const dict=TRANSLATIONS[lang]||TRANSLATIONS.en;
 if(!snap.exists()){
-list.innerHTML=`<div id="empty"><i class="fa fa-bell-slash" style="font-size:40px;color:var(--gold);"></i><br><br><span data-i18n="empty_title">${dict.empty_title}</span><br><small data-i18n="empty_sub">${dict.empty_sub}</small></div>`;
+list.innerHTML=`<div id="empty"><i class="fa fa-bullhorn" style="font-size:40px;color:var(--gold);"></i><br><br><span>${dict.empty_title}</span><br><small>${dict.empty_sub}</small></div>`;
 setBadge("notifBadge",0);updateAppIcon();return;
 }
-let html="";let unread=0;let items=[];
+let items=[];
 snap.forEach(c=>{const v=c.val();v._key=c.key;items.push(v);});
+// FILTER: keep only announcements
+items = items.filter(n => n.type==="announcement" || n.isBroadcast===true || n.category==="director_announcement" ||!n.senderId);
 items.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+if(items.length===0){
+list.innerHTML=`<div id="empty"><i class="fa fa-bell-slash" style="font-size:40px;color:var(--gold);"></i><br><br><span>${dict.empty_title}</span><br><small>${dict.empty_sub}</small></div>`;
+setBadge("notifBadge",0);updateAppIcon();return;
+}
+let html="";let unread=0;
 items.forEach(n=>{
 if(!n.read)unread++;
 const time=new Date(n.createdAt||Date.now()).toLocaleString();
-const icon=n.isBroadcast?'<i class="fa fa-bullhorn"></i>':'<i class="fa fa-envelope"></i>';
 html+=`<div class="notif-card ${!n.read?'unread':''}" id="card-${n._key}">
-<div class="notif-icon">${icon}</div>
+<div class="notif-icon"><i class="fa fa-bullhorn"></i></div>
 <div class="notif-content">
-<b>${n.title||"Lodge Notification"}</b>
+<b>${n.title||"Lodge Announcement"}</b>
 <p id="msg-${n._key}">${n.message||""}</p>
 <div class="notif-time">${time} ${!n.read?'<span style="color:#00ff88;">● '+dict.new_badge+'</span>':''}</div>
 <div class="notif-actions">
-<button class="action-btn" onclick="copyNotif('${n._key}')"><i class="fa fa-copy"></i> <span data-i18n="copy">${dict.copy}</span></button>
-<button class="action-btn delete" onclick="deleteNotif('${n._key}')"><i class="fa fa-trash"></i> <span data-i18n="delete">${dict.delete}</span></button>
+<button class="action-btn" onclick="copyNotif('${n._key}')"><i class="fa fa-copy"></i> ${dict.copy}</button>
+<button class="action-btn delete" onclick="deleteNotif('${n._key}')"><i class="fa fa-trash"></i> ${dict.delete}</button>
 </div>
 </div>
 </div>`;
@@ -142,8 +149,22 @@ list.innerHTML=html;
 setBadge("notifBadge",unread);updateAppIcon();
 });
 
+// 2. INBOX = ONLY CHAT MESSAGES member ↔ admin
 onValue(ref(db,`chats`),(snap)=>{
-let total=0;if(snap.exists()){snap.forEach(cs=>{const chatId=cs.key;if(!chatId.includes(uid))return;const chat=cs.val();const lastSeen=chat.seenByMember||0;const msgs=chat.messages||{};Object.values(msgs).forEach(m=>{if(m.senderId!==uid && (m.time||0)>lastSeen)total++;});});}
+let total=0;
+if(snap.exists()){
+snap.forEach(cs=>{
+const chatId=cs.key;
+if(!chatId.includes(uid))return;
+const chat=cs.val();
+const lastSeen=chat.seenByMember||0;
+const msgs=chat.messages||{};
+Object.values(msgs).forEach(m=>{
+if(m.type==="announcement")return;
+if(m.senderId!==uid && (m.time||0)>lastSeen) total++;
+});
+});
+}
 setBadge("globalChatBadge",total);updateAppIcon();
 });
 
@@ -160,10 +181,7 @@ showToast(dict.deleted);
 document.getElementById("card-"+key)?.remove();
 };
 
-const savedChat=localStorage.getItem("globalChatBadge_count");const savedNotif=localStorage.getItem("notifBadge_count");
-if(savedChat)setBadge("globalChatBadge",parseInt(savedChat));if(savedNotif)setBadge("notifBadge",parseInt(savedNotif));
 });
-
 document.getElementById("logoutBtn").addEventListener("click",(e)=>{e.preventDefault();signOut(auth).then(()=>location.href="login.html");});
 </script>
 </body>

@@ -87,8 +87,27 @@ const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
 let myId=null,myEmail="",isAdmin=false,currentChatId=null,myInfo={fullName:'Member'},usersCache={},selId=null,selText=null,selIsMine=false,replyData=null,selChatId=null,selMediaUrl=null;
 const VOICE_DIRECTOR="Hello director, you got a new message please reply.";
 const VOICE_MEMBER="Hello member, you got a new message from director please reply.";
-function speakVoice(t){try{if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=0.92;const vs=window.speechSynthesis.getVoices();const pf=vs.find(v=>v.name.includes('Female')||v.name.includes('Zira'))||vs[0];if(pf)u.voice=pf;window.speechSynthesis.speak(u);}catch(e){}}
-async function showSystemNotification(title,body){try{if('serviceWorker' in navigator){const reg=await navigator.serviceWorker.ready;reg.showNotification(title,{body,icon:'masonic-G.png',badge:'masonic-G.png',vibrate:[200,100,200],tag:'mff',renotify:true});return;}}catch(e){}if('Notification' in window&&Notification.permission==="granted"){try{new Notification(title,{body,icon:'masonic-G.png'});}catch(e){}}}
+function initVoices(){if('speechSynthesis' in window){window.speechSynthesis.getVoices();}}
+initVoices();if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=initVoices;setTimeout(initVoices,500);setTimeout(initVoices,1500);}
+function speakVoice(text){
+  try{
+    if(!('speechSynthesis' in window))return;
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang="en-US";u.rate=0.9;u.pitch=1;u.volume=1;
+    const voices=window.speechSynthesis.getVoices();
+    const fem=voices.find(v=>v.name.toLowerCase().includes('female')||v.name.includes('Zira')||v.name.includes('Samantha'))||voices.find(v=>v.lang==='en-US')||voices[0];
+    if(fem)u.voice=fem;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+function playSound(){
+  try{const a=new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');a.volume=0.7;a.play().catch(()=>{});if(navigator.vibrate)navigator.vibrate([200,100,200]);}catch(e){}
+}
+async function showSystemNotification(title,body){
+  try{if('serviceWorker' in navigator){const reg=await navigator.serviceWorker.ready;reg.showNotification(title,{body,icon:'masonic-G.png',badge:'masonic-G.png',vibrate:[200,100,200],tag:'mff',renotify:true});return;}}catch(e){}
+  if('Notification' in window&&Notification.permission==="granted"){try{new Notification(title,{body,icon:'masonic-G.png'});}catch(e){}}
+}
 async function setAppBadgeCount(total){try{if('setAppBadge' in navigator){if(total>0)await navigator.setAppBadge(total);else await navigator.clearAppBadge();}}catch(e){}localStorage.setItem("appBadgeCount",total);}
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').then(async()=>{const s=localStorage.getItem("appBadgeCount");if(s&&parseInt(s)>0&&'setAppBadge' in navigator){try{await navigator.setAppBadge(parseInt(s));}catch(e){}}});}
 if('Notification' in window&&Notification.permission==="default"){Notification.requestPermission();}
@@ -96,7 +115,14 @@ function showToast(msg){document.getElementById('toastText').innerText=msg;const
 function attachItemEvents(){document.querySelectorAll('.member-item').forEach(el=>{let timer;const showM=(e)=>{e.preventDefault();selChatId=el.dataset.chatid;const menu=document.getElementById('chatMenu');menu.style.left=((e.touches?e.touches[0].clientX:e.clientX)-120)+'px';menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';menu.style.display='flex';};el.addEventListener('contextmenu',showM);el.addEventListener('touchstart',e=>{timer=setTimeout(()=>showM(e),700);});el.addEventListener('touchend',()=>clearTimeout(timer));el.addEventListener('click',()=>openChat(el.dataset.other,el.querySelector('b').innerText));});}
 function setBadge(id,count){const el=document.getElementById(id);if(!el)return;if(count>0){el.textContent=count>99?"99+":count;el.style.display="grid";}else{el.style.display="none";}}
 function updateAppIcon(){const c1=parseInt(document.getElementById("notifCount")?.textContent||"0");const c2=parseInt(document.getElementById("notifBadge")?.textContent||"0");let total=0;if(!isNaN(c1))total+=c1;if(!isNaN(c2))total+=c2;setAppBadgeCount(total);if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(total);}
-onAuthStateChanged(auth,async(u)=>{if(!u){document.getElementById('membersList').innerHTML=`<div style="padding:30px;text-align:center">Not logged in</div>`;return;}myId=u.uid;myEmail=(u.email||"").toLowerCase();isAdmin=(myEmail===ADMIN_EMAIL);document.getElementById('sub').innerText=isAdmin?"ADMIN":"LODGE";try{const s=await get(ref(db,'users'));if(s.exists()){Object.values(s.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}const s2=await get(ref(db,'members'));if(s2.exists()){Object.values(s2.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}}catch(e){}myInfo=usersCache[myId]||{fullName:u.displayName||'Member'};loadChats();loadNotifications();});
+onAuthStateChanged(auth,async(u)=>{
+  if(!u){document.getElementById('membersList').innerHTML=`<div style="padding:30px;text-align:center">Not logged in</div>`;return;}
+  myId=u.uid;myEmail=(u.email||"").toLowerCase();isAdmin=(myEmail===ADMIN_EMAIL);
+  document.getElementById('sub').innerText=isAdmin?"ADMIN":"LODGE";
+  document.addEventListener('click',()=>{initVoices();if('speechSynthesis' in window){const ut=new SpeechSynthesisUtterance('');window.speechSynthesis.speak(ut);window.speechSynthesis.cancel();}},{once:true});
+  try{const s=await get(ref(db,'users'));if(s.exists()){Object.values(s.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}const s2=await get(ref(db,'members'));if(s2.exists()){Object.values(s2.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}}catch(e){}
+  myInfo=usersCache[myId]||{fullName:u.displayName||'Member'};loadChats();loadNotifications();
+});
 function loadNotifications(){const r=ref(db,`notifications/${myId}`);onValue(r,(snap)=>{if(!snap.exists()){setBadge("notifBadge",0);updateAppIcon();return;}let unread=0;snap.forEach(c=>{const n=c.val();if(!n.read)unread++;});setBadge("notifBadge",unread);updateAppIcon();});}function loadChats(){
   const listEl=document.getElementById('membersList');
   let fallbackDone=false;
@@ -111,7 +137,6 @@ function loadNotifications(){const r=ref(db,`notifications/${myId}`);onValue(r,(
     setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();
   };
   setTimeout(doFallback,1000);
-
   onValue(ref(db,'chats'),(snap)=>{
     try{
       const raw=snap.val()||{};if(Object.keys(raw).length===0){doFallback();return;}
@@ -130,9 +155,9 @@ function loadNotifications(){const r=ref(db,`notifications/${myId}`);onValue(r,(
         if(newInbox.length>0){
           const latestId=newInbox.sort((a,b)=>(msgs[b].time||0)-(msgs[a].time||0))[0];
           const latest=msgs[latestId];
-          if(latest&&latest.senderId!==myId&&Date.now()-latest.time<8000){
+          if(latest&&latest.senderId!==myId&&Date.now()-latest.time<10000){
             const email=(latest.senderEmail||"").toLowerCase();
-            newForMe={msg:latest,other:other,isFromAdmin:(email===ADMIN_EMAIL)};
+            newForMe={msg:latest,other:other,isFromAdmin:(email===ADMIN_EMAIL),email:email};
           }
         }
         const info=chat.info||{};const reg=usersCache[other]||{};
@@ -147,27 +172,24 @@ function loadNotifications(){const r=ref(db,`notifications/${myId}`);onValue(r,(
       if(cards.length===0){doFallback();return;}
       fallbackDone=true;cards.sort((a,b)=>b.lastTime-a.lastTime);
       setBadge("notifCount",totalUnread);setBadge("globalChatBadge",totalUnread);updateAppIcon();
-
-      // PERFECT VOICE BY EMAIL - AS YOU SAID
       if(newForMe){
         const txt=newForMe.msg.text||(newForMe.msg.mediaType==='video'?'🎥 Video':'📷 Photo');
         if(newForMe.isFromAdmin){
-          // OUT of mansoryfamilyn@gmail.com -> hello member
           if(!isAdmin){
-            speakVoice(VOICE_MEMBER);
+            playSound();
+            setTimeout(()=>speakVoice(VOICE_MEMBER),400);
             showSystemNotification("MFF Lodge",VOICE_MEMBER);
-            window.LodgeNotifier?.showPopup("Director",txt,"admin_message");
+            if(window.LodgeNotifier)window.LodgeNotifier.showPopup("Director",txt,"admin_message");
           }
         }else{
-          // IN to mansoryfamilyn@gmail.com -> hello director
           if(isAdmin){
-            speakVoice(VOICE_DIRECTOR);
+            playSound();
+            setTimeout(()=>speakVoice(VOICE_DIRECTOR),400);
             showSystemNotification("MFF Lodge",VOICE_DIRECTOR);
-            window.LodgeNotifier?.showPopup(usersCache[newForMe.other]?.fullName||"Member",txt,"member_message");
+            if(window.LodgeNotifier)window.LodgeNotifier.showPopup(usersCache[newForMe.other]?.fullName||"Member",txt,"member_message");
           }
         }
       }
-
       if(isAdmin){
         let html='';cards.forEach(c=>{html+=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${c.otherUid}"><div style="width:46px;height:46px;border-radius:50%;background:#121D33;border:2px solid ${c.isUnread?'#00ff88':'#D4B16A'};display:grid;place-items:center;color:${c.isUnread?'#00ff88':'#D4B16A'};font-weight:800">${c.initials}</div><div style="flex:1;overflow:hidden;text-align:left"><b style="color:${c.isUnread?'#00ff88':'#D4B16A'}">${c.name}</b><br><small style="color:#D4B16A"><i class="fa fa-phone"></i> ${c.phone} • ${c.country}</small><br><small style="color:${c.isUnread?'#fff':'#aaa'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-chevron-right" style="color:#D4B16A"></i>`}</div>`;});
         listEl.innerHTML=html;
@@ -179,7 +201,6 @@ function loadNotifications(){const r=ref(db,`notifications/${myId}`);onValue(r,(
     }catch(e){doFallback();}
   },()=>{doFallback();});
 }
-
 window.openChat=async(otherUid,displayName)=>{
   currentChatId=isAdmin?(ADMIN_UID+"_"+otherUid):(ADMIN_UID+"_"+myId);
   document.getElementById('chatName').innerText=displayName;
@@ -189,7 +210,6 @@ window.openChat=async(otherUid,displayName)=>{
   try{if(isAdmin)await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:Date.now()}).catch(()=>{});else await update(ref(db,`chats/${currentChatId}`),{seenByMember:Date.now()}).catch(()=>{});}catch(e){}
   onValue(ref(db,`chats/${currentChatId}/messages`),(snap)=>{
     const data=snap.val();
-    // PROFESSIONAL EMPTY STATE - NO MESSAGES YET
     if(!data||Object.keys(data).length===0){
       box.innerHTML=`<div style="text-align:center;padding:60px 20px;color:#aaa"><div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(145deg,#121D33,#0b1728);border:2px solid var(--gold);display:grid;place-items:center;margin:0 auto 20px"><i class="fa fa-comments" style="font-size:32px;color:var(--gold)"></i></div><div style="color:var(--gold);font-weight:700;font-size:16px">${tr('no_messages')}</div><div style="font-size:12px;margin-top:8px;color:#666">Start your conversation with ${displayName}<br>Your messages are secured</div><div style="margin-top:20px;color:#333;font-size:11px"><i class="fa fa-lock"></i> End-to-end encrypted</div></div>`;
       return;
@@ -215,7 +235,6 @@ window.openChat=async(otherUid,displayName)=>{
     box.scrollTop=box.scrollHeight;
   },()=>{box.innerHTML=`<div style="padding:40px;text-align:center;color:#ff5a5a">Error loading<br><small>Check Firebase Rules</small></div>`;});
 }
-
 function showMsgMenu(e,mid,text,isMine,mediaUrl){selId=mid;selText=text;selIsMine=isMine;selMediaUrl=mediaUrl;const m=document.getElementById('msgMenu');m.style.left=(e.touches?e.touches[0].clientX:e.clientX)-100+'px';m.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';m.style.display='flex';document.getElementById('editBtn').style.display=isMine?'flex':'none';document.getElementById('downBtn').style.display=mediaUrl?'flex':'none';}
 window.copyMsg=()=>{navigator.clipboard.writeText(selText);hideMenus();showToast('Copied');}
 window.editMsg=async()=>{const nt=prompt('Edit:',selText);if(nt){await update(ref(db,`chats/${currentChatId}/messages/${selId}`),{text:nt});showToast('Edited successfully');}hideMenus();}

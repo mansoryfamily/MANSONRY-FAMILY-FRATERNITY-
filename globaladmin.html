@@ -53,27 +53,28 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 <div id="chatMenu" class="menu"><button onclick="deleteChatForMe()" class="danger"><i class="fa fa-trash"></i> <span data-i18n="delete">Delete</span></button><button onclick="cancelChatDelete()"><i class="fa fa-times"></i> <span data-i18n="cancel">Cancel</span></button></div>
 <div id="toast"><i class="fa fa-check-circle" style="color:#00ff88"></i><span id="toastText">Deleted successfully</span></div><script>
 const TRANSLATIONS={
-en:{global_admin:"GLOBAL ADMIN",loading_chats:"Loading chats...",swipe_hint:"Swipe right to reply",type_message:"Type message...",reply:"Reply",copy:"Copy",edit:"Edit",delete_me:"Delete for me",delete_all:"Delete for everyone",delete:"Delete",cancel:"Cancel",admin:"ADMIN",admin_channel:"ADMINISTRATION CHANNEL",tap_admin:"Tap to message Administration",no_members:"No members yet"},
-sw:{global_admin:"ADMIN Mkuu",loading_chats:"Inapakia chats...",swipe_hint:"Telezesha kulia kujibu",type_message:"Andika ujumbe...",reply:"Jibu",copy:"Nakili",edit:"Hariri",delete_me:"Futa kwangu",delete_all:"Futa kwa wote",delete:"Futa",cancel:"Ghairi",admin:"ADMIN",admin_channel:"NJIA YA UTAWALA",tap_admin:"Gusa kuandikia Utawala",no_members:"Hakuna wanachama bado"},
-lg:{global_admin:"ADMIN Omukulu",loading_chats:"Eteekateeka chats...",swipe_hint:"Sembera ku ddyo okuddamu",type_message:"Wandiika obubaka...",reply:"Ddamu",copy:"Koppa",edit:"Kyusa",delete_me:"Sangula gye ndi",delete_all:"Sangula eri bonna",delete:"Sangula",cancel:"Sazaamu",admin:"ADMIN",admin_channel:"OMUKUTU GWA ADMINISTRATION",tap_admin:"Koonya okuwandiikira Administration",no_members:"Tewali bammemba"},
-rw:{global_admin:"ADMIN MUKURU",loading_chats:"Irakura chats...",swipe_hint:"Syoza iburyo usubize",type_message:"Andika ubutumwa...",reply:"Subiza",copy:"Koporora",edit:"Hindura",delete_me:"Siba kuri njye",delete_all:"Siba kuri bose",delete:"Siba",cancel:"Hagarika",admin:"ADMIN",admin_channel:"UMUYOBORO W'UBUYOBOZI",tap_admin:"Kanda wandikire Ubuyobozi",no_members:"Nta banyamuryango"},
-pt:{global_admin:"ADMIN GLOBAL",loading_chats:"Carregando conversas...",swipe_hint:"Deslize para responder",type_message:"Digite mensagem...",reply:"Responder",copy:"Copiar",edit:"Editar",delete_me:"Apagar para mim",delete_all:"Apagar para todos",delete:"Apagar",cancel:"Cancelar",admin:"ADMIN",admin_channel:"CANAL DA ADMINISTRAÇÃO",tap_admin:"Toque para falar com Administração",no_members:"Nenhum membro ainda"},
-fr:{global_admin:"ADMIN GLOBAL",loading_chats:"Chargement chats...",swipe_hint:"Glissez pour répondre",type_message:"Tapez message...",reply:"Répondre",copy:"Copier",edit:"Modifier",delete_me:"Supprimer pour moi",delete_all:"Supprimer pour tous",delete:"Supprimer",cancel:"Annuler",admin:"ADMIN",admin_channel:"CANAL D'ADMINISTRATION",tap_admin:"Appuyez pour écrire à l'Administration",no_members:"Aucun membre"},
-zu:{global_admin:"ADMIN OMKHULU",loading_chats:"Ilayisha izingxoxo...",swipe_hint:"Swayipha ukuphendula",type_message:"Bhala umlayezo...",reply:"Phendula",copy:"Kopisha",edit:"Hlela",delete_me:"Susa kimi",delete_all:"Susa kuwo wonke",delete:"Susa",cancel:"Khansela",admin:"ADMIN",admin_channel:"ISITESHI SOKUPHATHA",tap_admin:"Thepha ukubhalela Abaphathi",no_members:"Awekho amalungu"},
-ha:{global_admin:"BABBAN ADMIN",loading_chats:"Ana lodawa chats...",swipe_hint:"Ja dama don amsa",type_message:"Rubuta sako...",reply:"Amsa",copy:"Kwafi",edit:"Gyara",delete_me:"Share mini",delete_all:"Share ga kowa",delete:"Share",cancel:"Soke",admin:"ADMIN",admin_channel:"TASHAR GWAMNATi",tap_admin:"Danna don rubuta wa Gwamnati",no_members:"Babu mambobi"},
-tw:{global_admin:"ADMIN KƐSEƐ",loading_chats:"Ɛreloada chats...",swipe_hint:"Twitwa na buae",type_message:"Kyerɛw nkra...",reply:"Buae",copy:"Kɔpi",edit:"Sesa",delete_me:"Pepa ma me",delete_all:"Pepa ma obiaa",delete:"Pepa",cancel:"Gyae",admin:"ADMIN",admin_channel:"ADMINISTRATION KƐSEƐ",tap_admin:"Tia na kyerɛw kɔma Administration",no_members:"Nnipa biara nni hɔ"},
-am:{global_admin:"ዋና አስተዳዳሪ",loading_chats:"ውይቶችን በመጫን ላይ...",swipe_hint:"ለመለስ ወደ ቀኝ ያንሸራትቱ",type_message:"መልእክት ይጻፉ...",reply:"መልስ",copy:"ቅዳ",edit:"አርትዕ",delete_me:"ለእኔ ሰርዝ",delete_all:"ለሁሉም ሰርዝ",delete:"ሰርዝ",cancel:"ሰርዝ",admin:"አስተዳዳሪ",admin_channel:"የአስተዳደር ቻናል",tap_admin:"ለአስተዳደር ለመጻፍ ይንኩ",no_members:"ምንም አባላት የሉም"},
-sn:{global_admin:"ADMIN MUKURU",loading_chats:"Kurodha chats...",swipe_hint:"Swipe kuti upindure",type_message:"Nyora meseji...",reply:"Pindura",copy:"Kopa",edit:"Gadzirisa",delete_me:"Dzima kwandiri",delete_all:"Dzima kune vose",delete:"Dzima",cancel:"Kanzura",admin:"ADMIN",admin_channel:"CHITESHI CHEKUTONGA",tap_admin:"Dzvanya kunyora ku Administration",no_members:"Hakuna nhengo"},
-bem:{global_admin:"ADMIN MUKULU",loading_chats:"Ukupakisha chats...",swipe_hint:"Senda ku kulyo ukwasuka",type_message:"Lemba ubutumwa...",reply:"Asuka",copy:"Kopola",edit:"Alula",delete_me:"Futa kuri nebo",delete_all:"Futa kuli bonse",delete:"Futa",cancel:"Kana",admin:"ADMIN",admin_channel:"UMUSELE WA BUTEKO",tap_admin:"Tinta ukulembela Administration",no_members:"Takuli ba member"},
-tn:{global_admin:"ADMIN MOGOLO",loading_chats:"Go laolwa chats...",swipe_hint:"Sutlha go araba",type_message:"Kwalo molaetsa...",reply:"Araba",copy:"Kopola",edit:"Baakanya",delete_me:"Phimola mo go nna",delete_all:"Phimola mo go botlhe",delete:"Phimola",cancel:"Kansela",admin:"ADMIN",admin_channel:"KANELE YA BOLAODI",tap_admin:"Tobetsa go kwalela Bolaodi",no_members:"Ga go na maloko"},
-ng:{global_admin:"ADMIN OMUNENE",loading_chats:"Otayi longwa chats...",swipe_hint:"Kumuna mo uyamukule",type_message:"Shanga etumwalaka...",reply:"Yamukula",copy:"Kopa",edit:"Lundulula",delete_me:"Dhana po kungame",delete_all:"Dhana po kaayehe",delete:"Dhana po",cancel:"Kana",admin:"ADMIN",admin_channel:"OCHANEL YOPAUYELELI",tap_admin:"Indile mo ushangela Uyeleli",no_members:"Kape na oohambe"},
-hi:{global_admin:"मुख्य व्यवस्थापक",loading_chats:"चैट लोड हो रहे हैं...",swipe_hint:"जवाब देने के लिए स्वाइप करें",type_message:"संदेश लिखें...",reply:"जवाब दें",copy:"कॉपी",edit:"संपादित करें",delete_me:"मेरे लिए हटाएं",delete_all:"सभी के लिए हटाएं",delete:"हटाएं",cancel:"रद्द करें",admin:"व्यवस्थापक",admin_channel:"प्रशासन चैनल",tap_admin:"प्रशासन को संदेश भेजने के लिए टैप करें",no_members:"अभी कोई सदस्य नहीं"}
+en:{global_admin:"GLOBAL ADMIN",loading_chats:"Loading chats...",swipe_hint:"Swipe right to reply",type_message:"Type message...",reply:"Reply",copy:"Copy",edit:"Edit",delete_me:"Delete for me",delete_all:"Delete for everyone",delete:"Delete",cancel:"Cancel",admin_channel:"ADMINISTRATION CHANNEL",tap_admin:"Tap to message Administration",no_members:"No members yet",no_messages:"No messages yet"},
+sw:{global_admin:"ADMIN Mkuu",loading_chats:"Inapakia chats...",swipe_hint:"Telezesha kulia kujibu",type_message:"Andika ujumbe...",reply:"Jibu",copy:"Nakili",edit:"Hariri",delete_me:"Futa kwangu",delete_all:"Futa kwa wote",delete:"Futa",cancel:"Ghairi",admin_channel:"NJIA YA UTAWALA",tap_admin:"Gusa kuandikia Utawala",no_members:"Hakuna wanachama bado",no_messages:"Hakuna ujumbe bado"},
+lg:{global_admin:"ADMIN Omukulu",loading_chats:"Eteekateeka chats...",swipe_hint:"Sembera ku ddyo okuddamu",type_message:"Wandiika obubaka...",reply:"Ddamu",copy:"Koppa",edit:"Kyusa",delete_me:"Sangula gye ndi",delete_all:"Sangula eri bonna",delete:"Sangula",cancel:"Sazaamu",admin_channel:"OMUKUTU GWA ADMINISTRATION",tap_admin:"Koonya okuwandiikira Administration",no_members:"Tewali bammemba",no_messages:"Tewali bubaka"},
+rw:{global_admin:"ADMIN MUKURU",loading_chats:"Irakura chats...",swipe_hint:"Syoza iburyo usubize",type_message:"Andika ubutumwa...",reply:"Subiza",copy:"Koporora",edit:"Hindura",delete_me:"Siba kuri njye",delete_all:"Siba kuri bose",delete:"Siba",cancel:"Hagarika",admin_channel:"UMUYOBORO W'UBUYOBOZI",tap_admin:"Kanda wandikire Ubuyobozi",no_members:"Nta banyamuryango",no_messages:"Nta butumwa"},
+pt:{global_admin:"ADMIN GLOBAL",loading_chats:"Carregando conversas...",swipe_hint:"Deslize para responder",type_message:"Digite mensagem...",reply:"Responder",copy:"Copiar",edit:"Editar",delete_me:"Apagar para mim",delete_all:"Apagar para todos",delete:"Apagar",cancel:"Cancelar",admin_channel:"CANAL DA ADMINISTRAÇÃO",tap_admin:"Toque para falar com Administração",no_members:"Nenhum membro ainda",no_messages:"Nenhuma mensagem ainda"},
+fr:{global_admin:"ADMIN GLOBAL",loading_chats:"Chargement chats...",swipe_hint:"Glissez pour répondre",type_message:"Tapez message...",reply:"Répondre",copy:"Copier",edit:"Modifier",delete_me:"Supprimer pour moi",delete_all:"Supprimer pour tous",delete:"Supprimer",cancel:"Annuler",admin_channel:"CANAL D'ADMINISTRATION",tap_admin:"Appuyez pour écrire à l'Administration",no_members:"Aucun membre",no_messages:"Aucun message"},
+zu:{global_admin:"ADMIN OMKHULU",loading_chats:"Ilayisha izingxoxo...",swipe_hint:"Swayipha ukuphendula",type_message:"Bhala umlayezo...",reply:"Phendula",copy:"Kopisha",edit:"Hlela",delete_me:"Susa kimi",delete_all:"Susa kuwo wonke",delete:"Susa",cancel:"Khansela",admin_channel:"ISITESHI SOKUPHATHA",tap_admin:"Thepha ukubhalela Abaphathi",no_members:"Awekho amalungu",no_messages:"Awukho umlayezo"},
+ha:{global_admin:"BABBAN ADMIN",loading_chats:"Ana lodawa chats...",swipe_hint:"Ja dama don amsa",type_message:"Rubuta sako...",reply:"Amsa",copy:"Kwafi",edit:"Gyara",delete_me:"Share mini",delete_all:"Share ga kowa",delete:"Share",cancel:"Soke",admin_channel:"TASHAR GWAMNATi",tap_admin:"Danna don rubuta wa Gwamnati",no_members:"Babu mambobi",no_messages:"Babu sako"},
+tw:{global_admin:"ADMIN KƐSEƐ",loading_chats:"Ɛreloada chats...",swipe_hint:"Twitwa na buae",type_message:"Kyerɛw nkra...",reply:"Buae",copy:"Kɔpi",edit:"Sesa",delete_me:"Pepa ma me",delete_all:"Pepa ma obiaa",delete:"Pepa",cancel:"Gyae",admin_channel:"ADMINISTRATION KƐSEƐ",tap_admin:"Tia na kyerɛw kɔma Administration",no_members:"Nnipa biara nni hɔ",no_messages:"Nkra biara nni hɔ"},
+am:{global_admin:"ዋና አስተዳዳሪ",loading_chats:"ውይቶችን በመጫን ላይ...",swipe_hint:"ለመለስ ወደ ቀኝ ያንሸራትቱ",type_message:"መልእክት ይጻፉ...",reply:"መልስ",copy:"ቅዳ",edit:"አርትዕ",delete_me:"ለእኔ ሰርዝ",delete_all:"ለሁሉም ሰርዝ",delete:"ሰርዝ",cancel:"ሰርዝ",admin_channel:"የአስተዳደር ቻናል",tap_admin:"ለአስተዳደር ለመጻፍ ይንኩ",no_members:"ምንም አባላት የሉም",no_messages:"ምንም መልእክቶች የሉም"},
+sn:{global_admin:"ADMIN MUKURU",loading_chats:"Kurodha chats...",swipe_hint:"Swipe kuti upindure",type_message:"Nyora meseji...",reply:"Pindura",copy:"Kopa",edit:"Gadzirisa",delete_me:"Dzima kwandiri",delete_all:"Dzima kune vose",delete:"Dzima",cancel:"Kanzura",admin_channel:"CHITESHI CHEKUTONGA",tap_admin:"Dzvanya kunyora ku Administration",no_members:"Hakuna nhengo",no_messages:"Hakuna meseji"},
+bem:{global_admin:"ADMIN MUKULU",loading_chats:"Ukupakisha chats...",swipe_hint:"Senda ku kulyo ukwasuka",type_message:"Lemba ubutumwa...",reply:"Asuka",copy:"Kopola",edit:"Alula",delete_me:"Futa kuri nebo",delete_all:"Futa kuli bonse",delete:"Futa",cancel:"Kana",admin_channel:"UMUSELE WA BUTEKO",tap_admin:"Tinta ukulembela Administration",no_members:"Takuli ba member",no_messages:"Takuli ubutumwa"},
+tn:{global_admin:"ADMIN MOGOLO",loading_chats:"Go laolwa chats...",swipe_hint:"Sutlha go araba",type_message:"Kwalo molaetsa...",reply:"Araba",copy:"Kopola",edit:"Baakanya",delete_me:"Phimola mo go nna",delete_all:"Phimola mo go botlhe",delete:"Phimola",cancel:"Kansela",admin_channel:"KANELE YA BOLAODI",tap_admin:"Tobetsa go kwalela Bolaodi",no_members:"Ga go na maloko",no_messages:"Ga go na molaetsa"},
+ng:{global_admin:"ADMIN OMUNENE",loading_chats:"Otayi longwa chats...",swipe_hint:"Kumuna mo uyamukule",type_message:"Shanga etumwalaka...",reply:"Yamukula",copy:"Kopa",edit:"Lundulula",delete_me:"Dhana po kungame",delete_all:"Dhana po kaayehe",delete:"Dhana po",cancel:"Kana",admin_channel:"OCHANEL YOPAUYELELI",tap_admin:"Indile mo ushangela Uyeleli",no_members:"Kape na oohambe",no_messages:"Kape na etumwalaka"},
+hi:{global_admin:"मुख्य व्यवस्थापक",loading_chats:"चैट लोड हो रहे हैं...",swipe_hint:"जवाब देने के लिए स्वाइप करें",type_message:"संदेश लिखें...",reply:"जवाब दें",copy:"कॉपी",edit:"संपादित करें",delete_me:"मेरे लिए हटाएं",delete_all:"सभी के लिए हटाएं",delete:"हटाएं",cancel:"रद्द करें",admin_channel:"प्रशासन चैनल",tap_admin:"प्रशासन को संदेश भेजने के लिए टैप करें",no_members:"अभी कोई सदस्य नहीं",no_messages:"अभी कोई संदेश नहीं"}
 };
 function getLang(){return localStorage.getItem('siteLang')||'en';}
 function tr(k){const l=getLang();return (TRANSLATIONS[l]&&TRANSLATIONS[l][k])||TRANSLATIONS.en[k]||k;}
 function applyLang(){document.querySelectorAll('[data-i18n]').forEach(el=>el.innerText=tr(el.dataset.i18n));document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>el.placeholder=tr(el.dataset.i18nPlaceholder));}
-document.addEventListener('DOMContentLoaded',applyLang); setInterval(applyLang,800);
+document.addEventListener('DOMContentLoaded',applyLang); setInterval(applyLang,500);
 </script>
+<!-- YOUR EXACT FILES - RESPECTED -->
 <script src="notification-system.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
@@ -86,266 +87,182 @@ const ADMIN_EMAIL="mansoryfamilyn@gmail.com";
 const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
 let myId=null,myEmail="",isAdmin=false,currentChatId=null,myInfo={fullName:'Member'},usersCache={},selId=null,selText=null,selIsMine=false,replyData=null,selChatId=null,selMediaUrl=null;
 
-// PERFECT VOICE - RECHECKED
-const VOICE_DIRECTOR="Hello director, you got a new message please reply.";
-const VOICE_MEMBER="Hello member, you got a new message from director please reply.";
-
-function speakVoice(text){
-  if(!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang="en-US"; u.rate=0.92; u.pitch=1.05;
-  const voices=window.speechSynthesis.getVoices();
-  const pref=voices.find(v=>v.name.includes('Google UK English Female')||v.name.includes('Zira')||v.name.toLowerCase().includes('female'))||voices[0];
-  if(pref) u.voice=pref;
-  window.speechSynthesis.speak(u);
-}
-async function showSystemNotification(title, body){
-  // FIXED - Uses SW so no github.io domain shows
-  try{
-    if('serviceWorker' in navigator){
-      const reg=await navigator.serviceWorker.ready;
-      reg.showNotification(title,{
-        body: body,
-        icon: 'masonic-G.png',
-        badge: 'masonic-G.png',
-        vibrate: [200,100,200],
-        tag: 'mff-lodge',
-        renotify: true,
-        requireInteraction: false
-      });
-      return;
-    }
-  }catch(e){}
-  if('Notification' in window && Notification.permission==="granted"){
-    try{ const n=new Notification(title,{body,icon:'masonic-G.png'}); n.onclick=()=>{window.focus(); n.close();}; }catch(e){}
-  }
-}
-function setAppBadgeCount(total){ if('setAppBadge' in navigator){ if(total>0) navigator.setAppBadge(total).catch(()=>{}); else navigator.clearAppBadge().catch(()=>{});} }
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').then(()=>console.log("SW ready - no domain in notification")); }
-if('Notification' in window && Notification.permission==="default"){ Notification.requestPermission(); }
 function showToast(msg){document.getElementById('toastText').innerText=msg;const el=document.getElementById('toast');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
-function attachItemEvents(){document.querySelectorAll('.member-item').forEach(el=>{let timer;const showChatM=(e)=>{e.preventDefault();selChatId=el.dataset.chatid;const menu=document.getElementById('chatMenu');menu.style.left=((e.touches?e.touches[0].clientX:e.clientX)-120)+'px';menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';menu.style.display='flex';};el.addEventListener('contextmenu',showChatM);el.addEventListener('touchstart',e=>{timer=setTimeout(()=>showChatM(e),700);});el.addEventListener('touchend',()=>clearTimeout(timer));el.addEventListener('click',()=>openChat(el.dataset.other,el.querySelector('b').innerText));});}
-function setBadge(id,count){const el=document.getElementById(id);if(!el)return;if(count>0){el.textContent=count>99?"99+":count;el.style.display="grid";localStorage.setItem(id+"_count",count);}else{el.style.display="none";localStorage.removeItem(id+"_count");}}
-function updateAppIcon(){const c1=parseInt(document.getElementById("notifCount")?.textContent||"0");const c2=parseInt(document.getElementById("notifBadge")?.textContent||"0");const total=(isNaN(c1)?0:c1)+(isNaN(c2)?0:c2);setAppBadgeCount(total); if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(total);}
+function attachItemEvents(){document.querySelectorAll('.member-item').forEach(el=>{let timer;const showM=(e)=>{e.preventDefault();selChatId=el.dataset.chatid;const menu=document.getElementById('chatMenu');menu.style.left=((e.touches?e.touches[0].clientX:e.clientX)-120)+'px';menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';menu.style.display='flex';};el.addEventListener('contextmenu',showM);el.addEventListener('touchstart',e=>{timer=setTimeout(()=>showM(e),700);});el.addEventListener('touchend',()=>clearTimeout(timer));el.addEventListener('click',()=>openChat(el.dataset.other,el.querySelector('b').innerText));});}
+function setBadge(id,count){const el=document.getElementById(id);if(!el)return;if(count>0){el.textContent=count>99?"99+":count;el.style.display="grid";}else{el.style.display="none";}}
+function updateAppIcon(){const c1=parseInt(document.getElementById("notifCount")?.textContent||"0");const c2=parseInt(document.getElementById("notifBadge")?.textContent||"0");let total=0;if(!isNaN(c1))total+=c1;if(!isNaN(c2))total+=c2;if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(total);}
 
 onAuthStateChanged(auth,async(u)=>{
   if(!u){document.getElementById('membersList').innerHTML=`<div style="padding:30px;text-align:center">Not logged in</div>`;return;}
-  myId=u.uid;myEmail=(u.email||"").toLowerCase();
-  // ADMIN DIFFERENTIATION - ONLY mansoryfamilyn@gmail.com
-  isAdmin=(myEmail===ADMIN_EMAIL);
+  myId=u.uid;myEmail=(u.email||"").toLowerCase();isAdmin=(myEmail===ADMIN_EMAIL);
   document.getElementById('sub').innerText=isAdmin?"ADMIN":"LODGE";
-  try{
-    const s=await get(ref(db,'users'));if(s.exists()){Object.values(s.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}
-    const s2=await get(ref(db,'members'));if(s2.exists()){Object.values(s2.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}
-  }catch(e){}
-  myInfo=usersCache[myId]||{fullName:u.displayName||'Member'};
-  loadChats();loadNotifications();
+  // Unlock voice on first click (required by Chrome)
+  document.addEventListener('click',()=>{if(window.speechSynthesis){window.speechSynthesis.getVoices();}}, {once:true});
+  try{const s=await get(ref(db,'users'));if(s.exists()){Object.values(s.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}const s2=await get(ref(db,'members'));if(s2.exists()){Object.values(s2.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}}catch(e){}
+  myInfo=usersCache[myId]||{fullName:u.displayName||'Member'};loadChats();loadNotifications();
 });
-
-function loadNotifications(){
-  const notifRef=ref(db,`notifications/${myId}`);
-  onValue(notifRef,(snap)=>{
-    if(!snap.exists()){setBadge("notifBadge",0);updateAppIcon();return;}
-    let unread=0;let lastNew=null;
-    snap.forEach(child=>{
-      const n=child.val();
-      if(!n.read)unread++;
-      if(Date.now()-(n.createdAt||0)<8000)lastNew=n;
-    });
-    setBadge("notifBadge",unread);updateAppIcon();
-    // PERFECT VOICE CHECK - not for sender, only receiver
-    if(lastNew && lastNew.senderId!==myId){
-      if(isAdmin){
-        // Admin receives -> Director voice only
-        if(lastNew.senderId!==ADMIN_UID){
-          window.LodgeNotifier?.showPopup(lastNew.senderName||"Member",lastNew.message,"member_message");
-        }
-      } else {
-        // Member receives -> Member voice only
-        window.LodgeNotifier?.showPopup("Director",lastNew.message,"admin_message");
-      }
-    }
-  });
-}function loadChats(){
+function loadNotifications(){const r=ref(db,`notifications/${myId}`);onValue(r,(snap)=>{if(!snap.exists()){setBadge("notifBadge",0);updateAppIcon();return;}let unread=0;snap.forEach(c=>{const n=c.val();if(!n.read)unread++;});setBadge("notifBadge",unread);updateAppIcon();});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').then(()=>console.log("SW registered - respecting your sw.js"));}
+if('Notification' in window&&Notification.permission==="default"){Notification.requestPermission();}function loadChats(){
   const listEl=document.getElementById('membersList');
   let fallbackDone=false;
   const doFallback=()=>{
-    if(fallbackDone) return; fallbackDone=true;
+    if(fallbackDone)return;fallbackDone=true;
     if(!isAdmin){
-      listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold);text-align:left"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px;height:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-lock" style="color:var(--gold)"></i></div>`;
+      listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold)"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-chevron-right" style="color:var(--gold)"></i></div>`;
       attachItemEvents();
-    } else {
-      listEl.innerHTML=`<div style="padding:40px;text-align:center">${tr('no_members')}<br><small>Members will appear here</small></div>`;
+    }else{
+      listEl.innerHTML=`<div style="padding:40px;text-align:center;color:#aaa">${tr('no_members')}<br><small>Members who message appear here</small></div>`;
     }
-    setBadge("notifCount",0); setBadge("globalChatBadge",0); updateAppIcon();
+    setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();
   };
-  setTimeout(doFallback,1200);
-
+  setTimeout(doFallback,1000);
   onValue(ref(db,'chats'),(snap)=>{
     try{
-      const chatsRaw=snap.val()||{};
-      if(Object.keys(chatsRaw).length===0){ doFallback(); return; }
-      let cards=[]; let totalUnread=0; let newMsgForMe=null;
-
-      Object.keys(chatsRaw).forEach(chatId=>{
+      const raw=snap.val()||{};if(Object.keys(raw).length===0){doFallback();return;}
+      let cards=[];let totalUnread=0;let newForMe=null;
+      Object.keys(raw).forEach(chatId=>{
         if(!chatId.includes(ADMIN_UID))return;
-        const chat=chatsRaw[chatId];
-        if(chat.hiddenFor&&chat.hiddenFor[myId])return;
-        let otherUid=chatId.replace(ADMIN_UID+'_','').replace('_'+ADMIN_UID,'').trim();
-        if(!otherUid||otherUid===ADMIN_UID||otherUid.length<8)return;
-        if(!isAdmin && otherUid!==myId &&!chatId.includes(myId))return;
+        const chat=raw[chatId];if(chat.hiddenFor&&chat.hiddenFor[myId])return;
+        let other=chatId.replace(ADMIN_UID+'_','').replace('_'+ADMIN_UID,'').trim();
+        if(!other||other===ADMIN_UID||other.length<8)return;
+        if(!isAdmin&&other!==myId&&!chatId.includes(myId))return;
         const msgs=chat.messages||{};
-        const allVisible=Object.keys(msgs).filter(mid=>!(msgs[mid].deletedFor&&msgs[mid].deletedFor[myId]));
-        if(isAdmin&&allVisible.length===0&&!chat.lastMessage)return;
-
+        // FIX: Ghost 2 messages bug - only visible
+        const visibleKeys=Object.keys(msgs).filter(mid=>{const m=msgs[mid];if(!m)return false;if(m.deletedFor&&m.deletedFor[myId])return false;return true;});
+        if(visibleKeys.length===0){if(isAdmin&&!chat.lastMessage)return;}
         const lastSeen=isAdmin?(chat.seenByAdmin||0):(chat.seenByMember||0);
-        const newInbox=allVisible.filter(mid=>{const m=msgs[mid];return m.senderId!==myId&&(m.time||0)>lastSeen;});
-        const unreadCount=newInbox.length;
-
-        // PERFECT VOICE LOGIC - ONLY FOR RECEIVER, NOT SENDER
-        if(newInbox.length>0){
+        const newInbox=visibleKeys.filter(mid=>{const m=msgs[mid];return m.senderId!==myId&&(m.time||0)>lastSeen;});
+        const unread=newInbox.length;
+        if(unread>0){
           const latestId=newInbox.sort((a,b)=>(msgs[b].time||0)-(msgs[a].time||0))[0];
           const latest=msgs[latestId];
-          if(latest && latest.senderId!==myId && Date.now()-latest.time<8000){
-            newMsgForMe={msg:latest,otherUid:otherUid,senderId:latest.senderId};
+          if(latest&&latest.senderId!==myId&&Date.now()-latest.time<12000){
+            const email=(latest.senderEmail||"").toLowerCase();
+            newForMe={msg:latest,other:other,isFromAdmin:(email===ADMIN_EMAIL)};
           }
         }
-
-        const info=chat.info||{}; const reg=usersCache[otherUid]||{};
-        const name=reg.fullName||reg.name||info.fullName||'Member '+otherUid.slice(0,5);
-        const phone=reg.phone||info.phone||'No phone'; const country=reg.country||info.country||'No country';
-        let lastMsg=null; allVisible.sort((a,b)=>(msgs[b].time||0)-(msgs[a].time||0)).forEach(mid=>{if(!lastMsg)lastMsg=msgs[mid];});
-        if(!lastMsg)lastMsg={text:chat.lastMessage||'',time:chat.lastTime||0,senderId:'',mediaType:''};
-        totalUnread+=unreadCount;
+        const info=chat.info||{};const reg=usersCache[other]||{};
+        const name=reg.fullName||info.fullName||'Member '+other.slice(0,5);
+        const phone=reg.phone||info.phone||'No phone';const country=reg.country||info.country||'No country';
+        let lastMsg=null;
+        if(visibleKeys.length>0){visibleKeys.sort((a,b)=>(msgs[b].time||0)-(msgs[a].time||0)).forEach(mid=>{if(!lastMsg)lastMsg=msgs[mid];});}
+        if(!lastMsg)lastMsg={text:chat.lastMessage||'',time:chat.lastTime||0,mediaType:'',isGhost:true};
+        totalUnread+=unread;
         let preview=lastMsg.mediaType?(lastMsg.mediaType==='video'?'🎥 Video':'📷 Photo'):(lastMsg.text||tr('tap_admin'));
-        cards.push({chatId,otherUid,name,phone,country,lastText:preview,lastTime:lastMsg.time||chat.lastTime||0,unreadCount,isUnread:unreadCount>0,initials:name.slice(0,2).toUpperCase()});
+        if(lastMsg.isGhost) preview=tr('tap_admin');
+        cards.push({chatId,otherUid:other,name,phone,country,lastText:preview,lastTime:lastMsg.time||chat.lastTime||0,unreadCount:unread,isUnread:unread>0,initials:name.slice(0,2).toUpperCase(),isGhost:!!lastMsg.isGhost});
       });
+      if(cards.length===0){doFallback();return;}
+      fallbackDone=true;cards.sort((a,b)=>b.lastTime-a.lastTime);
+      setBadge("notifCount",totalUnread);setBadge("globalChatBadge",totalUnread);updateAppIcon();
+      if(window.LodgeNotifier) window.LodgeNotifier.setAppIconBadge(totalUnread);
 
-      if(cards.length===0){ doFallback(); return; }
-      fallbackDone=true;
-      cards.sort((a,b)=>b.lastTime-a.lastTime);
-      setBadge("notifCount",totalUnread); setBadge("globalChatBadge",totalUnread); updateAppIcon();
-
-      // VOICE - PERFECT SEPARATION - NOT CALLING EVERYONE
-      if(newMsgForMe && newMsgForMe.msg.senderId!==myId){
-        const isFromAdmin=(newMsgForMe.senderId===ADMIN_UID || newMsgForMe.otherUid===ADMIN_UID);
-        const text=newMsgForMe.msg.text||(newMsgForMe.msg.mediaType==='video'?'🎥 Video':'📷 Photo');
-        if(isAdmin &&!isFromAdmin){
-          // MEMBER -> ADMIN : Only Director hears this
-          speakVoice(VOICE_DIRECTOR);
-          showSystemNotification("MFF Lodge", VOICE_DIRECTOR);
-          window.LodgeNotifier?.showPopup(usersCache[newMsgForMe.otherUid]?.fullName||"Member", text, "member_message");
-        } else if(!isAdmin && isFromAdmin){
-          // ADMIN -> MEMBER : Only Member hears this, not everyone
-          speakVoice(VOICE_MEMBER);
-          showSystemNotification("MFF Lodge", VOICE_MEMBER);
-          window.LodgeNotifier?.showPopup("Director", text, "admin_message");
+      // RESPECT YOUR notification-system.js - USE ITS METHODS
+      if(newForMe){
+        const txt=newForMe.msg.text||(newForMe.msg.mediaType==='video'?'🎥 Video':'📷 Photo');
+        const otherName=usersCache[newForMe.other]?.fullName||"Member";
+        if(newForMe.isFromAdmin){
+          if(!isAdmin){
+            // Member gets message from director - YOUR FILE handles voice + notification
+            window.LodgeNotifier?.showPopup("Director",txt,"admin_message");
+          }
+        }else{
+          if(isAdmin){
+            // Director gets message from member - YOUR FILE handles voice + notification
+            window.LodgeNotifier?.showPopup(otherName,txt,"member_message");
+          }
         }
       }
 
+      const realCards=cards.filter(c=>!c.isGhost);
+      if(isAdmin&&realCards.length===0){listEl.innerHTML=`<div style="padding:40px;text-align:center;color:#aaa">${tr('no_members')}<br><small>All chats deleted</small></div>`;setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(0);return;}
+      const displayCards=isAdmin?realCards:cards;
       if(isAdmin){
-        let html=''; cards.forEach(c=>{html+=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${c.otherUid}"><div style="width:46px;height:46px;border-radius:50%;background:#121D33;border:2px solid ${c.isUnread?'#00ff88':'#D4B16A'};display:grid;place-items:center;color:${c.isUnread?'#00ff88':'#D4B16A'};font-weight:800">${c.initials}</div><div style="flex:1;overflow:hidden;text-align:left"><b style="color:${c.isUnread?'#00ff88':'#D4B16A'}">${c.name}</b><br><small style="color:#D4B16A"><i class="fa fa-phone"></i> ${c.phone} • ${c.country}</small><br><small style="color:${c.isUnread?'#fff':'#aaa'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-chevron-right" style="color:#D4B16A"></i>`}</div>`;});
+        let html='';displayCards.forEach(c=>{html+=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${c.otherUid}"><div style="width:46px;height:46px;border-radius:50%;background:#121D33;border:2px solid ${c.isUnread?'#00ff88':'#D4B16A'};display:grid;place-items:center;color:${c.isUnread?'#00ff88':'#D4B16A'};font-weight:800">${c.initials}</div><div style="flex:1;overflow:hidden;text-align:left"><b style="color:${c.isUnread?'#00ff88':'#D4B16A'}">${c.name}</b><br><small style="color:#D4B16A"><i class="fa fa-phone"></i> ${c.phone} • ${c.country}</small><br><small style="color:${c.isUnread?'#fff':'#aaa'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-chevron-right" style="color:#D4B16A"></i>`}</div>`;});
         listEl.innerHTML=html;
-      } else {
-        const c=cards[0];
-        listEl.innerHTML=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${ADMIN_UID}" style="border:2px solid ${c.isUnread?'#00ff88':'var(--gold)'};text-align:left"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid ${c.isUnread?'#00ff88':'var(--gold)'};display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px;height:28px"></div><div style="flex:1;overflow:hidden;text-align:left"><b style="color:${c.isUnread?'#00ff88':'var(--gold)'}">${tr('admin_channel')}</b><br><small style="color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-shield-alt" style="color:var(--gold)"></i>`}</div>`;
+      }else{
+        const c=displayCards[0];
+        listEl.innerHTML=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${ADMIN_UID}" style="border:2px solid ${c.isUnread?'#00ff88':'var(--gold)'}"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid ${c.isUnread?'#00ff88':'var(--gold)'};display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1;overflow:hidden"><b style="color:${c.isUnread?'#00ff88':'var(--gold)'}">${tr('admin_channel')}</b><br><small style="color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-shield-alt" style="color:var(--gold)"></i>`}</div>`;
       }
       attachItemEvents();
-    }catch(err){ console.error(err); doFallback(); }
-  },(err)=>{ console.error(err); doFallback(); });
+    }catch(e){doFallback();}
+  },()=>{doFallback();});
 }
-
 window.openChat=async(otherUid,displayName)=>{
   currentChatId=isAdmin?(ADMIN_UID+"_"+otherUid):(ADMIN_UID+"_"+myId);
   document.getElementById('chatName').innerText=displayName;
   document.getElementById('chatPage').style.display='flex';
   const box=document.getElementById('messages');
-  box.innerHTML=`<div style="text-align:center;padding:30px;color:#aaa"><i class="fa fa-comments" style="font-size:28px;color:var(--gold)"></i><br><br>Opening chat...</div>`;
-  try{
-    if(isAdmin){await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:Date.now()}).catch(()=>{});}
-    else{await update(ref(db,`chats/${currentChatId}`),{seenByMember:Date.now()}).catch(()=>{});}
-  }catch(e){}
-
+  box.innerHTML=`<div style="text-align:center;padding:40px;color:#aaa"><i class="fa fa-spinner fa-spin" style="color:var(--gold)"></i><br><br>Loading messages...</div>`;
+  try{if(isAdmin)await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:Date.now()}).catch(()=>{});else await update(ref(db,`chats/${currentChatId}`),{seenByMember:Date.now()}).catch(()=>{});}catch(e){}
+  setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(0);
   onValue(ref(db,`chats/${currentChatId}/messages`),(snap)=>{
     const data=snap.val();
-    if(!data || Object.keys(data).length===0){
-      box.innerHTML=`<div style="text-align:center;padding:50px;color:#aaa"><div style="width:60px;height:60px;border-radius:50%;background:#121D33;border:2px solid var(--gold);display:grid;place-items:center;margin:0 auto 15px"><img src="masonic-icon.png" style="width:30px"></div><b style="color:var(--gold)">${displayName}</b><br><small>No messages yet<br>Start conversation below</small></div>`;
+    let visibleCount=0;
+    if(data){Object.keys(data).forEach(mid=>{const m=data[mid];if(!(m.deletedFor&&m.deletedFor[myId]))visibleCount++;});}
+    if(!data||visibleCount===0){
+      box.innerHTML=`<div style="text-align:center;padding:60px 20px;color:#aaa"><div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(145deg,#121D33,#0b1728);border:2px solid var(--gold);display:grid;place-items:center;margin:0 auto 20px"><i class="fa fa-comments" style="font-size:32px;color:var(--gold)"></i></div><div style="color:var(--gold);font-weight:700;font-size:16px">${tr('no_messages')}</div><div style="font-size:12px;margin-top:8px;color:#666">Start your conversation with ${displayName}<br>Your messages are secured</div><div style="margin-top:20px;color:#333;font-size:11px"><i class="fa fa-lock"></i> End-to-end encrypted</div></div>`;
       return;
     }
     box.innerHTML="";
     Object.keys(data).sort((a,b)=>(data[a].time||0)-(data[b].time||0)).forEach(mid=>{
-      const m=data[mid];
-      if(m.deletedFor&&m.deletedFor[myId])return;
-      const isMe=m.senderId===myId;
-      if(!isMe&&m.status==='sent'){update(ref(db,`chats/${currentChatId}/messages/${mid}`),{status:'delivered'}).catch(()=>{});}
+      const m=data[mid];if(m.deletedFor&&m.deletedFor[myId])return;
+      const isMe=m.senderId===myId;if(!isMe&&m.status==='sent'){update(ref(db,`chats/${currentChatId}/messages/${mid}`),{status:'delivered'}).catch(()=>{});}
+      if(!isMe&&m.status!=='read'){update(ref(db,`chats/${currentChatId}/messages/${mid}`),{status:'read'}).catch(()=>{});}
       const wrap=document.createElement('div');wrap.className='msg-wrap';wrap.style.justifyContent=isMe?'flex-end':'flex-start';
       const icon=document.createElement('div');icon.className='reply-icon';icon.innerHTML='<i class="fa fa-reply"></i>';
       const div=document.createElement('div');div.className='msg '+(isMe?'my-msg':'other-msg');
-      let html='';
-      if(m.replyTo){html+=`<div class="reply-preview"><b style="color:var(--gold)">${m.replyTo.name}</b><br>${m.replyTo.text.slice(0,60)}</div>`;}
-      if(m.mediaUrl){
-        if(m.mediaType==='video'){html+=`<div class="media-box"><video src="${m.mediaUrl}" controls style="max-width:260px;border-radius:12px"></video><div class="media-down" onclick="event.stopPropagation(); window.downloadUrl('${m.mediaUrl}','video.mp4')"><i class="fa fa-download"></i></div></div>`;}
-        else{html+=`<div class="media-box"><img src="${m.mediaUrl}" style="max-width:260px;border-radius:12px"><div class="media-down" onclick="event.stopPropagation(); window.downloadUrl('${m.mediaUrl}','photo.jpg')"><i class="fa fa-download"></i></div></div>`;}
-      }
+      let html='';if(m.replyTo){html+=`<div class="reply-preview"><b style="color:var(--gold)">${m.replyTo.name}</b><br>${m.replyTo.text.slice(0,60)}</div>`;}
+      if(m.mediaUrl){if(m.mediaType==='video'){html+=`<div class="media-box"><video src="${m.mediaUrl}" controls style="max-width:260px;border-radius:12px"></video><div class="media-down" onclick="event.stopPropagation();window.downloadUrl('${m.mediaUrl}','video.mp4')"><i class="fa fa-download"></i></div></div>`;}else{html+=`<div class="media-box"><img src="${m.mediaUrl}" style="max-width:260px;border-radius:12px"><div class="media-down" onclick="event.stopPropagation();window.downloadUrl('${m.mediaUrl}','photo.jpg')"><i class="fa fa-download"></i></div></div>`;}}
       let tick='';if(isMe){if(m.status==='read')tick=`<span class="tick tick-read">✓✓</span>`;else if(m.status==='delivered')tick=`<span class="tick tick-delivered">✓✓</span>`;else tick=`<span class="tick tick-sent">✓</span>`;}
       html+=`${m.text||''}<span style="font-size:8px;opacity:.6;float:right;margin-left:6px;margin-top:4px">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>${tick}`;
       div.innerHTML=html;wrap.appendChild(icon);wrap.appendChild(div);box.appendChild(wrap);
       div.addEventListener('contextmenu',e=>{e.preventDefault();showMsgMenu(e,mid,m.text||'Media',isMe,m.mediaUrl||null);});
-      let startX=0,curX=0,swiping=false,longT=null;
-      div.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;swiping=true;div.classList.add('swiping');longT=setTimeout(()=>{showMsgMenu(e,mid,m.text||'Media',isMe,m.mediaUrl||null);swiping=false;},600);},{passive:true});
-      div.addEventListener('touchmove',e=>{if(!swiping)return;const diff=e.touches[0].clientX-startX;if(diff>15)clearTimeout(longT);if(diff>0&&diff<110){curX=diff;div.style.transform=`translateX(${curX}px)`;icon.style.opacity=Math.min(curX/60,1);}},{passive:true});
-      div.addEventListener('touchend',()=>{clearTimeout(longT);if(!swiping)return;swiping=false;div.classList.remove('swiping');if(curX>55){setReply(m.text||'📷 Media',isMe?'You':document.getElementById('chatName').innerText);}div.style.transform='translateX(0)';icon.style.opacity='0';curX=0;});
+      let sx=0,cx=0,sw=false,lt=null;
+      div.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sw=true;div.classList.add('swiping');lt=setTimeout(()=>{showMsgMenu(e,mid,m.text||'Media',isMe,m.mediaUrl||null);sw=false;},600);},{passive:true});
+      div.addEventListener('touchmove',e=>{if(!sw)return;const d=e.touches[0].clientX-sx;if(d>15)clearTimeout(lt);if(d>0&&d<110){cx=d;div.style.transform=`translateX(${cx}px)`;icon.style.opacity=Math.min(cx/60,1);}},{passive:true});
+      div.addEventListener('touchend',()=>{clearTimeout(lt);if(!sw)return;sw=false;div.classList.remove('swiping');if(cx>55){setReply(m.text||'📷 Media',isMe?'You':document.getElementById('chatName').innerText);}div.style.transform='translateX(0)';icon.style.opacity='0';cx=0;});
     });
     box.scrollTop=box.scrollHeight;
-  },(err)=>{
-    console.error(err);
-    box.innerHTML=`<div style="padding:30px;text-align:center;color:#ff5a5a">Can't load messages<br><small>Check Firebase Rules</small></div>`;
-  });
+  },()=>{box.innerHTML=`<div style="padding:40px;text-align:center;color:#ff5a5a">Error loading<br><small>Check Firebase Rules</small></div>`;});
 }
-
-function showMsgMenu(e,mid,text,isMine,mediaUrl=null){selId=mid;selText=text;selIsMine=isMine;selMediaUrl=mediaUrl;const menu=document.getElementById('msgMenu');menu.style.left=(e.touches?e.touches[0].clientX:e.clientX)-100+'px';menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';menu.style.display='flex';document.getElementById('editBtn').style.display=isMine?'flex':'none';document.getElementById('downBtn').style.display=mediaUrl?'flex':'none';}
+function showMsgMenu(e,mid,text,isMine,mediaUrl){selId=mid;selText=text;selIsMine=isMine;selMediaUrl=mediaUrl;const m=document.getElementById('msgMenu');m.style.left=(e.touches?e.touches[0].clientX:e.clientX)-100+'px';m.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';m.style.display='flex';document.getElementById('editBtn').style.display=isMine?'flex':'none';document.getElementById('downBtn').style.display=mediaUrl?'flex':'none';}
 window.copyMsg=()=>{navigator.clipboard.writeText(selText);hideMenus();showToast('Copied');}
 window.editMsg=async()=>{const nt=prompt('Edit:',selText);if(nt){await update(ref(db,`chats/${currentChatId}/messages/${selId}`),{text:nt});showToast('Edited successfully');}hideMenus();}
 window.replyMsg=()=>{setReply(selText,selIsMine?'You':document.getElementById('chatName').innerText);hideMenus();}
-function setReply(text,name){replyData={text,name};document.getElementById('replyBar').style.display='flex';document.getElementById('replyToName').innerText=name;document.getElementById('replyToText').innerText=text.slice(0,50);document.getElementById('msgInput').focus();}
+function setReply(t,n){replyData={text:t,name:n};document.getElementById('replyBar').style.display='flex';document.getElementById('replyToName').innerText=n;document.getElementById('replyToText').innerText=t.slice(0,50);document.getElementById('msgInput').focus();}
 window.cancelReply=()=>{replyData=null;document.getElementById('replyBar').style.display='none';}
 window.deleteForMe=async()=>{await update(ref(db,`chats/${currentChatId}/messages/${selId}/deletedFor`),{[myId]:true});hideMenus();showToast('Deleted for you');}
 window.deleteForEveryone=async()=>{await remove(ref(db,`chats/${currentChatId}/messages/${selId}`));hideMenus();showToast('Deleted successfully');}
 window.hideMenus=()=>{document.getElementById('msgMenu').style.display='none';document.getElementById('chatMenu').style.display='none';}
-window.deleteChatForMe=async()=>{try{await update(ref(db,`chats/${selChatId||currentChatId}/hiddenFor`),{[myId]:true});hideMenus();showToast('Deleted successfully');if(document.getElementById('chatPage').style.display==='flex')closeChat();}catch(e){hideMenus();showToast('Failed');}}
+window.deleteChatForMe=async()=>{try{await update(ref(db,`chats/${selChatId||currentChatId}/hiddenFor`),{[myId]:true});hideMenus();showToast('Deleted successfully');if(document.getElementById('chatPage').style.display==='flex')closeChat();}catch(e){hideMenus();}}
 window.cancelChatDelete=()=>{hideMenus();showToast('Cancelled');}
 document.addEventListener('click',e=>{if(!e.target.closest('.menu'))hideMenus();});
-window.downloadUrl=(url,name)=>{const a=document.createElement('a');a.href=url;a.download=name;a.target='_blank';document.body.appendChild(a);a.click();a.remove();showToast('Downloaded successfully');}
+window.downloadUrl=(url,name)=>{const a=document.createElement('a');a.href=url;a.download=name;a.target='_blank';document.body.appendChild(a);a.click();a.remove();showToast('Downloaded');}
 window.downloadMedia=()=>{if(selMediaUrl)window.downloadUrl(selMediaUrl,selMediaUrl.includes('.mp4')?'video.mp4':'photo.jpg');hideMenus();}
 document.getElementById('mediaInput').addEventListener('change',async(e)=>{
   const file=e.target.files[0];if(!file||!currentChatId)return;
   const box=document.getElementById('messages');const tempId='temp_'+Date.now();const localUrl=URL.createObjectURL(file);const isVideo=file.type.startsWith('video');
-  const wrap=document.createElement('div');wrap.id=tempId;wrap.className='msg-wrap';wrap.style.justifyContent='flex-end';wrap.innerHTML=`<div class="msg my-msg"><div class="media-box">${isVideo?`<video src="${localUrl}" style="max-width:260px;border-radius:12px" muted></video>`:`<img src="${localUrl}" style="max-width:260px;border-radius:12px">`}</div><span style="font-size:8px;opacity:.6;float:right;margin-left:6px;margin-top:4px">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><span class="tick tick-sent">✓</span></div>`;box.appendChild(wrap);box.scrollTop=box.scrollHeight;
+  const wrap=document.createElement('div');wrap.id=tempId;wrap.className='msg-wrap';wrap.style.justifyContent='flex-end';wrap.innerHTML=`<div class="msg my-msg"><div class="media-box">${isVideo?`<video src="${localUrl}" style="max-width:260px;border-radius:12px" muted></video>`:`<img src="${localUrl}" style="max-width:260px;border-radius:12px">`}</div><span style="font-size:8px;opacity:.6;float:right">Uploading...</span><span class="tick tick-sent">✓</span></div>`;box.appendChild(wrap);box.scrollTop=box.scrollHeight;
   try{
     let finalUrl='';let mediaType=isVideo?'video':'image';
-    if(isVideo){
-      if(file.size>15*1024*1024){showToast('Video max 15MB');document.getElementById(tempId)?.remove();return;}
-      const ext=file.name.split('.').pop()||'mp4';const storageRef=sRef(storage,`chats/${currentChatId}/${Date.now()}_${myId}.${ext}`);const up=await uploadBytes(storageRef,file);finalUrl=await getDownloadURL(up.ref);
-    }else{
-      finalUrl=await new Promise((res,rej)=>{const rd=new FileReader();rd.onload=ev=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;const MAX=700;if(w>MAX||h>MAX){if(w>h){h=h*(MAX/w);w=MAX;}else{w=w*(MAX/h);h=MAX;}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',0.55));};img.onerror=()=>res(ev.target.result);img.src=ev.target.result;};rd.onerror=rej;rd.readAsDataURL(file);});
-    }
-    const payload={senderId:myId,senderEmail:myEmail,text:document.getElementById('msgInput').value.trim(),mediaUrl:finalUrl,mediaType:mediaType,time:Date.now(),status:'sent'};
-    if(replyData)payload.replyTo=replyData;
+    if(isVideo){if(file.size>15*1024*1024){showToast('Video max 15MB');document.getElementById(tempId)?.remove();return;}const ext=file.name.split('.').pop()||'mp4';const refS=sRef(storage,`chats/${currentChatId}/${Date.now()}_${myId}.${ext}`);const up=await uploadBytes(refS,file);finalUrl=await getDownloadURL(up.ref);}
+    else{finalUrl=await new Promise((res,rej)=>{const rd=new FileReader();rd.onload=ev=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;const MAX=700;if(w>MAX||h>MAX){if(w>h){h=h*(MAX/w);w=MAX;}else{w=w*(MAX/h);h=MAX;}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',0.55));};img.onerror=()=>res(ev.target.result);img.src=ev.target.result;};rd.onerror=rej;rd.readAsDataURL(file);});}
+    const payload={senderId:myId,senderEmail:myEmail,text:document.getElementById('msgInput').value.trim(),mediaUrl:finalUrl,mediaType,time:Date.now(),status:'sent'};if(replyData)payload.replyTo=replyData;
     const r=push(ref(db,`chats/${currentChatId}/messages`));await set(r,payload);
     await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(),lastMessage:mediaType==='video'?'🎥 Video':'📷 Photo',info:{fullName:myInfo.fullName||'Member',uid:myId},hiddenFor:{}}).catch(()=>{});
-    if(isAdmin){await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}).catch(()=>{});}else{await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}).catch(()=>{});}
+    if(isAdmin)await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}).catch(()=>{});else await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}).catch(()=>{});
     document.getElementById(tempId)?.remove();document.getElementById('msgInput').value='';cancelReply();
-  }catch(err){console.error(err);showToast('Failed: '+err.message);document.getElementById(tempId)?.remove();}
+  }catch(err){showToast('Failed: '+err.message);document.getElementById(tempId)?.remove();}
   e.target.value='';
 });
 window.sendMsg=async()=>{
   const i=document.getElementById('msgInput');const txt=i.value.trim();if(!txt||!currentChatId)return;
-  const payload={text:txt,senderId:myId,senderEmail:myEmail,time:Date.now(),status:'sent'};
-  if(replyData)payload.replyTo=replyData;
+  const payload={text:txt,senderId:myId,senderEmail:myEmail,time:Date.now(),status:'sent'};if(replyData)payload.replyTo=replyData;
   const r=push(ref(db,`chats/${currentChatId}/messages`));await set(r,payload);
-  await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(),lastMessage:txt,info:{fullName:myInfo.fullName||'Member',phone:myInfo.phone||'',country:myInfo.country||'',email:myInfo.email||myEmail,uid:myId},hiddenFor:{}}).catch(()=>{});
-  if(isAdmin){await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}).catch(()=>{});}else{await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}).catch(()=>{});}
+  await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(),lastMessage:txt,info:{fullName:myInfo.fullName||'Member',uid:myId},hiddenFor:{}}).catch(()=>{});
+  if(isAdmin)await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}).catch(()=>{});else await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}).catch(()=>{});
   i.value="";cancelReply();
 }
 window.closeChat=()=>{document.getElementById('chatPage').style.display='none';currentChatId=null;}

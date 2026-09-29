@@ -106,7 +106,7 @@ applyLang();
 document.addEventListener('DOMContentLoaded',applyLang);
 window.addEventListener('storage',applyLang);
 setInterval(applyLang,1000);
-</script><script src="notification-system.js"></script>
+  </script><script src="notification-system.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -119,48 +119,47 @@ const db=getDatabase(app);
 const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
 const ADMIN_EMAIL="mansoryfamilyn@gmail.com";
 
-// RESTORE BADGE ON REFRESH - DO NOT DISAPPEAR UNTIL OPENED
-function restoreBadges(){
-  const chatSaved = localStorage.getItem("globalChatBadge_count");
-  if(chatSaved && parseInt(chatSaved)>0){
+// RESTORE BADGE AFTER REFRESH - KEEP UNTIL OPENED
+(function(){
+  const c=localStorage.getItem("globalChatBadge_count");
+  if(c && parseInt(c)>0){
     const el=document.getElementById("globalChatBadge");
-    if(el){ el.textContent=parseInt(chatSaved)>99?"99+":chatSaved; el.style.display="grid"; }
+    if(el){ el.textContent=parseInt(c)>99?"99+":c; el.style.display="grid"; }
   }
-  const bellSaved = localStorage.getItem("notifBadge_count");
-  if(bellSaved && parseInt(bellSaved)>0){
+  const b=localStorage.getItem("notifBadge_count");
+  if(b && parseInt(b)>0){
     const el=document.getElementById("notifBadge");
-    if(el){ el.textContent=parseInt(bellSaved)>99?"99+":bellSaved; el.style.display="grid"; }
+    if(el){ el.textContent=parseInt(b)>99?"99+":b; el.style.display="grid"; }
   }
-}
-restoreBadges();
+})();
 
-// FIXED BADGE - ONLY REAL, PERSISTS
-function setPersistentBadge(id,count,isClearing=false){
+function showBadge(id,count){
   const el=document.getElementById(id);
   if(!el) return;
-  if(count>0){
-    el.textContent=count>99?"99+":count;
-    el.style.display="grid";
-    localStorage.setItem(id+"_count",count);
-    if(window.LodgeNotifier) window.LodgeNotifier.setAppIconBadge(count);
-  }else if(isClearing){
-    el.textContent="0";
-    el.style.display="none";
-    localStorage.removeItem(id+"_count");
-    if(id==="globalChatBadge") localStorage.removeItem("globalChatBadge_count");
-    if(window.LodgeNotifier) window.LodgeNotifier.setAppIconBadge(0);
-  }
-  // If count 0 but not clearing, keep old visible (persist until opened)
+  el.textContent=count>99?"99+":count;
+  el.style.display="grid";
+  localStorage.setItem(id+"_count",count);
+  if(window.LodgeNotifier) window.LodgeNotifier.setAppIconBadge(parseInt(localStorage.getItem("globalChatBadge_count")||"0")+parseInt(localStorage.getItem("notifBadge_count")||"0"));
+}
+function hideBadge(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.style.display="none";
+  el.textContent="0";
+  localStorage.removeItem(id+"_count");
+  if(id==="globalChatBadge") localStorage.removeItem("globalChatBadge_count");
+  if(id==="notifBadge") localStorage.removeItem("notifBadge_count");
+  const c1=parseInt(localStorage.getItem("globalChatBadge_count")||"0");
+  const c2=parseInt(localStorage.getItem("notifBadge_count")||"0");
+  if(window.LodgeNotifier) window.LodgeNotifier.setAppIconBadge(c1+c2);
 }onAuthStateChanged(auth, (user) => {
-if(!user){ window.location.href = "login.html"; return; }
+if(!user){ window.location.href="login.html"; return; }
 const uid=user.uid;
 
-// CHAT COUNT - ONLY VISIBLE UNREAD, NO GHOST, PERSISTS AFTER REFRESH
 onValue(ref(db,`chats`),(snap)=>{
-  let totalUnread=0;
-  let latestMsg=null;
-  let isNewMsg=false;
-
+  let total=0;
+  let latest=null;
+  let isNew=false;
   if(snap.exists()){
     snap.forEach(cs=>{
       const chatId=cs.key;
@@ -169,101 +168,62 @@ onValue(ref(db,`chats`),(snap)=>{
       const chat=cs.val();
       if(!chat) return;
       if(chat.hiddenFor && chat.hiddenFor[uid]) return;
-
       const msgs=chat.messages||{};
-      const visibleKeys=Object.keys(msgs).filter(mid=>{
+      const visible=Object.keys(msgs).filter(mid=>{
         const m=msgs[mid];
         if(!m) return false;
         if(m.deletedFor && m.deletedFor[uid]) return false;
         return true;
       });
-      if(visibleKeys.length===0) return;
-
-      const lastSeen = chat.seenByMember||0;
-      visibleKeys.forEach(mid=>{
+      if(visible.length===0) return;
+      const seen=chat.seenByMember||0;
+      visible.forEach(mid=>{
         const m=msgs[mid];
-        if(m.senderId!==uid && (m.time||0) > lastSeen){
-          totalUnread++;
-          if(!latestMsg || m.time > (latestMsg.time||0)){
-            latestMsg=m;
-            if(Date.now()-m.time < 15000) isNewMsg=true;
-          }
+        if(m.senderId!==uid && (m.time||0)>seen){
+          total++;
+          if(!latest || m.time>latest.time){ latest=m; if(Date.now()-m.time<15000) isNew=true; }
         }
       });
     });
   }
-
-  if(totalUnread>0){
-    setPersistentBadge("globalChatBadge",totalUnread,true);
-    // VOICE NOTIFICATION - KEPT AS ORIGINAL
-    if(isNewMsg && latestMsg && window.LodgeNotifier){
-      const email=(latestMsg.senderEmail||"").toLowerCase();
-      const isFromAdmin = email===ADMIN_EMAIL;
-      if(isFromAdmin){
-        // Director -> Member voice: Hello member
-        window.LodgeNotifier.showPopup("Director", latestMsg.text||"📷 Photo", "admin_message");
+  if(total>0){
+    showBadge("globalChatBadge",total);
+    if(isNew && latest && window.LodgeNotifier){
+      const fromAdmin=(latest.senderEmail||"").toLowerCase()===ADMIN_EMAIL;
+      if(fromAdmin){
+        // VOICE KEPT - Hello member...
+        window.LodgeNotifier.showPopup("Director", latest.text||"📷 Photo", "admin_message");
       }
     }
   }else{
-    // Only clear if user has opened chat before (we have clearedAt)
-    // Otherwise keep badge visible from localStorage
-    const hasBeenCleared = localStorage.getItem("globalChatBadge_cleared");
-    if(hasBeenCleared){
-      // Check if truly 0
-      setPersistentBadge("globalChatBadge",0,true);
-    }
+    // SERIOUS FIX: If total is 0, HIDE IMMEDIATELY - don't keep ghost
+    hideBadge("globalChatBadge");
   }
 });
 
-// NOTIFICATIONS BELL - ONLY UNREAD, PERSISTS
 onValue(ref(db,`notifications/${uid}`),(snap)=>{
   let unread=0;
-  let latestNotif=null;
   if(snap.exists()){
     snap.forEach(c=>{
       const n=c.val();
       if(!n) return;
       if(n.deletedFor && n.deletedFor[uid]) return;
-      if(n.hiddenFor && n.hiddenFor[uid]) return;
-      if(!n.read){
-        unread++;
-        if(!latestNotif || (n.time||0) > (latestNotif.time||0)) latestNotif=n;
-      }
+      if(!n.read) unread++;
     });
   }
-  if(unread>0){
-    setPersistentBadge("notifBadge",unread,true);
-    // Voice for announcement - kept
-    if(latestNotif && window.LodgeNotifier && Date.now()-(latestNotif.time||0) < 15000){
-      window.LodgeNotifier.showPopup("Lodge", latestNotif.title||"New announcement", "announcement");
-    }
-  }else{
-    const hasBeenCleared = localStorage.getItem("notifBadge_cleared");
-    if(hasBeenCleared){
-      setPersistentBadge("notifBadge",0,true);
-    }
-  }
+  if(unread>0) showBadge("notifBadge",unread);
+  else hideBadge("notifBadge");
 });
 });
 
-// CLICK CHAT LINK -> MARK SEEN AND CLEAR BADGE (ONLY THEN DISAPPEAR)
-document.getElementById("chatLink")?.addEventListener("click", async (e)=>{
-  const u=auth.currentUser;
-  if(!u) return;
-  try{
-    const chatId = ADMIN_UID+"_"+u.uid;
-    await update(ref(db,`chats/${chatId}`),{seenByMember:Date.now()});
-  }catch(err){}
-  localStorage.setItem("globalChatBadge_cleared","1");
-  localStorage.removeItem("globalChatBadge_count");
-  setPersistentBadge("globalChatBadge",0,true);
-});
-
-document.getElementById("bellLink")?.addEventListener("click", ()=>{
-  localStorage.setItem("notifBadge_cleared","1");
-  localStorage.removeItem("notifBadge_count");
-});
-
+// CLICK -> MARK SEEN + HIDE NOW
+async function markChatSeenAndHide(){
+  const u=auth.currentUser; if(!u) return;
+  try{ await update(ref(db,`chats/${ADMIN_UID+"_"+u.uid}`),{seenByMember:Date.now()}); }catch(e){}
+  hideBadge("globalChatBadge");
+}
+document.getElementById("chatLink")?.addEventListener("click", markChatSeenAndHide);
+document.querySelectorAll('a[href="globaladmin.html"]').forEach(a=>{ a.addEventListener("click", markChatSeenAndHide); });
 document.querySelector(".logout").addEventListener("click",(e)=>{ e.preventDefault(); signOut(auth).then(()=>{window.location.href="login.html";}); });
 </script>
 </body>

@@ -39,8 +39,8 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 <div class="top">
 <div style="display:flex;align-items:center;gap:10px"><i class="fa fa-arrow-left" style="color:var(--gold)" onclick="location.href='help.html'"></i><div style="width:40px;height:40px;border-radius:12px;padding:2px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:grid;place-items:center"><div style="width:100%;height:100%;background:#0b1728;border-radius:10px;display:grid;place-items:center"><img src="masonic-icon.png" style="width:26px;height:26px"></div></div><div style="color:var(--gold);font-weight:800;font-size:12px"><span data-i18n="global_admin">GLOBAL ADMIN</span><br><small id="sub" style="color:#00ff88;font-size:9px">Loading...</small></div></div>
 <div style="display:flex;gap:14px;align-items:center;">
-  <a href="notifications.html" style="position:relative;color:var(--gold);font-size:20px;text-decoration:none;"><i class="fa fa-bell"></i><span id="notifBadge" style="position:absolute;top:-8px;right:-8px;background:#dc2743;color:white;font-size:10px;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;padding:0 4px;font-weight:700;">0</span></a>
-  <div id="notifIcon" style="position:relative;"><i class="fa fa-comments" style="color:var(--green);font-size:20px"></i><span id="notifCount" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:grid;place-items:center;">0</span><span id="globalChatBadge" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;padding:0 4px;">0</span></div>
+<a href="notifications.html" style="position:relative;color:var(--gold);font-size:20px;text-decoration:none;"><i class="fa fa-bell"></i><span id="notifBadge" style="position:absolute;top:-8px;right:-8px;background:#dc2743;color:white;font-size:10px;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;padding:0 4px;font-weight:700;">0</span></a>
+<div id="notifIcon" style="position:relative;"><i class="fa fa-comments" style="color:var(--green);font-size:20px"></i><span id="notifCount" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:grid;place-items:center;">0</span><span id="globalChatBadge" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;padding:0 4px;">0</span></div>
 </div>
 </div>
 <div id="membersList" style="padding:10px;color:#888;text-align:center" data-i18n="loading_chats">Loading chats...</div><div id="chatPage">
@@ -87,8 +87,8 @@ const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
 let myId=null,myEmail="",isAdmin=false,currentChatId=null,myInfo={fullName:'Member'},usersCache={},selId=null,selText=null,selIsMine=false,replyData=null,selChatId=null,selMediaUrl=null;
 const VOICE_DIRECTOR="Hello director, you got a new message please reply.";
 const VOICE_MEMBER="Hello member, you got a new message from director please reply.";
-function speakVoice(text){ if(!('speechSynthesis' in window)) return; window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang="en-US"; u.rate=0.92; window.speechSynthesis.speak(u); }
-function showSystemNotification(title, body){ if('Notification' in window && Notification.permission==="granted"){ try{ const n=new Notification(title,{body,icon:'masonic-G.png',badge:'masonic-G.png',vibrate:[200,100,200],requireInteraction:true}); n.onclick=()=>{window.focus(); n.close();}; }catch(e){} } }
+function speakVoice(t){ if(!('speechSynthesis' in window))return; window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.lang="en-US"; u.rate=0.92; window.speechSynthesis.speak(u); }
+function showSystemNotification(title,body){ if('Notification' in window && Notification.permission==="granted"){ try{ const n=new Notification(title,{body,icon:'masonic-G.png',badge:'masonic-G.png',vibrate:[200,100,200],requireInteraction:true}); n.onclick=()=>{window.focus(); n.close();}; }catch(e){} } }
 function setAppBadgeCount(total){ if('setAppBadge' in navigator){ if(total>0) navigator.setAppBadge(total).catch(()=>{}); else navigator.clearAppBadge().catch(()=>{});} }
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js'); }
 if('Notification' in window && Notification.permission==="default"){ Notification.requestPermission(); }
@@ -96,8 +96,115 @@ function showToast(msg){document.getElementById('toastText').innerText=msg;const
 function attachItemEvents(){document.querySelectorAll('.member-item').forEach(el=>{let timer;const showChatM=(e)=>{e.preventDefault();selChatId=el.dataset.chatid;const menu=document.getElementById('chatMenu');menu.style.left=((e.touches?e.touches[0].clientX:e.clientX)-120)+'px';menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';menu.style.display='flex';};el.addEventListener('contextmenu',showChatM);el.addEventListener('touchstart',e=>{timer=setTimeout(()=>showChatM(e),700);});el.addEventListener('touchend',()=>clearTimeout(timer));el.addEventListener('click',()=>openChat(el.dataset.other,el.querySelector('b').innerText));});}
 function setBadge(id,count){const el=document.getElementById(id);if(!el)return;if(count>0){el.textContent=count>99?"99+":count;el.style.display="grid";localStorage.setItem(id+"_count",count);}else{el.style.display="none";localStorage.removeItem(id+"_count");}}
 function updateAppIcon(){const c1=parseInt(document.getElementById("notifCount")?.textContent||"0");const c2=parseInt(document.getElementById("notifBadge")?.textContent||"0");const total=(isNaN(c1)?0:c1)+(isNaN(c2)?0:c2);setAppBadgeCount(total); if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(total);}
-onAuthStateChanged(auth,async(u)=>{if(!u)return;myId=u.uid;myEmail=(u.email||"").toLowerCase();isAdmin=(myEmail===ADMIN_EMAIL);document.getElementById('sub').innerText=isAdmin?"ADMIN: "+ADMIN_EMAIL:"MEMBER";try{const s=await get(ref(db,'users'));if(s.exists()){Object.values(s.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}const s2=await get(ref(db,'members'));if(s2.exists()){Object.values(s2.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}}catch(e){}myInfo=usersCache[myId]||{fullName:'Member'};loadChats();loadNotifications();});function loadNotifications(){const notifRef=ref(db,`notifications/${myId}`);onValue(notifRef,(snap)=>{if(!snap.exists()){setBadge("notifBadge",0);updateAppIcon();return;}let unread=0;let lastNew=null;snap.forEach(child=>{const n=child.val();if(!n.read)unread++;if(Date.now()-(n.createdAt||0)<5000)lastNew=n;});setBadge("notifBadge",unread);updateAppIcon();if(lastNew&&lastNew.senderId!==myId){if(!isAdmin && lastNew.type==="message"){ speakVoice(VOICE_MEMBER); showSystemNotification("MFF Lodge", VOICE_MEMBER); } window.LodgeNotifier?.showPopup(lastNew.title||"Notification",lastNew.message,lastNew.isBroadcast?"announcement":(isAdmin?"member_message":"admin_message"));}});}
-function loadChats(){onValue(ref(db,'chats'),(snap)=>{const chatsRaw=snap.val()||{};const list=document.getElementById('membersList');let cards=[];let totalUnread=0;let lastNewMsg=null;Object.keys(chatsRaw).forEach(chatId=>{if(!chatId.includes(ADMIN_UID))return;const chat=chatsRaw[chatId];if(chat.hiddenFor&&chat.hiddenFor[myId])return;let otherUid=chatId.replace(ADMIN_UID+'_','');if(!otherUid||otherUid===ADMIN_UID)return;if(!isAdmin&&otherUid!==myId)return;const msgs=chat.messages||{};const allVisible=Object.keys(msgs).filter(mid=>!(msgs[mid].deletedFor&&msgs[mid].deletedFor[myId]));if(isAdmin&&allVisible.length===0&&!chat.lastMessage)return;const lastSeen=isAdmin?(chat.seenByAdmin||0):(chat.seenByMember||0);const newInbox=allVisible.filter(mid=>{const m=msgs[mid];return m.senderId!==myId&&(m.time||0)>lastSeen;});const unreadCount=newInbox.length;if(newInbox.length>0){const latestId=newInbox.sort((a,b)=>(msgs[b].time||0)-(msgs[a].time||0))[0];const latest=msgs[latestId];if(latest&&Date.now()-latest.time<6000)lastNewMsg={msg:latest,otherUid};}const info=chat.info||{};const reg=usersCache[otherUid]||{};const name=reg.fullName||reg.name||info.fullName||'Member '+otherUid.slice(0,5);const phone=reg.phone||info.phone||'No phone';const country=reg.country||info.country||'No country';let lastMsg=null;allVisible.sort((a,b)=>(msgs[b].time||0)-(msgs[a].time||0)).forEach(mid=>{if(!lastMsg)lastMsg=msgs[mid];});if(!lastMsg)lastMsg={text:chat.lastMessage||'',time:chat.lastTime||0,senderId:'',mediaType:''};totalUnread+=unreadCount;let preview=lastMsg.mediaType?(lastMsg.mediaType==='video'?'🎥 Video':'📷 Photo'):(lastMsg.text||tr('tap_admin'));cards.push({chatId,otherUid,name,phone,country,lastText:preview,lastTime:lastMsg.time||chat.lastTime||0,unreadCount,isUnread:unreadCount>0,initials:name.slice(0,2).toUpperCase()});});cards.sort((a,b)=>b.lastTime-a.lastTime);setBadge("notifCount",totalUnread);setBadge("globalChatBadge",totalUnread);updateAppIcon();if(lastNewMsg){const senderName=usersCache[lastNewMsg.otherUid]?.fullName||"Member";const text=lastNewMsg.msg.text||(lastNewMsg.msg.mediaType==='video'?'🎥 Video':'📷 Photo');if(isAdmin){ window.LodgeNotifier?.showPopup(senderName,text,"member_message"); speakVoice(VOICE_DIRECTOR); showSystemNotification("MFF Lodge", VOICE_DIRECTOR); }else{ window.LodgeNotifier?.showPopup("Director",text,"admin_message"); speakVoice(VOICE_MEMBER); showSystemNotification("MFF Lodge", VOICE_MEMBER); }}if(isAdmin){if(cards.length===0){list.innerHTML=`<div style="padding:40px">${tr('no_members')}<br><small>Members who message will appear</small></div>`;}else{let html='';cards.forEach(c=>{html+=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${c.otherUid}"><div style="width:46px;height:46px;border-radius:50%;background:#121D33;border:2px solid ${c.isUnread?'#00ff88':'#D4B16A'};display:grid;place-items:center;color:${c.isUnread?'#00ff88':'#D4B16A'};font-weight:800">${c.initials}</div><div style="flex:1;overflow:hidden;text-align:left"><b style="color:${c.isUnread?'#00ff88':'#D4B16A'}">${c.name}</b><br><small style="color:#D4B16A"><i class="fa fa-phone"></i> ${c.phone} • ${c.country}</small><br><small style="color:${c.isUnread?'#fff':'#aaa'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-chevron-right" style="color:#D4B16A"></i>`}</div>`;});list.innerHTML=html;}document.getElementById('notifIcon').style.display='block';}else{if(cards.length>0){const c=cards[0];list.innerHTML=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${ADMIN_UID}" style="border:2px solid ${c.isUnread?'#00ff88':'var(--gold)'};text-align:left"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid ${c.isUnread?'#00ff88':'var(--gold)'};display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px;height:28px"></div><div style="flex:1;overflow:hidden;text-align:left"><b style="color:${c.isUnread?'#00ff88':'var(--gold)'}">${tr('admin_channel')}</b><br><small style="color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-shield-alt" style="color:var(--gold)"></i>`}</div>`;}else{list.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold);text-align:left"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px;height:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-lock" style="color:var(--gold)"></i></div>`;}}attachItemEvents();});}
+onAuthStateChanged(auth,async(u)=>{if(!u){document.getElementById('membersList').innerHTML=`<div style="padding:30px">Not logged in<br><small>Please login again</small></div>`;return;}myId=u.uid;myEmail=(u.email||"").toLowerCase();isAdmin=(myEmail===ADMIN_EMAIL);document.getElementById('sub').innerText=isAdmin?"ADMIN: "+ADMIN_EMAIL:"MEMBER: "+myEmail.slice(0,15);try{const s=await get(ref(db,'users'));if(s.exists()){Object.values(s.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}const s2=await get(ref(db,'members'));if(s2.exists()){Object.values(s2.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}}catch(e){}myInfo=usersCache[myId]||{fullName:u.displayName||'Member'};loadChats();loadNotifications();});
+function loadNotifications(){const notifRef=ref(db,`notifications/${myId}`);onValue(notifRef,(snap)=>{if(!snap.exists()){setBadge("notifBadge",0);updateAppIcon();return;}let unread=0;let lastNew=null;snap.forEach(child=>{const n=child.val();if(!n.read)unread++;if(Date.now()-(n.createdAt||0)<5000)lastNew=n;});setBadge("notifBadge",unread);updateAppIcon();if(lastNew&&lastNew.senderId!==myId){if(!isAdmin && lastNew.type==="message"){ speakVoice(VOICE_MEMBER); showSystemNotification("MFF Lodge", VOICE_MEMBER); } window.LodgeNotifier?.showPopup(lastNew.title||"Notification",lastNew.message,lastNew.isBroadcast?"announcement":(isAdmin?"member_message":"admin_message"));}});}function loadChats(){
+  const listEl=document.getElementById('membersList');
+  let fallbackTriggered=false;
+
+  // FALLBACK - fixes your screenshot in 2 sec if Firebase empty
+  setTimeout(()=>{
+    if(listEl.innerHTML.includes("Loading chats") &&!fallbackTriggered){
+      fallbackTriggered=true;
+      console.log("Fallback triggered");
+      if(!isAdmin){
+        listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold);text-align:left"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px;height:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-lock" style="color:var(--gold)"></i></div>`;
+        attachItemEvents();
+      } else {
+        listEl.innerHTML=`<div style="padding:40px;text-align:center"><div style="color:var(--gold);font-weight:700">${tr('no_members')}</div><br><small>No chats yet - Members need to message first<br><br>Your chat ID format: ${ADMIN_UID}_MEMBERID</small></div>`;
+      }
+      setBadge("notifCount",0); setBadge("globalChatBadge",0); updateAppIcon();
+    }
+  },2000);
+
+  onValue(ref(db,'chats'),(snap)=>{
+    try{
+      fallbackTriggered=true;
+      const chatsRaw=snap.val()||{};
+      let cards=[]; let totalUnread=0; let lastNewMsg=null;
+
+      if(Object.keys(chatsRaw).length===0){
+        if(!isAdmin){
+          listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold);text-align:left"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px;height:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-lock" style="color:var(--gold)"></i></div>`;
+          attachItemEvents();
+        } else {
+          listEl.innerHTML=`<div style="padding:40px;text-align:center">${tr('no_members')}<br><small>No chats in database yet</small></div>`;
+        }
+        setBadge("notifCount",0); setBadge("globalChatBadge",0); updateAppIcon(); return;
+      }
+
+      Object.keys(chatsRaw).forEach(chatId=>{
+        if(!chatId.includes(ADMIN_UID))return;
+        const chat=chatsRaw[chatId];
+        if(chat.hiddenFor&&chat.hiddenFor[myId])return;
+        let otherUid=chatId.replace(ADMIN_UID+'_','').replace('_'+ADMIN_UID,'').trim();
+        if(!otherUid||otherUid===ADMIN_UID||otherUid.length<5)return;
+        if(!isAdmin && otherUid!==myId &&!chatId.includes(myId))return;
+
+        const msgs=chat.messages||{};
+        const allVisible=Object.keys(msgs).filter(mid=>!(msgs[mid].deletedFor&&msgs[mid].deletedFor[myId]));
+        if(isAdmin&&allVisible.length===0&&!chat.lastMessage)return;
+
+        const lastSeen=isAdmin?(chat.seenByAdmin||0):(chat.seenByMember||0);
+        const newInbox=allVisible.filter(mid=>{const m=msgs[mid];return m.senderId!==myId&&(m.time||0)>lastSeen;});
+        const unreadCount=newInbox.length;
+
+        if(newInbox.length>0){
+          const latestId=newInbox.sort((a,b)=>(msgs[b].time||0)-(msgs[a].time||0))[0];
+          const latest=msgs[latestId];
+          if(latest&&Date.now()-latest.time<6000)lastNewMsg={msg:latest,otherUid};
+        }
+
+        const info=chat.info||{}; const reg=usersCache[otherUid]||{};
+        const name=reg.fullName||reg.name||info.fullName||'Member '+otherUid.slice(0,5);
+        const phone=reg.phone||info.phone||'No phone'; const country=reg.country||info.country||'No country';
+        let lastMsg=null; allVisible.sort((a,b)=>(msgs[b].time||0)-(msgs[a].time||0)).forEach(mid=>{if(!lastMsg)lastMsg=msgs[mid];});
+        if(!lastMsg)lastMsg={text:chat.lastMessage||'',time:chat.lastTime||0,senderId:'',mediaType:''};
+        totalUnread+=unreadCount;
+        let preview=lastMsg.mediaType?(lastMsg.mediaType==='video'?'🎥 Video':'📷 Photo'):(lastMsg.text||tr('tap_admin'));
+        cards.push({chatId,otherUid,name,phone,country,lastText:preview,lastTime:lastMsg.time||chat.lastTime||0,unreadCount,isUnread:unreadCount>0,initials:name.slice(0,2).toUpperCase()});
+      });
+
+      cards.sort((a,b)=>b.lastTime-a.lastTime);
+      setBadge("notifCount",totalUnread); setBadge("globalChatBadge",totalUnread); updateAppIcon();
+
+      if(lastNewMsg){
+        const senderName=usersCache[lastNewMsg.otherUid]?.fullName||"Member";
+        const text=lastNewMsg.msg.text||(lastNewMsg.msg.mediaType==='video'?'🎥 Video':'📷 Photo');
+        if(isAdmin){ window.LodgeNotifier?.showPopup(senderName,text,"member_message"); speakVoice(VOICE_DIRECTOR); showSystemNotification("MFF Lodge", VOICE_DIRECTOR); }
+        else { window.LodgeNotifier?.showPopup("Director",text,"admin_message"); speakVoice(VOICE_MEMBER); showSystemNotification("MFF Lodge", VOICE_MEMBER); }
+      }
+
+      if(isAdmin){
+        if(cards.length===0){
+          listEl.innerHTML=`<div style="padding:40px;text-align:center">${tr('no_members')}<br><small>Members who message will appear here</small></div>`;
+        } else {
+          let html=''; cards.forEach(c=>{html+=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${c.otherUid}"><div style="width:46px;height:46px;border-radius:50%;background:#121D33;border:2px solid ${c.isUnread?'#00ff88':'#D4B16A'};display:grid;place-items:center;color:${c.isUnread?'#00ff88':'#D4B16A'};font-weight:800">${c.initials}</div><div style="flex:1;overflow:hidden;text-align:left"><b style="color:${c.isUnread?'#00ff88':'#D4B16A'}">${c.name}</b><br><small style="color:#D4B16A"><i class="fa fa-phone"></i> ${c.phone} • ${c.country}</small><br><small style="color:${c.isUnread?'#fff':'#aaa'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-chevron-right" style="color:#D4B16A"></i>`}</div>`;});
+          listEl.innerHTML=html;
+        }
+      } else {
+        if(cards.length>0){
+          const c=cards[0];
+          listEl.innerHTML=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${ADMIN_UID}" style="border:2px solid ${c.isUnread?'#00ff88':'var(--gold)'};text-align:left"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid ${c.isUnread?'#00ff88':'var(--gold)'};display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px;height:28px"></div><div style="flex:1;overflow:hidden;text-align:left"><b style="color:${c.isUnread?'#00ff88':'var(--gold)'}">${tr('admin_channel')}</b><br><small style="color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-shield-alt" style="color:var(--gold)"></i>`}</div>`;
+        } else {
+          listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold);text-align:left"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px;height:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-lock" style="color:var(--gold)"></i></div>`;
+        }
+      }
+      attachItemEvents();
+    }catch(err){
+      console.error(err);
+      listEl.innerHTML=`<div style="padding:20px;color:#ff5a5a">Error: ${err.message}</div>`;
+    }
+  }, (error)=>{
+    fallbackTriggered=true;
+    console.error("Firebase permission error:", error);
+    if(!isAdmin){
+      listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold);text-align:left"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px;height:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">Tap to start chat (offline mode)</small></div><i class="fa fa-comments" style="color:var(--gold)"></i></div>`;
+      attachItemEvents();
+    } else {
+      listEl.innerHTML=`<div style="padding:20px;color:#ff5a5a;text-align:center">Permission Denied<br><small style="color:#fff">Go to Firebase Rules and set:<br>chats:.read=true.write=true<br>users:.read=true.write=true</small></div>`;
+    }
+  });
+}
 window.openChat=async(otherUid,displayName)=>{currentChatId=isAdmin?(ADMIN_UID+"_"+otherUid):(ADMIN_UID+"_"+myId);document.getElementById('chatName').innerText=displayName;document.getElementById('chatPage').style.display='flex';try{if(isAdmin){await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:Date.now()});}else{await update(ref(db,`chats/${currentChatId}`),{seenByMember:Date.now()});}const snapRead=await get(ref(db,`chats/${currentChatId}/messages`));if(snapRead.exists()){for(let k in snapRead.val()){if(snapRead.val()[k].senderId!==myId&&snapRead.val()[k].status!=='read'){await update(ref(db,`chats/${currentChatId}/messages/${k}`),{status:'read'}).catch(()=>{});}}}}catch(e){}onValue(ref(db,`chats/${currentChatId}/messages`),(snap)=>{const box=document.getElementById('messages');box.innerHTML="";const data=snap.val()||{};Object.keys(data).sort((a,b)=>(data[a].time||0)-(data[b].time||0)).forEach(mid=>{const m=data[mid];if(m.deletedFor&&m.deletedFor[myId])return;const isMe=m.senderId===myId;if(!isMe&&m.status==='sent'){update(ref(db,`chats/${currentChatId}/messages/${mid}`),{status:'delivered'}).catch(()=>{});}const wrap=document.createElement('div');wrap.className='msg-wrap';wrap.style.justifyContent=isMe?'flex-end':'flex-start';const icon=document.createElement('div');icon.className='reply-icon';icon.innerHTML='<i class="fa fa-reply"></i>';const div=document.createElement('div');div.className='msg '+(isMe?'my-msg':'other-msg');let html='';if(m.replyTo){html+=`<div class="reply-preview"><b style="color:var(--gold)">${m.replyTo.name}</b><br>${m.replyTo.text}</div>`;}if(m.mediaUrl){if(m.mediaType==='video'){html+=`<div class="media-box"><video src="${m.mediaUrl}" controls></video><div class="media-down" onclick="event.stopPropagation(); window.downloadUrl('${m.mediaUrl}','video.mp4')"><i class="fa fa-download"></i></div></div>`;}else{html+=`<div class="media-box"><img src="${m.mediaUrl}"><div class="media-down" onclick="event.stopPropagation(); window.downloadUrl('${m.mediaUrl}','photo.jpg')"><i class="fa fa-download"></i></div></div>`;}}let tick='';if(isMe){if(m.status==='read')tick=`<span class="tick tick-read">✓✓</span>`;else if(m.status==='delivered')tick=`<span class="tick tick-delivered">✓✓</span>`;else tick=`<span class="tick tick-sent">✓</span>`;}html+=`${m.text||''}<span style="font-size:8px;opacity:.6;float:right;margin-left:6px;margin-top:4px">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>${tick}`;div.innerHTML=html;wrap.appendChild(icon);wrap.appendChild(div);box.appendChild(wrap);div.addEventListener('contextmenu',e=>{e.preventDefault();showMsgMenu(e,mid,m.text||'Media',isMe,m.mediaUrl||null);});let startX=0,curX=0,swiping=false,longT=null;div.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;swiping=true;div.classList.add('swiping');longT=setTimeout(()=>{showMsgMenu(e,mid,m.text||'Media',isMe,m.mediaUrl||null);swiping=false;},600);},{passive:true});div.addEventListener('touchmove',e=>{if(!swiping)return;const diff=e.touches[0].clientX-startX;if(diff>15)clearTimeout(longT);if(diff>0&&diff<110){curX=diff;div.style.transform=`translateX(${curX}px)`;icon.style.opacity=Math.min(curX/60,1);}},{passive:true});div.addEventListener('touchend',()=>{clearTimeout(longT);if(!swiping)return;swiping=false;div.classList.remove('swiping');if(curX>55){setReply(m.text||'📷 Media',isMe?'You':document.getElementById('chatName').innerText);}div.style.transform='translateX(0)';icon.style.opacity='0';curX=0;});});box.scrollTop=box.scrollHeight;});}
 function showMsgMenu(e,mid,text,isMine,mediaUrl=null){selId=mid;selText=text;selIsMine=isMine;selMediaUrl=mediaUrl;const menu=document.getElementById('msgMenu');menu.style.left=(e.touches?e.touches[0].clientX:e.clientX)-100+'px';menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';menu.style.display='flex';document.getElementById('editBtn').style.display=isMine?'flex':'none';document.getElementById('downBtn').style.display=mediaUrl?'flex':'none';}
 window.copyMsg=()=>{navigator.clipboard.writeText(selText);hideMenus();showToast('Copied');}

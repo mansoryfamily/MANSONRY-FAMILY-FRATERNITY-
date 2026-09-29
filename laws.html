@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freemasonry | Laws & Ethics</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'Poppins',sans-serif;background:radial-gradient(circle at top right,rgba(212,175,55,.08),transparent 30%),linear-gradient(135deg,#07111f,#0f1a2e 55%,#091321);color:#fff;min-height:100vh;padding-bottom:130px;}
+.header{position:sticky;top:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;background:rgba(7,17,31,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,175,55,.18);}
+.logo{color:#f1ca52;font-size:20px;font-weight:700;}
+.logout-btn{border:1px solid rgba(212,175,55,.45);background:rgba(212,175,55,.08);color:#f1ca52;padding:9px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;}
+.container{width:92%;max-width:1000px;margin:0 auto;padding:45px 0 40px;}
+.hero{text-align:center;margin-bottom:35px;}
+.hero h1{color:#f1ca52;font-size:clamp(28px,5vw,44px);line-height:1.2;margin-bottom:12px;}
+.hero p{color:#aebbd0;font-size:14px;max-width:650px;margin:auto;line-height:1.8;}
+.card{background:rgba(15,26,46,.88);border:1px solid rgba(212,175,55,.18);border-radius:22px;padding:30px;box-shadow:0 20px 50px rgba(0,0,0,.35);margin-bottom:28px;}
+.card-title{color:#f1ca52;font-size:21px;font-weight:600;margin-bottom:18px;border-bottom:1px solid rgba(212,175,55,.15);padding-bottom:12px;}
+.law-item{padding:18px;border-radius:14px;background:rgba(255,255,255,.035);border-left:3px solid #d4af37;margin-bottom:14px;}
+.law-item h3{font-size:14px;color:#fff;margin-bottom:6px;}
+.law-item p{color:#aebbd0;font-size:12px;line-height:1.7;}
+.link-btn{display:inline-block;margin-top:15px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;padding:12px 24px;border-radius:30px;text-decoration:none;font-weight:700;font-size:13px;}
+.bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(15,26,46,.94);backdrop-filter:blur(25px);padding:10px;border-radius:22px;display:flex;gap:8px;border:1px solid rgba(212,175,55,.25);box-shadow:0 15px 40px rgba(0,0,0,.5);z-index:2000;}
+.nav-item{width:90px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#a0b0c9;border-radius:16px;font-size:11px;font-weight:500;transition:.25s ease;}
+.nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;}
+.nav-item.active{background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:600;box-shadow:0 6px 18px rgba(212,175,55,.35);}
+@media(max-width:900px){.bottom-nav{width:calc(100% - 30px);max-width:600px;justify-content:space-between;}.nav-item{width:calc(16.66% - 7px);height:65px;}}
+</style>
+</head><body>
+<header class="header">
+  <div class="logo">Freemasonry Heritage</div>
+  <button class="logout-btn" id="logoutBtn" data-i18n="logout">Logout</button>
+</header>
+<main class="container">
+  <section class="hero">
+    <h1 data-i18n="laws_hero_title">Laws & Ethics of Brotherhood</h1>
+    <p data-i18n="laws_hero_desc">Upholding the values, traditions and brotherhood of our Fraternity.</p>
+  </section>
+  <section class="card">
+    <h2 class="card-title" data-i18n="general_conduct">General Conduct</h2>
+    <div class="law-item"><h3 data-i18n="law1_title">1. Respect & Brotherhood</h3><p data-i18n="law1_desc">Treat every brother with dignity, honor, and respect.</p></div>
+    <div class="law-item"><h3 data-i18n="law2_title">2. Integrity & Honesty</h3><p data-i18n="law2_desc">Uphold truth, honesty and moral integrity in all dealings inside and outside the lodge.</p></div>
+    <div class="law-item"><h3 data-i18n="law3_title">3. Confidentiality</h3><p data-i18n="law3_desc">Keep all lodge matters, rituals and brother's private information confidential.</p></div>
+    <div class="law-item"><h3 data-i18n="law4_title">4. Discipline & Obedience</h3><p data-i18n="law4_desc">Respect lodge hierarchy, obey lawful instructions from lodge officers and maintain discipline.</p></div>
+  </section>  <section class="card">
+    <h2 class="card-title" data-i18n="laws_rules_title">Laws and Regulations</h2>
+    <p style="color:#aebbd0;font-size:13px;line-height:1.8;margin-bottom:15px;" data-i18n="laws_rules_desc">Browse the full constitutional laws governing the brotherhood.</p>
+    <a href="#" class="link-btn" data-i18n="view_laws">View Full Laws Document</a>
+  </section>
+
+  <section class="card">
+    <h2 class="card-title" data-i18n="member_support_title">Member Support</h2>
+    <p style="color:#aebbd0;font-size:13px;line-height:1.8;" data-i18n="member_support_desc">Need clarification on any law? Contact the lodge secretary.</p>
+    <a href="help.html" class="link-btn" data-i18n="contact_secretary">Contact Secretary</a>
+  </section>
+
+  <section class="card">
+    <h2 class="card-title" data-i18n="ethics_title">Code of Ethics</h2>
+    <p style="color:#aebbd0;font-size:13px;line-height:1.8;" data-i18n="ethics_desc">Every member must live by charity, honesty, service to humanity and commitment to personal growth and brotherhood.</p>
+  </section>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="nav-label" data-i18n="home">Home</span></a>
+    <a href="requirements.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span class="nav-label" data-i18n="requirements">Requirements</span></a>
+    <a href="application.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg><span class="nav-label" data-i18n="application">Application</span></a>
+    <a href="member.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span class="nav-label" data-i18n="members">Members</span></a>
+    <a href="help.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.39-1.11-.59-2.28-.59-3.53 0-.55-.45-1-1-1H4c-.55 0-1-1.45-1 0 9.39 7.61 17 17 17.55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1z"/></svg><span class="nav-label" data-i18n="helpline">Helpline</span></a>
+    <a href="laws.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2-1.9-2-2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg><span class="nav-label" data-i18n="laws">Laws</span></a>
+  </nav>
+</main>
+<script>
+const TRANSLATIONS={
+en:{logout:"Logout",home:"Home",requirements:"Requirements",application:"Application",members:"Members",helpline:"Helpline",laws:"Laws",laws_hero_title:"Laws & Ethics of Brotherhood",laws_hero_desc:"Upholding the values, traditions and brotherhood of our Fraternity.",general_conduct:"General Conduct",law1_title:"1. Respect & Brotherhood",law1_desc:"Treat every brother with dignity, honor, and respect.",law2_title:"2. Integrity & Honesty",law2_desc:"Uphold truth, honesty and moral integrity in all dealings inside and outside the lodge.",law3_title:"3. Confidentiality",law3_desc:"Keep all lodge matters, rituals and brother's private information confidential.",law4_title:"4. Discipline & Obedience",law4_desc:"Respect lodge hierarchy, obey lawful instructions from lodge officers and maintain discipline.",laws_rules_title:"Laws and Regulations",laws_rules_desc:"Browse the full constitutional laws governing the brotherhood.",view_laws:"View Full Laws Document",member_support_title:"Member Support",member_support_desc:"Need clarification on any law? Contact the lodge secretary.",contact_secretary:"Contact Secretary",ethics_title:"Code of Ethics",ethics_desc:"Every member must live by charity, honesty, service to humanity and commitment to personal growth and brotherhood."},
+sw:{logout:"Toka",home:"Nyumbani",requirements:"Mahitaji",application:"Maombi",members:"Wanachama",helpline:"Msaada",laws:"Sheria",laws_hero_title:"Sheria na Maadili ya Undugu",laws_hero_desc:"Kudumisha maadili, mila na undugu wa Shirika letu.",general_conduct:"Mwenendo wa Jumla",law1_title:"1. Heshima & Udugu",law1_desc:"Mheshimu kila ndugu kwa hadhi, heshima na utu.",law2_title:"2. Uadilifu & Uaminifu",law2_desc:"Simamia ukweli, uaminifu na maadili mema ndani na nje ya lodge.",law3_title:"3. Usiri",law3_desc:"Weka siri mambo yote ya lodge, ibada na taarifa binafsi za ndugu.",law4_title:"4. Nidhamu & Utii",law4_desc:"Heshimu uongozi wa lodge, tii maelekezo halali na dumisha nidhamu.",laws_rules_title:"Sheria na Kanuni",laws_rules_desc:"Pitia sheria kamili za kikatiba zinazoongoza undugu.",view_laws:"Tazama Hati Kamili ya Sheria",member_support_title:"Msaada kwa Wanachama",member_support_desc:"Unahitaji ufafanuzi wa sheria yoyote? Wasiliana na katibu wa lodge.",contact_secretary:"Wasiliana na Katibu",ethics_title:"Maadili",ethics_desc:"Kila mwanachama lazima aishi kwa hisani, uaminifu, huduma kwa jamii na kujitolea kwa ukuaji na udugu."},
+lg:{logout:"Fuluma",home:"Awaka",requirements:"Ebyetaago",application:"Okusaba",members:"Bammemba",helpline:"Obuyambi",laws:"Amateeka",laws_hero_title:"Amateeka n'Empisa z'Ob brotherhood",laws_hero_desc:"Okukuuma empisa, ennono n'ob brotherhood.",general_conduct:"Enneeyisa Okutwaliza awamu",law1_title:"1. Ekitiibwa & Ob brotherhood",law1_desc:"Wuliriza buli muganda n'ekitiibwa.",law2_title:"2. Obwesigwa",law2_desc:"Kuumanga amazima n'obwesigwa.",law3_title:"3. Ekyama",law3_desc:"Kweka eby'omu lodge.",law4_title:"4. Empisa",law4_desc:"Gondera abakulu mu lodge.",laws_rules_title:"Amateeka n'Okulungamya",laws_rules_desc:"Laba amateeka gonna agafuga.",view_laws:"Laba Amateeka Gonna",member_support_title:"Obuyambi eri Members",member_support_desc:"Weetaaga okunnyonnyolwa? Tukirira secretary.",contact_secretary:"Tukirira Secretary",ethics_title:"Empisa",ethics_desc:"Buli member alina okubeera n'obulungi n'okuyamba abantu."},
+rw:{logout:"Sohoka",home:"Ahabanza",requirements:"Ibisabwa",application:"Gusaba",members:"Abanyamuryango",helpline:"Ubufasha",laws:"Amategeko",laws_hero_title:"Amategeko n'Indangagaciro",laws_hero_desc:"Kubungabunga indangagaciro za fraternity yacu.",general_conduct:"Imyitwarire Rusange",law1_title:"1. Kubaha & Ububusabe",law1_desc:"Wubahire buri muvandi.",law2_title:"2. Ubunyangamugayo",law2_desc:"Gumana ukuri n'ubunyangamugayo.",law3_title:"3. Ibanga",law3_desc:"Bika ibanga rya lodge.",law4_title:"4. Ikinyabupfura",law4_desc:"Kubaha abayobozi ba lodge.",laws_rules_title:"Amategeko",laws_rules_desc:"Soma amategeko yose.",view_laws:"Reba Amategeko Yose",member_support_title:"Ubufasha",member_support_desc:"Ukeneye ibisobanuro? Vugana na secretary.",contact_secretary:"Vugana na Secretary",ethics_title:"Indangagaciro",ethics_desc:"Buri munyamuryango agomba kubaho mu rukundo n'ubunyangamugayo."},
+pt:{logout:"Sair",home:"Início",requirements:"Requisitos",application:"Aplicação",members:"Membros",helpline:"Ajuda",laws:"Leis",laws_hero_title:"Leis e Ética da Irmandade",laws_hero_desc:"Mantendo os valores e tradições da nossa Fraternidade.",general_conduct:"Conduta Geral",law1_title:"1. Respeito e Irmandade",law1_desc:"Trate cada irmão com dignidade e respeito.",law2_title:"2. Integridade",law2_desc:"Defenda verdade e integridade.",law3_title:"3. Confidencialidade",law3_desc:"Mantenha sigilo dos assuntos da loja.",law4_title:"4. Disciplina",law4_desc:"Respeite a hierarquia da loja.",laws_rules_title:"Leis e Regulamentos",laws_rules_desc:"Veja as leis constitucionais.",view_laws:"Ver Documento Completo",member_support_title:"Suporte ao Membro",member_support_desc:"Precisa de esclarecimento? Contacte o secretário.",contact_secretary:"Contactar Secretário",ethics_title:"Código de Ética",ethics_desc:"Viva com caridade, honestidade e serviço."},
+fr:{logout:"Déconnexion",home:"Accueil",requirements:"Exigences",application:"Application",members:"Membres",helpline:"Aide",laws:"Lois",laws_hero_title:"Lois et Éthique de la Fraternité",laws_hero_desc:"Préserver les valeurs et traditions de notre Fraternité.",general_conduct:"Conduite Générale",law1_title:"1. Respect & Fraternité",law1_desc:"Traitez chaque frère avec dignité et respect.",law2_title:"2. Intégrité",law2_desc:"Défendez la vérité et l'intégrité.",law3_title:"3. Confidentialité",law3_desc:"Gardez confidentielles les affaires de la loge.",law4_title:"4. Discipline",law4_desc:"Respectez la hiérarchie de la loge.",laws_rules_title:"Lois et Règlements",laws_rules_desc:"Consultez les lois constitutionnelles.",view_laws:"Voir Document Complet",member_support_title:"Support Membres",member_support_desc:"Besoin d'éclaircissement? Contactez le secrétaire.",contact_secretary:"Contacter Secrétaire",ethics_title:"Code d'Éthique",ethics_desc:"Vivez par la charité, l'honnêteté et le service."},
+zu:{logout:"Phuma",home:"Ekhaya",requirements:"Okudingekayo",application:"Isicelo",members:"Amalungu",helpline:"Usizo",laws:"Imithetho",laws_hero_title:"Imithetho Nokuziphatha",laws_hero_desc:"Ukugcina izindinganiso zethu.",general_conduct:"Ukuziphatha Jikelele",law1_title:"1. Inhlonipho Nobuzalwane",law1_desc:"Phatha wonke umfowethu ngenhlonipho.",law2_title:"2. Ubuqotho",law2_desc:"Gcina iqiniso nobuqotho.",law3_title:"3. Imfihlo",law3_desc:"Gcina izindaba ze lodge ziyimfihlo.",law4_title:"4. Isiyalo",law4_desc:"Hlonipha ubuholi be lodge.",laws_rules_title:"Imithetho Nemithethonqubo",laws_rules_desc:"Bheka imithetho egcwele.",view_laws:"Buka Umbhalo Ogcwele",member_support_title:"Ukusekelwa Kwamalungu",member_support_desc:"Udinga incazelo? Xhumana nonobhala.",contact_secretary:"Xhumana Nonobhala",ethics_title:"Ikhodi Yokuziphatha",ethics_desc:"Phila ngothando nangenkonzo."},
+ha:{logout:"Fita",home:"Gida",requirements:"Abubuwan",application:"Aikace",members:"Membobi",helpline:"Taimako",laws:"Dokoki",laws_hero_title:"Dokoki da Ɗabi'a",laws_hero_desc:"Kiyaye dabi'u na fraternity.",general_conduct:"Halayya Gabaɗaya",law1_title:"1. Girmamawa & Yan uwantaka",law1_desc:"Ka girmama kowane ɗan uwa.",law2_title:"2. Gaskiya",law2_desc:"Ka riƙe gaskiya.",law3_title:"3. Sirri",law3_desc:"Ka kiyaye sirrin lodge.",law4_title:"4. Ladabi",law4_desc:"Ka girmama shugabanni.",laws_rules_title:"Dokoki",laws_rules_desc:"Duba cikakkun dokoki.",view_laws:"Duba Takardar Dokoki",member_support_title:"Taimako ga Membobi",member_support_desc:"Kana buƙatar bayani? Tuntuɓi sakatare.",contact_secretary:"Tuntuɓi Sakatare",ethics_title:"Ɗabi'a",ethics_desc:"Rayu da sadaka da gaskiya."},
+tw:{logout:"Fi mu",home:"Fi",requirements:"Ahwehwɛde",application:"Abisade",members:"Agbatɔfo",helpline:"Mmoa",laws:"Mmara",laws_hero_title:"Mmara ne Abrabɔ",laws_hero_desc:"Di yɛn fraternity gyinapɛn so.",general_conduct:"Abrabɔ Mu",law1_title:"1. Anidie & Nuanom",law1_desc:"Bu obiara wɔ anidie.",law2_title:"2. Nokwaredi",law2_desc:"Di nokware so.",law3_title:"3. Ahintasɛm",law3_desc:"Fa lodge nsɛm sie.",law4_title:"4. Anotew",law4_desc:"Bu lodge mpanyimfo.",laws_rules_title:"Mmara",laws_rules_desc:"Hwɛ mmara no nyinaa.",view_laws:"Hwɛ Mmara Krataa",member_support_title:"Mmoa",member_support_desc:"Wohia nkyerɛkyerɛmu? Frɛ secretary.",contact_secretary:"Frɛ Secretary",ethics_title:"Abrabɔ Ho Mmara",ethics_desc:"Bɔ adɔeɛ ne nokwaredi bra."},am:{logout:"ውጣ",home:"መነሻ",requirements:"መስፈርቶች",application:"ማመልከቻ",members:"አባላት",helpline:"እገዛ",laws:"ሕጎች",laws_hero_title:"ሕጎች እና ሥነምግባር",laws_hero_desc:"የፍራተርኒቲያችን እሴቶችን መጠበቅ።",general_conduct:"አጠቃላይ ባህሪ",law1_title:"1. አክብሮት እና ወንድማማችነት",law1_desc:"እያንዳንዱን ወንድም በአክብሮት ይያዙ።",law2_title:"2. ታማኝነት",law2_desc:"እውነትን ይጠብቁ።",law3_title:"3. ሚስጥራዊነት",law3_desc:"የሎጅ ጉዳዮችን ሚስጥራዊ ያድርጉ።",law4_title:"4. ዲሲፕሊን",law4_desc:"የሎጅ መሪዎችን ያክብሩ።",laws_rules_title:"ሕጎች እና ደንቦች",laws_rules_desc:"ሙሉ ሕጎችን ይመልከቱ።",view_laws:"ሙሉ ሰነድ ይመልከቱ",member_support_title:"የአባላት ድጋፍ",member_support_desc:"ማብራሪያ ይፈልጋሉ? ጸሐፊውን ያነጋግሩ።",contact_secretary:"ጸሐፊውን ያነጋግሩ",ethics_title:"የሥነምግባር ደንብ",ethics_desc:"በፍቅር እና ታማኝነት ይኑሩ።"},
+sn:{logout:"Buda",home:"Kumba",requirements:"Zvinodiwa",application:"Chikumbiro",members:"Nhengo",helpline:"Rubatsiro",laws:"Mitemo",laws_hero_title:"Mitemo neTsika",laws_hero_desc:"Kuchengetedza tsika dzedu.",general_conduct:"Mufambiro",law1_title:"1. Ruremekedzo & Hama",law1_desc:"Bata hama yose neruremekedzo.",law2_title:"2. Kutendeka",law2_desc:"Chengetedza chokwadi.",law3_title:"3. Chakavanzika",law3_desc:"Chengetedza zvakavanzika zvelodge.",law4_title:"4. Chirango",law4_desc:"Remekedza vatungamiri.",laws_rules_title:"Mitemo",laws_rules_desc:"Ona mitemo yose.",view_laws:"Ona Gwaro Rose",member_support_title:"Rubatsiro",member_support_desc:"Unoda tsananguro? Bata secretary.",contact_secretary:"Bata Secretary",ethics_title:"Tsika",ethics_desc:"Rarama nerudo nokutendeka."},
+bem:{logout:"Fuma",home:"Ku Ng'anda",requirements:"Ifikabilwa",application:"Ukupempula",members:"Ba Member",helpline:"Ubwafwilisho",laws:"Amalango",laws_hero_title:"Amalango ne Mipingo",laws_hero_desc:"Ukusunga imipingo yesu.",general_conduct:"Imikaliro",law1_title:"1. Umuci n'ubumanyani",law1_desc:"Cindikeni bonse na mucinshi.",law2_title:"2. Bucishinka",law2_desc:"Sungeni icishinka.",law3_title:"3. Inkama",law3_desc:"Sungeni ifya lodge mu nkama.",law4_title:"4. Amaka",law4_desc:"Cindikeni abakulu.",laws_rules_title:"Amalango",laws_rules_desc:"Moneni amalango yonse.",view_laws:"Moneni Icalata",member_support_title:"Ubwafwilisho",member_support_desc:"Mulefwaya ukushininkisha? Landeni secretary.",contact_secretary:"Landeni Secretary",ethics_title:"Imipingo",ethics_desc:"Ikaleni mu luse ne cishinka."},
+tn:{logout:"Tswa",home:"Gae",requirements:"Dikgato",application:"Kopo",members:"Maloko",helpline:"Thuso",laws:"Melao",laws_hero_title:"Melao le Maitseo",laws_hero_desc:"Go boloka maitseo a rona.",general_conduct:"Maitseo Kakaretso",law1_title:"1. Tlotlo le Bokaulengwe",law1_desc:"Tlotla morwarraa mongwe le mongwe.",law2_title:"2. Boammaaruri",law2_desc:"Tshegetsa boammaaruri.",law3_title:"3. Sephiri",law3_desc:"Boloka diphiri tsa lodge.",law4_title:"4. Kg discipline",law4_desc:"Tlotla baeteledipele.",laws_rules_title:"Melao",laws_rules_desc:"Leba melao yotlhe.",view_laws:"Bona Tokomane E Feletseng",member_support_title:"Thuso ya Maloko",member_support_desc:"O tlhoka tlhaloso? Ikgolaganye le secretary.",contact_secretary:"Ikgolaganye le Secretary",ethics_title:"Maitseo",ethics_desc:"Phela ka lorato le boammaaruri."},
+ng:{logout:"Zapo",home:"Pehaya",requirements:"Oshinakugwanithwa",application:"Epulo",members:"Oohambe",helpline:"Ekwatho",laws:"Ompango",laws_hero_title:"Ompango nomaihumbilo",laws_hero_desc:"Okukala omaihumbilo yetu.",general_conduct:"Omaihumbilo",law1_title:"1. Eshitiko & Uumwameme",law1_desc:"Tula omumwameme kehe neshitiko.",law2_title:"2. Oshili",law2_desc:"Kala noshili.",law3_title:"3. Oshiholekwa",law3_desc:"Humbata oompango dhilodge.",law4_title:"4. Eikwatonawa",law4_desc:"Tula aawiliki.",laws_rules_title:"Ompango",laws_rules_desc:"Tala oompango adhihe.",view_laws:"Tala Omukanda",member_support_title:"Ekwatho",member_support_desc:"Owu pumbwa omayele? Popi secretary.",contact_secretary:"Popi Secretary",ethics_title:"Omaihumbilo",ethics_desc:"Kala nohole noashili."},
+hi:{logout:"लॉगआउट",home:"होम",requirements:"आवश्यकताएँ",application:"आवेदन",members:"सदस्य",helpline:"सहायता",laws:"कानून",laws_hero_title:"कानून और भाईचारे की नैतिकता",laws_hero_desc:"हमारी फ्रेटरनिटी के मूल्यों और परंपराओं को बनाए रखना।",general_conduct:"सामान्य आचरण",law1_title:"1. सम्मान और भाईचारा",law1_desc:"हर भाई के साथ सम्मान और गरिमा से पेश आएं।",law2_title:"2. ईमानदारी",law2_desc:"सत्य और नैतिकता बनाए रखें।",law3_title:"3. गोपनीयता",law3_desc:"लॉज के मामलों को गोपनीय रखें।",law4_title:"4. अनुशासन",law4_desc:"लॉज पदानुक्रम का सम्मान करें।",laws_rules_title:"कानून और नियम",laws_rules_desc:"भाईचारे को नियंत्रित करने वाले पूर्ण कानून देखें।",view_laws:"पूरा कानून दस्तावेज़ देखें",member_support_title:"सदस्य सहायता",member_support_desc:"किसी कानून पर स्पष्टीकरण चाहिए? सचिव से संपर्क करें।",contact_secretary:"सचिव से संपर्क करें",ethics_title:"नैतिक संहिता",ethics_desc:"हर सदस्य को दान, ईमानदारी और मानवता की सेवा के साथ जीना चाहिए।"}
+};
+function getLang(){return localStorage.getItem('siteLang')||'en';}
+function applyLang(){
+ const dict=TRANSLATIONS[getLang()]||TRANSLATIONS.en;
+ document.querySelectorAll('[data-i18n]').forEach(el=>{
+  const k=el.dataset.i18n;
+  if(dict[k]) el.textContent=dict[k];
+ });
+}
+applyLang();
+document.addEventListener('DOMContentLoaded',applyLang);
+window.addEventListener('storage',applyLang);
+setInterval(applyLang,1000);
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+const firebaseConfig = { apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM", authDomain: "mansonry-family-fraternity.firebaseapp.com", databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app", projectId: "mansonry-family-fraternity", storageBucket: "mansonry-family-fraternity.firebasestorage.app", messagingSenderId: "964415179161", appId: "1:964415179161:web:c8fd1a777542932d7c6b08" };
+const app = initializeApp(firebaseConfig); const auth = getAuth(app);
+onAuthStateChanged(auth, (user) => { if(!user){ window.location.href = "login.html"; return; } });
+document.getElementById("logoutBtn").addEventListener("click", async ()=>{
+  await signOut(auth);
+  window.location.href="login.html";
+});
+</script>
+</body>
+</html>

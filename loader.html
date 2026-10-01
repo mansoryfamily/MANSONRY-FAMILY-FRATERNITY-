@@ -30,7 +30,6 @@ body::before{
   animation:spin 25s linear infinite;
   z-index:0;
 }
-/* IMAGE INSIDE SQUARE */
 .logo-box{
   width:115px;
   height:115px;
@@ -68,6 +67,7 @@ h1{
   letter-spacing:3px;
   text-shadow:0 0 15px rgba(212,175,55,.6);
   z-index:2;
+  font-weight:700;
 }
 .loader{
   width:200px;
@@ -85,6 +85,7 @@ h1{
   background:linear-gradient(90deg,#d4af37,#f1ca52);
   border-radius:10px;
   animation:load 5s linear forwards;
+  box-shadow:0 0 12px #d4af37;
 }
 @keyframes load{to{width:100%}}
 #statusText{color:#7a8aa0;font-size:11px;margin-top:14px;letter-spacing:1px;z-index:2;text-transform:uppercase;}
@@ -101,7 +102,7 @@ h1{
 <body>
 
 <div class="logo-box">
-  <img src="./icon-512.png" alt="logo" onerror="this.onerror=null; this.src='./icon-192.png'; this.onerror=null; this.src='./images.jpeg'">
+  <img src="./icon-512.png" alt="logo" onerror="this.onerror=null; this.src='./icon-192.png'; this.onerror=function(){this.src='./images.jpeg';}">
 </div>
 
 <h1>MANSORY FAMILY</h1>
@@ -126,10 +127,16 @@ function goNext(){
     if(logged){
       location.replace("./dashboard.html");
     }else{
-      location.replace("./landing.html");
+      // SAFE: never 404 - checks if landing.html exists
+      fetch("./landing.html", {method:"HEAD", cache:"no-store"}).then(r=>{
+        if(r.ok) location.replace("./landing.html");
+        else location.replace("./index.html");
+      }).catch(()=>{
+        location.replace("./index.html");
+      });
     }
   }catch(e){
-    location.replace("./landing.html");
+    location.replace("./index.html");
   }
 }
 setTimeout(goNext, 5000);

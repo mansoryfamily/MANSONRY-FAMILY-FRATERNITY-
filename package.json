@@ -1,17 +1,11 @@
 {
   "name": "functions",
-  "description": "Cloud Functions for MFF",
-  "scripts": {
-    "serve": "firebase emulators:start --only functions",
-    "shell": "firebase functions:shell",
-    "deploy": "firebase deploy --only functions"
-  },
-  "engines": {
-    "node": "18"
-  },
+  "description": "MFF WhatsApp Push",
+  "engines": { "node": "18" },
+  "main": "index.js",
   "dependencies": {
-    "firebase-admin": "^11.11.1",
-    "firebase-functions": "^4.5.0"
-  },
-  "private": true
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^5.0.0",
+    "axios": "^1.6.0"
+  }
 }

@@ -89,3 +89,14 @@ window.LodgeNotifier=notifier;
 if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged=()=>{ speechSynthesis.getVoices(); }; }
 const saved=localStorage.getItem("globalChatBadge_count");
 if(saved && parseInt(saved)>0){ setTimeout(()=>notifier.setAppIconBadge(parseInt(saved)),1000); }
+// SAVE ONESIGNAL ID TO FIREBASE - NEEDED FOR CLOSED-APP PUSH
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(async function(OneSignal) {
+  const id = await OneSignal.User.PushSubscription.id;
+  if (!id) return;
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  firebase.database().ref(`users/${user.uid}/oneSignalId`).set(id);
+  firebase.database().ref(`playerIds/${user.uid}/${id}`).set(true);
+  console.log("PlayerId saved", id);
+});

@@ -43,8 +43,7 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 <div id="notifIcon" style="position:relative;"><i class="fa fa-comments" style="color:var(--green);font-size:20px"></i><span id="notifCount" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:grid;place-items:center;">0</span><span id="globalChatBadge" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;padding:0 4px;">0</span></div>
 </div>
 </div>
-<div id="membersList" style="padding:10px;color:#888;text-align:center"><div data-i18n="loading_chats">Loading chats...</div></div>
-<div id="chatPage">
+<div id="membersList" style="padding:10px;color:#888;text-align:center"><div data-i18n="loading_chats">Loading chats...</div></div><div id="chatPage">
 <div style="background:var(--card);padding:10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)"><i class="fa fa-arrow-left" style="color:var(--gold);font-size:18px;cursor:pointer" onclick="closeChat()"></i><img src="masonic-icon.png" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--gold)"><div style="flex:1"><h4 id="chatName" style="color:var(--gold);font-size:13px"></h4><small style="color:#aaa" data-i18n="swipe_hint">Swipe right to reply</small></div></div>
 <div id="messages"></div>
 <div class="reply-bar" id="replyBar"><div><small id="replyToName" style="color:var(--gold);font-weight:800"></small><div id="replyToText" style="color:#aaa;font-size:11px"></div></div><i class="fa fa-times" style="color:#fff;cursor:pointer" onclick="cancelReply()"></i></div>
@@ -92,8 +91,7 @@ const firebaseConfig = {
   measurementId: "G-9Q2KEWMXVR"
 };
 const app=initializeApp(firebaseConfig);const db=getDatabase(app);const auth=getAuth(app);const storage=getStorage(app);
-const ADMIN_EMAIL="mansoryfamilyn@gmail.com";
-const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
+const ADMIN_EMAIL="mansoryfamilyn@gmail.com";const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
 let myId=null,myEmail="",isAdmin=false,currentChatId=null,myInfo={fullName:'Member'},usersCache={},selId=null,selText=null,selIsMine=false,replyData=null,selChatId=null,selMediaUrl=null;
 let currentMessagesRef=null;let isSending=false;let lastSent={text:"",time:0};let chatLoadTimeout=null;
 function showToast(msg){document.getElementById('toastText').innerText=msg;const el=document.getElementById('toast');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
@@ -115,7 +113,7 @@ function loadNotifications(){
     let unread=0;
     Object.values(snap.val()).forEach(n=>{
       if(!n) return;
-      if(n.deletedFor && n.deletedFor[myId]) return;
+      if(n.deletedFor&&n.deletedFor[myId]) return;
       if(n.chatId) return;
       if(n.type==="chat"||n.type==="message") return;
       if(!n.read) unread++;
@@ -126,27 +124,25 @@ function loadNotifications(){
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').then(()=>console.log("SW registered"));}
 if('Notification' in window&&Notification.permission==="default"){Notification.requestPermission();}function loadChats(){
   const listEl=document.getElementById('membersList');
-  let fallbackDone=false;
+  let fallbackDone=false;let hasRendered=false;
   const doFallback=()=>{
-    if(fallbackDone) return;fallbackDone=true;
+    if(fallbackDone||hasRendered) return;
+    fallbackDone=true;
     if(chatLoadTimeout) clearTimeout(chatLoadTimeout);
     if(!isAdmin){
       listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold)"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-chevron-right" style="color:var(--gold)"></i></div>`;
       attachItemEvents();
     }else{
-      listEl.innerHTML=`<div style="padding:40px;text-align:center;color:#aaa">${tr('no_members')}<br><small>All chats deleted</small></div>`;
-      setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(0);
+      listEl.innerHTML=`<div style="padding:40px;text-align:center;color:#aaa"><i class="fa fa-inbox" style="font-size:28px;color:var(--gold)"></i><br><br>${tr('no_members')}<br><small>Waiting for members</small></div>`;
+      setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();
     }
   };
-  chatLoadTimeout=setTimeout(()=>{doFallback();},4000);
-  const chatsRef=ref(db,'chats');
-  onValue(chatsRef,(snapshot)=>{
-    if(chatLoadTimeout) clearTimeout(chatLoadTimeout);
+  chatLoadTimeout=setTimeout(()=>{doFallback();},3000);
+  const renderChats=(val)=>{
+    if(!val){if(!hasRendered) doFallback();return;}
     try{
-      if(!snapshot.exists()){doFallback();return;}
       let cards=[];let totalUnread=0;let newForMe=null;
-      snapshot.forEach(chatSnap=>{
-        const chatId=chatSnap.key;const chat=chatSnap.val();
+      Object.entries(val).forEach(([chatId,chat])=>{
         if(!chat) return;
         if(chat.hiddenFor&&chat.hiddenFor[myId]) return;
         if(!chatId.includes(myId)&&!isAdmin) return;
@@ -155,68 +151,55 @@ if('Notification' in window&&Notification.permission==="default"){Notification.r
         if(isAdmin&&otherUid===ADMIN_UID) return;
         const msgs=chat.messages||{};
         const visibleKeys=Object.keys(msgs).filter(mid=>{const m=msgs[mid];return m&&!(m.deletedFor&&m.deletedFor[myId]);});
-        if(visibleKeys.length===0&&!chat.lastMessage){return;}
+        if(visibleKeys.length===0&&!chat.lastMessage) return;
         let lastMsg={text:chat.lastMessage||"",time:chat.lastTime||0,isGhost:false};
         if(visibleKeys.length>0){
           const sorted=visibleKeys.sort((a,b)=>(msgs[a].time||0)-(msgs[b].time||0));
           const last=msgs[sorted[sorted.length-1]];
-          lastMsg={text:last.text||(last.mediaType==='video'?'🎥 Video':'📷 Photo'),time:last.time||0,isGhost:false};
-        }else if(!chat.lastMessage){
-          lastMsg={text:tr('tap_admin'),time:chat.lastTime||0,isGhost:true};
-        }
-        if(lastMsg.isGhost) lastMsg.text=tr('tap_admin');
+          lastMsg={text:last.text||(last.mediaType==='video'?'🎥 Video':'📷 Photo'),time:last.time||0};
+        }else{lastMsg={text:tr('tap_admin'),time:chat.lastTime||0,isGhost:true};}
         const userInfo=usersCache[otherUid]||{};
         const name=userInfo.fullName||userInfo.name||otherUid.slice(0,6);
-        const phone=userInfo.phone||"No phone";
-        const country=userInfo.country||"";
+        const phone=userInfo.phone||"No phone";const country=userInfo.country||"";
         let unread=0;
-        if(isAdmin){
-          const seen=chat.seenByAdmin||0;
-          visibleKeys.forEach(mid=>{const m=msgs[mid];if(m.senderId!==ADMIN_UID&&(m.time||0)>seen) unread++;});
-        }else{
-          const seen=chat.seenByMember||0;
-          visibleKeys.forEach(mid=>{const m=msgs[mid];if(m.senderId===ADMIN_UID&&(m.time||0)>seen) unread++;});
-        }
+        if(isAdmin){const seen=chat.seenByAdmin||0;visibleKeys.forEach(k=>{if(msgs[k].senderId!==ADMIN_UID&&(msgs[k].time||0)>seen) unread++;});}
+        else{const seen=chat.seenByMember||0;visibleKeys.forEach(k=>{if(msgs[k].senderId===ADMIN_UID&&(msgs[k].time||0)>seen) unread++;});}
         totalUnread+=unread;
         if(unread>0&&!newForMe){
-          const sortedKeys=visibleKeys.sort((a,b)=>(msgs[a].time||0)-(msgs[b].time||0));
-          for(let i=sortedKeys.length-1;i>=0;i--){
-            const m=msgs[sortedKeys[i]];
-            if(isAdmin&&m.senderId!==ADMIN_UID&&(m.time||0)>(chat.seenByAdmin||0)){newForMe={msg:m,other:otherUid,isFromAdmin:false};break;}
-            if(!isAdmin&&m.senderId===ADMIN_UID&&(m.time||0)>(chat.seenByMember||0)){newForMe={msg:m,other:ADMIN_UID,isFromAdmin:true};break;}
-          }
+          const sk=visibleKeys.sort((a,b)=>(msgs[a].time||0)-(msgs[b].time||0));
+          for(let i=sk.length-1;i>=0;i--){const m=msgs[sk[i]];if(isAdmin&&m.senderId!==ADMIN_UID&&(m.time||0)>(chat.seenByAdmin||0)){newForMe={msg:m,other:otherUid,isFromAdmin:false};break;}if(!isAdmin&&m.senderId===ADMIN_UID&&(m.time||0)>(chat.seenByMember||0)){newForMe={msg:m,other:ADMIN_UID,isFromAdmin:true};break;}}
         }
-        let preview=lastMsg.text;
-        if(lastMsg.isGhost) preview=tr('tap_admin');
-        cards.push({chatId,otherUid:otherUid,name,phone,country,lastText:preview,lastTime:lastMsg.time||chat.lastTime||0,unreadCount:unread,isUnread:unread>0,initials:name.slice(0,2).toUpperCase(),isGhost:!!lastMsg.isGhost});
+        cards.push({chatId,otherUid,name,phone,country,lastText:lastMsg.text,time:lastMsg.time,unread,isGhost:lastMsg.isGhost,initials:name.slice(0,2).toUpperCase()});
       });
-      if(cards.length===0){doFallback();return;}
-      fallbackDone=true;cards.sort((a,b)=>b.lastTime-a.lastTime);
+      if(cards.length===0){if(!hasRendered) doFallback();return;}
+      hasRendered=true;fallbackDone=true;
+      if(chatLoadTimeout) clearTimeout(chatLoadTimeout);
+      cards.sort((a,b)=>b.time-a.time);
       setBadge("notifCount",totalUnread);setBadge("globalChatBadge",totalUnread);updateAppIcon();
       if(window.LodgeNotifier) window.LodgeNotifier.setAppIconBadge(totalUnread);
       if(newForMe){
-        const txt=newForMe.msg.text||(newForMe.msg.mediaType==='video'?'🎥 Video':'📷 Photo');
+        const txt=newForMe.msg.text||'📷 Media';
         const otherName=usersCache[newForMe.other]?.fullName||"Member";
-        if(newForMe.isFromAdmin){
-          if(!isAdmin){window.LodgeNotifier?.showPopup("Director",txt,"admin_message");}
-        }else{
-          if(isAdmin){window.LodgeNotifier?.showPopup(otherName,txt,"member_message");}
-        }
+        if(newForMe.isFromAdmin&&!isAdmin) window.LodgeNotifier?.showPopup("Director",txt,"admin_message");
+        if(!newForMe.isFromAdmin&&isAdmin) window.LodgeNotifier?.showPopup(otherName,txt,"member_message");
       }
-      const realCards=cards.filter(c=>!c.isGhost);
-      if(isAdmin&&realCards.length===0){doFallback();return;}
-      const displayCards=isAdmin?realCards:cards;
+      const real=cards.filter(c=>!c.isGhost);
+      if(isAdmin&&real.length===0){doFallback();return;}
+      const display=isAdmin?real:cards;
       if(isAdmin){
-        let html='';displayCards.forEach(c=>{html+=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${c.otherUid}"><div style="width:46px;height:46px;border-radius:50%;background:#121D33;border:2px solid ${c.isUnread?'#00ff88':'#D4B16A'};display:grid;place-items:center;color:${c.isUnread?'#00ff88':'#D4B16A'};font-weight:800">${c.initials}</div><div style="flex:1;overflow:hidden;text-align:left"><b style="color:${c.isUnread?'#00ff88':'#D4B16A'}">${c.name}</b><br><small style="color:#D4B16A"><i class="fa fa-phone"></i> ${c.phone} • ${c.country}</small><br><small style="color:${c.isUnread?'#fff':'#aaa'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-chevron-right" style="color:#D4B16A"></i>`}</div>`;});
+        let html='';display.forEach(c=>{html+=`<div class="member-item ${c.unread>0?'new-msg':''}" data-chatid="${c.chatId}" data-other="${c.otherUid}"><div style="width:46px;height:46px;border-radius:50%;background:#121D33;border:2px solid ${c.unread>0?'#00ff88':'#D4B16A'};display:grid;place-items:center;color:${c.unread>0?'#00ff88':'#D4B16A'};font-weight:800">${c.initials}</div><div style="flex:1;overflow:hidden;text-align:left"><b style="color:${c.unread>0?'#00ff88':'#D4B16A'}">${c.name}</b><br><small style="color:#D4B16A"><i class="fa fa-phone"></i> ${c.phone} • ${c.country}</small><br><small style="color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unread>0?`<div class="badge">${c.unread}</div>`:`<i class="fa fa-chevron-right" style="color:#D4B16A"></i>`}</div>`;});
         listEl.innerHTML=html;
       }else{
-        const c=displayCards[0];
-        listEl.innerHTML=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${ADMIN_UID}" style="border:2px solid ${c.isUnread?'#00ff88':'var(--gold)'}"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid ${c.isUnread?'#00ff88':'var(--gold)'};display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1;overflow:hidden"><b style="color:${c.isUnread?'#00ff88':'var(--gold)'}">${tr('admin_channel')}</b><br><small style="color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-shield-alt" style="color:var(--gold)"></i>`}</div>`;
+        const c=display[0];
+        listEl.innerHTML=`<div class="member-item ${c.unread>0?'new-msg':''}" data-chatid="${c.chatId}" data-other="${ADMIN_UID}" style="border:2px solid ${c.unread>0?'#00ff88':'var(--gold)'}"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid ${c.unread>0?'#00ff88':'var(--gold)'};display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1;overflow:hidden"><b style="color:${c.unread>0?'#00ff88':'var(--gold)'}">${tr('admin_channel')}</b><br><small style="color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unread>0?`<div class="badge">${c.unread}</div>`:`<i class="fa fa-shield-alt" style="color:var(--gold)"></i>`}</div>`;
       }
       attachItemEvents();
-    }catch(e){doFallback();}
-  },()=>{if(chatLoadTimeout) clearTimeout(chatLoadTimeout);doFallback();});
+    }catch(e){if(!hasRendered) doFallback();}
+  };
+  get(ref(db,'chats')).then(s=>{if(s.exists()) renderChats(s.val());}).catch(()=>{});
+  onValue(ref(db,'chats'),(snap)=>{if(snap.exists()) renderChats(snap.val());else if(!hasRendered) doFallback();},()=>{doFallback();});
 }
+window.loadChats=loadChats;
 window.openChat=async(otherUid,displayName)=>{
   if(currentMessagesRef){ off(currentMessagesRef); currentMessagesRef=null; }
   currentChatId=isAdmin?(ADMIN_UID+"_"+otherUid):(ADMIN_UID+"_"+myId);

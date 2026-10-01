@@ -109,7 +109,6 @@ applyLang();
   try{const lastUid=localStorage.getItem(LAST_UID_KEY);if(lastUid){const cached=getCache(lastUid);if(cached){window.__currencyCacheRendered=renderCachedCurrency(cached);}}}catch(e){}
   window.__MF_CURRENCY_CACHE__={LAST_UID_KEY,CACHE_PREFIX,currencySymbols,getCache,renderCachedCurrency,formatCachedPrice};
 })();
-  <script src="notification-system.js"></script>
 </script><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";

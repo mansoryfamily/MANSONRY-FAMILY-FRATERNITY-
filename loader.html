@@ -4,19 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Mansory Family</title>
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#d4af37">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-
-<script>
-(function(){
-  try{
-    if(window.location.hostname.includes('github.io')){
-      history.replaceState(null,'','/');
-    }
-  }catch(e){}
-})();
-</script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
@@ -40,8 +30,7 @@ body::before{
   animation:spin 25s linear infinite;
   z-index:0;
 }
-
-/* FIXED LOGO SQUARE WITH IMAGE INSIDE */
+/* LOGO INSIDE SQUARE - FIXED */
 .logo-box{
   width:120px;
   height:120px;
@@ -55,18 +44,16 @@ body::before{
   justify-content:center;
   align-items:center;
   overflow:hidden;
-  padding:8px;
 }
 .logo-box img{
   width:100%;
   height:100%;
-  object-fit:contain;
-  border-radius:20px;
+  object-fit:cover;
+  border-radius:27px;
 }
-
 @keyframes pulse{
- 0%,100%{transform:scale(1);box-shadow:0 0 40px rgba(212,175,55,.6);}
- 50%{transform:scale(1.08);box-shadow:0 0 60px rgba(212,175,55,.9), 0 0 100px rgba(212,175,55,.5);}
+ 0%,100%{transform:scale(1);}
+ 50%{transform:scale(1.08);}
 }
 @keyframes spin{
   from{transform:translate(-50%,-50%) rotate(0deg);}
@@ -78,10 +65,8 @@ h1{
   font-size:22px;
   letter-spacing:3px;
   text-shadow:0 0 15px rgba(212,175,55,.7);
-  animation:fade 2s ease-in-out infinite;
   z-index:2;
 }
-@keyframes fade{0%,100%{opacity:.7}50%{opacity:1}}
 .loader{
   width:220px;
   height:4px;
@@ -101,7 +86,7 @@ h1{
   box-shadow:0 0 15px #d4af37;
 }
 @keyframes load{to{width:100%}}
-#statusText{color:#666;font-size:11px;margin-top:12px;letter-spacing:1px;z-index:2}
+#statusText{color:#888;font-size:11px;margin-top:12px;letter-spacing:1px;z-index:2}
 </style>
 
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
@@ -114,43 +99,42 @@ h1{
 </head>
 <body>
 
-<!-- FIXED: IMAGE INSIDE SQUARE -->
 <div class="logo-box">
-  <img src="icon-512.png" alt="logo">
+  <img src="./icon-512.png" alt="logo" onerror="this.src='./images (1).jpeg'">
 </div>
 
 <h1>MANSORY FAMILY</h1>
-<div class="loader"><span id="progressBar"></span></div>
+<div class="loader"><span></span></div>
 <p id="statusText">Initializing...</p>
 
-<audio id="chime" src="https://cdn.pixabay.com/audio/2022/03/10/audio_4c1d5a8c3d.mp3" preload="auto"></audio>
-
 <script>
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
+
 const statusText = document.getElementById('statusText');
 const msgs = ["Initializing...","Checking brotherhood...","Verifying session...","Loading heritage...","Welcome..."];
-let msgIndex = 0;
-let msgInterval = setInterval(()=>{
-  if(msgIndex < msgs.length){
-    statusText.textContent = msgs[msgIndex++];
-  }
+let i = 0;
+let intv = setInterval(()=>{
+  if(i < msgs.length){ statusText.textContent = msgs[i++]; }
 }, 900);
-window.addEventListener('load', () => {
-  const chime = document.getElementById('chime');
-  if(chime){ chime.volume = 0.35; chime.play().catch(()=>{}); }
-});
+
 function goNext(){
-  clearInterval(msgInterval);
+  clearInterval(intv);
   statusText.textContent = "Opening...";
   try{
-    const logged = localStorage.getItem("mff_logged_in")==="true" && localStorage.getItem("mff_user");
+    // Check forever login
+    const logged = localStorage.getItem("mff_logged_in")==="true";
+    const user = localStorage.getItem("mff_user") || localStorage.getItem("mf_profile_cache_");
+    
+    // IMPORTANT: Use relative path, NOT /  (fixes your 404)
     if(logged){
-      window.location.replace("dashboard.html");
+      window.location.replace("./dashboard.html");
     } else {
-      window.location.replace("index.html");
+      // If you have landing page called landing.html or home.html change here
+      // If your landing is also index, then go to login.html
+      window.location.replace("./login.html");
     }
   }catch(e){
-    window.location.replace("index.html");
+    window.location.replace("./login.html");
   }
 }
 setTimeout(goNext, 5000);

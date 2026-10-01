@@ -8,11 +8,9 @@
 <meta name="theme-color" content="#d4af37">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 
-<!-- FOREVER LOGIN CHECK EARLY -->
 <script>
 (function(){
   try{
-    // Hide github.io url
     if(window.location.hostname.includes('github.io')){
       history.replaceState(null,'','/');
     }
@@ -42,15 +40,30 @@ body::before{
   animation:spin 25s linear infinite;
   z-index:0;
 }
-.logo{
+
+/* FIXED LOGO SQUARE WITH IMAGE INSIDE */
+.logo-box{
   width:120px;
   height:120px;
   border-radius:30px;
   border:3px solid #d4af37;
+  background:#050c18;
   box-shadow:0 0 40px rgba(212,175,55,.6), 0 0 80px rgba(212,175,55,.3);
   animation:pulse 1.5s ease-in-out infinite;
   z-index:2;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  padding:8px;
 }
+.logo-box img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border-radius:20px;
+}
+
 @keyframes pulse{
  0%,100%{transform:scale(1);box-shadow:0 0 40px rgba(212,175,55,.6);}
  50%{transform:scale(1.08);box-shadow:0 0 60px rgba(212,175,55,.9), 0 0 100px rgba(212,175,55,.5);}
@@ -101,7 +114,11 @@ h1{
 </head>
 <body>
 
-<img src="icon-512.png" class="logo" alt="logo">
+<!-- FIXED: IMAGE INSIDE SQUARE -->
+<div class="logo-box">
+  <img src="icon-512.png" alt="logo">
+</div>
+
 <h1>MANSORY FAMILY</h1>
 <div class="loader"><span id="progressBar"></span></div>
 <p id="statusText">Initializing...</p>
@@ -109,13 +126,8 @@ h1{
 <audio id="chime" src="https://cdn.pixabay.com/audio/2022/03/10/audio_4c1d5a8c3d.mp3" preload="auto"></audio>
 
 <script>
-// REGISTER SW for Android app
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
-
-const isApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 const statusText = document.getElementById('statusText');
-
-// Status messages
 const msgs = ["Initializing...","Checking brotherhood...","Verifying session...","Loading heritage...","Welcome..."];
 let msgIndex = 0;
 let msgInterval = setInterval(()=>{
@@ -123,34 +135,24 @@ let msgInterval = setInterval(()=>{
     statusText.textContent = msgs[msgIndex++];
   }
 }, 900);
-
-// Play chime
 window.addEventListener('load', () => {
   const chime = document.getElementById('chime');
   if(chime){ chime.volume = 0.35; chime.play().catch(()=>{}); }
 });
-
-// FOREVER-LOGIN REDIRECT LOGIC - THE MAIN FIX
 function goNext(){
   clearInterval(msgInterval);
   statusText.textContent = "Opening...";
-  
   try{
-    // If user already logged in forever -> DIRECT DASHBOARD (WhatsApp style)
     const logged = localStorage.getItem("mff_logged_in")==="true" && localStorage.getItem("mff_user");
-    
     if(logged){
       window.location.replace("dashboard.html");
     } else {
-      // Not logged -> go to landing page
       window.location.replace("index.html");
     }
   }catch(e){
     window.location.replace("index.html");
   }
 }
-
-// 5 SECONDS LOADER THEN REDIRECT
 setTimeout(goNext, 5000);
 </script>
 

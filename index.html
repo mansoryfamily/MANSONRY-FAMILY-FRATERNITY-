@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>Mansonry Family Fraternity | History & Heritage</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#d4af37">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Freemasonry Heritage">
+  <link rel="apple-touch-icon" href="icon-512.png">
+  <link rel="icon" href="icon-512.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FOREVER LOGIN - DIRECT DASHBOARD LIKE WHATSAPP -->
+  <script>
+  (function(){
+    try{
+      if(localStorage.getItem("mff_logged_in")==="true"){
+        window.location.replace("dashboard.html");
+      }
+    }catch(e){}
+  })();
+  </script>
+
+  <style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+  html,body{height:100%} body{background:#07111f;color:white;overflow-x:hidden;padding-bottom:90px;padding-top:env(safe-area-inset-top)}
+  body::before{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:300px;color:rgba(212,175,55,.04);z-index:-1}
+  img{max-width:100%;display:block;border-radius:18px}
+  header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;padding-top:calc(20px + env(safe-area-inset-top));background:rgba(0,0,0,.75);backdrop-filter:blur(10px);display:flex;justify-content:space-between;z-index:1000}
+  .logo{font-size:30px;font-weight:700;color:#d4af37}
+  .hero{height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.65)),url("images.jpeg");background-size:cover}
+  .hero h1{font-size:60px;margin-bottom:20px} .hero p{max-width:850px;margin:auto;line-height:1.8;color:#ddd}
+  .btn{display:inline-block;margin:10px;padding:14px 35px;background:#d4af37;color:#111;border-radius:40px;text-decoration:none;font-weight:700;border:none;cursor:pointer}
+  .join-btn{background:transparent;border:2px solid #d4af37;color:#d4af37}
+  section{padding:100px 10%} .title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:50px}
+  .history{display:grid;grid-template-columns:1fr 1fr;gap:40px} @media(max-width:900px){.history{grid-template-columns:1fr}.hero h1{font-size:38px}}
+  footer{background:#020509;padding:40px;text-align:center;color:#999}
+  .bottom-nav{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);display:flex;background:rgba(20,34,56,0.95);padding:12px 18px;border-radius:25px;z-index:9999;border:1px solid rgba(212,175,55,.35)}
+  .bottom-nav a{display:flex;background:#d4af37;color:#111;padding:14px 35px;border-radius:40px;text-decoration:none;font-weight:700}
+  .install-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);padding:30px 25px;border-radius:20px;border:2px solid #d4af37;z-index:100000;display:none;flex-direction:column;align-items:center;gap:20px;width:90%;max-width:380px;text-align:center;opacity:0;transition:all .4s}
+  .install-popup.show{display:flex;opacity:1;transform:translate(-50%,-50%) scale(1)}
+  .install-popup img{width:70px;height:70px;border-radius:18px;border:2px solid #d4af37}
+  .install-popup .btns{display:flex;gap:12px;width:100%} .install-popup .btn-install{flex:1;background:#d4af37;color:#111;border:none;padding:12px;border-radius:25px;font-weight:bold}
+  .install-popup .btn-close{flex:1;background:transparent;color:#ccc;border:1px solid #39485f;padding:12px;border-radius:25px}
+  #appLoader{position:fixed;inset:0;background:#07111f;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s}
+  #appLoader.hide{opacity:0;pointer-events:none} .loader-ring{width:60px;height:60px;border:3px solid rgba(212,175,55,.2);border-top:3px solid #d4af37;border-radius:50%;animation:spin 1s linear infinite} @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({ appId: "fd3193e3-77bb-4374-988d-4162b6fb5ab" });
+    });
+  </script>
+</head>
+<body>
+
+<div id="appLoader">
+  <div class="loader-ring"></div>
+  <p style="margin-top:20px;color:#d4af37;letter-spacing:2px;font-weight:600">MANSORY FAMILY</p>
+  <p style="margin-top:8px;color:#888;font-size:12px" id="loaderPct">0%</p>
+</div>
+
+<div class="install-popup" id="installPopup">
+  <img src="icon-512.png" alt="logo">
+  <div><h4 style="color:#d4af37">Install Mansory Family App</h4><p style="color:#ccc;font-size:14px">Add to home screen</p></div>
+  <div class="btns"><button class="btn-install" id="btnInstall">Install</button><button class="btn-close" id="btnClose">Later</button></div>
+</div>
+
+<header><div class="logo">Freemasonry Heritage</div></header>
+
+<section class="hero" id="home">
+  <div>
+    <h1>A Journey Through Freemasonry Heritage</h1>
+    <p>Discover the legacy of honor, brotherhood, and purpose.</p>
+    <a href="#origin" class="btn">Explore Our Heritage</a>
+    <a href="register.html" class="btn join-btn">Begin Your Journey</a>
+  </div>
+</section>
+
+<section id="origin">
+  <h2 class="title">The Foundation of Our Brotherhood</h2>
+  <div class="history">
+    <img src="images.jpeg" alt="Freemasonry">
+    <div><p style="line-height:2;color:#ddd;">Our tradition is rooted in centuries of wisdom. In 1717, four London lodges united to form the first Grand Lodge.</p></div>
+  </div>
+</section>
+
+<div class="bottom-nav"><a href="register.html">🤝 Join Brotherhood</a></div>
+<footer><p>© 2026 Mansonry Family Fraternity. All Rights Reserved.</p></footer>
+
+<script>
+let pct=0; const pctEl=document.getElementById('loaderPct'); const loaderEl=document.getElementById('appLoader');
+let t=setInterval(()=>{ pct+=Math.random()*20; if(pct>=100){pct=100; clearInterval(t); setTimeout(()=>loaderEl.classList.add('hide'),500);} if(pctEl) pctEl.textContent=Math.floor(pct)+'%'; },100);
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); deferredPrompt=e; const pop=document.getElementById('installPopup'); if(pop) setTimeout(()=>pop.classList.add('show'),2500); });
+document.getElementById('btnInstall')?.addEventListener('click', async()=>{ if(deferredPrompt){ deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; } document.getElementById('installPopup').classList.remove('show'); });
+document.getElementById('btnClose')?.addEventListener('click',()=>{ document.getElementById('installPopup').classList.remove('show'); });
+</script>
+</body>
+</html>

@@ -80,7 +80,6 @@ import { getDatabase, ref, onValue, push, set, remove, update, get } from "https
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -103,28 +102,80 @@ function attachItemEvents(){document.querySelectorAll('.member-item').forEach(el
 function setBadge(id,count){const el=document.getElementById(id);if(!el)return;if(count>0){el.textContent=count>99?"99+":count;el.style.display="grid";}else{el.style.display="none";}}
 function updateAppIcon(){const c1=parseInt(document.getElementById("notifCount")?.textContent||"0");const c2=parseInt(document.getElementById("notifBadge")?.textContent||"0");let total=0;if(!isNaN(c1))total+=c1;if(!isNaN(c2))total+=c2;if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(total);}
 
+// Immediate safety fallback if auth hangs
+setTimeout(()=>{
+  if(!myId){
+    renderFallbackChannel();
+  }
+}, 3000);
+
+function renderFallbackChannel(){
+  const listEl=document.getElementById('membersList');
+  if(!listEl) return;
+  if(!isAdmin){
+    listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+(myId||'guest')}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold)"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-chevron-right" style="color:var(--gold)"></i></div>`;
+    attachItemEvents();
+  }else{
+    listEl.innerHTML=`<div style="padding:40px;text-align:center;color:#aaa">${tr('no_members')}<br><small>All chats deleted</small></div>`;
+    setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();
+  }
+}
+
 onAuthStateChanged(auth,async(u)=>{
-  if(!u){document.getElementById('membersList').innerHTML=`<div style="padding:30px;text-align:center">Not logged in</div>`;return;}
+  if(!u){
+    document.getElementById('sub').innerText="GUEST";
+    renderFallbackChannel();
+    return;
+  }
   myId=u.uid;myEmail=(u.email||"").toLowerCase();isAdmin=(myEmail===ADMIN_EMAIL);
   document.getElementById('sub').innerText=isAdmin?"ADMIN":"LODGE";
   document.addEventListener('click',()=>{if(window.speechSynthesis){window.speechSynthesis.getVoices();}}, {once:true});
-  try{const s=await get(ref(db,'users'));if(s.exists()){Object.values(s.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}const s2=await get(ref(db,'members'));if(s2.exists()){Object.values(s2.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}}catch(e){}
-  myInfo=usersCache[myId]||{fullName:u.displayName||'Member'};loadChats();loadNotifications();
+  
+  try{
+    const s=await get(ref(db,'users'));if(s.exists()){Object.values(s.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}
+    const s2=await get(ref(db,'members'));if(s2.exists()){Object.values(s2.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}
+  }catch(e){console.log('User cache load issue:', e);}
+  
+  myInfo=usersCache[myId]||{fullName:u.displayName||'Member'};
+  loadChats();
+  loadNotifications();
 });
-function loadNotifications(){const r=ref(db,`notifications/${myId}`);onValue(r,(snap)=>{if(!snap.exists()){setBadge("notifBadge",0);updateAppIcon();return;}let unread=0;snap.forEach(c=>{const n=c.val();if(n&&!n.read&&n.type==='announcement')unread++;});setBadge("notifBadge",unread);updateAppIcon();});}
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').then(()=>console.log("SW registered - respecting your sw.js"));}
-if('Notification' in window&&Notification.permission==="default"){Notification.requestPermission();}function loadChats(){
+
+function loadNotifications(){
+  if(!myId) return;
+  const r=ref(db,`notifications/${myId}`);
+  onValue(r,(snap)=>{
+    if(!snap.exists()){setBadge("notifBadge",0);updateAppIcon();return;}
+    let unread=0;
+    snap.forEach(c=>{
+      const n=c.val();
+      if(n&&!n.read&&n.type==='announcement')unread++;
+    });
+    setBadge("notifBadge",unread);
+    updateAppIcon();
+  },(err)=>{
+    setBadge("notifBadge",0);
+  });
+}
+
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').then(()=>console.log("SW registered"));}
+if('Notification' in window&&Notification.permission==="default"){Notification.requestPermission();}
+
+function loadChats(){
   const listEl=document.getElementById('membersList');
   let fallbackDone=false;
+  
   const doFallback=()=>{
-    if(fallbackDone)return;fallbackDone=true;
-    if(!isAdmin){
-      listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold)"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-chevron-right" style="color:var(--gold)"></i></div>`;
-      attachItemEvents();
-    }else{   listEl.innerHTML=`<div style="padding:40px;text-align:center;color:#aaa">${tr('no_members')}<br><small>All chats deleted</small></div>`;
-      setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(0);
-    }
+    if(fallbackDone)return;
+    fallbackDone=true;
+    renderFallbackChannel();
   };
+  
+  if(!myId){
+    doFallback();
+    return;
+  }
+
   const chatsRef=ref(db,'chats');
   onValue(chatsRef,(snapshot)=>{
     try{
@@ -200,10 +251,13 @@ if('Notification' in window&&Notification.permission==="default"){Notification.r
       }
       attachItemEvents();
     }catch(e){doFallback();}
-  },()=>{doFallback();});
+  },(err)=>{
+    doFallback();
+  });
 }
+
 window.openChat=async(otherUid,displayName)=>{
-  currentChatId=isAdmin?(ADMIN_UID+"_"+otherUid):(ADMIN_UID+"_"+myId);
+  currentChatId=isAdmin?(ADMIN_UID+"_"+otherUid):(ADMIN_UID+"_"+(myId||'guest'));
   document.getElementById('chatName').innerText=displayName;
   document.getElementById('chatPage').style.display='flex';
   const box=document.getElementById('messages');
@@ -239,7 +293,9 @@ window.openChat=async(otherUid,displayName)=>{
     });
     box.scrollTop=box.scrollHeight;
   },()=>{box.innerHTML=`<div style="padding:40px;text-align:center;color:#ff5a5a">Error loading<br><small>Check Firebase Rules</small></div>`;});
-  }function showMsgMenu(e,mid,text,isMine,mediaUrl){selId=mid;selText=text;selIsMine=isMine;selMediaUrl=mediaUrl;const m=document.getElementById('msgMenu');m.style.left=(e.touches?e.touches[0].clientX:e.clientX)-100+'px';m.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';m.style.display='flex';document.getElementById('editBtn').style.display=isMine?'flex':'none';document.getElementById('downBtn').style.display=mediaUrl?'flex':'none';}
+}
+
+function showMsgMenu(e,mid,text,isMine,mediaUrl){selId=mid;selText=text;selIsMine=isMine;selMediaUrl=mediaUrl;const m=document.getElementById('msgMenu');m.style.left=(e.touches?e.touches[0].clientX:e.clientX)-100+'px';m.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';m.style.display='flex';document.getElementById('editBtn').style.display=isMine?'flex':'none';document.getElementById('downBtn').style.display=mediaUrl?'flex':'none';}
 window.copyMsg=()=>{navigator.clipboard.writeText(selText);hideMenus();showToast('Copied');}
 window.editMsg=async()=>{const nt=prompt('Edit:',selText);if(nt){await update(ref(db,`chats/${currentChatId}/messages/${selId}`),{text:nt});showToast('Edited successfully');}hideMenus();}
 window.replyMsg=()=>{setReply(selText,selIsMine?'You':document.getElementById('chatName').innerText);hideMenus();}
@@ -253,6 +309,7 @@ window.cancelChatDelete=()=>{hideMenus();showToast('Cancelled');}
 document.addEventListener('click',e=>{if(!e.target.closest('.menu'))hideMenus();});
 window.downloadUrl=(url,name)=>{const a=document.createElement('a');a.href=url;a.download=name;a.target='_blank';document.body.appendChild(a);a.click();a.remove();showToast('Downloaded');}
 window.downloadMedia=()=>{if(selMediaUrl)window.downloadUrl(selMediaUrl,selMediaUrl.includes('.mp4')?'video.mp4':'photo.jpg');hideMenus();}
+
 document.getElementById('mediaInput').addEventListener('change',async(e)=>{
   if(isSending) return;
   const file=e.target.files[0];if(!file||!currentChatId)return;
@@ -272,6 +329,7 @@ document.getElementById('mediaInput').addEventListener('change',async(e)=>{
   finally{isSending=false;}
   e.target.value='';
 });
+
 window.sendMsg=async()=>{
   if(isSending) return;
   const i=document.getElementById('msgInput');const txt=i.value.trim();if(!txt||!currentChatId)return;
@@ -285,6 +343,7 @@ window.sendMsg=async()=>{
   }catch(e){showToast('Failed to send');}
   finally{isSending=false;}
 }
+
 window.closeChat=()=>{document.getElementById('chatPage').style.display='none';currentChatId=null;}
 </script>
 </body></html>

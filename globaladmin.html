@@ -37,23 +37,21 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 </style>
 </head><body>
 <div class="top">
-<div style="display:flex;align-items:center;gap:10px"><i class="fa fa-arrow-left" style="color:var(--gold)" onclick="location.href='help.html'"></i><div style="width:40px;height:40px;border-radius:12px;padding:2px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:grid;place-items:center"><div style="width:100%;height:100%;background:#0b1728;border-radius:10px;display:grid;place-items:center"><img src="masonic-icon.png" style="width:26px;height:26px"></div></div><div style="color:var(--gold);font-weight:800;font-size:12px"><span data-i18n="global_admin">GLOBAL ADMIN</span><br><small id="sub" style="color:#00ff88;font-size:9px">LODGE</small></div></div>
+<div style="display:flex;align-items:center;gap:10px"><i class="fa fa-arrow-left" style="color:var(--gold)" onclick="location.href='help.html'"></i><div style="width:40px;height:40px;border-radius:12px;padding:2px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:grid;place-items:center"><div style="width:100%;height:100%;background:#0b1728;border-radius:10px;display:grid;place-items:center"><img src="masonic-icon.png" style="width:26px;height:26px"></div></div><div style="color:var(--gold);font-weight:800;font-size:12px"><span data-i18n="global_admin">GLOBAL ADMIN</span><br><small id="sub" style="color:#00ff88;font-size:9px">Connecting...</small></div></div>
 <div style="display:flex;gap:14px;align-items:center;">
 <a href="notifications.html" style="position:relative;color:var(--gold);font-size:20px;text-decoration:none;"><i class="fa fa-bell"></i><span id="notifBadge" style="position:absolute;top:-8px;right:-8px;background:#dc2743;color:white;font-size:10px;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;padding:0 4px;font-weight:700;">0</span></a>
-<div id="notifIcon" style="position:relative;"><i class="fa fa-comments" style="color:var(--green);font-size:20px"></i><span id="notifCount" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;">0</span><span id="globalChatBadge" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;padding:0 4px;">0</span></div>
+<div id="notifIcon" style="position:relative;"><i class="fa fa-comments" style="color:var(--green);font-size:20px"></i><span id="notifCount" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:grid;place-items:center;">0</span><span id="globalChatBadge" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;padding:0 4px;">0</span></div>
 </div>
 </div>
-<div id="membersList"></div>
-<div id="chatPage">
+<div id="membersList" style="padding:10px;color:#888;text-align:center"><div data-i18n="loading_chats">Loading chats...</div></div><div id="chatPage">
 <div style="background:var(--card);padding:10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)"><i class="fa fa-arrow-left" style="color:var(--gold);font-size:18px;cursor:pointer" onclick="closeChat()"></i><img src="masonic-icon.png" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--gold)"><div style="flex:1"><h4 id="chatName" style="color:var(--gold);font-size:13px"></h4><small style="color:#aaa" data-i18n="swipe_hint">Swipe right to reply</small></div></div>
 <div id="messages"></div>
 <div class="reply-bar" id="replyBar"><div><small id="replyToName" style="color:var(--gold);font-weight:800"></small><div id="replyToText" style="color:#aaa;font-size:11px"></div></div><i class="fa fa-times" style="color:#fff;cursor:pointer" onclick="cancelReply()"></i></div>
-<div class="input-area"><input type="file" id="mediaInput" accept="image/*,video/*" style="display:none"><button class="icon-btn" style="background:var(--card);border:1px solid var(--border);color:var(--gold);min-width:42px" onclick="document.getElementById('mediaInput').click()"><i class="fa fa-paperclip"></i></button><input id="msgInput" data-i18n-placeholder="type_message" placeholder="Type message..."><button class="icon-btn" id="sendBtn" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button></div>
+<div class="input-area"><input type="file" id="mediaInput" accept="image/*,video/*" style="display:none"><button class="icon-btn" style="background:var(--card);border:1px solid var(--border);color:var(--gold);min-width:42px" onclick="document.getElementById('mediaInput').click()"><i class="fa fa-paperclip"></i></button><input id="msgInput" data-i18n-placeholder="type_message" placeholder="Type message..."><button class="icon-btn" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button></div>
 </div>
 <div id="msgMenu" class="menu"><button onclick="replyMsg()"><i class="fa fa-reply"></i> <span data-i18n="reply">Reply</span></button><button onclick="copyMsg()"><i class="fa fa-copy"></i> <span data-i18n="copy">Copy</span></button><button id="editBtn" onclick="editMsg()"><i class="fa fa-pen"></i> <span data-i18n="edit">Edit</span></button><button onclick="downloadMedia()" id="downBtn" style="display:none"><i class="fa fa-download"></i> Download</button><button onclick="deleteForMe()" class="danger"><i class="fa fa-eye-slash"></i> <span data-i18n="delete_me">Delete for me</span></button><button onclick="deleteForEveryone()" class="danger"><i class="fa fa-trash"></i> <span data-i18n="delete_all">Delete for everyone</span></button></div>
 <div id="chatMenu" class="menu"><button onclick="deleteChatForMe()" class="danger"><i class="fa fa-trash"></i> <span data-i18n="delete">Delete</span></button><button onclick="cancelChatDelete()"><i class="fa fa-times"></i> <span data-i18n="cancel">Cancel</span></button></div>
-<div id="toast"><i class="fa fa-check-circle" style="color:#00ff88"></i><span id="toastText">Deleted successfully</span></div><script>
-const TRANSLATIONS={
+<div id="toast"><i class="fa fa-check-circle" style="color:#00ff88"></i><span id="toastText">Deleted successfully</span></div><script>const TRANSLATIONS={
 en:{global_admin:"GLOBAL ADMIN",loading_chats:"Loading chats...",swipe_hint:"Swipe right to reply",type_message:"Type message...",reply:"Reply",copy:"Copy",edit:"Edit",delete_me:"Delete for me",delete_all:"Delete for everyone",delete:"Delete",cancel:"Cancel",admin_channel:"ADMINISTRATION CHANNEL",tap_admin:"Tap to message Administration",no_members:"No members yet",no_messages:"No messages yet"},
 sw:{global_admin:"ADMIN Mkuu",loading_chats:"Inapakia chats...",swipe_hint:"Telezesha kulia kujibu",type_message:"Andika ujumbe...",reply:"Jibu",copy:"Nakili",edit:"Hariri",delete_me:"Futa kwangu",delete_all:"Futa kwa wote",delete:"Futa",cancel:"Ghairi",admin_channel:"NJIA YA UTAWALA",tap_admin:"Gusa kuandikia Utawala",no_members:"Hakuna wanachama bado",no_messages:"Hakuna ujumbe bado"},
 lg:{global_admin:"ADMIN Omukulu",loading_chats:"Eteekateeka chats...",swipe_hint:"Sembera ku ddyo okuddamu",type_message:"Wandiika obubaka...",reply:"Ddamu",copy:"Koppa",edit:"Kyusa",delete_me:"Sangula gye ndi",delete_all:"Sangula eri bonna",delete:"Sangula",cancel:"Sazaamu",admin_channel:"OMUKUTU GWA ADMINISTRATION",tap_admin:"Koonya okuwandiikira Administration",no_members:"Tewali bammemba",no_messages:"Tewali bubaka"},
@@ -74,22 +72,15 @@ function getLang(){return localStorage.getItem('siteLang')||'en';}
 function tr(k){const l=getLang();return (TRANSLATIONS[l]&&TRANSLATIONS[l][k])||TRANSLATIONS.en[k]||k;}
 function applyLang(){document.querySelectorAll('[data-i18n]').forEach(el=>el.innerText=tr(el.dataset.i18n));document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>el.placeholder=tr(el.dataset.i18nPlaceholder));}
 document.addEventListener('DOMContentLoaded',applyLang); setInterval(applyLang,500);
-// INSTANT FIX - NO MORE Loading chats...
-(function(){
-  const ADMIN_UID_FIX="DMeM2UuLgDOusNvmzRGZygBdxOG2";
-  const list=document.getElementById('membersList');
-  const lang=localStorage.getItem('siteLang')||'en';
-  const t1=(TRANSLATIONS[lang]&&TRANSLATIONS[lang].admin_channel)||"ADMINISTRATION CHANNEL";
-  const t2=(TRANSLATIONS[lang]&&TRANSLATIONS[lang].tap_admin)||"Tap to message Administration";
-  list.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID_FIX}_temp" data-other="${ADMIN_UID_FIX}" style="border:2px solid var(--gold)"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1"><b style="color:var(--gold)">${t1}</b><br><small style="color:#aaa">${t2}</small></div><i class="fa fa-chevron-right" style="color:var(--gold)"></i></div>`;
-})();
-</script>
+  </script><!-- YOUR EXACT FILES - RESPECTED -->
 <script src="notification-system.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, push, set, remove, update, get, off } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, push, set, remove, update, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
+
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -100,50 +91,43 @@ const firebaseConfig = {
   appId: "1:964415179161:web:cef44a38e4de304d7c6b08",
   measurementId: "G-9Q2KEWMXVR"
 };
+
 const app=initializeApp(firebaseConfig);const db=getDatabase(app);const auth=getAuth(app);const storage=getStorage(app);
-const ADMIN_EMAIL="mansoryfamilyn@gmail.com";const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
+const ADMIN_EMAIL="mansoryfamilyn@gmail.com";
+const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
 let myId=null,myEmail="",isAdmin=false,currentChatId=null,myInfo={fullName:'Member'},usersCache={},selId=null,selText=null,selIsMine=false,replyData=null,selChatId=null,selMediaUrl=null;
-let currentMessagesRef=null;let isSending=false;let lastSent={text:"",time:0};
+
 function showToast(msg){document.getElementById('toastText').innerText=msg;const el=document.getElementById('toast');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
 function attachItemEvents(){document.querySelectorAll('.member-item').forEach(el=>{let timer;const showM=(e)=>{e.preventDefault();selChatId=el.dataset.chatid;const menu=document.getElementById('chatMenu');menu.style.left=((e.touches?e.touches[0].clientX:e.clientX)-120)+'px';menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';menu.style.display='flex';};el.addEventListener('contextmenu',showM);el.addEventListener('touchstart',e=>{timer=setTimeout(()=>showM(e),700);});el.addEventListener('touchend',()=>clearTimeout(timer));el.addEventListener('click',()=>openChat(el.dataset.other,el.querySelector('b').innerText));});}
 function setBadge(id,count){const el=document.getElementById(id);if(!el)return;if(count>0){el.textContent=count>99?"99+":count;el.style.display="grid";}else{el.style.display="none";}}
 function updateAppIcon(){const c1=parseInt(document.getElementById("notifCount")?.textContent||"0");const c2=parseInt(document.getElementById("notifBadge")?.textContent||"0");let total=0;if(!isNaN(c1))total+=c1;if(!isNaN(c2))total+=c2;if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(total);}
+
 onAuthStateChanged(auth,async(u)=>{
-  if(!u){return;}
+  if(!u){document.getElementById('membersList').innerHTML=`<div style="padding:30px;text-align:center">Not logged in</div>`;return;}
   myId=u.uid;myEmail=(u.email||"").toLowerCase();isAdmin=(myEmail===ADMIN_EMAIL);
   document.getElementById('sub').innerText=isAdmin?"ADMIN":"LODGE";
   document.addEventListener('click',()=>{if(window.speechSynthesis){window.speechSynthesis.getVoices();}}, {once:true});
   try{const s=await get(ref(db,'users'));if(s.exists()){Object.values(s.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}const s2=await get(ref(db,'members'));if(s2.exists()){Object.values(s2.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}}catch(e){}
   myInfo=usersCache[myId]||{fullName:u.displayName||'Member'};loadChats();loadNotifications();
 });
-function loadNotifications(){
-  const r=ref(db,`notifications/${myId}`);
-  onValue(r,(snap)=>{
-    if(!snap.exists()){setBadge("notifBadge",0);updateAppIcon();return;}
-    let unread=0;
-    Object.values(snap.val()).forEach(n=>{
-      if(!n) return;
-      if(n.deletedFor&&n.deletedFor[myId]) return;
-      if(n.chatId) return;
-      if(n.type==="chat"||n.type==="message") return;
-      if(!n.read) unread++;
-    });
-    setBadge("notifBadge",unread);updateAppIcon();
-  },()=>{setBadge("notifBadge",0);updateAppIcon();});
-}
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').then(()=>console.log("SW registered"));}
+function loadNotifications(){const r=ref(db,`notifications/${myId}`);onValue(r,(snap)=>{if(!snap.exists()){setBadge("notifBadge",0);updateAppIcon();return;}let unread=0;snap.forEach(c=>{const n=c.val();if(!n.read)unread++;});setBadge("notifBadge",unread);updateAppIcon();});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').then(()=>console.log("SW registered - respecting your sw.js"));}
 if('Notification' in window&&Notification.permission==="default"){Notification.requestPermission();}function loadChats(){
   const listEl=document.getElementById('membersList');
+  let fallbackDone=false;
+  const doFallback=()=>{
+    if(fallbackDone)return;fallbackDone=true;
+    if(!isAdmin){
+      listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold)"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-chevron-right" style="color:var(--gold)"></i></div>`;
+      attachItemEvents();
+    }else{    listEl.innerHTML=`<div style="padding:40px;text-align:center;color:#aaa">${tr('no_members')}<br><small>All chats deleted</small></div>`;
+      setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(0);
+    }
+  };
   const chatsRef=ref(db,'chats');
   onValue(chatsRef,(snapshot)=>{
     try{
-      if(!snapshot.exists()){
-        if(isAdmin){
-          listEl.innerHTML=`<div style="padding:40px;text-align:center;color:#aaa"><i class="fa fa-inbox" style="font-size:28px;color:var(--gold)"></i><br><br>${tr('no_members')}<br><small>Waiting for members</small></div>`;
-          setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();
-        }
-        return;
-      }
+      if(!snapshot.exists()){doFallback();return;}
       let cards=[];let totalUnread=0;let newForMe=null;
       snapshot.forEach(chatSnap=>{
         const chatId=chatSnap.key;const chat=chatSnap.val();
@@ -155,53 +139,69 @@ if('Notification' in window&&Notification.permission==="default"){Notification.r
         if(isAdmin&&otherUid===ADMIN_UID) return;
         const msgs=chat.messages||{};
         const visibleKeys=Object.keys(msgs).filter(mid=>{const m=msgs[mid];return m&&!(m.deletedFor&&m.deletedFor[myId]);});
-        if(visibleKeys.length===0&&!chat.lastMessage) return;
+        if(visibleKeys.length===0&&!chat.lastMessage){return;}
         let lastMsg={text:chat.lastMessage||"",time:chat.lastTime||0,isGhost:false};
         if(visibleKeys.length>0){
           const sorted=visibleKeys.sort((a,b)=>(msgs[a].time||0)-(msgs[b].time||0));
           const last=msgs[sorted[sorted.length-1]];
           lastMsg={text:last.text||(last.mediaType==='video'?'🎥 Video':'📷 Photo'),time:last.time||0,isGhost:false};
-        }else{lastMsg={text:tr('tap_admin'),time:chat.lastTime||0,isGhost:true};}
+        }else if(!chat.lastMessage){
+          lastMsg={text:tr('tap_admin'),time:chat.lastTime||0,isGhost:true};
+        }
+        if(lastMsg.isGhost) lastMsg.text=tr('tap_admin');
         const userInfo=usersCache[otherUid]||{};
         const name=userInfo.fullName||userInfo.name||otherUid.slice(0,6);
-        const phone=userInfo.phone||"No phone";const country=userInfo.country||"";
+        const phone=userInfo.phone||"No phone";
+        const country=userInfo.country||"";
         let unread=0;
-        if(isAdmin){const seen=chat.seenByAdmin||0;visibleKeys.forEach(mid=>{if(msgs[mid].senderId!==ADMIN_UID&&(msgs[mid].time||0)>seen) unread++;});}
-        else{const seen=chat.seenByMember||0;visibleKeys.forEach(mid=>{if(msgs[mid].senderId===ADMIN_UID&&(msgs[mid].time||0)>seen) unread++;});}
+        if(isAdmin){
+          const seen=chat.seenByAdmin||0;
+          visibleKeys.forEach(mid=>{const m=msgs[mid];if(m.senderId!==ADMIN_UID&&(m.time||0)>seen) unread++;});
+        }else{
+          const seen=chat.seenByMember||0;
+          visibleKeys.forEach(mid=>{const m=msgs[mid];if(m.senderId===ADMIN_UID&&(m.time||0)>seen) unread++;});
+        }
         totalUnread+=unread;
         if(unread>0&&!newForMe){
-          const sk=visibleKeys.sort((a,b)=>(msgs[a].time||0)-(msgs[b].time||0));
-          for(let i=sk.length-1;i>=0;i--){const m=msgs[sk[i]];if(isAdmin&&m.senderId!==ADMIN_UID&&(m.time||0)>(chat.seenByAdmin||0)){newForMe={msg:m,other:otherUid,isFromAdmin:false};break;}if(!isAdmin&&m.senderId===ADMIN_UID&&(m.time||0)>(chat.seenByMember||0)){newForMe={msg:m,other:ADMIN_UID,isFromAdmin:true};break;}}
+          const sortedKeys=visibleKeys.sort((a,b)=>(msgs[a].time||0)-(msgs[b].time||0));
+          for(let i=sortedKeys.length-1;i>=0;i--){
+            const m=msgs[sortedKeys[i]];
+            if(isAdmin&&m.senderId!==ADMIN_UID&&(m.time||0)>(chat.seenByAdmin||0)){newForMe={msg:m,other:otherUid,isFromAdmin:false};break;}
+            if(!isAdmin&&m.senderId===ADMIN_UID&&(m.time||0)>(chat.seenByMember||0)){newForMe={msg:m,other:ADMIN_UID,isFromAdmin:true};break;}
+          }
         }
-        cards.push({chatId,otherUid,name,phone,country,lastText:lastMsg.text,time:lastMsg.time,unread,isGhost:lastMsg.isGhost,initials:name.slice(0,2).toUpperCase()});
+        let preview=lastMsg.text;
+        if(lastMsg.isGhost) preview=tr('tap_admin');
+        cards.push({chatId,otherUid:otherUid,name,phone,country,lastText:preview,lastTime:lastMsg.time||chat.lastTime||0,unreadCount:unread,isUnread:unread>0,initials:name.slice(0,2).toUpperCase(),isGhost:!!lastMsg.isGhost});
       });
-      if(cards.length===0) return;
-      cards.sort((a,b)=>b.time-a.time);
+      if(cards.length===0){doFallback();return;}
+      fallbackDone=true;cards.sort((a,b)=>b.lastTime-a.lastTime);
       setBadge("notifCount",totalUnread);setBadge("globalChatBadge",totalUnread);updateAppIcon();
       if(window.LodgeNotifier) window.LodgeNotifier.setAppIconBadge(totalUnread);
       if(newForMe){
-        const txt=newForMe.msg.text||'📷 Media';
+        const txt=newForMe.msg.text||(newForMe.msg.mediaType==='video'?'🎥 Video':'📷 Photo');
         const otherName=usersCache[newForMe.other]?.fullName||"Member";
-        if(newForMe.isFromAdmin&&!isAdmin) window.LodgeNotifier?.showPopup("Director",txt,"admin_message");
-        if(!newForMe.isFromAdmin&&isAdmin) window.LodgeNotifier?.showPopup(otherName,txt,"member_message");
+        if(newForMe.isFromAdmin){
+          if(!isAdmin){window.LodgeNotifier?.showPopup("Director",txt,"admin_message");}
+        }else{
+          if(isAdmin){window.LodgeNotifier?.showPopup(otherName,txt,"member_message");}
+        }
       }
-      const real=cards.filter(c=>!c.isGhost);
-      if(isAdmin&&real.length===0) return;
-      const display=isAdmin?real:cards;
+      const realCards=cards.filter(c=>!c.isGhost);
+      if(isAdmin&&realCards.length===0){listEl.innerHTML=`<div style="padding:40px;text-align:center;color:#aaa">${tr('no_members')}<br><small>All chats deleted</small></div>`;setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(0);return;}
+      const displayCards=isAdmin?realCards:cards;
       if(isAdmin){
-        let html='';display.forEach(c=>{html+=`<div class="member-item ${c.unread>0?'new-msg':''}" data-chatid="${c.chatId}" data-other="${c.otherUid}"><div style="width:46px;height:46px;border-radius:50%;background:#121D33;border:2px solid ${c.unread>0?'#00ff88':'#D4B16A'};display:grid;place-items:center;color:${c.unread>0?'#00ff88':'#D4B16A'};font-weight:800">${c.initials}</div><div style="flex:1;overflow:hidden;text-align:left"><b style="color:${c.unread>0?'#00ff88':'#D4B16A'}">${c.name}</b><br><small style="color:#D4B16A"><i class="fa fa-phone"></i> ${c.phone} • ${c.country}</small><br><small style="color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unread>0?`<div class="badge">${c.unread}</div>`:`<i class="fa fa-chevron-right" style="color:#D4B16A"></i>`}</div>`;});
+        let html='';displayCards.forEach(c=>{html+=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${c.otherUid}"><div style="width:46px;height:46px;border-radius:50%;background:#121D33;border:2px solid ${c.isUnread?'#00ff88':'#D4B16A'};display:grid;place-items:center;color:${c.isUnread?'#00ff88':'#D4B16A'};font-weight:800">${c.initials}</div><div style="flex:1;overflow:hidden;text-align:left"><b style="color:${c.isUnread?'#00ff88':'#D4B16A'}">${c.name}</b><br><small style="color:#D4B16A"><i class="fa fa-phone"></i> ${c.phone} • ${c.country}</small><br><small style="color:${c.isUnread?'#fff':'#aaa'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-chevron-right" style="color:#D4B16A"></i>`}</div>`;});
         listEl.innerHTML=html;
       }else{
-        const c=display[0];
-        listEl.innerHTML=`<div class="member-item ${c.unread>0?'new-msg':''}" data-chatid="${c.chatId}" data-other="${ADMIN_UID}" style="border:2px solid ${c.unread>0?'#00ff88':'var(--gold)'}"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid ${c.unread>0?'#00ff88':'var(--gold)'};display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1;overflow:hidden"><b style="color:${c.unread>0?'#00ff88':'var(--gold)'}">${tr('admin_channel')}</b><br><small style="color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unread>0?`<div class="badge">${c.unread}</div>`:`<i class="fa fa-shield-alt" style="color:var(--gold)"></i>`}</div>`;
+        const c=displayCards[0];
+        listEl.innerHTML=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${ADMIN_UID}" style="border:2px solid ${c.isUnread?'#00ff88':'var(--gold)'}"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid ${c.isUnread?'#00ff88':'var(--gold)'};display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1;overflow:hidden"><b style="color:${c.isUnread?'#00ff88':'var(--gold)'}">${tr('admin_channel')}</b><br><small style="color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-shield-alt" style="color:var(--gold)"></i>`}</div>`;
       }
       attachItemEvents();
-    }catch(e){}
-  });
+    }catch(e){doFallback();}
+  },()=>{doFallback();});
 }
-window.loadChats=loadChats;
 window.openChat=async(otherUid,displayName)=>{
-  if(currentMessagesRef){ off(currentMessagesRef); currentMessagesRef=null; }
   currentChatId=isAdmin?(ADMIN_UID+"_"+otherUid):(ADMIN_UID+"_"+myId);
   document.getElementById('chatName').innerText=displayName;
   document.getElementById('chatPage').style.display='flex';
@@ -209,8 +209,7 @@ window.openChat=async(otherUid,displayName)=>{
   box.innerHTML=`<div style="text-align:center;padding:40px;color:#aaa"><i class="fa fa-spinner fa-spin" style="color:var(--gold)"></i><br><br>Loading messages...</div>`;
   try{if(isAdmin)await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:Date.now()}).catch(()=>{});else await update(ref(db,`chats/${currentChatId}`),{seenByMember:Date.now()}).catch(()=>{});}catch(e){}
   setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(0);
-  currentMessagesRef=ref(db,`chats/${currentChatId}/messages`);
-  onValue(currentMessagesRef,(snap)=>{
+  onValue(ref(db,`chats/${currentChatId}/messages`),(snap)=>{
     const data=snap.val();
     let visibleCount=0;
     if(data){Object.keys(data).forEach(mid=>{const m=data[mid];if(!(m.deletedFor&&m.deletedFor[myId]))visibleCount++;});}
@@ -239,25 +238,14 @@ window.openChat=async(otherUid,displayName)=>{
     });
     box.scrollTop=box.scrollHeight;
   },()=>{box.innerHTML=`<div style="padding:40px;text-align:center;color:#ff5a5a">Error loading<br><small>Check Firebase Rules</small></div>`;});
-}
-function showMsgMenu(e,mid,text,isMine,mediaUrl){selId=mid;selText=text;selIsMine=isMine;selMediaUrl=mediaUrl;const m=document.getElementById('msgMenu');m.style.left=(e.touches?e.touches[0].clientX:e.clientX)-100+'px';m.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';m.style.display='flex';document.getElementById('editBtn').style.display=isMine?'flex':'none';document.getElementById('downBtn').style.display=mediaUrl?'flex':'none';}
+  }function showMsgMenu(e,mid,text,isMine,mediaUrl){selId=mid;selText=text;selIsMine=isMine;selMediaUrl=mediaUrl;const m=document.getElementById('msgMenu');m.style.left=(e.touches?e.touches[0].clientX:e.clientX)-100+'px';m.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';m.style.display='flex';document.getElementById('editBtn').style.display=isMine?'flex':'none';document.getElementById('downBtn').style.display=mediaUrl?'flex':'none';}
 window.copyMsg=()=>{navigator.clipboard.writeText(selText);hideMenus();showToast('Copied');}
 window.editMsg=async()=>{const nt=prompt('Edit:',selText);if(nt){await update(ref(db,`chats/${currentChatId}/messages/${selId}`),{text:nt});showToast('Edited successfully');}hideMenus();}
 window.replyMsg=()=>{setReply(selText,selIsMine?'You':document.getElementById('chatName').innerText);hideMenus();}
 function setReply(t,n){replyData={text:t,name:n};document.getElementById('replyBar').style.display='flex';document.getElementById('replyToName').innerText=n;document.getElementById('replyToText').innerText=t.slice(0,50);document.getElementById('msgInput').focus();}
-window.cancelReply=()=>{replyData=null;document.getElementById('replyBar').style.display='none';}window.deleteForMe=async()=>{await update(ref(db,`chats/${currentChatId}/messages/${selId}/deletedFor`),{[myId]:true});hideMenus();showToast('Deleted for you');}
-window.deleteForEveryone=async()=>{
-  try{
-    const cId=currentChatId; const mId=selId;
-    await remove(ref(db,`chats/${cId}/messages/${mId}`));
-    try{
-      const snap=await get(ref(db,`chats/${cId}/messages`));
-      if(!snap.exists()){await update(ref(db,`chats/${cId}`),{lastMessage:"",lastTime:Date.now()});}
-      else{const vals=Object.values(snap.val()); const last=vals.sort((a,b)=>(a.time||0)-(b.time||0)).pop(); await update(ref(db,`chats/${cId}`),{lastMessage:last.text||(last.mediaType==='video'?'🎥 Video':'📷 Photo'),lastTime:last.time});}
-    }catch(e){}
-    hideMenus();showToast('Deleted for everyone');
-  }catch(e){hideMenus();}
-}
+window.cancelReply=()=>{replyData=null;document.getElementById('replyBar').style.display='none';}
+window.deleteForMe=async()=>{await update(ref(db,`chats/${currentChatId}/messages/${selId}/deletedFor`),{[myId]:true});hideMenus();showToast('Deleted for you');}
+window.deleteForEveryone=async()=>{await remove(ref(db,`chats/${currentChatId}/messages/${selId}`));hideMenus();showToast('Deleted successfully');}
 window.hideMenus=()=>{document.getElementById('msgMenu').style.display='none';document.getElementById('chatMenu').style.display='none';}
 window.deleteChatForMe=async()=>{try{await update(ref(db,`chats/${selChatId||currentChatId}/hiddenFor`),{[myId]:true});hideMenus();showToast('Deleted successfully');if(document.getElementById('chatPage').style.display==='flex')closeChat();}catch(e){hideMenus();}}
 window.cancelChatDelete=()=>{hideMenus();showToast('Cancelled');}
@@ -265,13 +253,12 @@ document.addEventListener('click',e=>{if(!e.target.closest('.menu'))hideMenus();
 window.downloadUrl=(url,name)=>{const a=document.createElement('a');a.href=url;a.download=name;a.target='_blank';document.body.appendChild(a);a.click();a.remove();showToast('Downloaded');}
 window.downloadMedia=()=>{if(selMediaUrl)window.downloadUrl(selMediaUrl,selMediaUrl.includes('.mp4')?'video.mp4':'photo.jpg');hideMenus();}
 document.getElementById('mediaInput').addEventListener('change',async(e)=>{
-  const file=e.target.files[0];if(!file||!currentChatId||isSending)return;
-  isSending=true; document.getElementById('sendBtn').style.opacity="0.5";
+  const file=e.target.files[0];if(!file||!currentChatId)return;
   const box=document.getElementById('messages');const tempId='temp_'+Date.now();const localUrl=URL.createObjectURL(file);const isVideo=file.type.startsWith('video');
   const wrap=document.createElement('div');wrap.id=tempId;wrap.className='msg-wrap';wrap.style.justifyContent='flex-end';wrap.innerHTML=`<div class="msg my-msg"><div class="media-box">${isVideo?`<video src="${localUrl}" style="max-width:260px;border-radius:12px" muted></video>`:`<img src="${localUrl}" style="max-width:260px;border-radius:12px">`}</div><span style="font-size:8px;opacity:.6;float:right">Uploading...</span><span class="tick tick-sent">✓</span></div>`;box.appendChild(wrap);box.scrollTop=box.scrollHeight;
   try{
     let finalUrl='';let mediaType=isVideo?'video':'image';
-    if(isVideo){if(file.size>15*1024*1024){showToast('Video max 15MB');document.getElementById(tempId)?.remove();isSending=false;document.getElementById('sendBtn').style.opacity="1";return;}const ext=file.name.split('.').pop()||'mp4';const refS=sRef(storage,`chats/${currentChatId}/${Date.now()}_${myId}.${ext}`);const up=await uploadBytes(refS,file);finalUrl=await getDownloadURL(up.ref);}
+    if(isVideo){if(file.size>15*1024*1024){showToast('Video max 15MB');document.getElementById(tempId)?.remove();return;}const ext=file.name.split('.').pop()||'mp4';const refS=sRef(storage,`chats/${currentChatId}/${Date.now()}_${myId}.${ext}`);const up=await uploadBytes(refS,file);finalUrl=await getDownloadURL(up.ref);}
     else{finalUrl=await new Promise((res,rej)=>{const rd=new FileReader();rd.onload=ev=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;const MAX=700;if(w>MAX||h>MAX){if(w>h){h=h*(MAX/w);w=MAX;}else{w=w*(MAX/h);h=MAX;}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',0.55));};img.onerror=()=>res(ev.target.result);img.src=ev.target.result;};rd.onerror=rej;rd.readAsDataURL(file);});}
     const payload={senderId:myId,senderEmail:myEmail,text:document.getElementById('msgInput').value.trim(),mediaUrl:finalUrl,mediaType,time:Date.now(),status:'sent'};if(replyData)payload.replyTo=replyData;
     const r=push(ref(db,`chats/${currentChatId}/messages`));await set(r,payload);
@@ -279,26 +266,16 @@ document.getElementById('mediaInput').addEventListener('change',async(e)=>{
     if(isAdmin)await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}).catch(()=>{});else await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}).catch(()=>{});
     document.getElementById(tempId)?.remove();document.getElementById('msgInput').value='';cancelReply();
   }catch(err){showToast('Failed: '+err.message);document.getElementById(tempId)?.remove();}
-  e.target.value='';isSending=false;document.getElementById('sendBtn').style.opacity="1";
+  e.target.value='';
 });
 window.sendMsg=async()=>{
-  if(isSending) return;
   const i=document.getElementById('msgInput');const txt=i.value.trim();if(!txt||!currentChatId)return;
-  if(lastSent.text===txt && Date.now()-lastSent.time<2000) return;
-  isSending=true; lastSent={text:txt,time:Date.now()};
-  const btn=document.getElementById('sendBtn'); btn.style.opacity="0.5"; btn.style.pointerEvents="none";
-  try{
-    const payload={text:txt,senderId:myId,senderEmail:myEmail,time:Date.now(),status:'sent'};if(replyData)payload.replyTo=replyData;
-    const r=push(ref(db,`chats/${currentChatId}/messages`));await set(r,payload);
-    await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(),lastMessage:txt,info:{fullName:myInfo.fullName||'Member',uid:myId},hiddenFor:{}}).catch(()=>{});
-    if(isAdmin)await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}).catch(()=>{});else await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}).catch(()=>{});
-    i.value="";cancelReply();
-  }catch(e){showToast('Failed');}
-  setTimeout(()=>{isSending=false;btn.style.opacity="1";btn.style.pointerEvents="auto";},1000);
+  const payload={text:txt,senderId:myId,senderEmail:myEmail,time:Date.now(),status:'sent'};if(replyData)payload.replyTo=replyData;
+  const r=push(ref(db,`chats/${currentChatId}/messages`));await set(r,payload);
+  await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(),lastMessage:txt,info:{fullName:myInfo.fullName||'Member',uid:myId},hiddenFor:{}}).catch(()=>{});
+  if(isAdmin)await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}).catch(()=>{});else await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}).catch(()=>{});
+  i.value="";cancelReply();
 }
-window.closeChat=()=>{
-  if(currentMessagesRef){ off(currentMessagesRef); currentMessagesRef=null; }
-  document.getElementById('chatPage').style.display='none';currentChatId=null;
-}
+window.closeChat=()=>{document.getElementById('chatPage').style.display='none';currentChatId=null;}
 </script>
 </body></html>

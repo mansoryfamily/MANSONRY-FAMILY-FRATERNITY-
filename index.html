@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Freemasonry Heritage">
   <link rel="apple-touch-icon" href="./icon-512.png">
-
+  <link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -24,71 +24,65 @@
   }
   body::before{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:300px;color:rgba(212,175,55,.04);z-index:-1;pointer-events:none;white-space:nowrap;}
   img{max-width:100%;height:auto;display:block;border-radius:18px;}
-
   header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;padding-top: calc(20px + env(safe-area-inset-top));
   background:rgba(0,0,0,.75);backdrop-filter:blur(10px);display:flex;justify-content:space-between;align-items:center;z-index:1000;}
-  .logo{font-size:24px;font-weight:700;color:#d4af37;letter-spacing:1px;}
-  header nav a{color:white;text-decoration:none;margin-left:18px;font-size:14px;transition:.3s;}
+  .logo{font-size:30px;font-weight:700;color:#d4af37;}
+  header nav a{color:white;text-decoration:none;margin-left:20px;font-size:15px;transition:.3s;}
   header nav a:hover{color:#d4af37;}
-
-  .hero{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.65)),url("./images.jpeg");background-size:cover;background-position:center;padding-top:100px;}
-  .hero h1{font-size:48px;margin-bottom:20px;line-height:1.2;}
-  .hero p{max-width:850px;margin:auto;line-height:1.8;color:#ddd;font-size:16px;}
-
-  .btn{display:inline-block;margin:10px 8px;padding:14px 32px;background:#d4af37;color:#111;border-radius:40px;text-decoration:none;font-weight:700;transition:.3s;border:none;cursor:pointer;}
-  .btn:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(212,175,55,.3);}
-  .join-btn{background:transparent;border:2px solid #d4af37;color:#d4af37;}
+  .hero{height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.65)),url("./images.jpeg");background-size:cover;background-position:center;}
+  .hero h1{font-size:60px;margin-bottom:20px;}
+  .hero p{max-width:850px;margin:auto;line-height:1.8;color:#ddd;}
+  .btn{display:inline-block;margin:20px 8px;padding:14px 35px;background:#d4af37;color:#111;border-radius:40px;text-decoration:none;font-weight:700;transition:.3s;border:none;cursor:pointer;}
+  .btn:hover{transform:translateY(-5px);}
+  .join-btn{margin-left:15px;background:transparent;border:2px solid #d4af37;color:#d4af37;}
   .join-btn:hover{background:#d4af37;color:#111;}
-
-  section{padding:80px 8%;}
-  .title{text-align:center;font-size:32px;color:#d4af37;margin-bottom:40px;}
+  section{padding:100px 10%;}
+  .title{text-align:center;font-size:38px;color:#d4af37;margin-bottom:50px;}
+  .grid,.info{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;width:100%;}
   .history{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
-  @media(max-width:900px){.history{grid-template-columns:1fr;}section{padding:60px 5%;}.hero h1{font-size:30px;}header nav{display:none;}.logo{font-size:18px;}}
-
-  .info{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;max-width:1100px;margin:40px auto 0;}
-  .card{
-  background:linear-gradient(145deg,#142238,#0b1728);
-  padding:30px;border-radius:18px;border:1px solid rgba(212,175,55,.18);
-  box-shadow:0 15px 35px rgba(0,0,0,.35);transition:.4s;min-height:190px;
-  }
-  .card:hover{transform:translateY(-8px);border-color:#d4af37;}
-  .card h3{color:#d4af37;font-size:20px;margin-bottom:12px;}
-  .card p{color:#ddd;line-height:1.7;font-size:14px;}
-
+  @media(max-width:900px){.grid,.info,.history{grid-template-columns:1fr;}section{padding:80px 5%;}.hero h1{font-size:38px;}}
+  .info{max-width:1100px;margin:40px auto 0;}
+  .card{background:linear-gradient(145deg,#142238,#0b1728);padding:30px;border-radius:18px;border:1px solid rgba(212,175,55,.18);box-shadow:0 15px 35px rgba(0,0,0,.35);transition:.4s;min-height:190px;}
+  .card:hover{transform:translateY(-10px);border-color:#d4af37;box-shadow:0 20px 45px rgba(212,175,55,.15);}
+  .card h3{color:#d4af37;font-size:22px;margin-bottom:15px;}
+  .card p{color:#ddd;line-height:1.8;font-size:15px;}
   .bottom-nav{
   position:fixed;bottom:25px;left:50%;transform:translateX(-50%);
   display:flex;align-items:center;justify-content:center;gap:10px;
   background:rgba(20,34,56,0.95);backdrop-filter:blur(15px);
-  padding:10px 14px;border-radius:30px;z-index:9999;
+  padding:12px 18px;border-radius:30px;z-index:9999;
   box-shadow:0 10px 35px rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.35);
   margin-bottom: env(safe-area-inset-bottom);
   width:calc(100% - 30px);max-width:420px;
   }
   .bottom-nav a{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  background:#d4af37;color:#111;padding:12px 22px;border-radius:40px;
-  text-decoration:none;font-size:13px;font-weight:700;white-space:nowrap;transition:.3s;flex:1;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  background:#d4af37;color:#111;padding:14px 35px;border-radius:40px;
+  text-decoration:none;font-size:15px;font-weight:700;white-space:nowrap;transition:.3s;flex:1;
   }
   .bottom-nav a.secondary{background:transparent;border:1px solid #d4af37;color:#d4af37;}
-  .bottom-nav a:hover{transform:translateY(-2px);}
-
-  footer{background:#020509;padding:40px;text-align:center;color:#999;font-size:13px;}
-
+  .bottom-nav a:hover{transform:translateY(-3px);}
+  footer{background:#020509;padding:40px;text-align:center;color:#999;}
   .install-popup{
   position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);
   background:rgba(20,34,56,.98);backdrop-filter:blur(20px);padding:30px 25px;
   border-radius:20px;border:2px solid #d4af37;z-index:100000;display:none;
-  flex-direction:column;align-items:center;gap:20px;width:90%;max-width:360px;
+  flex-direction:column;align-items:center;gap:20px;width:90%;max-width:380px;
   box-shadow:0 20px 60px rgba(212,175,55,.4);text-align:center;opacity:0;
   transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
   .install-popup.show{display:flex;opacity:1;transform:translate(-50%,-50%) scale(1);}
   .install-popup img{width:70px;height:70px;border-radius:18px;border:2px solid #d4af37;object-fit:cover;}
-  .install-popup .text h4{color:#d4af37;margin-bottom:8px;font-size:17px;}
-  .install-popup .text p{color:#ccc;font-size:13px;}
-  .install-popup .btns{display:flex;gap:10px;width:100%;}
+  .install-popup .text h4{color:#d4af37;margin-bottom:8px;font-size:18px;}
+  .install-popup .text p{color:#ccc;font-size:14px;}
+  .install-popup .btns{display:flex;gap:12px;width:100%;}
   .install-popup .btn-install{flex:1;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;border:none;padding:12px 18px;border-radius:25px;font-weight:bold;cursor:pointer;}
   .install-popup .btn-close{flex:1;background:transparent;color:#ccc;border:1px solid #39485f;padding:12px 18px;border-radius:25px;cursor:pointer;}
+  @keyframes slideDown{from{top:40px;opacity:0}to{top:80px;opacity:1}}
+  /* Hide desktop nav on mobile like original */
+  header nav{display:none;}
+  @media(min-width:901px){header nav{display:block;}}
+  @media(max-width:900px){.join-btn{margin-left:0;}}
   </style>
 
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
@@ -118,8 +112,10 @@
   <nav>
     <a href="#home">Home</a>
     <a href="#origin">History</a>
+    <a href="#kenya">Kenya</a>
     <a href="#values">Values</a>
-    <a href="./register.html">Join</a>
+    <a href="./register.html" class="btn join-btn">🤝 Join Our Brotherhood</a>
+    <a href="#gallery">Gallery</a>
   </nav>
 </header>
 
@@ -127,10 +123,8 @@
   <div>
     <h1>A Journey Through Freemasonry Heritage</h1>
     <p>Discover the legacy of honor, brotherhood, and purpose. For centuries, Freemasonry has guided men to become leaders of integrity, builders of community, and pillars of strength for one another.</p>
-    <div style="margin-top:25px;">
-      <a href="#origin" class="btn">Explore Our Heritage</a>
-      <a href="./register.html" class="btn join-btn">Begin Your Journey</a>
-    </div>
+    <a href="#origin" class="btn">Explore Our Heritage</a>
+    <a href="./register.html" class="btn join-btn">Begin Your Journey</a>
   </div>
 </section>
 
@@ -141,12 +135,8 @@
     <div>
       <p style="line-height:2;color:#ddd;">
         Our tradition is rooted in centuries of wisdom, discipline, and unity. 
-        In 1717, four London lodges united to form the first Grand Lodge. Today, Mansory Family continues that heritage across Africa and beyond.
+        In 1717, four London lodges united to form the first Grand Lodge.
       </p>
-      <div class="info" style="margin-top:20px;grid-template-columns:1fr;">
-        <div class="card"><h3>Brotherhood</h3><p>United by shared values and timeless principles.</p></div>
-        <div class="card"><h3>Integrity</h3><p>Building men of character and purpose.</p></div>
-      </div>
     </div>
   </div>
 </section>
@@ -154,8 +144,8 @@
 <section id="values">
   <h2 class="title">Our Values</h2>
   <div class="info">
-    <div class="card"><h3>Honor</h3><p>We stand for truth, respect, and moral uprightness in all dealings.</p></div>
-    <div class="card"><h3>Charity</h3><p>Service to community and support for our brothers in need.</p></div>
+    <div class="card"><h3>Honor</h3><p>We stand for truth, respect, and moral uprightness.</p></div>
+    <div class="card"><h3>Charity</h3><p>Service to community and support for our brothers.</p></div>
     <div class="card"><h3>Wisdom</h3><p>Seeking knowledge and passing heritage to next generations.</p></div>
   </div>
 </section>
@@ -170,21 +160,23 @@
 </footer>
 
 <script>
-// FIX 1: FOREVER LOGIN - If already logged in, go straight to dashboard
+// FIX 1: FOREVER LOGIN - if already logged in go to dashboard
 (function(){
   try{
-    if(localStorage.getItem("mff_logged_in")==="true"){
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.get('logout')==='1') return;
+    if(localStorage.getItem("mff_logged_in")==="true" && localStorage.getItem("mff_user")){
       window.location.replace("./dashboard.html");
     }
   }catch(e){}
 })();
 
-// FIX 2: SERVICE WORKER
+// FIX 2: SERVICE WORKER - safe
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
 
-// FIX 3: INSTALL POPUP LOGIC (centered)
+// FIX 3: INSTALL POPUP CENTERED - ORIGINAL LOGIC KEPT
 let deferredPrompt;
 const popup = document.getElementById('installPopup');
 const btnInstall = document.getElementById('btnInstall');
@@ -193,7 +185,6 @@ const btnClose = document.getElementById('btnClose');
 window.addEventListener('beforeinstallprompt', (e)=>{
   e.preventDefault();
   deferredPrompt = e;
-  // Show after 2 sec
   setTimeout(()=>{
     if(!localStorage.getItem('install_dismissed')){
       popup.classList.add('show');
@@ -204,7 +195,7 @@ window.addEventListener('beforeinstallprompt', (e)=>{
 btnInstall.addEventListener('click', async ()=>{
   if(deferredPrompt){
     deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
+    await deferredPrompt.userChoice;
     deferredPrompt = null;
     popup.classList.remove('show');
   }
@@ -213,10 +204,9 @@ btnInstall.addEventListener('click', async ()=>{
 btnClose.addEventListener('click', ()=>{
   popup.classList.remove('show');
   localStorage.setItem('install_dismissed','1');
-  setTimeout(()=>{ localStorage.removeItem('install_dismissed'); }, 86400000); // show again after 1 day
+  setTimeout(()=>{ localStorage.removeItem('install_dismissed'); }, 86400000);
 });
 
-// Hide install popup if already installed
 window.addEventListener('appinstalled', ()=>{
   popup.classList.remove('show');
 });

@@ -7,90 +7,20 @@
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#d4af37">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{
-  background:#07111f;
-  height:100vh;
-  height:100dvh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  overflow:hidden;
-}
-body::before{
-  content:"◬";
-  position:absolute;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  font-size:500px;
-  color:rgba(212,175,55,.04);
-  animation:spin 25s linear infinite;
-  z-index:0;
-}
-.logo-box{
-  width:115px;
-  height:115px;
-  border-radius:28px;
-  border:3px solid #d4af37;
-  background:#0f1a2e;
-  box-shadow:0 0 35px rgba(212,175,55,.6), 0 0 70px rgba(212,175,55,.25);
-  animation:pulse 1.6s ease-in-out infinite;
-  z-index:2;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
-  padding:10px;
-}
-.logo-box img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  border-radius:18px;
-  display:block;
-}
-@keyframes pulse{
- 0%,100%{transform:scale(1);}
- 50%{transform:scale(1.07); box-shadow:0 0 55px rgba(212,175,55,.85);}
-}
-@keyframes spin{
-  from{transform:translate(-50%,-50%) rotate(0deg);}
-  to{transform:translate(-50%,-50%) rotate(360deg);}
-}
-h1{
-  color:#d4af37;
-  margin-top:28px;
-  font-size:20px;
-  letter-spacing:3px;
-  text-shadow:0 0 15px rgba(212,175,55,.6);
-  z-index:2;
-  font-weight:700;
-}
-.loader{
-  width:200px;
-  height:4px;
-  background:rgba(212,175,55,.18);
-  border-radius:10px;
-  margin-top:22px;
-  overflow:hidden;
-  z-index:2;
-}
-.loader span{
-  display:block;
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#d4af37,#f1ca52);
-  border-radius:10px;
-  animation:load 5s linear forwards;
-  box-shadow:0 0 12px #d4af37;
-}
+body{background:#07111f;height:100vh;height:100dvh;display:flex;justify-content:center;align-items:center;flex-direction:column;overflow:hidden;}
+body::before{content:"◬";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:500px;color:rgba(212,175,55,.04);animation:spin 25s linear infinite;z-index:0;}
+.logo-box{width:115px;height:115px;border-radius:28px;border:3px solid #d4af37;background:#0f1a2e;box-shadow:0 0 35px rgba(212,175,55,.6), 0 0 70px rgba(212,175,55,.25);animation:pulse 1.6s ease-in-out infinite;z-index:2;display:flex;justify-content:center;align-items:center;overflow:hidden;padding:10px;}
+.logo-box img{width:100%;height:100%;object-fit:contain;border-radius:18px;display:block;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.07);box-shadow:0 0 55px rgba(212,175,55,.85);}}
+@keyframes spin{from{transform:translate(-50%,-50%) rotate(0deg);}to{transform:translate(-50%,-50%) rotate(360deg);}}
+h1{color:#d4af37;margin-top:28px;font-size:20px;letter-spacing:3px;text-shadow:0 0 15px rgba(212,175,55,.6);z-index:2;font-weight:700;}
+.loader{width:200px;height:4px;background:rgba(212,175,55,.18);border-radius:10px;margin-top:22px;overflow:hidden;z-index:2;}
+.loader span{display:block;height:100%;width:0%;background:linear-gradient(90deg,#d4af37,#f1ca52);border-radius:10px;animation:load 5s linear forwards;box-shadow:0 0 12px #d4af37;}
 @keyframes load{to{width:100%}}
 #statusText{color:#7a8aa0;font-size:11px;margin-top:14px;letter-spacing:1px;z-index:2;text-transform:uppercase;}
 </style>
-
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -100,40 +30,27 @@ h1{
 </script>
 </head>
 <body>
-
 <div class="logo-box">
   <img src="./icon-512.png" alt="logo" onerror="this.onerror=null; this.src='./icon-192.png'; this.onerror=function(){this.src='./images.jpeg';}">
 </div>
-
 <h1>MANSORY FAMILY</h1>
 <div class="loader"><span></span></div>
 <p id="statusText">Initializing...</p>
-
 <script>
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
-}
-
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
 const statusText = document.getElementById('statusText');
 const msgs = ["Initializing...","Checking brotherhood...","Verifying session...","Loading heritage...","Welcome..."];
 let i=0;
 const intv = setInterval(()=>{ if(i<msgs.length) statusText.textContent=msgs[i++]; }, 900);
-
 function goNext(){
   clearInterval(intv);
   statusText.textContent="Opening...";
   try{
-    const logged = localStorage.getItem("mff_logged_in")==="true";
+    const logged = localStorage.getItem("mff_logged_in")==="true" && localStorage.getItem("mff_user");
     if(logged){
       location.replace("./dashboard.html");
     }else{
-      // SAFE: never 404 - checks if landing.html exists
-      fetch("./landing.html", {method:"HEAD", cache:"no-store"}).then(r=>{
-        if(r.ok) location.replace("./landing.html");
-        else location.replace("./index.html");
-      }).catch(()=>{
-        location.replace("./index.html");
-      });
+      location.replace("./index.html");
     }
   }catch(e){
     location.replace("./index.html");
@@ -141,6 +58,5 @@ function goNext(){
 }
 setTimeout(goNext, 5000);
 </script>
-
 </body>
 </html>

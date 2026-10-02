@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -43,7 +43,6 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 <div class="logo">Freemasonry Heritage</div>
 <div style="display:flex;gap:14px;align-items:center;">
 <a href="globaladmin.html" id="chatLink" style="position:relative;color:var(--gold);font-size:20px;text-decoration:none;"><i class="fa fa-comments"></i><span id="globalChatBadge" style="position:absolute;top:-8px;right:-8px;background:#00ff88;color:#000;font-size:10px;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;font-weight:800;">0</span></a>
-<a href="notifications.html" id="bellLink" style="position:relative;color:var(--gold);font-size:20px;text-decoration:none;"><i class="fa fa-bell"></i><span id="notifBadge" style="position:absolute;top:-8px;right:-8px;background:#dc2743;color:#fff;font-size:10px;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;">0</span></a>
 <a href="#" class="logout" data-i18n="logout">Logout</a>
 </div>
 </header>
@@ -113,14 +112,13 @@ setInterval(applyLang,1000);
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
   databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "mansonry-family-fraternity",
-  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
+  projectId: "mansonry-family-fraternity.firebasestorage.app",
   messagingSenderId: "964415179161",
   appId: "1:964415179161:web:cef44a38e4de304d7c6b08",
   measurementId: "G-9Q2KEWMXVR"
@@ -130,7 +128,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 const ADMIN_UID = "DMeM2UuLgDOusNvmzRGZygBdxOG2";
-const ADMIN_EMAIL = "mansoryfamilyn@gmail.com";
 
 function updateDOMBadge(id, count) {
   const el = document.getElementById(id);
@@ -148,7 +145,7 @@ onAuthStateChanged(auth, (user) => {
   if (!user) { window.location.href = "login.html"; return; }
   const uid = user.uid;
 
-  // 1. CHAT MESSAGES LISTENER (Counts strictly NEW incoming messages)
+  // CHAT MESSAGES LISTENER (Counts strictly NEW incoming messages after seenByMember timestamp)
   onValue(ref(db, `chats`), (snap) => {
     let unreadChatCount = 0;
     
@@ -165,10 +162,6 @@ onAuthStateChanged(auth, (user) => {
         
         Object.keys(msgs).forEach(mid => {
           const m = msgs[mid];
-          // Filter logic:
-          // 1. Message must exist and not be deleted
-          // 2. Message must be from the ADMIN/Director (incoming to user)
-          // 3. Message timestamp MUST be greater than last seenByMember timestamp
           if (m && m.senderId !== uid && !(m.deletedFor && m.deletedFor[uid])) {
             const msgTime = m.time || m.timestamp || 0;
             if (msgTime > lastSeen) {
@@ -180,37 +173,9 @@ onAuthStateChanged(auth, (user) => {
     }
     updateDOMBadge("globalChatBadge", unreadChatCount);
   });
-
-  // 2. ANNOUNCEMENTS / NOTIFICATIONS LISTENER
-  onValue(ref(db, `notifications/${uid}`), (snap) => {
-    let unreadNotifCount = 0;
-    
-    if (snap.exists()) {
-      const data = snap.val();
-      Object.keys(data).forEach(key => {
-        const n = data[key];
-        
-        // Auto-purge orphaned node entries
-        if (!n || typeof n !== 'object') {
-          remove(ref(db, `notifications/${uid}/${key}`));
-          return;
-        }
-
-        if (n.deletedFor && n.deletedFor[uid]) return;
-
-        // Strictly check for announcements only
-        const isAnnouncement = n.type === 'announcement' || n.category === 'announcement';
-        
-        if (isAnnouncement && n.read !== true && n.read !== "true") {
-          unreadNotifCount++;
-        }
-      });
-    }
-    updateDOMBadge("notifBadge", unreadNotifCount);
-  });
 });
 
-// Clear Chat Badge (Updates seenByMember in Firebase so previous messages won't be counted)
+// Clear Chat Badge Permanently
 async function clearChatBadge() {
   const u = auth.currentUser; 
   if (!u) return;
@@ -226,32 +191,8 @@ async function clearChatBadge() {
   updateDOMBadge("globalChatBadge", 0);
 }
 
-// Clear Notification Badge
-async function clearNotifBadge() {
-  const u = auth.currentUser; 
-  if (!u) return;
-  
-  try {
-    const notifRef = ref(db, `notifications/${u.uid}`);
-    const snap = await get(notifRef);
-    if (snap.exists()) {
-      const updates = {};
-      snap.forEach(child => {
-        updates[`${child.key}/read`] = true;
-      });
-      await update(notifRef, updates);
-    }
-  } catch (e) {
-    console.error("Error clearing notification badge:", e);
-  }
-  updateDOMBadge("notifBadge", 0);
-}
-
 document.getElementById("chatLink")?.addEventListener("click", clearChatBadge);
 document.querySelectorAll('a[href="globaladmin.html"]').forEach(a => a.addEventListener("click", clearChatBadge));
-
-document.getElementById("bellLink")?.addEventListener("click", clearNotifBadge);
-document.querySelectorAll('a[href="notifications.html"]').forEach(a => a.addEventListener("click", clearNotifBadge));
 
 document.querySelector(".logout")?.addEventListener("click", (e) => { 
   e.preventDefault(); 

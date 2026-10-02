@@ -39,19 +39,18 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 <div class="top">
 <div style="display:flex;align-items:center;gap:10px"><i class="fa fa-arrow-left" style="color:var(--gold)" onclick="location.href='help.html'"></i><div style="width:40px;height:40px;border-radius:12px;padding:2px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:grid;place-items:center"><div style="width:100%;height:100%;background:#0b1728;border-radius:10px;display:grid;place-items:center"><img src="masonic-icon.png" style="width:26px;height:26px"></div></div><div style="color:var(--gold);font-weight:800;font-size:12px"><span data-i18n="global_admin">GLOBAL ADMIN</span><br><small id="sub" style="color:#00ff88;font-size:9px">Connecting...</small></div></div>
 <div style="display:flex;gap:14px;align-items:center;">
-<div id="notifIcon" style="position:relative;"><i class="fa fa-comments" style="color:var(--green);font-size:20px"></i><span id="notifCount" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;">0</span><span id="globalChatBadge" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;padding:0 4px;">0</span></div>
+<div id="notifIcon" style="position:relative;"><i class="fa fa-comments" style="color:var(--green);font-size:20px"></i><span id="notifCount" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;">0</span></div>
 </div>
 </div>
 <div id="membersList" style="padding:10px;color:#888;text-align:center"><div data-i18n="loading_chats">Loading chats...</div></div><div id="chatPage">
 <div style="background:var(--card);padding:10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)"><i class="fa fa-arrow-left" style="color:var(--gold);font-size:18px;cursor:pointer" onclick="closeChat()"></i><img src="masonic-icon.png" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--gold)"><div style="flex:1"><h4 id="chatName" style="color:var(--gold);font-size:13px"></h4><small style="color:#aaa" data-i18n="swipe_hint">Swipe right to reply</small></div></div>
 <div id="messages"></div>
 <div class="reply-bar" id="replyBar"><div><small id="replyToName" style="color:var(--gold);font-weight:800"></small><div id="replyToText" style="color:#aaa;font-size:11px"></div></div><i class="fa fa-times" style="color:#fff;cursor:pointer" onclick="cancelReply()"></i></div>
-<div class="input-area"><input type="file" id="mediaInput" accept="image/*,video/*" style="display:none"><button class="icon-btn" style="background:var(--card);border:1px solid var(--border);color:var(--gold);min-width:42px" onclick="document.getElementById('mediaInput').click()"><i class="fa fa-paperclip"></i></button><input id="msgInput" data-i18n-placeholder="type_message" placeholder="Type message..."><button class="icon-btn" id="sendBtn" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button></div>
+<div class="input-area"><input type="file" id="mediaInput" accept="image/*,video/*" style="display:none"><button class="icon-btn" style="background:var(--card);border:1px solid var(--border);color:var(--gold);min-width:42px" onclick="document.getElementById('mediaInput').click()"><i class="fa fa-paperclip"></i></button><input id="msgInput" data-i18n-placeholder="type_message" placeholder="Type message..."><button class="icon-btn" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button></div>
 </div>
 <div id="msgMenu" class="menu"><button onclick="replyMsg()"><i class="fa fa-reply"></i> <span data-i18n="reply">Reply</span></button><button onclick="copyMsg()"><i class="fa fa-copy"></i> <span data-i18n="copy">Copy</span></button><button id="editBtn" onclick="editMsg()"><i class="fa fa-pen"></i> <span data-i18n="edit">Edit</span></button><button onclick="downloadMedia()" id="downBtn" style="display:none"><i class="fa fa-download"></i> Download</button><button onclick="deleteForMe()" class="danger"><i class="fa fa-eye-slash"></i> <span data-i18n="delete_me">Delete for me</span></button><button onclick="deleteForEveryone()" class="danger"><i class="fa fa-trash"></i> <span data-i18n="delete_all">Delete for everyone</span></button></div>
 <div id="chatMenu" class="menu"><button onclick="deleteChatForMe()" class="danger"><i class="fa fa-trash"></i> <span data-i18n="delete">Delete</span></button><button onclick="cancelChatDelete()"><i class="fa fa-times"></i> <span data-i18n="cancel">Cancel</span></button></div>
-<div id="toast"><i class="fa fa-check-circle" style="color:#00ff88"></i><span id="toastText">Deleted successfully</span></div><script>
-const TRANSLATIONS={
+<div id="toast"><i class="fa fa-check-circle" style="color:#00ff88"></i><span id="toastText">Deleted successfully</span></div><script>const TRANSLATIONS={
 en:{global_admin:"GLOBAL ADMIN",loading_chats:"Loading chats...",swipe_hint:"Swipe right to reply",type_message:"Type message...",reply:"Reply",copy:"Copy",edit:"Edit",delete_me:"Delete for me",delete_all:"Delete for everyone",delete:"Delete",cancel:"Cancel",admin_channel:"ADMINISTRATION CHANNEL",tap_admin:"Tap to message Administration",no_members:"No members yet",no_messages:"No messages yet"},
 sw:{global_admin:"ADMIN Mkuu",loading_chats:"Inapakia chats...",swipe_hint:"Telezesha kulia kujibu",type_message:"Andika ujumbe...",reply:"Jibu",copy:"Nakili",edit:"Hariri",delete_me:"Futa kwangu",delete_all:"Futa kwa wote",delete:"Futa",cancel:"Ghairi",admin_channel:"NJIA YA UTAWALA",tap_admin:"Gusa kuandikia Utawala",no_members:"Hakuna wanachama bado",no_messages:"Hakuna ujumbe bado"},
 lg:{global_admin:"ADMIN Omukulu",loading_chats:"Eteekateeka chats...",swipe_hint:"Sembera ku ddyo okuddamu",type_message:"Wandiika obubaka...",reply:"Ddamu",copy:"Koppa",edit:"Kyusa",delete_me:"Sangula gye ndi",delete_all:"Sangula eri bonna",delete:"Sangula",cancel:"Sazaamu",admin_channel:"OMUKUTU GWA ADMINISTRATION",tap_admin:"Koonya okuwandiikira Administration",no_members:"Tewali bammemba",no_messages:"Tewali bubaka"},
@@ -80,7 +79,7 @@ import { getDatabase, ref, onValue, push, set, remove, update, get, off } from "
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 
-// YOUR CONFIG INJECTED - REALTIME SYNC
+// YOUR CONFIG - INJECTED
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -91,30 +90,19 @@ const firebaseConfig = {
   appId: "1:964415179161:web:cef44a38e4de304d7c6b08",
   measurementId: "G-9Q2KEWMXVR"
 };
-
 const app=initializeApp(firebaseConfig);const db=getDatabase(app);const auth=getAuth(app);const storage=getStorage(app);
 const ADMIN_EMAIL="mansoryfamilyn@gmail.com";
 const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
 let myId=null,myEmail="",isAdmin=false,currentChatId=null,myInfo={fullName:'Member'},usersCache={},selId=null,selText=null,selIsMine=false,replyData=null,selChatId=null,selMediaUrl=null;
-let currentMessagesRef=null;let isSending=false;let lastSent={text:"",time:0};
+let currentMessagesRef=null;let isSending=false;
 function showToast(msg){document.getElementById('toastText').innerText=msg;const el=document.getElementById('toast');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
 function attachItemEvents(){document.querySelectorAll('.member-item').forEach(el=>{let timer;const showM=(e)=>{e.preventDefault();selChatId=el.dataset.chatid;const menu=document.getElementById('chatMenu');menu.style.left=((e.touches?e.touches[0].clientX:e.clientX)-120)+'px';menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';menu.style.display='flex';};el.addEventListener('contextmenu',showM);el.addEventListener('touchstart',e=>{timer=setTimeout(()=>showM(e),700);});el.addEventListener('touchend',()=>clearTimeout(timer));el.addEventListener('click',()=>openChat(el.dataset.other,el.querySelector('b').innerText));});}
-function setBadge(id,count){
-  const el=document.getElementById(id);
-  if(!el) return;
-  if(count>0){el.textContent=count>99?"99+":count;el.style.display="grid";}
-  else{el.style.display="none"; el.textContent="0";}
-}
-function updateAppIcon(){
-  const c1=parseInt(document.getElementById("notifCount")?.textContent||"0");
-  let total=isNaN(c1)?0:c1;
-  if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(total);
-}
+function setBadge(id,count){const el=document.getElementById(id);if(!el)return;if(count>0){el.textContent=count>99?"99+":count;el.style.display="grid";}else{el.style.display="none";}}
+function updateAppIcon(){const c=parseInt(document.getElementById("notifCount")?.textContent||"0");if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(isNaN(c)?0:c);}
 onAuthStateChanged(auth,async(u)=>{
-  if(!u){return;}
+  if(!u){document.getElementById('membersList').innerHTML=`<div style="padding:30px;text-align:center">Not logged in</div>`;return;}
   myId=u.uid;myEmail=(u.email||"").toLowerCase();isAdmin=(myEmail===ADMIN_EMAIL || myId===ADMIN_UID);
   document.getElementById('sub').innerText=isAdmin?"ADMIN":"LODGE";
-  document.addEventListener('click',()=>{if(window.speechSynthesis){window.speechSynthesis.getVoices();}}, {once:true});
   try{const s=await get(ref(db,'users'));if(s.exists()){Object.values(s.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}const s2=await get(ref(db,'members'));if(s2.exists()){Object.values(s2.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}}catch(e){}
   myInfo=usersCache[myId]||{fullName:u.displayName||'Member'};loadChats();
 });
@@ -124,16 +112,12 @@ if('Notification' in window&&Notification.permission==="default"){Notification.r
   const chatsRef=ref(db,'chats');
   onValue(chatsRef,(snapshot)=>{
     try{
-      // NO MESSAGE = NO BADGE
       if(!snapshot.exists()){
         if(!isAdmin){
           listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold)"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-chevron-right" style="color:var(--gold)"></i></div>`;
           attachItemEvents();
-        }else{
-          listEl.innerHTML=`<div style="padding:40px;text-align:center;color:#aaa">${tr('no_members')}</div>`;
-        }
-        setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();
-        return;
+        }else{listEl.innerHTML=`<div style="padding:40px;text-align:center;color:#aaa">${tr('no_members')}</div>`;}
+        setBadge("notifCount",0);updateAppIcon();return;
       }
       const chatMap=new Map();
       let totalUnread=0;
@@ -147,7 +131,6 @@ if('Notification' in window&&Notification.permission==="default"){Notification.r
         if(isAdmin&&otherUid===ADMIN_UID) return;
         if(chatMap.has(chatId)) return;
         const msgs=chat.messages||{};
-        // ONLY CURRENT RECEIVED - filter deleted
         const visibleKeys=Object.keys(msgs).filter(mid=>{const m=msgs[mid];return m&&!(m.deletedFor&&m.deletedFor[myId]);});
         if(visibleKeys.length===0&&!chat.lastMessage) return;
         let lastText=chat.lastMessage||"";let lastTime=chat.lastTime||0;
@@ -159,15 +142,9 @@ if('Notification' in window&&Notification.permission==="default"){Notification.r
         const userInfo=usersCache[otherUid]||{};
         const name=userInfo.fullName||userInfo.name||otherUid.slice(0,6);
         const phone=userInfo.phone||"No phone";const country=userInfo.country||"";
-        // COUNT ONLY CURRENT UNREAD RECEIVED
         let unread=0;
-        if(isAdmin){
-          const seen=chat.seenByAdmin||0;
-          visibleKeys.forEach(mid=>{const m=msgs[mid];if(m.senderId!==ADMIN_UID&&(m.time||0)>seen) unread++;});
-        }else{
-          const seen=chat.seenByMember||0;
-          visibleKeys.forEach(mid=>{const m=msgs[mid];if(m.senderId===ADMIN_UID&&(m.time||0)>seen) unread++;});
-        }
+        if(isAdmin){const seen=chat.seenByAdmin||0;visibleKeys.forEach(mid=>{if(msgs[mid].senderId!==ADMIN_UID&&(msgs[mid].time||0)>seen) unread++;});}
+        else{const seen=chat.seenByMember||0;visibleKeys.forEach(mid=>{if(msgs[mid].senderId===ADMIN_UID&&(msgs[mid].time||0)>seen) unread++;});}
         totalUnread+=unread;
         chatMap.set(chatId,{chatId,otherUid,name,phone,country,lastText,lastTime,unreadCount:unread,isUnread:unread>0,initials:name.slice(0,2).toUpperCase()});
       });
@@ -177,11 +154,10 @@ if('Notification' in window&&Notification.permission==="default"){Notification.r
           listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+myId}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold)"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-chevron-right" style="color:var(--gold)"></i></div>`;
           attachItemEvents();
         }
-        setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();return;
+        setBadge("notifCount",0);updateAppIcon();return;
       }
       cards.sort((a,b)=>b.lastTime-a.lastTime);
-      // IF 1 MESSAGE = SHOW 1, IF NONE = HIDE
-      setBadge("notifCount",totalUnread);setBadge("globalChatBadge",totalUnread);updateAppIcon();
+      setBadge("notifCount",totalUnread);updateAppIcon();
       if(isAdmin){
         let html='';cards.forEach(c=>{html+=`<div class="member-item ${c.isUnread?'new-msg':''}" data-chatid="${c.chatId}" data-other="${c.otherUid}"><div style="width:46px;height:46px;border-radius:50%;background:#121D33;border:2px solid ${c.isUnread?'#00ff88':'#D4B16A'};display:grid;place-items:center;color:${c.isUnread?'#00ff88':'#D4B16A'};font-weight:800">${c.initials}</div><div style="flex:1;overflow:hidden;text-align:left"><b style="color:${c.isUnread?'#00ff88':'#D4B16A'}">${c.name}</b><br><small style="color:#D4B16A"><i class="fa fa-phone"></i> ${c.phone} • ${c.country}</small><br><small style="color:${c.isUnread?'#fff':'#aaa'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">${c.lastText}</small></div>${c.unreadCount>0?`<div class="badge">${c.unreadCount}</div>`:`<i class="fa fa-chevron-right" style="color:#D4B16A"></i>`}</div>`;});
         listEl.innerHTML=html;
@@ -200,19 +176,19 @@ window.openChat=async(otherUid,displayName)=>{
   document.getElementById('chatPage').style.display='flex';
   const box=document.getElementById('messages');
   box.innerHTML=`<div style="text-align:center;padding:40px;color:#aaa"><i class="fa fa-spinner fa-spin" style="color:var(--gold)"></i><br><br>Loading messages...</div>`;
-  // COUNT DISAPPEAR PERMANENTLY WHEN OPENED
   try{
     if(isAdmin) await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:Date.now()});
     else await update(ref(db,`chats/${currentChatId}`),{seenByMember:Date.now()});
   }catch(e){}
-  setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();
+  setBadge("notifCount",0);updateAppIcon();
+  if(window.LodgeNotifier) window.LodgeNotifier.setAppIconBadge(0);
   currentMessagesRef=ref(db,`chats/${currentChatId}/messages`);
   onValue(currentMessagesRef,(snap)=>{
     const data=snap.val();
     let visibleCount=0;
     if(data){Object.keys(data).forEach(mid=>{const m=data[mid];if(!(m.deletedFor&&m.deletedFor[myId]))visibleCount++;});}
     if(!data||visibleCount===0){
-      box.innerHTML=`<div style="text-align:center;padding:60px 20px;color:#aaa"><div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(145deg,#121D33,#0b1728);border:2px solid var(--gold);display:grid;place-items:center;margin:0 auto 20px"><i class="fa fa-comments" style="font-size:32px;color:var(--gold)"></i></div><div style="color:var(--gold);font-weight:700;font-size:16px">${tr('no_messages')}</div><div style="font-size:12px;margin-top:8px;color:#666">Start your conversation with ${displayName}<br>Your messages are secured</div><div style="margin-top:20px;color:#333;font-size:11px"><i class="fa fa-lock"></i> End-to-end encrypted</div></div>`;
+      box.innerHTML=`<div style="text-align:center;padding:60px 20px;color:#aaa"><div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(145deg,#121D33,#0b1728);border:2px solid var(--gold);display:grid;place-items:center;margin:0 auto 20px"><i class="fa fa-comments" style="font-size:32px;color:var(--gold)"></i></div><div style="color:var(--gold);font-weight:700;font-size:16px">${tr('no_messages')}</div><div style="font-size:12px;margin-top:8px;color:#666">Start your conversation with ${displayName}<br>Your messages are secured</div></div>`;
       return;
     }
     box.innerHTML="";
@@ -235,7 +211,7 @@ window.openChat=async(otherUid,displayName)=>{
       div.addEventListener('touchend',()=>{clearTimeout(lt);if(!sw)return;sw=false;div.classList.remove('swiping');if(cx>55){setReply(m.text||'📷 Media',isMe?'You':document.getElementById('chatName').innerText);}div.style.transform='translateX(0)';icon.style.opacity='0';cx=0;});
     });
     box.scrollTop=box.scrollHeight;
-  });
+  },()=>{box.innerHTML=`<div style="padding:40px;text-align:center;color:#ff5a5a">Error loading<br><small>Check Firebase Rules</small></div>`;});
   }function showMsgMenu(e,mid,text,isMine,mediaUrl){selId=mid;selText=text;selIsMine=isMine;selMediaUrl=mediaUrl;const m=document.getElementById('msgMenu');m.style.left=(e.touches?e.touches[0].clientX:e.clientX)-100+'px';m.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';m.style.display='flex';document.getElementById('editBtn').style.display=isMine?'flex':'none';document.getElementById('downBtn').style.display=mediaUrl?'flex':'none';}
 window.copyMsg=()=>{navigator.clipboard.writeText(selText);hideMenus();showToast('Copied');}
 window.editMsg=async()=>{const nt=prompt('Edit:',selText);if(nt){await update(ref(db,`chats/${currentChatId}/messages/${selId}`),{text:nt});showToast('Edited successfully');}hideMenus();}
@@ -243,16 +219,7 @@ window.replyMsg=()=>{setReply(selText,selIsMine?'You':document.getElementById('c
 function setReply(t,n){replyData={text:t,name:n};document.getElementById('replyBar').style.display='flex';document.getElementById('replyToName').innerText=n;document.getElementById('replyToText').innerText=t.slice(0,50);document.getElementById('msgInput').focus();}
 window.cancelReply=()=>{replyData=null;document.getElementById('replyBar').style.display='none';}
 window.deleteForMe=async()=>{await update(ref(db,`chats/${currentChatId}/messages/${selId}/deletedFor`),{[myId]:true});hideMenus();showToast('Deleted for you');}
-window.deleteForEveryone=async()=>{
-  try{
-    const cId=currentChatId; const mId=selId;
-    await remove(ref(db,`chats/${cId}/messages/${mId}`));
-    const snap=await get(ref(db,`chats/${cId}/messages`));
-    if(!snap.exists()){await update(ref(db,`chats/${cId}`),{lastMessage:"",lastTime:Date.now()});}
-    else{const vals=Object.values(snap.val());const last=vals.sort((a,b)=>(a.time||0)-(b.time||0)).pop();await update(ref(db,`chats/${cId}`),{lastMessage:last.text||(last.mediaType==='video'?'🎥 Video':'📷 Photo'),lastTime:last.time});}
-    hideMenus();showToast('Deleted for everyone');
-  }catch(e){hideMenus();}
-}
+window.deleteForEveryone=async()=>{try{const cId=currentChatId;const mId=selId;await remove(ref(db,`chats/${cId}/messages/${mId}`));const snap=await get(ref(db,`chats/${cId}/messages`));if(!snap.exists()){await update(ref(db,`chats/${cId}`),{lastMessage:"",lastTime:Date.now()});}else{const vals=Object.values(snap.val());const last=vals.sort((a,b)=>(a.time||0)-(b.time||0)).pop();await update(ref(db,`chats/${cId}`),{lastMessage:last.text||(last.mediaType==='video'?'🎥 Video':'📷 Photo'),lastTime:last.time});}hideMenus();showToast('Deleted for everyone');}catch(e){hideMenus();}}
 window.hideMenus=()=>{document.getElementById('msgMenu').style.display='none';document.getElementById('chatMenu').style.display='none';}
 window.deleteChatForMe=async()=>{try{await update(ref(db,`chats/${selChatId||currentChatId}/hiddenFor`),{[myId]:true});hideMenus();showToast('Deleted successfully');if(document.getElementById('chatPage').style.display==='flex')closeChat();}catch(e){hideMenus();}}
 window.cancelChatDelete=()=>{hideMenus();showToast('Cancelled');}
@@ -279,9 +246,8 @@ document.getElementById('mediaInput').addEventListener('change',async(e)=>{
 window.sendMsg=async()=>{
   if(isSending) return;
   const i=document.getElementById('msgInput');const txt=i.value.trim();if(!txt||!currentChatId)return;
-  if(lastSent.text===txt && Date.now()-lastSent.time<2000) return;
-  isSending=true; lastSent={text:txt,time:Date.now()};
-  const btn=document.getElementById('sendBtn'); if(btn){btn.style.opacity="0.5"; btn.disabled=true;}
+  isSending=true;
+  const btn=document.getElementById('sendBtn'); if(btn){btn.disabled=true;}
   try{
     const payload={text:txt,senderId:myId,senderEmail:myEmail,time:Date.now(),status:'sent'};if(replyData)payload.replyTo=replyData;
     const r=push(ref(db,`chats/${currentChatId}/messages`));await set(r,payload);
@@ -289,7 +255,7 @@ window.sendMsg=async()=>{
     if(isAdmin)await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}).catch(()=>{});else await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}).catch(()=>{});
     i.value="";cancelReply();
   }catch(e){showToast('Failed');}
-  setTimeout(()=>{isSending=false; if(btn){btn.style.opacity="1"; btn.disabled=false;}},800);
+  setTimeout(()=>{isSending=false; if(btn) btn.disabled=false;},500);
 }
 window.closeChat=()=>{
   if(currentMessagesRef){off(currentMessagesRef);currentMessagesRef=null;}

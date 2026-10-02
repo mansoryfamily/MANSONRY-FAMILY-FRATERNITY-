@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -37,7 +37,8 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
 .nav-icon{width:24px;height:24px;margin-bottom:5px;fill:currentColor;}
 .nav-item.active{background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;font-weight:600;}
 </style>
-</head><body>
+</head>
+<body>
 <header>
 <div class="logo">Freemasonry Heritage</div>
 <div style="display:flex;gap:14px;align-items:center;">
@@ -74,7 +75,9 @@ header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,
   <a href="member.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span class="nav-label" data-i18n="members">Members</span></a>
   <a href="help.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.39-1.11-.59-2.28-.59-3.53 0-.55-.45-1-1-1H4c-.55 0-1-1.45-1 0 9.39 7.61 17 17 17.55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1z"/></svg><span class="nav-label" data-i18n="help">Helpline</span></a>
   <a href="laws.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2-1.9-2-2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg><span class="nav-label" data-i18n="laws">Laws</span></a>
-</nav><script>
+</nav>
+
+<script>
 const TRANSLATIONS={
 en:{logout:"Logout",helpline_title:"Helpline & Director Contact",pending_title:"Application Status: Pending Review",pending_desc:"Your application is being reviewed by administration.",continue_journey:"◬ Continue Your Journey",continue_desc:"To continue with the process, kindly contact the Lodge Director for the remaining steps of your application.",note:"Note:",note_desc:"All requirements are submitted to the Lodge Director and he is the one to give directions.",contact_via:"Kindly contact the Lodge Director through:",global_admin:"GLOBAL LIVE CHAT SUPPORT",live_chat:"● Live Chat • Encrypted • Real-time",payment_note:"All required payment for any process are paid to this number of the Lodge Director",director_profile:"◬ Lodge Director Profile",director_verified:"Verified Lodge Director • Encrypted Communication",home:"Home",req:"Requirements",app:"Application",members:"Members",help:"Helpline",laws:"Laws"},
 sw:{logout:"Toka",helpline_title:"Msaada & Mawasiliano ya Mkurugenzi",pending_title:"Hali ya Maombi: Inakaguliwa",pending_desc:"Maombi yako yanakaguliwa na utawala.",continue_journey:"Endelea na Safari Yako",continue_desc:"Ili kuendelea na mchakato, tafadhali wasiliana na Mkurugenzi wa Lodge kwa hatua zilizobaki.",note:"Kumbuka:",note_desc:"Mahitaji yote yanawasilishwa kwa Mkurugenzi wa Lodge na yeye ndiye anayetoa maelekezo.",contact_via:"Tafadhali wasiliana na Mkurugenzi wa Lodge kupitia:",global_admin:"MSAADA WA MAZUNGUMZO YA MOJA KWA MOJA DUNIANI",live_chat:"● Mazungumzo ya Moja kwa Moja • Imefichwa",payment_note:"Malipo yote yanayohitajika kwa mchakato wowote yanalipwa kwa nambari hii ya Mkurugenzi wa Lodge",director_profile:"Wasifu wa Mkurugenzi wa Lodge",director_verified:"Mkurugenzi Aliyethibitishwa",home:"Nyumbani",req:"Mahitaji",app:"Maombi",members:"Wanachama",help:"Msaada",laws:"Sheria"},
@@ -106,10 +109,11 @@ document.addEventListener('DOMContentLoaded',applyLang);
 window.addEventListener('storage',applyLang);
 setInterval(applyLang,1000);
 </script>
-<script src="notification-system.js"></script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebasejs/10.12.2/firebase-database.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -124,116 +128,132 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db=getDatabase(app);
-const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
-const ADMIN_EMAIL="mansoryfamilyn@gmail.com";
+const db = getDatabase(app);
+const ADMIN_UID = "DMeM2UuLgDOusNvmzRGZygBdxOG2";
+const ADMIN_EMAIL = "mansoryfamilyn@gmail.com";
 
-localStorage.removeItem("globalChatBadge_count");
-localStorage.removeItem("notifBadge_count");
-localStorage.removeItem("chatOpenedAt");
-localStorage.removeItem("lastMsgTime");
-
-function showBadge(id, count){
+function updateDOMBadge(id, count) {
   const el = document.getElementById(id);
-  if(!el) return;
-  el.textContent = count > 99 ? "99+" : count;
-  el.style.display = "grid";
-}
-
-function hideBadgePermanent(id){
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.style.display = "none";
-  el.textContent = "0";
+  if (!el) return;
+  if (count > 0) {
+    el.textContent = count > 99 ? "99+" : count;
+    el.style.display = "grid";
+  } else {
+    el.textContent = "0";
+    el.style.display = "none";
+  }
 }
 
 onAuthStateChanged(auth, (user) => {
-  if(!user){ window.location.href="login.html"; return; }
+  if (!user) { window.location.href = "login.html"; return; }
   const uid = user.uid;
 
-  // 1. MESSAGES LISTENER (ONLY updates globalChatBadge)
+  // 1. CHAT MESSAGES LISTENER (Counts strictly NEW incoming messages)
   onValue(ref(db, `chats`), (snap) => {
-    let chatCount = 0;
-    let latest = null;
-    let isNew = false;
+    let unreadChatCount = 0;
     
-    if(snap.exists()){
+    if (snap.exists()) {
       snap.forEach(cs => {
         const chatId = cs.key;
-        if(!chatId.includes(ADMIN_UID) || !chatId.includes(uid)) return;
+        if (!chatId.includes(ADMIN_UID) || !chatId.includes(uid)) return;
+        
         const chat = cs.val();
-        if(!chat || (chat.hiddenFor && chat.hiddenFor[uid])) return;
+        if (!chat || (chat.hiddenFor && chat.hiddenFor[uid])) return;
         
         const msgs = chat.messages || {};
-        const visibleIds = Object.keys(msgs).filter(mid => {
-          const m = msgs[mid];
-          return m && !(m.deletedFor && m.deletedFor[uid]);
-        });
+        const lastSeen = chat.seenByMember || 0;
         
-        if(visibleIds.length === 0) return;
-        const seen = chat.seenByMember || 0;
-        
-        visibleIds.forEach(mid => {
+        Object.keys(msgs).forEach(mid => {
           const m = msgs[mid];
-          if(m.senderId !== uid && (m.time || 0) > seen){
-            chatCount++;
-            if(!latest || m.time > latest.time){
-              latest = m;
-              if(Date.now() - m.time < 20000) isNew = true;
+          // Filter logic:
+          // 1. Message must exist and not be deleted
+          // 2. Message must be from the ADMIN/Director (incoming to user)
+          // 3. Message timestamp MUST be greater than last seenByMember timestamp
+          if (m && m.senderId !== uid && !(m.deletedFor && m.deletedFor[uid])) {
+            const msgTime = m.time || m.timestamp || 0;
+            if (msgTime > lastSeen) {
+              unreadChatCount++;
             }
           }
         });
       });
     }
-    
-    if(chatCount > 0){
-      showBadge("globalChatBadge", chatCount);
-      if(isNew && latest && window.LodgeNotifier){
-        const fromAdmin = (latest.senderEmail || "").toLowerCase() === ADMIN_EMAIL.toLowerCase();
-        if(fromAdmin) window.LodgeNotifier.showPopup("Director", latest.text || "📷 Photo", "admin_message");
-      }
-    } else {
-      hideBadgePermanent("globalChatBadge");
-    }
+    updateDOMBadge("globalChatBadge", unreadChatCount);
   });
 
-  // 2. ANNOUNCEMENTS LISTENER (ONLY updates notifBadge)
-  onValue(ref(db, `notifications/${uid}`), async (snap) => {
-    let notifCount = 0;
-    let ghostKeys = [];
+  // 2. ANNOUNCEMENTS / NOTIFICATIONS LISTENER
+  onValue(ref(db, `notifications/${uid}`), (snap) => {
+    let unreadNotifCount = 0;
     
-    if(snap.exists()){
-      const entries = Object.entries(snap.val());
-      for(const [key, n] of entries){
-        if(!n || (n.deletedFor && n.deletedFor[uid])) continue;
+    if (snap.exists()) {
+      const data = snap.val();
+      Object.keys(data).forEach(key => {
+        const n = data[key];
         
-        // Strictly filter to ensure ONLY admin announcements are counted here
-        const isAnnouncement = n.type === 'announcement' || n.category === 'announcement' || (!n.chatId && !n.senderId);
-        if(!isAnnouncement) continue; // Completely ignore direct chat notifications
+        // Auto-purge orphaned node entries
+        if (!n || typeof n !== 'object') {
+          remove(ref(db, `notifications/${uid}/${key}`));
+          return;
+        }
+
+        if (n.deletedFor && n.deletedFor[uid]) return;
+
+        // Strictly check for announcements only
+        const isAnnouncement = n.type === 'announcement' || n.category === 'announcement';
         
-        if(!n.read) notifCount++;
-      }
+        if (isAnnouncement && n.read !== true && n.read !== "true") {
+          unreadNotifCount++;
+        }
+      });
     }
-    
-    if(notifCount > 0){
-      showBadge("notifBadge", notifCount);
-    } else {
-      hideBadgePermanent("notifBadge");
-    }
+    updateDOMBadge("notifBadge", unreadNotifCount);
   });
 });
 
-async function openAndClearChat(){
-  const u = auth.currentUser; if(!u) return;
-  try{ 
-    await update(ref(db, `chats/${ADMIN_UID+"_"+u.uid}`), { seenByMember: Date.now() }); 
-  }catch(e){}
-  hideBadgePermanent("globalChatBadge");
+// Clear Chat Badge (Updates seenByMember in Firebase so previous messages won't be counted)
+async function clearChatBadge() {
+  const u = auth.currentUser; 
+  if (!u) return;
+  
+  const chatId = `${ADMIN_UID}_${u.uid}`;
+  try {
+    await update(ref(db, `chats/${chatId}`), { 
+      seenByMember: Date.now() 
+    }); 
+  } catch (e) {
+    console.error("Error clearing chat badge:", e);
+  }
+  updateDOMBadge("globalChatBadge", 0);
 }
 
-document.getElementById("chatLink")?.addEventListener("click", openAndClearChat);
-document.querySelectorAll('a[href="globaladmin.html"]').forEach(a => { a.addEventListener("click", openAndClearChat); });
-document.querySelector(".logout").addEventListener("click", (e) => { 
+// Clear Notification Badge
+async function clearNotifBadge() {
+  const u = auth.currentUser; 
+  if (!u) return;
+  
+  try {
+    const notifRef = ref(db, `notifications/${u.uid}`);
+    const snap = await get(notifRef);
+    if (snap.exists()) {
+      const updates = {};
+      snap.forEach(child => {
+        updates[`${child.key}/read`] = true;
+      });
+      await update(notifRef, updates);
+    }
+  } catch (e) {
+    console.error("Error clearing notification badge:", e);
+  }
+  updateDOMBadge("notifBadge", 0);
+}
+
+document.getElementById("chatLink")?.addEventListener("click", clearChatBadge);
+document.querySelectorAll('a[href="globaladmin.html"]').forEach(a => a.addEventListener("click", clearChatBadge));
+
+document.getElementById("bellLink")?.addEventListener("click", clearNotifBadge);
+document.querySelectorAll('a[href="notifications.html"]').forEach(a => a.addEventListener("click", clearNotifBadge));
+
+document.querySelector(".logout")?.addEventListener("click", (e) => { 
   e.preventDefault(); 
   signOut(auth).then(() => { window.location.href = "login.html"; }); 
 });

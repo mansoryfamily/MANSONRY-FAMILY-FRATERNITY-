@@ -1,0 +1,4129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#080E1F">
+
+<title>GLOBAL ADMIN PANEL</title>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root{
+  --bg:#080E1F;
+  --card:#121D33;
+  --border:#1E2E4F;
+  --gold:#D4B16A;
+  --gold2:#F0D185;
+  --green:#00ff88;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  background:var(--bg);
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+  overflow:hidden;
+}
+
+body{
+  display:flex;
+  flex-direction:column;
+}
+
+button,
+input,
+textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+/* ================= TOP BAR ================= */
+
+.topbar{
+  height:64px;
+  min-height:64px;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  padding:0 16px;
+  position:relative;
+  z-index:50;
+}
+
+.backBtn{
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--gold);
+  font-size:20px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-left:8px;
+}
+
+.brandIcon{
+  color:var(--gold);
+  font-size:22px;
+}
+
+.brandText{
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:1px;
+}
+
+.connection{
+  margin-left:auto;
+  font-size:11px;
+  color:#aaa;
+}
+
+/*
+   IMPORTANT:
+   The notification bell has intentionally been removed.
+   Only the Messages icon remains.
+*/
+
+.notifIcon{
+  width:42px;
+  height:42px;
+  margin-left:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  color:var(--gold);
+  font-size:20px;
+  cursor:pointer;
+}
+
+.notifCount,
+.globalChatBadge{
+  position:absolute;
+  top:1px;
+  right:0;
+  min-width:17px;
+  height:17px;
+  padding:0 4px;
+  border-radius:20px;
+  background:#e53935;
+  color:#fff;
+  font-size:10px;
+  font-weight:700;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--bg);
+}
+
+.globalChatBadge{
+  display:none;
+}
+
+/* ================= MAIN ================= */
+
+.main{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  padding:16px;
+}
+
+.sectionTitle{
+  color:var(--gold2);
+  font-size:13px;
+  letter-spacing:1px;
+  margin-bottom:12px;
+  text-transform:uppercase;
+}
+
+.chatList{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.chatCard{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  cursor:pointer;
+  transition:.15s;
+}
+
+.chatCard:active{
+  transform:scale(.99);
+}
+
+.chatAvatar{
+  width:44px;
+  height:44px;
+  min-width:44px;
+  border-radius:50%;
+  background:#0b1428;
+  border:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--gold);
+  overflow:hidden;
+}
+
+.chatAvatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.chatInfo{
+  min-width:0;
+  flex:1;
+}
+
+.chatName{
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.chatPreview{
+  color:#9ba7bc;
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.chatTime{
+  color:#6f7b90;
+  font-size:10px;
+  white-space:nowrap;
+}
+
+.chatUnread{
+  min-width:19px;
+  height:19px;
+  padding:0 5px;
+  border-radius:20px;
+  background:var(--green);
+  color:#00160b;
+  font-size:10px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.emptyState{
+  text-align:center;
+  padding:50px 20px;
+  color:#6f7b90;
+  font-size:13px;
+}
+
+/* ================= CHAT PAGE ================= */
+
+#chatPage{
+  position:fixed;
+  inset:0;
+  background:var(--bg);
+  z-index:100;
+  display:none;
+  flex-direction:column;
+}
+
+.chatHeader{
+  height:64px;
+  min-height:64px;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  padding:0 12px;
+}
+
+.chatBack{
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--gold);
+  font-size:20px;
+}
+
+.chatHeaderAvatar{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  margin-right:9px;
+  border:1px solid var(--border);
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--gold);
+  background:#0b1428;
+}
+
+.chatHeaderAvatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.chatHeaderInfo{
+  flex:1;
+  min-width:0;
+}
+
+.chatHeaderName{
+  font-size:14px;
+  font-weight:700;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.chatHeaderStatus{
+  font-size:10px;
+  color:#738099;
+  margin-top:3px;
+}
+
+.chatMenuBtn{
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#aab4c7;
+  cursor:pointer;
+}
+
+#messages{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  padding:14px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.messageEmpty{
+  margin:auto;
+  text-align:center;
+  color:#69758b;
+  font-size:12px;
+  padding:30px;
+}
+
+.msgRow{
+  display:flex;
+  width:100%;
+}
+
+.msgRow.mine{
+  justify-content:flex-end;
+}
+
+.msgRow.theirs{
+  justify-content:flex-start;
+}
+
+.msgBubble{
+  max-width:78%;
+  padding:9px 11px;
+  border-radius:13px;
+  background:#17233b;
+  border:1px solid var(--border);
+  font-size:13px;
+  line-height:1.45;
+  word-break:break-word;
+}
+
+.msgRow.mine .msgBubble{
+  background:#263b32;
+  border-color:#315d49;
+}
+
+.msgMeta{
+  margin-top:4px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:5px;
+  font-size:9px;
+  color:#78859b;
+}
+
+.msgImage{
+  max-width:220px;
+  max-height:260px;
+  border-radius:9px;
+  display:block;
+}
+
+.replyBar{
+  display:none;
+  background:#101a2d;
+  border-top:1px solid var(--border);
+  padding:8px 12px;
+}
+
+.replyBarInner{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.replyAccent{
+  width:3px;
+  height:32px;
+  background:var(--gold);
+  border-radius:5px;
+}
+
+.replyText{
+  flex:1;
+  min-width:0;
+}
+
+.replyTitle{
+  font-size:10px;
+  color:var(--gold);
+  margin-bottom:3px;
+}
+
+.replyContent{
+  font-size:11px;
+  color:#aab4c7;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.replyClose{
+  color:#77849a;
+  padding:5px;
+  cursor:pointer;
+}
+
+.inputBar{
+  min-height:62px;
+  background:var(--card);
+  border-top:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 10px;
+}
+
+.mediaBtn{
+  width:40px;
+  height:40px;
+  border:0;
+  background:transparent;
+  color:var(--gold);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:19px;
+}
+
+#messageInput{
+  flex:1;
+  min-width:0;
+  height:40px;
+  border:1px solid var(--border);
+  border-radius:20px;
+  outline:none;
+  background:#0b1428;
+  color:#fff;
+  padding:0 14px;
+}
+
+#messageInput::placeholder{
+  color:#59667c;
+}
+
+.sendBtn{
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:50%;
+  background:var(--gold);
+  color:#0b1020;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.sendBtn:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+/* ================= MENUS ================= */
+
+.popupMenu{
+  position:fixed;
+  z-index:300;
+  background:#111c31;
+  border:1px solid var(--border);
+  border-radius:10px;
+  box-shadow:0 12px 35px rgba(0,0,0,.4);
+  display:none;
+  min-width:180px;
+  overflow:hidden;
+}
+
+.popupItem{
+  padding:12px 14px;
+  font-size:12px;
+  color:#d7deeb;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  cursor:pointer;
+}
+
+.popupItem:hover{
+  background:#18253e;
+}
+
+.popupItem.danger{
+  color:#ff7777;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:82px;
+  transform:translateX(-50%);
+  z-index:500;
+  background:#17233b;
+  border:1px solid var(--border);
+  color:#fff;
+  padding:10px 15px;
+  border-radius:20px;
+  font-size:11px;
+  display:none;
+  box-shadow:0 8px 25px rgba(0,0,0,.35);
+}
+
+.hidden{
+  display:none!important;
+}
+
+@media(max-width:600px){
+  .main{
+    padding:12px;
+  }
+
+  .msgBubble{
+    max-width:84%;
+  }
+}
+</style>
+</head><body>
+
+<!-- =========================================================
+     TOP BAR
+     ========================================================= -->
+
+<header class="topbar">
+
+  <a href="help.html" class="backBtn" aria-label="Back">
+    <i class="fa fa-arrow-left"></i>
+  </a>
+
+  <div class="brand">
+    <i class="fa-solid fa-compass-drafting brandIcon"></i>
+
+    <div class="brandText">
+      GLOBAL ADMIN
+    </div>
+  </div>
+
+  <div id="connectionStatus" class="connection">
+    Connecting...
+  </div>
+
+  <!--
+    MESSAGE ICON ONLY.
+    Notification bell has been permanently removed.
+  -->
+  <div
+    id="notifIcon"
+    class="notifIcon"
+    role="button"
+    tabindex="0"
+    aria-label="Messages"
+    title="Messages"
+  >
+    <i class="fa-solid fa-comments"></i>
+
+    <!--
+      Badge is controlled only by NEW unread messages.
+      It is hidden when there are no unread messages.
+    -->
+    <span id="notifCount" class="notifCount">0</span>
+    <span id="globalChatBadge" class="globalChatBadge">0</span>
+  </div>
+
+</header>
+
+
+<!-- =========================================================
+     MAIN CHAT LIST
+     ========================================================= -->
+
+<main class="main">
+
+  <div class="sectionTitle">
+    Messages
+  </div>
+
+  <div id="chatList" class="chatList">
+
+    <!--
+      No spinner here.
+
+      The list starts immediately. Firebase will populate it
+      when the realtime listener returns data.
+    -->
+    <div id="chatListEmpty" class="emptyState">
+      No messages yet
+    </div>
+
+  </div>
+
+</main>
+
+
+<!-- =========================================================
+     FULL-SCREEN CHAT PAGE
+     ========================================================= -->
+
+<section id="chatPage">
+
+  <!-- ================= CHAT HEADER ================= -->
+
+  <header class="chatHeader">
+
+    <div
+      id="chatBack"
+      class="chatBack"
+      role="button"
+      tabindex="0"
+      aria-label="Back to messages"
+    >
+      <i class="fa fa-arrow-left"></i>
+    </div>
+
+
+    <div id="chatHeaderAvatar" class="chatHeaderAvatar">
+      <i class="fa fa-user"></i>
+    </div>
+
+
+    <div class="chatHeaderInfo">
+
+      <div id="chatHeaderName" class="chatHeaderName">
+        Messages
+      </div>
+
+      <div id="chatHeaderStatus" class="chatHeaderStatus">
+        Conversation
+      </div>
+
+    </div>
+
+
+    <div
+      id="chatMenuBtn"
+      class="chatMenuBtn"
+      role="button"
+      tabindex="0"
+      aria-label="Chat menu"
+    >
+      <i class="fa fa-ellipsis-vertical"></i>
+    </div>
+
+  </header>
+
+
+  <!-- ================= MESSAGES ================= -->
+
+  <div id="messages">
+
+    <!--
+      IMPORTANT:
+      There is deliberately NO "Loading..." spinner.
+
+      The user sees the conversation immediately.
+      Firebase replaces this state as soon as the cached/live
+      messages are available.
+    -->
+
+    <div id="messageEmpty" class="messageEmpty">
+      No messages yet
+    </div>
+
+  </div>
+
+
+  <!-- ================= REPLY BAR ================= -->
+
+  <div id="replyBar" class="replyBar">
+
+    <div class="replyBarInner">
+
+      <div class="replyAccent"></div>
+
+      <div class="replyText">
+
+        <div id="replyTitle" class="replyTitle">
+          Reply
+        </div>
+
+        <div id="replyContent" class="replyContent">
+          Message
+        </div>
+
+      </div>
+
+      <div
+        id="replyClose"
+        class="replyClose"
+        role="button"
+        tabindex="0"
+        aria-label="Cancel reply"
+      >
+        <i class="fa fa-xmark"></i>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================= INPUT BAR ================= -->
+
+  <div class="inputBar">
+
+    <button
+      id="mediaBtn"
+      class="mediaBtn"
+      type="button"
+      aria-label="Attach media"
+      title="Attach media"
+    >
+      <i class="fa fa-paperclip"></i>
+    </button>
+
+    <input
+      id="mediaInput"
+      type="file"
+      accept="image/*"
+      style="display:none"
+    >
+
+    <input
+      id="messageInput"
+      type="text"
+      autocomplete="off"
+      maxlength="1000"
+      placeholder="Type a message..."
+      aria-label="Message"
+    >
+
+    <button
+      id="sendBtn"
+      class="sendBtn"
+      type="button"
+      aria-label="Send message"
+      title="Send message"
+    >
+      <i class="fa fa-paper-plane"></i>
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     MESSAGE MENU
+     ========================================================= -->
+
+<div id="msgMenu" class="popupMenu">
+
+  <div
+    id="replyAction"
+    class="popupItem"
+    role="button"
+  >
+    <i class="fa fa-reply"></i>
+    <span>Reply</span>
+  </div>
+
+  <div
+    id="deleteForMeAction"
+    class="popupItem danger"
+    role="button"
+  >
+    <i class="fa fa-trash"></i>
+    <span>Delete for me</span>
+  </div>
+
+  <div
+    id="deleteForEveryoneAction"
+    class="popupItem danger"
+    role="button"
+  >
+    <i class="fa fa-trash-can"></i>
+    <span>Delete for everyone</span>
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     CHAT MENU
+     ========================================================= -->
+
+<div id="chatMenu" class="popupMenu">
+
+  <div
+    id="clearChatAction"
+    class="popupItem danger"
+    role="button"
+  >
+    <i class="fa fa-trash-can"></i>
+    <span>Clear conversation</span>
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     TOAST
+     ========================================================= -->
+
+<div id="toast" class="toast"></div>
+
+
+<!-- =========================================================
+     FIREBASE / APPLICATION CODE STARTS IN SECTION 3
+     ========================================================= --><!-- =========================================================
+     SECTION 3
+     TRANSLATIONS + FIREBASE CONFIGURATION
+     ========================================================= -->
+
+<script type="module">
+
+/* =========================================================
+   TRANSLATIONS
+   Keep your original TRANSLATIONS object here unchanged.
+   ========================================================= */
+
+const TRANSLATIONS = {
+
+  en: {
+    messages: "Messages",
+    noMessages: "No messages yet",
+    typeMessage: "Type a message...",
+    reply: "Reply",
+    deleteForMe: "Delete for me",
+    deleteForEveryone: "Delete for everyone",
+    clearConversation: "Clear conversation",
+    conversation: "Conversation",
+    sending: "Sending...",
+    sent: "Sent",
+    delivered: "Delivered",
+    read: "Read"
+  },
+
+  sw: {
+    messages: "Ujumbe",
+    noMessages: "Hakuna ujumbe bado",
+    typeMessage: "Andika ujumbe...",
+    reply: "Jibu",
+    deleteForMe: "Futa kwangu",
+    deleteForEveryone: "Futa kwa wote",
+    clearConversation: "Futa mazungumzo",
+    conversation: "Mazungumzo",
+    sending: "Inatuma...",
+    sent: "Imetumwa",
+    delivered: "Imefika",
+    read: "Imesomwa"
+  }
+
+};
+
+
+/* =========================================================
+   FIREBASE CONFIG
+   ========================================================= */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+  authDomain: "mansonry-family-fraternity.firebaseapp.com",
+  databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mansonry-family-fraternity",
+  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
+  messagingSenderId: "964415179161",
+  appId: "1:964415179161:web:cef44a38e4de304d7c6b08",
+  measurementId: "G-9Q2KEWMXVR"
+};
+
+
+/* =========================================================
+   FIREBASE IMPORTS
+   ========================================================= */
+
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getDatabase,
+  ref,
+  onValue,
+  push,
+  set,
+  remove,
+  update,
+  get,
+  off
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  getStorage,
+  ref as sRef,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+
+/* =========================================================
+   INITIALIZE FIREBASE
+   ========================================================= */
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+const auth = getAuth(app);
+
+const storage = getStorage(app);
+
+
+/* =========================================================
+   ADMIN IDENTITY
+   ========================================================= */
+
+const ADMIN_EMAIL = "mansoryfamilyn@gmail.com";
+
+const ADMIN_UID = "DMeM2UuLgDOusNvmzRGZygBdxOG2";
+
+
+/* =========================================================
+   APPLICATION STATE
+   ========================================================= */
+
+let myId = null;
+
+let myEmail = "";
+
+let isAdmin = false;
+
+let currentChatId = null;
+
+let myInfo = null;
+
+let usersCache = {};
+
+let selId = null;
+
+let selText = "";
+
+let selIsMine = false;
+
+let replyData = null;
+
+let selChatId = null;
+
+let selMediaUrl = null;
+
+
+/* =========================================================
+   SEND LOCK
+   =========================================================
+   
+   This prevents:
+   - double taps
+   - double clicks
+   - repeated Enter events
+   - duplicate media sends
+   
+   One user action creates one Firebase message.
+   ========================================================= */
+
+let isSending = false;
+
+
+/* =========================================================
+   ACTIVE LISTENERS
+   ========================================================= */
+
+let stopMessagesListener = null;
+
+let stopChatsListener = null;
+
+let stopAuthListener = null;
+
+
+/* =========================================================
+   LOCAL MESSAGE CACHE
+   =========================================================
+   
+   The cache allows the chat screen to render immediately
+   without showing a loading spinner.
+   ========================================================= */
+
+const messagesCache = new Map();
+
+const chatCache = new Map();
+
+
+/* =========================================================
+   DOM REFERENCES
+   ========================================================= */
+
+const $ = id => document.getElementById(id);
+
+const chatList = $("chatList");
+
+const chatListEmpty = $("chatListEmpty");
+
+const chatPage = $("chatPage");
+
+const messagesBox = $("messages");
+
+const messageEmpty = $("messageEmpty");
+
+const messageInput = $("messageInput");
+
+const sendBtn = $("sendBtn");
+
+const mediaBtn = $("mediaBtn");
+
+const mediaInput = $("mediaInput");
+
+const notifIcon = $("notifIcon");
+
+const notifCount = $("notifCount");
+
+const globalChatBadge = $("globalChatBadge");
+
+const connectionStatus = $("connectionStatus");
+
+const chatHeaderName = $("chatHeaderName");
+
+const chatHeaderStatus = $("chatHeaderStatus");
+
+const chatHeaderAvatar = $("chatHeaderAvatar");
+
+const replyBar = $("replyBar");
+
+const replyTitle = $("replyTitle");
+
+const replyContent = $("replyContent");
+
+const replyClose = $("replyClose");
+
+const chatBack = $("chatBack");
+
+const chatMenuBtn = $("chatMenuBtn");
+
+const msgMenu = $("msgMenu");
+
+const chatMenu = $("chatMenu");
+
+const toast = $("toast");
+
+
+/* =========================================================
+   BASIC HELPERS
+   ========================================================= */
+
+function now() {
+  return Date.now();
+}
+
+
+function safeText(value) {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value);
+}
+
+
+function escapeHtml(value) {
+
+  return safeText(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+function formatTime(timestamp) {
+
+  if (!timestamp) {
+    return "";
+  }
+
+  const date = new Date(Number(timestamp));
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
+
+function formatChatTime(timestamp) {
+
+  if (!timestamp) {
+    return "";
+  }
+
+  const date = new Date(Number(timestamp));
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  const today = new Date();
+
+  if (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  ) {
+    return formatTime(timestamp);
+  }
+
+  return date.toLocaleDateString([], {
+    day: "2-digit",
+    month: "short"
+  });
+}
+
+
+function showToast(message) {
+
+  if (!toast) {
+    return;
+  }
+
+  toast.textContent = safeText(message);
+
+  toast.style.display = "block";
+
+  clearTimeout(showToast.timer);
+
+  showToast.timer = setTimeout(() => {
+    toast.style.display = "none";
+  }, 2200);
+}
+
+
+/* =========================================================
+   BADGE CONTROL
+   =========================================================
+   
+   The badge is NEVER based on total messages.
+   It is based only on unread incoming messages.
+   ========================================================= */
+
+function setGlobalUnreadCount(count) {
+
+  const value = Math.max(0, Number(count) || 0);
+
+  if (value <= 0) {
+
+    notifCount.textContent = "0";
+    globalChatBadge.textContent = "0";
+
+    notifCount.style.display = "none";
+    globalChatBadge.style.display = "none";
+
+    return;
+  }
+
+  const displayValue = value > 99 ? "99+" : String(value);
+
+  notifCount.textContent = displayValue;
+  globalChatBadge.textContent = displayValue;
+
+  notifCount.style.display = "flex";
+  globalChatBadge.style.display = "none";
+}
+
+
+/* =========================================================
+   CONNECTION STATUS
+   ========================================================= */
+
+const connectedRef = ref(db, ".info/connected");
+
+onValue(connectedRef, snapshot => {
+
+  const connected = snapshot.val() === true;
+
+  if (connected) {
+
+    connectionStatus.textContent = "Connected";
+    connectionStatus.style.color = "#00ff88";
+
+  } else {
+
+    connectionStatus.textContent = "Offline";
+    connectionStatus.style.color = "#ff7777";
+
+  }
+
+});
+
+
+/* =========================================================
+   NO NOTIFICATION SYSTEM
+   =========================================================
+   
+   Deliberately NOT included:
+   
+   - Notification.requestPermission()
+   - notification-system.js
+   - LodgeNotifier
+   - service-worker notification calls
+   - browser notification popups
+   - notification badge listeners
+   
+   The only badge remaining is the Messages unread badge.
+   ========================================================= */
+
+
+/* =========================================================
+   AUTHENTICATION
+   ========================================================= */
+
+stopAuthListener = onAuthStateChanged(auth, async user => {
+
+  if (!user) {
+
+    myId = null;
+    myEmail = "";
+    isAdmin = false;
+
+    connectionStatus.textContent = "Not signed in";
+
+    if (stopChatsListener) {
+      stopChatsListener();
+      stopChatsListener = null;
+    }
+
+    return;
+  }
+
+
+  myId = user.uid;
+
+  myEmail = safeText(user.email).toLowerCase();
+
+  isAdmin =
+    myId === ADMIN_UID ||
+    myEmail === ADMIN_EMAIL.toLowerCase();
+
+
+  if (!isAdmin) {
+
+    showToast("Administrator access required.");
+
+    return;
+  }
+
+
+  /*
+    Start the chat listener only once after authentication.
+  */
+
+  loadChats();
+
+});
+
+</script><!-- =========================================================
+     SECTION 4
+     CHAT LIST + UNREAD COUNT + GHOST MESSAGE PROTECTION
+     ========================================================= -->
+
+<script type="module">
+
+/* =========================================================
+   CHAT ID HELPERS
+   ========================================================= */
+
+function isAdminChat(chatId) {
+  return chatId === "admin";
+}
+
+
+function getOtherUserId(chatId) {
+
+  if (!chatId || isAdminChat(chatId)) {
+    return null;
+  }
+
+  const parts = String(chatId).split("_");
+
+  if (parts.length < 2) {
+    return null;
+  }
+
+  if (parts[0] === ADMIN_UID) {
+    return parts[1];
+  }
+
+  if (parts[1] === ADMIN_UID) {
+    return parts[0];
+  }
+
+  return null;
+}
+
+
+/* =========================================================
+   MESSAGE VISIBILITY
+   ========================================================= */
+
+function isMessageVisible(message, userId = myId) {
+
+  if (!message || !userId) {
+    return false;
+  }
+
+  /*
+    A message deleted specifically for this user is hidden.
+  */
+
+  if (
+    message.deletedFor &&
+    typeof message.deletedFor === "object" &&
+    message.deletedFor[userId] === true
+  ) {
+    return false;
+  }
+
+  /*
+    A message deleted for everyone is hidden.
+  */
+
+  if (
+    message.deletedForEveryone === true ||
+    message.deleted === true
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+
+/* =========================================================
+   GET VISIBLE MESSAGES
+   ========================================================= */
+
+function getVisibleMessages(chatData) {
+
+  const messages = chatData?.messages || {};
+
+  return Object.entries(messages)
+    .map(([id, message]) => ({
+      id,
+      ...(message || {})
+    }))
+    .filter(message => isMessageVisible(message, myId))
+    .sort((a, b) => {
+      return Number(a.time || 0) - Number(b.time || 0);
+    });
+}
+
+
+/* =========================================================
+   GET LATEST REAL MESSAGE
+   =========================================================
+   
+   IMPORTANT:
+   We do NOT trust chat.lastMessage for the preview.
+   
+   Firebase may still contain an old lastMessage after the
+   actual message has been deleted.
+   
+   Therefore the preview always comes from messages.
+   ========================================================= */
+
+function getLatestVisibleMessage(chatData) {
+
+  const visible = getVisibleMessages(chatData);
+
+  if (!visible.length) {
+    return null;
+  }
+
+  return visible[visible.length - 1];
+}
+
+
+/* =========================================================
+   UNREAD CHECK
+   ========================================================= */
+
+function isUnreadMessage(message, chatData) {
+
+  if (!message) {
+    return false;
+  }
+
+  /*
+    Only incoming messages count as unread.
+
+    Messages sent by the admin do NOT increase the admin's
+    unread badge.
+  */
+
+  if (safeText(message.senderId) === myId) {
+    return false;
+  }
+
+
+  if (!isMessageVisible(message, myId)) {
+    return false;
+  }
+
+
+  const seenAt = Number(
+    chatData?.seenByAdmin ||
+    chatData?.seenAt?.[ADMIN_UID] ||
+    0
+  );
+
+
+  /*
+    A message is unread only when it arrived AFTER the last
+    time this chat was marked as read.
+  */
+
+  return Number(message.time || 0) > seenAt;
+}
+
+
+/* =========================================================
+   COUNT UNREAD MESSAGES FOR ONE CHAT
+   ========================================================= */
+
+function getUnreadCount(chatData) {
+
+  if (!chatData) {
+    return 0;
+  }
+
+  const messages = getVisibleMessages(chatData);
+
+  let count = 0;
+
+  for (const message of messages) {
+
+    if (isUnreadMessage(message, chatData)) {
+      count++;
+    }
+
+  }
+
+  return count;
+}
+
+
+/* =========================================================
+   GET CHAT SUMMARY
+   ========================================================= */
+
+function getChatSummary(chatId, chatData) {
+
+  const latest = getLatestVisibleMessage(chatData);
+
+  /*
+    No visible messages means there is no valid preview.
+
+    This prevents deleted/ghost conversations from appearing
+    with an old Firebase lastMessage.
+  */
+
+  if (!latest) {
+
+    return {
+      chatId,
+      hasMessage: false,
+      preview: "",
+      time: 0,
+      unread: 0,
+      latest: null
+    };
+
+  }
+
+
+  let preview = "";
+
+  if (latest.imageUrl || latest.mediaUrl) {
+
+    preview = "📷 Image";
+
+  } else if (latest.text) {
+
+    preview = safeText(latest.text);
+
+  } else {
+
+    preview = "Message";
+
+  }
+
+
+  return {
+    chatId,
+    hasMessage: true,
+    preview,
+    time: Number(latest.time || 0),
+    unread: getUnreadCount(chatData),
+    latest
+  };
+
+}
+
+
+/* =========================================================
+   CHAT NAME
+   ========================================================= */
+
+function getChatName(chatId, chatData) {
+
+  if (isAdminChat(chatId)) {
+    return "Administration";
+  }
+
+
+  const otherId = getOtherUserId(chatId);
+
+
+  if (otherId && usersCache[otherId]) {
+
+    const user = usersCache[otherId];
+
+    return (
+      user.name ||
+      user.fullName ||
+      user.username ||
+      user.email ||
+      "Member"
+    );
+
+  }
+
+
+  if (chatData?.info?.name) {
+    return safeText(chatData.info.name);
+  }
+
+
+  if (chatData?.info?.fullName) {
+    return safeText(chatData.info.fullName);
+  }
+
+
+  return "Member";
+
+}
+
+
+/* =========================================================
+   CHAT AVATAR
+   ========================================================= */
+
+function getChatAvatar(chatId, chatData) {
+
+  let photo = "";
+
+  if (chatData?.info?.photoURL) {
+    photo = chatData.info.photoURL;
+  }
+
+  const otherId = getOtherUserId(chatId);
+
+  if (
+    otherId &&
+    usersCache[otherId] &&
+    usersCache[otherId].photoURL
+  ) {
+    photo = usersCache[otherId].photoURL;
+  }
+
+
+  if (!photo) {
+
+    return `
+      <i class="fa fa-user"></i>
+    `;
+
+  }
+
+
+  return `
+    <img
+      src="${escapeHtml(photo)}"
+      alt=""
+      onerror="this.style.display='none';"
+    >
+  `;
+
+}
+
+
+/* =========================================================
+   RENDER ONE CHAT CARD
+   ========================================================= */
+
+function renderChatCard(chatId, chatData) {
+
+  const summary = getChatSummary(chatId, chatData);
+
+  /*
+    IMPORTANT:
+    If there are no visible messages, do not create a card from
+    stale lastMessage data.
+
+    This is the ghost/deleted-message protection.
+  */
+
+  if (!summary.hasMessage) {
+    return "";
+  }
+
+
+  const name = getChatName(chatId, chatData);
+
+  const avatar = getChatAvatar(chatId, chatData);
+
+  const unread =
+    summary.unread > 0
+      ? `
+        <span class="chatUnread">
+          ${summary.unread > 99 ? "99+" : summary.unread}
+        </span>
+      `
+      : "";
+
+
+  return `
+    <div
+      class="chatCard"
+      data-chat-id="${escapeHtml(chatId)}"
+    >
+
+      <div class="chatAvatar">
+        ${avatar}
+      </div>
+
+      <div class="chatInfo">
+
+        <div class="chatName">
+          ${escapeHtml(name)}
+        </div>
+
+        <div class="chatPreview">
+          ${escapeHtml(summary.preview)}
+        </div>
+
+      </div>
+
+      <div>
+
+        <div class="chatTime">
+          ${escapeHtml(formatChatTime(summary.time))}
+        </div>
+
+        ${unread}
+
+      </div>
+
+    </div>
+  `;
+
+}
+
+
+/* =========================================================
+   RENDER ALL CHATS
+   ========================================================= */
+
+function renderChatList(chats) {
+
+  const cards = [];
+
+  let totalUnread = 0;
+
+
+  for (const [chatId, chatData] of Object.entries(chats || {})) {
+
+    /*
+      Cache the raw Firebase data.
+    */
+
+    chatCache.set(chatId, chatData);
+
+
+    /*
+      Do not display hidden/empty/ghost conversations.
+    */
+
+    const card = renderChatCard(chatId, chatData);
+
+    if (card) {
+
+      cards.push({
+        html: card,
+        time: getChatSummary(chatId, chatData).time
+      });
+
+      totalUnread += getUnreadCount(chatData);
+
+    }
+
+  }
+
+
+  /*
+    Newest conversations first.
+  */
+
+  cards.sort((a, b) => b.time - a.time);
+
+
+  if (!cards.length) {
+
+    chatList.innerHTML = `
+      <div id="chatListEmpty" class="emptyState">
+        No messages yet
+      </div>
+    `;
+
+  } else {
+
+    chatList.innerHTML = cards
+      .map(item => item.html)
+      .join("");
+
+  }
+
+
+  /*
+    Badge is ONLY the number of unread incoming messages.
+    It is never the total number of messages.
+  */
+
+  setGlobalUnreadCount(totalUnread);
+
+
+  /*
+    Attach card listeners after rendering.
+  */
+
+  document
+    .querySelectorAll(".chatCard")
+    .forEach(card => {
+
+      card.addEventListener("click", () => {
+
+        const chatId = card.dataset.chatId;
+
+        if (chatId) {
+          openChat(chatId);
+        }
+
+      });
+
+    });
+
+}
+
+
+/* =========================================================
+   LOAD CHATS
+   ========================================================= */
+
+function loadChats() {
+
+  if (!myId || !isAdmin) {
+    return;
+  }
+
+
+  /*
+    Prevent multiple realtime listeners.
+
+    Without this, repeatedly opening the application or
+    re-authenticating could create multiple listeners.
+  */
+
+  if (stopChatsListener) {
+    stopChatsListener();
+    stopChatsListener = null;
+  }
+
+
+  const chatsRef = ref(db, "chats");
+
+
+  stopChatsListener = onValue(
+    chatsRef,
+    snapshot => {
+
+      const chats = snapshot.val() || {};
+
+      renderChatList(chats);
+
+    },
+    error => {
+
+      console.error("Chat list error:", error);
+
+      showToast("Unable to load messages.");
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   REFRESH CURRENT CHAT CARD
+   ========================================================= */
+
+function refreshCurrentChatCard() {
+
+  if (!currentChatId) {
+    return;
+  }
+
+
+  const cached = chatCache.get(currentChatId);
+
+  if (!cached) {
+    return;
+  }
+
+
+  /*
+    The main chat listener normally refreshes this automatically.
+    This helper is useful after delete/read operations.
+  */
+
+  const cards = Array.from(
+    document.querySelectorAll(".chatCard")
+  );
+
+  const card = cards.find(
+    item => item.dataset.chatId === currentChatId
+  );
+
+
+  if (!card) {
+    return;
+  }
+
+
+  const summary = getChatSummary(
+    currentChatId,
+    cached
+  );
+
+
+  if (!summary.hasMessage) {
+
+    card.remove();
+
+    return;
+  }
+
+
+  const preview = card.querySelector(".chatPreview");
+
+  const time = card.querySelector(".chatTime");
+
+
+  if (preview) {
+    preview.textContent = summary.preview;
+  }
+
+  if (time) {
+    time.textContent = formatChatTime(summary.time);
+  }
+
+}
+
+
+/* =========================================================
+   KEEP BADGE CONSISTENT
+   ========================================================= */
+
+function recalculateUnreadBadge() {
+
+  let total = 0;
+
+
+  for (const [chatId, chatData] of chatCache.entries()) {
+
+    /*
+      Do not count the chat currently being viewed.
+
+      Opening a chat marks its current messages as read.
+    */
+
+    if (chatId === currentChatId) {
+      continue;
+    }
+
+
+    total += getUnreadCount(chatData);
+
+  }
+
+
+  setGlobalUnreadCount(total);
+
+}
+
+
+/* =========================================================
+   MESSAGE ICON
+   =========================================================
+   
+   Opening the Messages icon immediately shows the chat list.
+   There is no loading spinner.
+   ========================================================= */
+
+function openMessages() {
+
+  chatPage.style.display = "none";
+
+  document.body.style.overflow = "hidden";
+
+  /*
+    Re-render from cache immediately.
+  */
+
+  renderChatList(
+    Object.fromEntries(chatCache.entries())
+  );
+
+
+  /*
+    The badge disappears immediately when Messages is opened.
+
+    The individual chat read markers are updated when that
+    conversation itself is opened.
+  */
+
+  setGlobalUnreadCount(0);
+
+}
+
+
+if (notifIcon) {
+
+  notifIcon.addEventListener("click", openMessages);
+
+  notifIcon.addEventListener("keydown", event => {
+
+    if (
+      event.key === "Enter" ||
+      event.key === " "
+    ) {
+
+      event.preventDefault();
+
+      openMessages();
+
+    }
+
+  });
+
+}
+
+</script><!-- =========================================================
+     SECTION 5
+     OPEN CHAT + READ STATE + MESSAGE SENDING
+     ========================================================= -->
+
+<script type="module">
+
+/* =========================================================
+   CHAT HEADER
+   ========================================================= */
+
+function updateChatHeader(chatId, chatData = {}) {
+
+  const name = getChatName(chatId, chatData);
+
+  const avatar = getChatAvatar(chatId, chatData);
+
+  chatHeaderName.textContent = name;
+
+  chatHeaderStatus.textContent = "Conversation";
+
+  chatHeaderAvatar.innerHTML = avatar;
+
+}
+
+
+/* =========================================================
+   RENDER MESSAGE EMPTY STATE
+   ========================================================= */
+
+function showMessageEmpty(text = "No messages yet") {
+
+  messagesBox.innerHTML = `
+    <div class="messageEmpty" id="messageEmpty">
+      ${escapeHtml(text)}
+    </div>
+  `;
+
+}
+
+
+/* =========================================================
+   RENDER CACHED MESSAGES IMMEDIATELY
+   ========================================================= */
+
+function renderCachedMessages(chatId) {
+
+  const cached = messagesCache.get(chatId);
+
+  /*
+    IMPORTANT:
+    No loading spinner is ever shown.
+  */
+
+  if (!cached) {
+
+    showMessageEmpty("No messages yet");
+
+    return;
+  }
+
+
+  renderMessages(cached);
+
+}
+
+
+/* =========================================================
+   RENDER ALL MESSAGES
+   ========================================================= */
+
+function renderMessages(messagesObject) {
+
+  const entries = Object.entries(messagesObject || {})
+    .map(([id, message]) => ({
+      id,
+      ...(message || {})
+    }))
+    .filter(message => isMessageVisible(message, myId))
+    .sort((a, b) => {
+      return Number(a.time || 0) - Number(b.time || 0);
+    });
+
+
+  if (!entries.length) {
+
+    showMessageEmpty("No messages yet");
+
+    return;
+  }
+
+
+  messagesBox.innerHTML = entries
+    .map(renderMessage)
+    .join("");
+
+
+  /*
+    Scroll only after actual messages have rendered.
+  */
+
+  requestAnimationFrame(() => {
+
+    messagesBox.scrollTop =
+      messagesBox.scrollHeight;
+
+  });
+
+
+  /*
+    Message selection/menu listeners.
+  */
+
+  document
+    .querySelectorAll(".messageSelectable")
+    .forEach(element => {
+
+      element.addEventListener("click", event => {
+
+        event.stopPropagation();
+
+        const messageId =
+          element.dataset.messageId;
+
+        const chatId =
+          element.dataset.chatId;
+
+        const message =
+          entries.find(item => item.id === messageId);
+
+
+        if (!message) {
+          return;
+        }
+
+
+        selectMessage(
+          chatId,
+          messageId,
+          message
+        );
+
+      });
+
+    });
+
+}
+
+
+/* =========================================================
+   RENDER ONE MESSAGE
+   ========================================================= */
+
+function renderMessage(message) {
+
+  const mine =
+    safeText(message.senderId) === myId;
+
+
+  const rowClass =
+    mine ? "mine" : "theirs";
+
+
+  let body = "";
+
+
+  /*
+    Reply preview.
+  */
+
+  let replyHtml = "";
+
+  if (message.replyTo) {
+
+    replyHtml = `
+      <div style="
+        border-left:3px solid var(--gold);
+        padding-left:7px;
+        margin-bottom:7px;
+        color:#8f9bb0;
+        font-size:10px;
+      ">
+        ${escapeHtml(
+          message.replyTo.text ||
+          "Message"
+        )}
+      </div>
+    `;
+
+  }
+
+
+  /*
+    Image/media message.
+  */
+
+  const mediaUrl =
+    message.imageUrl ||
+    message.mediaUrl ||
+    "";
+
+
+  if (mediaUrl) {
+
+    body += `
+      <img
+        class="msgImage"
+        src="${escapeHtml(mediaUrl)}"
+        alt="Image"
+      >
+    `;
+
+  }
+
+
+  /*
+    Text message.
+  */
+
+  if (message.text) {
+
+    body += `
+      <div>
+        ${escapeHtml(message.text)}
+      </div>
+    `;
+
+  }
+
+
+  /*
+    Fallback for malformed/empty messages.
+  */
+
+  if (!body) {
+
+    body = `
+      <div style="color:#7c879b;">
+        Message
+      </div>
+    `;
+
+  }
+
+
+  let status = "";
+
+  if (mine) {
+
+    const value =
+      safeText(message.status || "sent");
+
+    let icon = "✓";
+
+    if (value === "read") {
+      icon = "✓✓";
+    } else if (value === "delivered") {
+      icon = "✓✓";
+    }
+
+    status = `
+      <span>${icon}</span>
+    `;
+
+  }
+
+
+  return `
+    <div
+      class="msgRow ${rowClass}"
+    >
+
+      <div
+        class="msgBubble messageSelectable"
+        data-message-id="${escapeHtml(message.id)}"
+        data-chat-id="${escapeHtml(currentChatId || "")}"
+      >
+
+        ${replyHtml}
+
+        ${body}
+
+        <div class="msgMeta">
+
+          <span>
+            ${escapeHtml(formatTime(message.time))}
+          </span>
+
+          ${status}
+
+        </div>
+
+      </div>
+
+    </div>
+  `;
+
+}
+
+
+/* =========================================================
+   MARK CHAT AS READ
+   =========================================================
+   
+   We use the timestamp of the newest REAL visible incoming
+   message, not Date.now().
+   
+   This prevents old messages from becoming unread again.
+   ========================================================= */
+
+async function markChatAsRead(chatId, chatData) {
+
+  if (!chatId || !chatData || !myId) {
+    return;
+  }
+
+
+  const visible =
+    getVisibleMessages(chatData);
+
+
+  let latestIncomingTime = 0;
+
+
+  for (const message of visible) {
+
+    if (
+      safeText(message.senderId) !== myId &&
+      Number(message.time || 0) >
+        latestIncomingTime
+    ) {
+
+      latestIncomingTime =
+        Number(message.time || 0);
+
+    }
+
+  }
+
+
+  if (!latestIncomingTime) {
+    return;
+  }
+
+
+  const oldSeen =
+    Number(chatData.seenByAdmin || 0);
+
+
+  /*
+    Never move the read marker backwards.
+  */
+
+  if (latestIncomingTime <= oldSeen) {
+
+    setGlobalUnreadCount(0);
+
+    return;
+  }
+
+
+  try {
+
+    await update(
+      ref(db, `chats/${chatId}`),
+      {
+        seenByAdmin: latestIncomingTime
+      }
+    );
+
+
+    /*
+      Update local cache immediately so the badge cannot
+      reappear while Firebase synchronizes.
+    */
+
+    const cached =
+      chatCache.get(chatId);
+
+
+    if (cached) {
+
+      cached.seenByAdmin =
+        latestIncomingTime;
+
+      chatCache.set(
+        chatId,
+        cached
+      );
+
+    }
+
+
+    /*
+      The current chat is now read.
+    */
+
+    recalculateUnreadBadge();
+
+
+  } catch (error) {
+
+    console.error(
+      "Unable to mark chat as read:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   OPEN CHAT
+   ========================================================= */
+
+async function openChat(chatId) {
+
+  if (!chatId) {
+    return;
+  }
+
+
+  /*
+    Stop the previous message listener first.
+
+    This is critical.
+
+    Without this, every reopening creates another realtime
+    listener and can cause repeated rendering / duplicate
+    operations.
+  */
+
+  if (stopMessagesListener) {
+
+    stopMessagesListener();
+
+    stopMessagesListener = null;
+
+  }
+
+
+  currentChatId = chatId;
+
+  selChatId = chatId;
+
+
+  /*
+    Open the UI immediately.
+  */
+
+  chatPage.style.display = "flex";
+
+
+  /*
+    Render from cache immediately if available.
+    Otherwise show the empty state — NEVER a spinner.
+  */
+
+  renderCachedMessages(chatId);
+
+
+  /*
+    Get cached chat information immediately.
+  */
+
+  const cachedChat =
+    chatCache.get(chatId);
+
+
+  if (cachedChat) {
+
+    updateChatHeader(
+      chatId,
+      cachedChat
+    );
+
+  } else {
+
+    updateChatHeader(
+      chatId,
+      {}
+    );
+
+  }
+
+
+  /*
+    Close menus.
+  */
+
+  closeMenus();
+
+
+  /*
+    Listen to this chat's messages.
+  */
+
+  const messagesRef =
+    ref(db, `chats/${chatId}/messages`);
+
+
+  stopMessagesListener =
+    onValue(
+      messagesRef,
+      async snapshot => {
+
+        const messages =
+          snapshot.val() || {};
+
+
+        /*
+          Update local cache.
+        */
+
+        messagesCache.set(
+          chatId,
+          messages
+        );
+
+
+        /*
+          Keep chat cache synchronized.
+        */
+
+        let chatData =
+          chatCache.get(chatId) || {};
+
+
+        chatData.messages =
+          messages;
+
+
+        chatCache.set(
+          chatId,
+          chatData
+        );
+
+
+        /*
+          Render immediately.
+        */
+
+        renderMessages(messages);
+
+
+        /*
+          Update header from current cache.
+        */
+
+        updateChatHeader(
+          chatId,
+          chatData
+        );
+
+
+        /*
+          Mark incoming messages as read.
+
+          This is what permanently clears the badge for the
+          messages that existed when the chat was opened.
+        */
+
+        await markChatAsRead(
+          chatId,
+          chatData
+        );
+
+
+        /*
+          Update message status only when necessary.
+        */
+
+        await markIncomingMessagesRead(
+          chatId,
+          messages
+        );
+
+
+      },
+      error => {
+
+        console.error(
+          "Message listener error:",
+          error
+        );
+
+        /*
+          Still do not show a spinner.
+          Give the user a simple error state.
+        */
+
+        showMessageEmpty(
+          "Unable to load messages"
+        );
+
+      }
+    );
+
+
+  /*
+    Focus the input after the chat opens.
+  */
+
+  requestAnimationFrame(() => {
+
+    if (messageInput) {
+      messageInput.focus();
+    }
+
+  });
+
+}
+
+
+/* =========================================================
+   MARK RECEIVED MESSAGES READ
+   ========================================================= */
+
+async function markIncomingMessagesRead(
+  chatId,
+  messages
+) {
+
+  if (!chatId || !messages || !myId) {
+    return;
+  }
+
+
+  const changes = {};
+
+
+  for (const [messageId, message] of Object.entries(messages)) {
+
+    if (!message) {
+      continue;
+    }
+
+
+    /*
+      Only mark messages from the other party.
+    */
+
+    if (
+      safeText(message.senderId) === myId
+    ) {
+      continue;
+    }
+
+
+    /*
+      Do not touch deleted messages.
+    */
+
+    if (
+      !isMessageVisible(
+        message,
+        myId
+      )
+    ) {
+      continue;
+    }
+
+
+    /*
+      Avoid unnecessary Firebase writes.
+    */
+
+    if (
+      safeText(message.status) === "read"
+    ) {
+      continue;
+    }
+
+
+    changes[
+      `messages/${messageId}/status`
+    ] = "read";
+
+  }
+
+
+  if (!Object.keys(changes).length) {
+    return;
+  }
+
+
+  try {
+
+    await update(
+      ref(db, `chats/${chatId}`),
+      changes
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Unable to update message status:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   CLOSE CHAT
+   ========================================================= */
+
+function closeChat() {
+
+  /*
+    Stop realtime listener.
+  */
+
+  if (stopMessagesListener) {
+
+    stopMessagesListener();
+
+    stopMessagesListener = null;
+
+  }
+
+
+  currentChatId = null;
+
+  selChatId = null;
+
+
+  /*
+    Hide chat page immediately.
+  */
+
+  chatPage.style.display = "none";
+
+
+  /*
+    Clear selection/reply state.
+  */
+
+  clearReply();
+
+  clearMessageSelection();
+
+  closeMenus();
+
+
+  /*
+    Recalculate unread count from cached chats.
+  */
+
+  recalculateUnreadBadge();
+
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+chatBack.addEventListener(
+  "click",
+  closeChat
+);
+
+
+chatBack.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Enter" ||
+      event.key === " "
+    ) {
+
+      event.preventDefault();
+
+      closeChat();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   EXACTLY-ONCE TEXT MESSAGE SEND
+   ========================================================= */
+
+async function sendTextMessage() {
+
+  /*
+    HARD LOCK.
+
+    If the function is already running, ignore every additional
+    click/keypress until the first operation finishes.
+  */
+
+  if (isSending) {
+    return;
+  }
+
+
+  if (!currentChatId) {
+    return;
+  }
+
+
+  const text =
+    safeText(messageInput.value).trim();
+
+
+  if (!text) {
+    return;
+  }
+
+
+  isSending = true;
+
+  sendBtn.disabled = true;
+
+
+  try {
+
+    /*
+      Create exactly ONE Firebase push reference.
+
+      This reference is generated once for this send operation.
+    */
+
+    const messageRef =
+      push(
+        ref(
+          db,
+          `chats/${currentChatId}/messages`
+        )
+      );
+
+
+    const messageId =
+      messageRef.key;
+
+
+    /*
+      Build payload exactly once.
+    */
+
+    const payload = {
+
+      senderId: myId,
+
+      senderEmail: myEmail,
+
+      text: text,
+
+      time: now(),
+
+      status: "sent"
+
+    };
+
+
+    /*
+      Add reply information only when replying.
+    */
+
+    if (replyData) {
+
+      payload.replyTo = {
+
+        id: replyData.id || "",
+
+        text:
+          safeText(
+            replyData.text ||
+            ""
+          ).slice(0, 1000),
+
+        senderId:
+          safeText(
+            replyData.senderId ||
+            ""
+          )
+
+      };
+
+    }
+
+
+    /*
+      EXACTLY ONE WRITE.
+
+      Do not call push() again.
+      Do not call set() again.
+    */
+
+    await set(
+      messageRef,
+      payload
+    );
+
+
+    /*
+      Update chat metadata separately.
+
+      This does NOT create another message.
+    */
+
+    await update(
+      ref(
+        db,
+        `chats/${currentChatId}`
+      ),
+      {
+        lastMessage: text,
+        lastTime: payload.time
+      }
+    );
+
+
+    /*
+      Clear the input only after Firebase confirms success.
+    */
+
+    messageInput.value = "";
+
+    clearReply();
+
+
+  } catch (error) {
+
+    console.error(
+      "Message send failed:",
+      error
+    );
+
+    showToast(
+      "Message could not be sent."
+    );
+
+
+  } finally {
+
+    /*
+      Unlock only after the complete operation finishes.
+    */
+
+    isSending = false;
+
+    sendBtn.disabled = false;
+
+    messageInput.focus();
+
+  }
+
+}
+
+
+/* =========================================================
+   SEND BUTTON
+   ========================================================= */
+
+sendBtn.addEventListener(
+  "click",
+  event => {
+
+    event.preventDefault();
+
+    sendTextMessage();
+
+  }
+);
+
+
+/* =========================================================
+   ENTER TO SEND
+   ========================================================= */
+
+messageInput.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Enter" &&
+      !event.shiftKey
+    ) {
+
+      event.preventDefault();
+
+      sendTextMessage();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   MEDIA BUTTON
+   ========================================================= */
+
+mediaBtn.addEventListener(
+  "click",
+  () => {
+
+    if (isSending) {
+      return;
+    }
+
+    mediaInput.click();
+
+  }
+);
+
+
+/* =========================================================
+   MEDIA SEND
+   ========================================================= */
+
+mediaInput.addEventListener(
+  "change",
+  async event => {
+
+    const file =
+      event.target.files?.[0];
+
+
+    /*
+      Reset the input so choosing the same file again works.
+    */
+
+    event.target.value = "";
+
+
+    if (!file) {
+      return;
+    }
+
+
+    if (!currentChatId) {
+      return;
+    }
+
+
+    if (isSending) {
+      return;
+    }
+
+
+    if (!file.type.startsWith("image/")) {
+
+      showToast(
+        "Please select an image."
+      );
+
+      return;
+
+    }
+
+
+    /*
+      Limit large accidental uploads.
+    */
+
+    if (file.size > 10 * 1024 * 1024) {
+
+      showToast(
+        "Image is too large."
+      );
+
+      return;
+
+    }
+
+
+    isSending = true;
+
+    sendBtn.disabled = true;
+
+    mediaBtn.disabled = true;
+
+
+    try {
+
+      const uniqueName =
+        `${Date.now()}_${Math.random()
+          .toString(36)
+          .slice(2)}`;
+
+      const storagePath =
+        `chat-media/${currentChatId}/${uniqueName}_${file.name}`;
+
+
+      const storageRef =
+        sRef(
+          storage,
+          storagePath
+        );
+
+
+      /*
+        Upload the image first.
+      */
+
+      await uploadBytes(
+        storageRef,
+        file
+      );
+
+
+      const downloadUrl =
+        await getDownloadURL(
+          storageRef
+        );
+
+
+      /*
+        Create ONE message reference.
+      */
+
+      const messageRef =
+        push(
+          ref(
+            db,
+            `chats/${currentChatId}/messages`
+          )
+        );
+
+
+      const messageId =
+        messageRef.key;
+
+
+      const payload = {
+
+        senderId: myId,
+
+        senderEmail: myEmail,
+
+        imageUrl: downloadUrl,
+
+        time: now(),
+
+        status: "sent"
+
+      };
+
+
+      /*
+        ONE Firebase message write.
+      */
+
+      await set(
+        messageRef,
+        payload
+      );
+
+
+      /*
+        Metadata update only.
+        It does NOT create a second message.
+      */
+
+      await update(
+        ref(
+          db,
+          `chats/${currentChatId}`
+        ),
+        {
+          lastMessage: "📷 Image",
+          lastTime: payload.time
+        }
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "Media send failed:",
+        error
+      );
+
+      showToast(
+        "Image could not be sent."
+      );
+
+
+    } finally {
+
+      isSending = false;
+
+      sendBtn.disabled = false;
+
+      mediaBtn.disabled = false;
+
+    }
+
+  }
+);
+
+</script><!-- =========================================================
+     SECTION 6
+     REPLY + DELETE + MENUS + CLEANUP
+     ========================================================= -->
+
+<script type="module">
+
+/* =========================================================
+   MESSAGE SELECTION
+   ========================================================= */
+
+function selectMessage(chatId, messageId, message) {
+
+  selChatId = chatId;
+
+  selId = messageId;
+
+  selText = safeText(message?.text || "");
+
+  selIsMine =
+    safeText(message?.senderId) === myId;
+
+  selMediaUrl =
+    safeText(
+      message?.imageUrl ||
+      message?.mediaUrl ||
+      ""
+    );
+
+
+  /*
+    Store the complete reply information locally.
+  */
+
+  replyData = {
+    id: messageId,
+    text: selText,
+    senderId: safeText(
+      message?.senderId || ""
+    )
+  };
+
+
+  /*
+    Position the message menu close to the selected message.
+  */
+
+  const target =
+    document.querySelector(
+      `.messageSelectable[data-message-id="${CSS.escape(messageId)}"]`
+    );
+
+
+  if (!target) {
+    return;
+  }
+
+
+  const rect =
+    target.getBoundingClientRect();
+
+
+  msgMenu.style.display = "block";
+
+  msgMenu.style.left =
+    Math.max(
+      8,
+      Math.min(
+        window.innerWidth - 188,
+        rect.left
+      )
+    ) + "px";
+
+
+  msgMenu.style.top =
+    Math.max(
+      70,
+      Math.min(
+        window.innerHeight - 180,
+        rect.bottom + 6
+      )
+    ) + "px";
+
+
+  /*
+    Show "Delete for everyone" only where appropriate.
+
+    Admin can delete messages in this admin panel.
+  */
+
+  const deleteEveryone =
+    $("deleteForEveryoneAction");
+
+
+  if (deleteEveryone) {
+
+    deleteEveryone.style.display =
+      isAdmin ? "flex" : "none";
+
+  }
+
+}
+
+
+/* =========================================================
+   CLEAR MESSAGE SELECTION
+   ========================================================= */
+
+function clearMessageSelection() {
+
+  selId = null;
+
+  selText = "";
+
+  selIsMine = false;
+
+  selChatId = null;
+
+  selMediaUrl = null;
+
+}
+
+
+/* =========================================================
+   REPLY
+   ========================================================= */
+
+function startReply() {
+
+  if (!selId) {
+    return;
+  }
+
+
+  replyData = {
+
+    id: selId,
+
+    text: selText,
+
+    senderId:
+      selIsMine
+        ? myId
+        : safeText(
+            replyData?.senderId ||
+            ""
+          )
+
+  };
+
+
+  replyBar.style.display = "block";
+
+  replyTitle.textContent = "Reply";
+
+  replyContent.textContent =
+    selText ||
+    (selMediaUrl ? "📷 Image" : "Message");
+
+
+  closeMenus();
+
+
+  requestAnimationFrame(() => {
+
+    messageInput.focus();
+
+  });
+
+}
+
+
+/* =========================================================
+   CLEAR REPLY
+   ========================================================= */
+
+function clearReply() {
+
+  replyData = null;
+
+  replyBar.style.display = "none";
+
+  replyTitle.textContent = "Reply";
+
+  replyContent.textContent = "";
+
+}
+
+
+/* =========================================================
+   REPLY CLOSE BUTTON
+   ========================================================= */
+
+replyClose.addEventListener(
+  "click",
+  clearReply
+);
+
+
+replyClose.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Enter" ||
+      event.key === " "
+    ) {
+
+      event.preventDefault();
+
+      clearReply();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   DELETE FOR ME
+   ========================================================= */
+
+async function deleteForMe() {
+
+  if (!selChatId || !selId || !myId) {
+    return;
+  }
+
+
+  const path =
+    `chats/${selChatId}/messages/${selId}/deletedFor/${myId}`;
+
+
+  closeMenus();
+
+
+  try {
+
+    await update(
+      ref(
+        db,
+        `chats/${selChatId}/messages/${selId}`
+      ),
+      {
+        [`deletedFor/${myId}`]: true
+      }
+    );
+
+
+    /*
+      Update local cache immediately.
+    */
+
+    const cached =
+      messagesCache.get(
+        selChatId
+      );
+
+
+    if (
+      cached &&
+      cached[selId]
+    ) {
+
+      cached[selId].deletedFor =
+        cached[selId].deletedFor || {};
+
+      cached[selId].deletedFor[myId] =
+        true;
+
+      messagesCache.set(
+        selChatId,
+        cached
+      );
+
+      renderMessages(cached);
+
+    }
+
+
+    showToast(
+      "Message deleted for you."
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Delete for me failed:",
+      error
+    );
+
+    showToast(
+      "Unable to delete message."
+    );
+
+  }
+
+
+  clearMessageSelection();
+
+}
+
+
+/* =========================================================
+   DELETE FOR EVERYONE
+   ========================================================= */
+
+async function deleteForEveryone() {
+
+  if (!selChatId || !selId) {
+    return;
+  }
+
+
+  if (!isAdmin) {
+
+    showToast(
+      "You are not allowed to delete this message."
+    );
+
+    return;
+
+  }
+
+
+  const chatId =
+    selChatId;
+
+  const messageId =
+    selId;
+
+
+  closeMenus();
+
+
+  try {
+
+    /*
+      Remove the actual message.
+
+      This is intentionally ONE delete operation.
+    */
+
+    await remove(
+      ref(
+        db,
+        `chats/${chatId}/messages/${messageId}`
+      )
+    );
+
+
+    /*
+      Update local cache immediately.
+
+      This prevents the deleted message from remaining visible
+      while Firebase finishes the realtime update.
+    */
+
+    const cached =
+      messagesCache.get(chatId);
+
+
+    if (
+      cached &&
+      Object.prototype.hasOwnProperty.call(
+        cached,
+        messageId
+      )
+    ) {
+
+      delete cached[messageId];
+
+      messagesCache.set(
+        chatId,
+        cached
+      );
+
+    }
+
+
+    /*
+      Render without the deleted message.
+    */
+
+    if (chatId === currentChatId) {
+
+      renderMessages(
+        messagesCache.get(chatId) || {}
+      );
+
+    }
+
+
+    /*
+      Recalculate the chat summary from REAL messages.
+
+      We never trust an old lastMessage value here.
+    */
+
+    await rebuildChatSummary(
+      chatId
+    );
+
+
+    showToast(
+      "Message deleted for everyone."
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Delete for everyone failed:",
+      error
+    );
+
+    showToast(
+      "Unable to delete message."
+    );
+
+  }
+
+
+  clearMessageSelection();
+
+}
+
+
+/* =========================================================
+   REBUILD CHAT SUMMARY
+   =========================================================
+   
+   This fixes the ghost-message problem.
+
+   If the final visible message is deleted, lastMessage and
+   lastTime are cleared.
+   ========================================================= */
+
+async function rebuildChatSummary(chatId) {
+
+  if (!chatId) {
+    return;
+  }
+
+
+  try {
+
+    const chatSnapshot =
+      await get(
+        ref(
+          db,
+          `chats/${chatId}`
+        )
+      );
+
+
+    const chatData =
+      chatSnapshot.val() || {};
+
+
+    const latest =
+      getLatestVisibleMessage(
+        chatData
+      );
+
+
+    if (!latest) {
+
+      /*
+        No real visible messages remain.
+
+        Clear the stale preview metadata.
+      */
+
+      await update(
+        ref(
+          db,
+          `chats/${chatId}`
+        ),
+        {
+          lastMessage: null,
+          lastTime: null
+        }
+      );
+
+
+      /*
+        Also update local cache.
+      */
+
+      const cached =
+        chatCache.get(chatId);
+
+
+      if (cached) {
+
+        cached.lastMessage = null;
+
+        cached.lastTime = null;
+
+        chatCache.set(
+          chatId,
+          cached
+        );
+
+      }
+
+
+      return;
+
+    }
+
+
+    let preview = "Message";
+
+
+    if (
+      latest.imageUrl ||
+      latest.mediaUrl
+    ) {
+
+      preview = "📷 Image";
+
+    } else if (latest.text) {
+
+      preview =
+        safeText(latest.text);
+
+    }
+
+
+    await update(
+      ref(
+        db,
+        `chats/${chatId}`
+      ),
+      {
+        lastMessage: preview,
+        lastTime: Number(
+          latest.time || 0
+        )
+      }
+    );
+
+
+    /*
+      Keep local cache synchronized.
+    */
+
+    const cached =
+      chatCache.get(chatId);
+
+
+    if (cached) {
+
+      cached.lastMessage =
+        preview;
+
+      cached.lastTime =
+        Number(
+          latest.time || 0
+        );
+
+      chatCache.set(
+        chatId,
+        cached
+      );
+
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "Unable to rebuild chat summary:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   CHAT MENU
+   ========================================================= */
+
+function openChatMenu() {
+
+  closeMenus();
+
+  chatMenu.style.display = "block";
+
+
+  const button =
+    chatMenuBtn.getBoundingClientRect();
+
+
+  chatMenu.style.right = "10px";
+
+  chatMenu.style.top =
+    `${button.bottom + 5}px`;
+
+}
+
+
+chatMenuBtn.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    openChatMenu();
+
+  }
+);
+
+
+/* =========================================================
+   CLEAR CONVERSATION
+   ========================================================= */
+
+async function clearConversation() {
+
+  closeMenus();
+
+
+  if (!currentChatId) {
+    return;
+  }
+
+
+  if (!isAdmin) {
+
+    showToast(
+      "You are not allowed to clear this conversation."
+    );
+
+    return;
+
+  }
+
+
+  const chatId =
+    currentChatId;
+
+
+  try {
+
+    await remove(
+      ref(
+        db,
+        `chats/${chatId}/messages`
+      )
+    );
+
+
+    /*
+      Clear local message cache.
+    */
+
+    messagesCache.set(
+      chatId,
+      {}
+    );
+
+
+    /*
+      Remove stale summary metadata.
+    */
+
+    await update(
+      ref(
+        db,
+        `chats/${chatId}`
+      ),
+      {
+        lastMessage: null,
+        lastTime: null,
+        seenByAdmin: now()
+      }
+    );
+
+
+    /*
+      Update local chat cache.
+    */
+
+    const cached =
+      chatCache.get(chatId);
+
+
+    if (cached) {
+
+      cached.messages = {};
+
+      cached.lastMessage = null;
+
+      cached.lastTime = null;
+
+      cached.seenByAdmin = now();
+
+      chatCache.set(
+        chatId,
+        cached
+      );
+
+    }
+
+
+    renderMessages({});
+
+
+    setGlobalUnreadCount(0);
+
+
+    showToast(
+      "Conversation cleared."
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Clear conversation failed:",
+      error
+    );
+
+    showToast(
+      "Unable to clear conversation."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   CLOSE MENUS
+   ========================================================= */
+
+function closeMenus() {
+
+  msgMenu.style.display = "none";
+
+  chatMenu.style.display = "none";
+
+}
+
+
+/* =========================================================
+   MENU ACTIONS
+   ========================================================= */
+
+$("replyAction").addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    startReply();
+
+  }
+);
+
+
+$("deleteForMeAction").addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    deleteForMe();
+
+  }
+);
+
+
+$("deleteForEveryoneAction").addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    deleteForEveryone();
+
+  }
+);
+
+
+$("clearChatAction").addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    clearConversation();
+
+  }
+);
+
+
+/* =========================================================
+   OUTSIDE CLICK
+   ========================================================= */
+
+document.addEventListener(
+  "click",
+  event => {
+
+    if (
+      !msgMenu.contains(event.target) &&
+      !chatMenu.contains(event.target) &&
+      !event.target.closest(".messageSelectable") &&
+      !event.target.closest("#chatMenuBtn")
+    ) {
+
+      closeMenus();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   ESCAPE KEY
+   ========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (event.key !== "Escape") {
+      return;
+    }
+
+
+    closeMenus();
+
+  }
+);
+
+
+/* =========================================================
+   CLEANUP WHEN PAGE IS LEFT
+   ========================================================= */
+
+window.addEventListener(
+  "beforeunload",
+  () => {
+
+    if (stopMessagesListener) {
+
+      stopMessagesListener();
+
+      stopMessagesListener = null;
+
+    }
+
+
+    if (stopChatsListener) {
+
+      stopChatsListener();
+
+      stopChatsListener = null;
+
+    }
+
+
+    if (stopAuthListener) {
+
+      stopAuthListener();
+
+      stopAuthListener = null;
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   FINAL INITIALIZATION
+   ========================================================= */
+
+setGlobalUnreadCount(0);
+
+chatPage.style.display = "none";
+
+closeMenus();
+
+clearReply();
+
+clearMessageSelection();
+
+
+</script>
+
+
+<!-- =========================================================
+     END OF HTML
+     ========================================================= -->
+
+</body>
+</html>

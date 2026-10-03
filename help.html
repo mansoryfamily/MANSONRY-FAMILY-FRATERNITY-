@@ -11,7 +11,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 body{background:var(--dark);color:white;min-height:100vh;padding-bottom:120px;}
 body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(7,17,31,.88), rgba(7,17,31,.95)),url("1517026394531.jpeg");background-size:cover;background-position:center;background-attachment:fixed;z-index:-2;}
-body::after{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:400px;color:rgba(212,175,55,.03);z-index:-1;pointer-events:none;}
+body::after{content:"◬";position:fixed;top:50%;left:50%;transform:translate(-50%),-50%;font-size:400px;color:rgba(212,175,55,.03);z-index:-1;pointer-events:none;}
 header{position:fixed;top:0;left:0;width:100%;padding:20px 8%;background:rgba(0,0,0,.8);backdrop-filter:blur(15px);display:flex;justify-content:space-between;align-items:center;z-index:1000;border-bottom:1px solid rgba(212,175,55,.2);}
 .logo{font-size:28px;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif;}
 .logout{background:var(--gold);color:#111;padding:10px 25px;border-radius:30px;text-decoration:none;font-weight:600;transition:.3s;}
@@ -132,10 +132,6 @@ const db = getDatabase(app);
 const ADMIN_UID = "DMeM2UuLgDOusNvmzRGZygBdxOG2";
 const ADMIN_EMAIL = "mansoryfamilyn@gmail.com";
 
-localStorage.removeItem("globalChatBadge_count");
-localStorage.removeItem("chatOpenedAt");
-localStorage.removeItem("lastMsgTime");
-
 function showBadge(id, count){
   const el = document.getElementById(id);
   if(!el) return;
@@ -157,37 +153,33 @@ onAuthStateChanged(auth, (user) => {
   if(!user){ window.location.href="login.html"; return; }
   const uid = user.uid;
 
-  // Real-time Chat Unread Badge Calculation & Audio Alerting
+  // Listen for real-time chat state
   onValue(ref(db, `chats`), (snap) => {
+    // Check if user permanently opened chat before
+    const lastSeenTime = parseInt(localStorage.getItem(`chatSeen_${uid}`) || "0", 10);
+
     let total = 0;
     let latest = null;
     let isNew = false;
-    let newestTime = 0;
 
     if(snap.exists()){
       snap.forEach(cs => {
         const chatId = cs.key;
-        if(!chatId.includes(ADMIN_UID)) return;
-        if(!chatId.includes(uid)) return;
+        if(!chatId.includes(ADMIN_UID) || !chatId.includes(uid)) return;
         
         const chat = cs.val();
-        if(!chat) return;
-        if(chat.hiddenFor && chat.hiddenFor[uid]) return;
+        if(!chat || (chat.hiddenFor && chat.hiddenFor[uid])) return;
 
         const msgs = chat.messages || {};
         const visibleIds = Object.keys(msgs).filter(mid => {
           const m = msgs[mid];
-          if(!m) return false;
-          if(m.deletedFor && m.deletedFor[uid]) return false;
-          return true;
+          return m && !(m.deletedFor && m.deletedFor[uid]);
         });
 
-        if(visibleIds.length === 0) return;
-        const seen = chat.seenByMember || 0;
+        const seen = Math.max(chat.seenByMember || 0, lastSeenTime);
 
         visibleIds.forEach(mid => {
           const m = msgs[mid];
-          if(m.time) newestTime = Math.max(newestTime, m.time);
           if(m.senderId !== uid && (m.time || 0) > seen){
             total++;
             if(!latest || m.time > latest.time){
@@ -213,9 +205,15 @@ onAuthStateChanged(auth, (user) => {
 
 async function openAndClear(){
   const u = auth.currentUser; if(!u) return;
+  const now = Date.now();
+  
+  // Persist permanently in browser local storage
+  localStorage.setItem(`chatSeen_${u.uid}`, now.toString());
+  
   try { 
-    await update(ref(db, `chats/${ADMIN_UID + "_" + u.uid}`), { seenByMember: Date.now() }); 
+    await update(ref(db, `chats/${ADMIN_UID + "_" + u.uid}`), { seenByMember: now }); 
   } catch(e) {}
+
   hideBadgePermanent("globalChatBadge");
 }
 

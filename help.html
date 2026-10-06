@@ -113,13 +113,13 @@ setInterval(applyLang,1000);
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, update, off } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
   databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "mansonry-family-fraternity",
+ projectId: "mansonry-family-fraternity",
   storageBucket: "mansonry-family-fraternity.firebasestorage.app",
   messagingSenderId: "964415179161",
   appId: "1:964415179161:web:cef44a38e4de304d7c6b08",
@@ -134,6 +134,7 @@ const ADMIN_EMAIL = "mansoryfamilyn@gmail.com";
 
 let notifiedMsgIds = new Set();
 let isInitialLoad = true;
+let activeChatRef = null;
 
 function showBadge(id, count){
   const el = document.getElementById(id);
@@ -149,42 +150,39 @@ function hideBadgePermanent(id){
   el.style.display = "none";
   el.textContent = "0";
   if(window.LodgeNotifier) window.LodgeNotifier.setAppIconBadge(0);
-  if(navigator.clearAppBadge) try{ navigator.clearAppBadge(); }catch{}
+  if(navigator.clearAppBadge) try{ navigator.clearAppBadge(); }catch(e){}
 }
 
 onAuthStateChanged(auth, (user) => {
   if(!user){ window.location.href="login.html"; return; }
   const uid = user.uid;
 
-  // Listen for real-time chat state
-  onValue(ref(db, `chats`), (snap) => {
-    const lastSeenTime = parseInt(localStorage.getItem(`chatSeen_${uid}`) || "0", 10);
+  const targetChatPath = `chats/${ADMIN_UID}_${uid}`;
+  const userChatRef = ref(db, targetChatPath);
 
+  if (activeChatRef) {
+    off(activeChatRef);
+  }
+  activeChatRef = userChatRef;
+
+  onValue(userChatRef, (snap) => {
+    const lastSeenTime = parseInt(localStorage.getItem(`chatSeen_${uid}`) || "0", 10);
     let total = 0;
 
     if(snap.exists()){
-      snap.forEach(cs => {
-        const chatId = cs.key;
-        if(!chatId.includes(ADMIN_UID) || !chatId.includes(uid)) return;
-        
-        const chat = cs.val();
-        if(!chat || (chat.hiddenFor && chat.hiddenFor[uid])) return;
-
+      const chat = snap.val();
+      if(chat && !(chat.hiddenFor && chat.hiddenFor[uid])){
         const msgs = chat.messages || {};
-        const visibleIds = Object.keys(msgs).filter(mid => {
-          const m = msgs[mid];
-          return m && !(m.deletedFor && m.deletedFor[uid]);
-        });
-
         const seen = Math.max(chat.seenByMember || 0, lastSeenTime);
 
-        visibleIds.forEach(mid => {
+        Object.keys(msgs).forEach(mid => {
           const m = msgs[mid];
+          if(!m || (m.deletedFor && m.deletedFor[uid])) return;
+
           if(m.senderId !== uid && (m.time || 0) > seen){
             total++;
             
-            // Trigger pop-up notification immediately for received messages
-            if(m.senderId !== uid && !notifiedMsgIds.has(mid)){
+            if(!notifiedMsgIds.has(mid)){
               notifiedMsgIds.add(mid);
               if(!isInitialLoad && window.LodgeNotifier){
                 const senderName = ((m.senderEmail || "").toLowerCase() === ADMIN_EMAIL.toLowerCase()) ? "Director" : "Administration";
@@ -194,7 +192,7 @@ onAuthStateChanged(auth, (user) => {
             }
           }
         });
-      });
+      }
     }
 
     if(isInitialLoad){
@@ -209,26 +207,31 @@ onAuthStateChanged(auth, (user) => {
   });
 });
 
-async function openAndClear(){
-  const u = auth.currentUser; if(!u) return;
-  const now = Date.now();
-  
-  // Persist permanently in browser local storage
-  localStorage.setItem(`chatSeen_${u.uid}`, now.toString());
-  
-  try { 
-    await update(ref(db, `chats/${ADMIN_UID + "_" + u.uid}`), { seenByMember: now }); 
-  } catch(e) {}
-
-  hideBadgePermanent("globalChatBadge");
+async function openAndClear(e){
+  const u = auth.currentUser; 
+  if(u) {
+    const now = Date.now();
+    localStorage.setItem(`chatSeen_${u.uid}`, now.toString());
+    try { 
+      await update(ref(db, `chats/${ADMIN_UID}_${u.uid}`), { seenByMember: now }); 
+    } catch(err) {}
+    hideBadgePermanent("globalChatBadge");
+  }
 }
 
 document.getElementById("chatLink")?.addEventListener("click", openAndClear);
-document.querySelectorAll('a[href="globaladmin.html"]').forEach(a => { a.addEventListener("click", openAndClear); });
-document.querySelector(".logout").addEventListener("click", (e) => { 
-  e.preventDefault(); 
-  signOut(auth).then(() => { window.location.href = "login.html"; }); 
+
+document.querySelectorAll('a[href="globaladmin.html"]').forEach(a => { 
+  a.addEventListener("click", openAndClear); 
 });
+
+const logoutBtn = document.querySelector(".logout");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", (e) => { 
+    e.preventDefault(); 
+    signOut(auth).then(() => { window.location.href = "login.html"; }); 
+  });
+}
 </script>
 </body>
 </html>

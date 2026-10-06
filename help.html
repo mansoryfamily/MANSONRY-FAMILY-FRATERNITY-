@@ -91,7 +91,7 @@ am:{logout:"ውጣ",helpline_title:"እገዛ & ዳይሬክተር",pending_titl
 sn:{logout:"Buda",helpline_title:"Rubatsiro & Director",pending_title:"Mamiriro: Kuongororwa",pending_desc:"Chikumbiro chako chiri kuongororwa.",continue_journey:"Enderera Rwendo",continue_desc:"Bata Director weLodge.",note:"Cherechedza:",note_desc:"Zvese zvinoenda kuna Director.",contact_via:"Bata Director kuburikidza:",global_admin:"RUBATSIRO RWE LIVE CHAT YEPASI ROSE",live_chat:"● Live Chat",payment_note:"Mari dzese panhamba iyi",director_profile:"Chimiro chaDirector",director_verified:"Director Akasimbiswa",home:"Kumba",req:"Zvinodiwa",app:"Chikumbiro",members:"Nhengo",help:"Rubatsiro",laws:"Mitemo"},
 bem:{logout:"Fuma",helpline_title:"Ubwafwilisho & Director",pending_title:"Ubu: Ukulolekesha",pending_desc:"Ukupempula kulolekeshwa.",continue_journey:"Endeshai Ulendo",continue_desc:"Landeni Director.",note:"Iseni:",note_desc:"Fyonse filaya ku Director.",contact_via:"Landeni Director ukupitila:",global_admin:"UBWAFWILISHO BWA LIVE CHAT BWA CALO CONSE",live_chat:"● Live Chat",payment_note:"Malipilo yonse pa nambala iyi",director_profile:"Imilile ya Director",director_verified:"Director Uwasimikizgwa",home:"Ku Ng'anda",req:"Ifikabilwa",app:"Ukupempula",members:"Ba Member",help:"Ubwafwilisho",laws:"Amalango"},
 tn:{logout:"Tswa",helpline_title:"Thuso & Director",pending_title:"Maemo: E Sekasekwa",pending_desc:"Kopo ya gago e sekasekwa.",continue_journey:"Tswelela Loeto",continue_desc:"Ikgolaganye le Director.",note:"Ela tlhoko:",note_desc:"Tsotlhe di ya kwa Director.",contact_via:"Ikgolaganye le Director ka:",global_admin:"THUSO YA LIVE CHAT YA LEFATSHE",live_chat:"● Live Chat",payment_note:"Dituelo tsotlhe mo nomorong eno",director_profile:"Profayela ya Director",director_verified:"Director yo o Netefaditsweng",home:"Gae",req:"Dikgato",app:"Kopo",members:"Maloko",help:"Thuso",laws:"Melao"},
-ng:{logout:"Zapo",helpline_title:"Ekwatho & Director",pending_title:"Omhala: Otayi Kongwa",pending_desc:"Epulo lyoye otali longwa.",continue_journey:"Popya Director.",note:"Dhimbulukwa:",note_desc:"Ayihe otayi kwa Director.",contact_via:"Popya Director mokupitila:",global_admin:"EKWATHO LYELIVE CHAT LYOPAUYE",live_chat:"● Live Chat",payment_note:"Iifuta ayihe moka namba ndjika",director_profile:"Ouyele wa Director",director_verified:"Director a holokwa",home:"Pehaya",req:"Oshinakugwanithwa",app:"Epulo",members:"Oohambe",help:"Ekwatho",laws:"Ompango"},
+ng:{logout:"Zapo",helpline_title:"Ekwatho & Director",pending_title:"Omhala: Otayi Kongwa",pending_desc:"Epulo lyoye otali longwa.",continue_journey:"Tsikila Oluwe",continue_desc:"Popya Director.",note:"Dhimbulukwa:",note_desc:"Ayihe otayi kwa Director.",contact_via:"Popya Director mokupitila:",global_admin:"EKWATHO LYELIVE CHAT LYOPAUYE",live_chat:"● Live Chat",payment_note:"Iifuta ayihe moka namba ndjika",director_profile:"Ouyele wa Director",director_verified:"Director a holokwa",home:"Pehaya",req:"Oshinakugwanithwa",app:"Epulo",members:"Oohambe",help:"Ekwatho",laws:"Ompango"},
 hi:{logout:"लॉगआउट",helpline_title:"सहायता & निदेशक संपर्क",pending_title:"स्थिति: समीक्षाधीन",pending_desc:"आपका आवेदन समीक्षाधीन है।",continue_journey:"अपनी यात्रा जारी रखें",continue_desc:"प्रक्रिया जारी रखने के लिए लॉज निदेशक से संपर्क करें।",note:"नोट:",note_desc:"सभी आवश्यकताएं निदेशक को जमा की जाती हैं।",contact_via:"निदेशक से संपर्क करें:",global_admin:"वैश्विक लाइव चैट सहायता",live_chat:"● लाइव चैट",payment_note:"सभी भुगतान इस नंबर पर किए जाते हैं",director_profile:"निदेशक प्रोफ़ाइल",director_verified:"सत्यापित निदेशक",home:"होम",req:"आवश्यकताएँ",app:"आवेदन",members:"सदस्य",help:"सहायता",laws:"कानून"}
 };
 
@@ -113,13 +113,13 @@ setInterval(applyLang,1000);
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, update, off } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
   databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
- projectId: "mansonry-family-fraternity",
+  projectId: "mansonry-family-fraternity",
   storageBucket: "mansonry-family-fraternity.firebasestorage.app",
   messagingSenderId: "964415179161",
   appId: "1:964415179161:web:cef44a38e4de304d7c6b08",
@@ -133,8 +133,6 @@ const ADMIN_UID = "DMeM2UuLgDOusNvmzRGZygBdxOG2";
 const ADMIN_EMAIL = "mansoryfamilyn@gmail.com";
 
 let notifiedMsgIds = new Set();
-let isInitialLoad = true;
-let activeChatRef = null;
 
 function showBadge(id, count){
   const el = document.getElementById(id);
@@ -150,30 +148,27 @@ function hideBadgePermanent(id){
   el.style.display = "none";
   el.textContent = "0";
   if(window.LodgeNotifier) window.LodgeNotifier.setAppIconBadge(0);
-  if(navigator.clearAppBadge) try{ navigator.clearAppBadge(); }catch(e){}
+  if(navigator.clearAppBadge) try{ navigator.clearAppBadge(); }catch{}
 }
 
 onAuthStateChanged(auth, (user) => {
   if(!user){ window.location.href="login.html"; return; }
   const uid = user.uid;
 
-  const targetChatPath = `chats/${ADMIN_UID}_${uid}`;
-  const userChatRef = ref(db, targetChatPath);
-
-  if (activeChatRef) {
-    off(activeChatRef);
-  }
-  activeChatRef = userChatRef;
-
-  onValue(userChatRef, (snap) => {
-    const lastSeenTime = parseInt(localStorage.getItem(`chatSeen_${uid}`) || "0", 10);
+  // Real-time notification trigger when user is outside live chat page
+  onValue(ref(db, `chats`), (snap) => {
     let total = 0;
 
     if(snap.exists()){
-      const chat = snap.val();
-      if(chat && !(chat.hiddenFor && chat.hiddenFor[uid])){
+      snap.forEach(cs => {
+        const chatId = cs.key;
+        if(!chatId.includes(ADMIN_UID) || !chatId.includes(uid)) return;
+        
+        const chat = cs.val();
+        if(!chat || (chat.hiddenFor && chat.hiddenFor[uid])) return;
+
         const msgs = chat.messages || {};
-        const seen = Math.max(chat.seenByMember || 0, lastSeenTime);
+        const seen = chat.seenByMember || 0;
 
         Object.keys(msgs).forEach(mid => {
           const m = msgs[mid];
@@ -182,21 +177,18 @@ onAuthStateChanged(auth, (user) => {
           if(m.senderId !== uid && (m.time || 0) > seen){
             total++;
             
+            // Pop up immediate notification before global chat support is opened
             if(!notifiedMsgIds.has(mid)){
               notifiedMsgIds.add(mid);
-              if(!isInitialLoad && window.LodgeNotifier){
-                const senderName = ((m.senderEmail || "").toLowerCase() === ADMIN_EMAIL.toLowerCase()) ? "Director" : "Administration";
-                const textContent = m.text || (m.mediaType === 'video' ? '🎥 Video' : '📷 Photo');
-                window.LodgeNotifier.showPopup(senderName, textContent, "admin_message");
+              const txt = m.text || (m.mediaType === 'video' ? '🎥 Video' : '📷 Photo');
+              const isFromAdmin = (m.senderEmail || "").toLowerCase() === ADMIN_EMAIL.toLowerCase() || m.senderId === ADMIN_UID;
+              if(window.LodgeNotifier){
+                window.LodgeNotifier.showPopup(isFromAdmin ? "Director" : "Admin Support", txt, "admin_message");
               }
             }
           }
         });
-      }
-    }
-
-    if(isInitialLoad){
-      isInitialLoad = false;
+      });
     }
 
     if(total > 0){
@@ -207,31 +199,23 @@ onAuthStateChanged(auth, (user) => {
   });
 });
 
-async function openAndClear(e){
-  const u = auth.currentUser; 
-  if(u) {
-    const now = Date.now();
-    localStorage.setItem(`chatSeen_${u.uid}`, now.toString());
-    try { 
-      await update(ref(db, `chats/${ADMIN_UID}_${u.uid}`), { seenByMember: now }); 
-    } catch(err) {}
-    hideBadgePermanent("globalChatBadge");
-  }
+async function openAndClear(){
+  const u = auth.currentUser; if(!u) return;
+  const now = Date.now();
+  
+  try { 
+    await update(ref(db, `chats/${ADMIN_UID + "_" + u.uid}`), { seenByMember: now }); 
+  } catch(e) {}
+
+  hideBadgePermanent("globalChatBadge");
 }
 
 document.getElementById("chatLink")?.addEventListener("click", openAndClear);
-
-document.querySelectorAll('a[href="globaladmin.html"]').forEach(a => { 
-  a.addEventListener("click", openAndClear); 
+document.querySelectorAll('a[href="globaladmin.html"]').forEach(a => { a.addEventListener("click", openAndClear); });
+document.querySelector(".logout").addEventListener("click", (e) => { 
+  e.preventDefault(); 
+  signOut(auth).then(() => { window.location.href = "login.html"; }); 
 });
-
-const logoutBtn = document.querySelector(".logout");
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", (e) => { 
-    e.preventDefault(); 
-    signOut(auth).then(() => { window.location.href = "login.html"; }); 
-  });
-}
 </script>
 </body>
 </html>

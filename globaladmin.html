@@ -37,12 +37,12 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 </style>
 </head><body>
 <div class="top">
-<div style="display:flex;align-items:center;gap:10px"><i class="fa fa-arrow-left" style="color:var(--gold)" onclick="location.href='help.html'"></i><div style="width:40px;height:40px;border-radius:12px;padding:2px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:grid;place-items:center"><div style="width:100%;height:100%;background:#0b1728;border-radius:10px;display:grid;place-items:center"><img src="masonic-icon.png" style="width:26px;height:26px"></div></div><div style="color:var(--gold);font-weight:800;font-size:12px"><span data-i18n="global_admin">GLOBAL ADMIN</span><br><small id="sub" style="color:#00ff88;font-size:9px">Connecting...</small></div></div>
+<div style="display:flex;align-items:center;gap:10px"><i class="fa fa-arrow-left" style="color:var(--gold)" onclick="location.href='help.html'"></i><div style="width:40px;height:40px;border-radius:12px;padding:2px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:grid;place-items:center"><div style="width:100%;height:100%;background:#0b1728;border-radius:10px;display:grid;place-items:center"><img src="masonic-icon.png" style="width:26px;height:26px"></div></div><div style="color:var(--gold);font-weight:800;font-size:12px"><span data-i18n="global_admin">GLOBAL ADMIN</span><br><small id="sub" style="color:#00ff88;font-size:9px">LODGE</small></div></div>
 <div style="display:flex;gap:14px;align-items:center;">
 <div id="notifIcon" style="position:relative;"><i class="fa fa-comments" style="color:var(--green);font-size:20px"></i><span id="notifCount" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;">0</span><span id="globalChatBadge" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;padding:0 4px;">0</span></div>
 </div>
 </div>
-<div id="membersList" style="padding:10px;color:#888;text-align:center"><div data-i18n="loading_chats">Loading chats...</div></div><div id="chatPage">
+<div id="membersList" style="padding:10px;color:#888;text-align:center"></div><div id="chatPage">
 <div style="background:var(--card);padding:10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)"><i class="fa fa-arrow-left" style="color:var(--gold);font-size:18px;cursor:pointer" onclick="closeChat()"></i><img src="masonic-icon.png" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--gold)"><div style="flex:1"><h4 id="chatName" style="color:var(--gold);font-size:13px"></h4><small style="color:#aaa" data-i18n="swipe_hint">Swipe right to reply</small></div></div>
 <div id="messages"></div>
 <div class="reply-bar" id="replyBar"><div><small id="replyToName" style="color:var(--gold);font-weight:800"></small><div id="replyToText" style="color:#aaa;font-size:11px"></div></div><i class="fa fa-times" style="color:#fff;cursor:pointer" onclick="cancelReply()"></i></div>
@@ -50,7 +50,8 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 </div>
 <div id="msgMenu" class="menu"><button onclick="replyMsg()"><i class="fa fa-reply"></i> <span data-i18n="reply">Reply</span></button><button onclick="copyMsg()"><i class="fa fa-copy"></i> <span data-i18n="copy">Copy</span></button><button id="editBtn" onclick="editMsg()"><i class="fa fa-pen"></i> <span data-i18n="edit">Edit</span></button><button onclick="downloadMedia()" id="downBtn" style="display:none"><i class="fa fa-download"></i> Download</button><button onclick="deleteForMe()" class="danger"><i class="fa fa-eye-slash"></i> <span data-i18n="delete_me">Delete for me</span></button><button onclick="deleteForEveryone()" class="danger"><i class="fa fa-trash"></i> <span data-i18n="delete_all">Delete for everyone</span></button></div>
 <div id="chatMenu" class="menu"><button onclick="deleteChatForMe()" class="danger"><i class="fa fa-trash"></i> <span data-i18n="delete">Delete</span></button><button onclick="cancelChatDelete()"><i class="fa fa-times"></i> <span data-i18n="cancel">Cancel</span></button></div>
-<div id="toast"><i class="fa fa-check-circle" style="color:#00ff88"></i><span id="toastText">Deleted successfully</span></div><script>const TRANSLATIONS={
+<div id="toast"><i class="fa fa-check-circle" style="color:#00ff88"></i><span id="toastText">Deleted successfully</span></div><script>
+const TRANSLATIONS={
 en:{global_admin:"GLOBAL ADMIN",loading_chats:"Loading chats...",swipe_hint:"Swipe right to reply",type_message:"Type message...",reply:"Reply",copy:"Copy",edit:"Edit",delete_me:"Delete for me",delete_all:"Delete for everyone",delete:"Delete",cancel:"Cancel",admin_channel:"ADMINISTRATION CHANNEL",tap_admin:"Tap to message Administration",no_members:"No members yet",no_messages:"No messages yet"},
 sw:{global_admin:"ADMIN Mkuu",loading_chats:"Inapakia chats...",swipe_hint:"Telezesha kulia kujibu",type_message:"Andika ujumbe...",reply:"Jibu",copy:"Nakili",edit:"Hariri",delete_me:"Futa kwangu",delete_all:"Futa kwa wote",delete:"Futa",cancel:"Ghairi",admin_channel:"NJIA YA UTAWALA",tap_admin:"Gusa kuandikia Utawala",no_members:"Hakuna wanachama bado",no_messages:"Hakuna ujumbe bado"},
 lg:{global_admin:"ADMIN Omukulu",loading_chats:"Eteekateeka chats...",swipe_hint:"Sembera ku ddyo okuddamu",type_message:"Wandiika obubaka...",reply:"Ddamu",copy:"Koppa",edit:"Kyusa",delete_me:"Sangula gye ndi",delete_all:"Sangula eri bonna",delete:"Sangula",cancel:"Sazaamu",admin_channel:"OMUKUTU GWA ADMINISTRATION",tap_admin:"Koonya okuwandiikira Administration",no_members:"Tewali bammemba",no_messages:"Tewali bubaka"},
@@ -71,6 +72,30 @@ function getLang(){return localStorage.getItem('siteLang')||'en';}
 function tr(k){const l=getLang();return (TRANSLATIONS[l]&&TRANSLATIONS[l][k])||TRANSLATIONS.en[k]||k;}
 function applyLang(){document.querySelectorAll('[data-i18n]').forEach(el=>el.innerText=tr(el.dataset.i18n));document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>el.placeholder=tr(el.dataset.i18nPlaceholder));}
 document.addEventListener('DOMContentLoaded',applyLang); setInterval(applyLang,500);
+
+// INSTANT SHOW - NO WAITING FOR FIREBASE
+(function(){
+  const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
+  function showNow(){
+    const list=document.getElementById('membersList');
+    const sub=document.getElementById('sub');
+    if(sub) sub.innerText="LODGE";
+    if(!list) return;
+    if(list.querySelector('.member-item')) return;
+    list.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID}_guest" data-other="${ADMIN_UID}" style="border:2px solid var(--gold)"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-chevron-right" style="color:var(--gold)"></i></div>`;
+    const item=list.querySelector('.member-item');
+    if(item){
+      item.onclick=()=>{
+        if(window.openChat) window.openChat(ADMIN_UID, tr('admin_channel'));
+        else { document.getElementById('chatPage').style.display='flex'; document.getElementById('chatName').innerText=tr('admin_channel'); }
+      };
+    }
+  }
+  showNow();
+  document.addEventListener('DOMContentLoaded',showNow);
+  setTimeout(showNow,100);
+  setTimeout(showNow,500);
+})();
 </script>
 <script src="notification-system.js"></script>
 <script type="module">
@@ -95,16 +120,15 @@ let myId=null,myEmail="",isAdmin=false,currentChatId=null,myInfo={fullName:'Memb
 let isSending=false;
 let currentMessagesRef=null;
 function showToast(msg){document.getElementById('toastText').innerText=msg;const el=document.getElementById('toast');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
-function attachItemEvents(){document.querySelectorAll('.member-item').forEach(el=>{let timer;const showM=(e)=>{e.preventDefault();selChatId=el.dataset.chatid;const menu=document.getElementById('chatMenu');menu.style.left=((e.touches?e.touches[0].clientX:e.clientX)-120)+'px';menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';menu.style.display='flex';};el.addEventListener('contextmenu',showM);el.addEventListener('touchstart',e=>{timer=setTimeout(()=>showM(e),700);});el.addEventListener('touchend',()=>clearTimeout(timer));el.addEventListener('click',()=>openChat(el.dataset.other,el.querySelector('b').innerText));});}
+function attachItemEvents(){document.querySelectorAll('.member-item').forEach(el=>{let timer;const showM=(e)=>{e.preventDefault();selChatId=el.dataset.chatid;const menu=document.getElementById('chatMenu');menu.style.left=((e.touches?e.touches[0].clientX:e.clientX)-120)+'px';menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';menu.style.display='flex';};el.addEventListener('contextmenu',showM);el.addEventListener('touchstart',e=>{timer=setTimeout(()=>showM(e),700);});el.addEventListener('touchend',()=>clearTimeout(timer));el.addEventListener('click',()=>{ const other=el.dataset.other||ADMIN_UID; const nameEl=el.querySelector('b'); openChat(other, nameEl? nameEl.innerText : tr('admin_channel')); });});}
 function setBadge(id,count){const el=document.getElementById(id);if(!el)return;if(count>0){el.textContent=count>99?"99+":count;el.style.display="grid";}else{el.textContent="0";el.style.display="none";}}
 function updateAppIcon(){const c1=parseInt(document.getElementById("notifCount")?.textContent||"0");let total=isNaN(c1)?0:c1;if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(total);}
-
-// FIX INSTANT OPEN - show channel instantly, not after 3 sec
 function renderFallbackChannel(){
   const listEl=document.getElementById('membersList');
   if(!listEl) return;
-  if(listEl.innerHTML.includes('member-item') &&!listEl.innerHTML.includes('Loading chats')) {
-    if(!isAdmin && listEl.innerHTML.includes('member-item')) return;
+  if(listEl.querySelector('.member-item') && listEl.querySelector('.member-item').dataset.other) {
+    // keep if real data already loaded with badge
+    if(listEl.innerHTML.includes('badge') || listEl.innerHTML.includes('new-msg')) return;
   }
   if(!isAdmin){
     listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+(myId||'guest')}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold)"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-chevron-right" style="color:var(--gold)"></i></div>`;
@@ -114,11 +138,6 @@ function renderFallbackChannel(){
     setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();
   }
 }
-renderFallbackChannel();
-setTimeout(renderFallbackChannel,300);
-setTimeout(renderFallbackChannel,1500);
-setInterval(()=>{ const el=document.getElementById('membersList'); if(el && el.innerHTML.includes('Loading chats')) renderFallbackChannel(); },1000);
-
 onAuthStateChanged(auth,async(u)=>{
   if(!u){document.getElementById('sub').innerText="GUEST";renderFallbackChannel();return;}
   myId=u.uid;myEmail=(u.email||"").toLowerCase();isAdmin=(myEmail===ADMIN_EMAIL);
@@ -201,7 +220,6 @@ if('Notification' in window&&Notification.permission==="default"){Notification.r
     }catch(e){doFallback();}
   },(err)=>{doFallback();});
 }
-
 window.openChat=async(otherUid,displayName)=>{
   if(currentMessagesRef){off(currentMessagesRef);currentMessagesRef=null;}
   currentChatId=isAdmin?(ADMIN_UID+"_"+otherUid):(ADMIN_UID+"_"+(myId||'guest'));
@@ -255,7 +273,6 @@ window.cancelChatDelete=()=>{hideMenus();showToast('Cancelled');}
 document.addEventListener('click',e=>{if(!e.target.closest('.menu'))hideMenus();});
 window.downloadUrl=(url,name)=>{const a=document.createElement('a');a.href=url;a.download=name;a.target='_blank';document.body.appendChild(a);a.click();a.remove();showToast('Downloaded');}
 window.downloadMedia=()=>{if(selMediaUrl)window.downloadUrl(selMediaUrl,selMediaUrl.includes('.mp4')?'video.mp4':'photo.jpg');hideMenus();}
-
 document.getElementById('mediaInput').addEventListener('change',async(e)=>{
   if(isSending) return;
   const file=e.target.files[0];if(!file||!currentChatId)return;
@@ -275,7 +292,6 @@ document.getElementById('mediaInput').addEventListener('change',async(e)=>{
   finally{isSending=false;}
   e.target.value='';
 });
-
 window.sendMsg=async()=>{
   if(isSending) return;
   const i=document.getElementById('msgInput');const txt=i.value.trim();if(!txt||!currentChatId)return;
@@ -290,7 +306,6 @@ window.sendMsg=async()=>{
   }catch(e){showToast('Failed to send');}
   finally{isSending=false;}
 }
-
 window.closeChat=()=>{
   if(currentMessagesRef){off(currentMessagesRef);currentMessagesRef=null;}
   document.getElementById('chatPage').style.display='none';currentChatId=null;

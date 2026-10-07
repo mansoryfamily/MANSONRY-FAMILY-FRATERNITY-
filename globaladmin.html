@@ -78,7 +78,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebas
 import { getDatabase, ref, onValue, push, set, remove, update, get, off } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -95,15 +94,18 @@ const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
 let myId=null,myEmail="",isAdmin=false,currentChatId=null,myInfo={fullName:'Member'},usersCache={},selId=null,selText=null,selIsMine=false,replyData=null,selChatId=null,selMediaUrl=null;
 let isSending=false;
 let currentMessagesRef=null;
-
 function showToast(msg){document.getElementById('toastText').innerText=msg;const el=document.getElementById('toast');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
 function attachItemEvents(){document.querySelectorAll('.member-item').forEach(el=>{let timer;const showM=(e)=>{e.preventDefault();selChatId=el.dataset.chatid;const menu=document.getElementById('chatMenu');menu.style.left=((e.touches?e.touches[0].clientX:e.clientX)-120)+'px';menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';menu.style.display='flex';};el.addEventListener('contextmenu',showM);el.addEventListener('touchstart',e=>{timer=setTimeout(()=>showM(e),700);});el.addEventListener('touchend',()=>clearTimeout(timer));el.addEventListener('click',()=>openChat(el.dataset.other,el.querySelector('b').innerText));});}
 function setBadge(id,count){const el=document.getElementById(id);if(!el)return;if(count>0){el.textContent=count>99?"99+":count;el.style.display="grid";}else{el.textContent="0";el.style.display="none";}}
 function updateAppIcon(){const c1=parseInt(document.getElementById("notifCount")?.textContent||"0");let total=isNaN(c1)?0:c1;if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(total);}
-setTimeout(()=>{if(!myId){renderFallbackChannel();}},3000);
+
+// FIX INSTANT OPEN - show channel instantly, not after 3 sec
 function renderFallbackChannel(){
   const listEl=document.getElementById('membersList');
   if(!listEl) return;
+  if(listEl.innerHTML.includes('member-item') &&!listEl.innerHTML.includes('Loading chats')) {
+    if(!isAdmin && listEl.innerHTML.includes('member-item')) return;
+  }
   if(!isAdmin){
     listEl.innerHTML=`<div class="member-item" data-chatid="${ADMIN_UID+'_'+(myId||'guest')}" data-other="${ADMIN_UID}" style="border:2px solid var(--gold)"><div style="width:48px;height:48px;border-radius:50%;background:#0b1728;border:2px solid var(--gold);display:grid;place-items:center"><img src="masonic-icon.png" style="width:28px"></div><div style="flex:1"><b style="color:var(--gold)">${tr('admin_channel')}</b><br><small style="color:#aaa">${tr('tap_admin')}</small></div><i class="fa fa-chevron-right" style="color:var(--gold)"></i></div>`;
     attachItemEvents();
@@ -112,6 +114,11 @@ function renderFallbackChannel(){
     setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();
   }
 }
+renderFallbackChannel();
+setTimeout(renderFallbackChannel,300);
+setTimeout(renderFallbackChannel,1500);
+setInterval(()=>{ const el=document.getElementById('membersList'); if(el && el.innerHTML.includes('Loading chats')) renderFallbackChannel(); },1000);
+
 onAuthStateChanged(auth,async(u)=>{
   if(!u){document.getElementById('sub').innerText="GUEST";renderFallbackChannel();return;}
   myId=u.uid;myEmail=(u.email||"").toLowerCase();isAdmin=(myEmail===ADMIN_EMAIL);
@@ -201,7 +208,6 @@ window.openChat=async(otherUid,displayName)=>{
   document.getElementById('chatName').innerText=displayName;
   document.getElementById('chatPage').style.display='flex';
   const box=document.getElementById('messages');
-  box.innerHTML=`<div style="text-align:center;padding:40px;color:#aaa"><i class="fa fa-spinner fa-spin" style="color:var(--gold)"></i><br><br>Loading messages...</div>`;
   setBadge("notifCount",0);setBadge("globalChatBadge",0);updateAppIcon();
   if(window.LodgeNotifier)window.LodgeNotifier.setAppIconBadge(0);
   try{if(isAdmin)await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:Date.now()}).catch(()=>{});else await update(ref(db,`chats/${currentChatId}`),{seenByMember:Date.now()}).catch(()=>{});}catch(e){}

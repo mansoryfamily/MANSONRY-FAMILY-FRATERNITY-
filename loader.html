@@ -28,34 +28,46 @@ h1{color:#d4af37;margin-top:28px;font-size:20px;letter-spacing:3px;text-shadow:0
 </div>
 <h1>MANSORY FAMILY</h1>
 <div class="loader"><span></span></div>
-<p id="statusText">Initializing...</p><script>
-if('serviceWorker' in navigator){ 
-  navigator.serviceWorker.register('./firebase-messaging-sw.js').then(()=>{
-    return navigator.serviceWorker.register('./sw.js');
-  }).catch(()=>{ navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
+<p id="statusText">Initializing...</p>
+
+<script>
+// FIXED: Only ONE SW - sw.js must include firebase messaging import
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
 }
+
 const statusText = document.getElementById('statusText');
 const msgs = ["Initializing...","Checking brotherhood...","Verifying session...","Loading heritage...","Welcome..."];
 let i=0;
-const intv = setInterval(()=>{ if(i<msgs.length) statusText.textContent=msgs[i++]; }, 1100);
+const intv = setInterval(()=>{
+  if(i<msgs.length) statusText.textContent=msgs[i++];
+}, 1000);
+
 function goNext(){
   clearInterval(intv);
   statusText.textContent="Opening...";
   try{
+    const params = new URLSearchParams(location.search);
+    if(params.get('logout')==='1'){
+      location.replace("./index.html");
+      return;
+    }
     const logged = localStorage.getItem("mff_logged_in")==="true" && localStorage.getItem("mff_user");
     if(logged){
       location.replace("./dashboard.html");
     }else{
-      location.replace("./login.html");
+      location.replace("./index.html");
     }
   }catch(e){
-    location.replace("./login.html");
+    location.replace("./index.html");
   }
 }
 setTimeout(goNext, 6000);
 </script>
 
-<!-- REAL-TIME FIREBASE CONFIG INJECTED - NEW APP ID + PURE FCM FIXED FOR CLOSED APP BADGE -->
+<!-- FCM - NON-BLOCKING, WON'T STOP LOADER -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -72,7 +84,6 @@ const firebaseConfig = {
   appId: "1:964415179161:web:cef44a38e4de304d7c6b08",
   measurementId: "G-9Q2KEWMXVR"
 };
-
 const VAPID_KEY = "BAGy-aXv1nzMOMdtlBa_F29-tQ2_uvkG1VheAg4FyMF6C6WQBqQbrUXlehDO7htLuPQ980I-uuYF5Cz33i2zVME";
 
 const app = initializeApp(firebaseConfig);
@@ -80,34 +91,29 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 onAuthStateChanged(auth, async (user) => {
-  if(user){
+  if(!user) return;
+  try{
     localStorage.setItem("mff_logged_in","true");
-    try{
-      const messaging = getMessaging(app);
-      onMessage(messaging, (payload)=>{
-        console.log("FCM foreground:", payload);
-        if(window.LodgeNotifier){
-          window.LodgeNotifier.showPopup(
-            payload.notification?.title || "MFF Lodge",
-            payload.notification?.body || "Hello member, you got a new message from director please reply.",
-            payload.data?.type || "admin_message"
-          );
-        }
-      });
-      const permission = await Notification.requestPermission();
-      if(permission === "granted"){
-        const token = await getToken(messaging, {vapidKey: VAPID_KEY});
-        if(token){
-          console.log("FCM Token:", token);
-          localStorage.setItem("fcmToken", token);
-          await set(ref(db, `users/${user.uid}/fcmToken`), token);
-          await set(ref(db, `fcmTokens/${user.uid}`), token);
-        }
+    const messaging = getMessaging(app);
+    onMessage(messaging, (payload)=>{
+      if(window.LodgeNotifier){
+        window.LodgeNotifier.showPopup(
+          payload.notification?.title || "MFF Lodge",
+          payload.notification?.body || "Hello member, you got a new message from director please reply.",
+          payload.data?.type || "admin_message"
+        );
       }
-    }catch(e){
-      console.log("FCM init error in loader:", e);
+    });
+    const perm = await Notification.requestPermission();
+    if(perm==="granted"){
+      const token = await getToken(messaging, {vapidKey: VAPID_KEY});
+      if(token){
+        localStorage.setItem("fcmToken", token);
+        await set(ref(db, `users/${user.uid}/fcmToken`), token);
+        await set(ref(db, `fcmTokens/${user.uid}`), token);
+      }
     }
-  }
+  }catch(e){ console.log("FCM error:", e); }
 });
 </script>
 </body>

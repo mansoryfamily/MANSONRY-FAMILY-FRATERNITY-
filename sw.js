@@ -1,9 +1,19 @@
-
- // Mansory Family Lodge - Service Worker v4 - Android Reply Support
+// Mansory Family Lodge - Service Worker v4 - Android Reply Support
 const CACHE_NAME = 'mff-v4';
+
+const ASSETS = [
+  "./",
+  "./index.html",
+  "./manifest.json",
+  "./icon-512.png",
+  "./images.jpeg"
+];
 
 self.addEventListener('install', event => {
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(c => c.addAll(ASSETS).catch(()=>{}))
+  );
 });
 
 self.addEventListener('activate', event => {
@@ -20,10 +30,25 @@ self.addEventListener('activate', event => {
   );
 });
 
+// *** MISSING PART ADDED - REQUIRED FOR INSTALL ***
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  event.respondWith(
+    fetch(event.request)
+      .then(r => {
+        if (r && r.ok) {
+          const clone = r.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        }
+        return r;
+      })
+      .catch(() => caches.match(event.request).then(m => m || caches.match("./index.html")))
+  );
+});
+
 // PUSH NOTIFICATION WITH REPLY + VOICE
 self.addEventListener('push', event => {
   let data = {};
-
   try {
     data = event.data ? event.data.json() : {};
   } catch (error) {
@@ -31,9 +56,7 @@ self.addEventListener('push', event => {
       body: event.data ? event.data.text() : 'New message from Lodge'
     };
   }
-
   const title = data.title || 'MFF Lodge';
-
   const options = {
     body: data.body || 'You have a new message',
     icon: './icon-512.png',
@@ -43,13 +66,11 @@ self.addEventListener('push', event => {
     tag: 'mff-message',
     renotify: true,
     requireInteraction: true,
-
     data: {
       url: data.url || './dashboard.html',
       sender: data.sender || 'admin',
       messageId: data.messageId || Date.now()
     },
-
     actions: [
       {
         action: 'reply',
@@ -63,7 +84,6 @@ self.addEventListener('push', event => {
       }
     ]
   };
-
   event.waitUntil(
     self.registration.showNotification(title, options)
   );
@@ -73,16 +93,10 @@ self.addEventListener('push', event => {
 self.addEventListener('notificationclick', event => {
   const notification = event.notification;
   const notificationData = notification.data || {};
-
   notification.close();
-
   if (event.action === 'reply') {
-    const replyText = typeof event.reply === 'string'
-      ? event.reply.trim()
-      : '';
-
+    const replyText = typeof event.reply === 'string' ? event.reply.trim() : '';
     if (!replyText) return;
-
     event.waitUntil(
       (async () => {
         try {
@@ -90,8 +104,6 @@ self.addEventListener('notificationclick', event => {
             type: 'window',
             includeUncontrolled: true
           });
-
-          // If the dashboard is open, send the reply to it.
           if (clientsList.length > 0) {
             clientsList.forEach(client => {
               client.postMessage({
@@ -103,29 +115,20 @@ self.addEventListener('notificationclick', event => {
               });
             });
           }
-
-          // Preserve the existing backend request.
-          // A failed request does not stop local message delivery.
           try {
-            await fetch(
-              'https://mansoryfamily.github.io/api/reply',
-              {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  reply: replyText,
-                  sender: notificationData.sender || 'admin',
-                  messageId: notificationData.messageId || null,
-                  timestamp: Date.now()
-                })
-              }
-            );
+            await fetch('https://mansoryfamily.github.io/api/reply', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                reply: replyText,
+                sender: notificationData.sender || 'admin',
+                messageId: notificationData.messageId || null,
+                timestamp: Date.now()
+              })
+            });
           } catch (error) {
             console.log('Reply backend unavailable:', error);
           }
-
           await self.registration.showNotification('Reply sent', {
             body: `"${replyText}"`,
             icon: './icon-512.png',
@@ -133,45 +136,26 @@ self.addEventListener('notificationclick', event => {
             tag: 'reply-confirm',
             silent: true
           });
-
           setTimeout(() => {
-            self.registration
-              .getNotifications({ tag: 'reply-confirm' })
-              .then(notifications => {
-                notifications.forEach(item => item.close());
-              })
-              .catch(() => {});
+            self.registration.getNotifications({ tag: 'reply-confirm' }).then(notifications => {
+              notifications.forEach(item => item.close());
+            }).catch(() => {});
           }, 2000);
-
         } catch (error) {
           console.log('Reply failed', error);
         }
       })()
     );
-
     return;
   }
-
-  // Open the app or focus an existing dashboard.
-  const urlToOpen = new URL(
-    notificationData.url || './dashboard.html',
-    self.registration.scope
-  );
-
+  const urlToOpen = new URL(notificationData.url || './dashboard.html', self.registration.scope);
   event.waitUntil(
-    self.clients.matchAll({
-      type: 'window',
-      includeUncontrolled: true
-    }).then(windowClients => {
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(windowClients => {
       for (const client of windowClients) {
-        if (
-          client.url === urlToOpen.href &&
-          typeof client.focus === 'function'
-        ) {
+        if (client.url === urlToOpen.href && typeof client.focus === 'function') {
           return client.focus();
         }
       }
-
       if (self.clients.openWindow) {
         return self.clients.openWindow(urlToOpen.href);
       }

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -116,7 +117,7 @@
     <img src="./images.jpeg" alt="Freemasonry" onerror="this.src='./icon-512.png'">
     <div>
       <p style="line-height:2;color:#ddd;">
-        Our tradition is rooted in centuries of wisdom, discipline, and unity. 
+        Our tradition is rooted in centuries of wisdom, discipline, and unity.
         In 1717, four London lodges united to form the first Grand Lodge.
       </p>
     </div>
@@ -148,53 +149,175 @@
   }catch(e){}
 })();
 
-// FIX 2: Service worker - must be before OneSignal
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./sw.js').then(reg=>{
-      console.log('SW registered');
-    }).catch(()=>{});
+// FIX 2: SERVICE WORKER
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./sw.js')
+      .then(function() {
+        console.log('SW registered');
+      })
+      .catch(function(error) {
+        console.error('Service worker registration failed:', error);
+      });
   });
 }
 
-// FIX 3: Install popup - fixed logic only, same design
-let deferredPrompt;
-const popup = document.getElementById('installPopup');
-const btnInstall = document.getElementById('btnInstall');
-const btnClose = document.getElementById('btnClose');
+// FIX 3: INSTALL POPUP
+(function() {
+  let deferredPrompt = null;
+  let popupTimer = null;
 
-window.addEventListener('beforeinstallprompt', (e)=>{
-  e.preventDefault();
-  deferredPrompt = e;
-  console.log('beforeinstallprompt fired');
-  // Only show if not in standalone mode and not dismissed in last 24h
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-  if(isStandalone) return;
-  const dismissedTime = localStorage.getItem('install_dismissed_time');
-  if(dismissedTime && (Date.now() - parseInt(dismissedTime)) < 86400000) return;
-  
-  setTimeout(()=>{
+  const popup = document.getElementById('installPopup');
+  const btnInstall = document.getElementById('btnInstall');
+  const btnClose = document.getElementById('btnClose');
+
+  if (!popup || !btnInstall || !btnClose) return;
+
+  const DISMISS_KEY = 'install_dismissed_time';
+  const DISMISS_DURATION = 24 * 60 * 60 * 1000;
+
+  function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches ||
+      window.matchMedia('(display-mode: fullscreen)').matches ||
+      window.navigator.standalone === true;
+  }
+
+  function wasDismissed() {
+    try {
+      const dismissedTime = Number(localStorage.getItem(DISMISS_KEY));
+      return dismissedTime > 0 &&
+        (Date.now() - dismissedTime) < DISMISS_DURATION;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function showPopup() {
+    if (isStandalone() || wasDismissed()) return;
     popup.classList.add('show');
-  }, 2000);
-});
+  }
 
-btnInstall.addEventListener('click', async ()=>{
-  if(!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const choice = await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  popup.classList.remove('show');
-});
+  function hidePopup() {
+    popup.classList.remove('show');
+  }
 
-btnClose.addEventListener('click', ()=>{
-  popup.classList.remove('show');
-  localStorage.setItem('install_dismissed_time', Date.now().toString());
-});
+  function showInstallInstructions() {
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isSamsung = /samsungbrowser/i.test(navigator.userAgent);
 
-window.addEventListener('appinstalled', ()=>{
-  popup.classList.remove('show');
-  localStorage.removeItem('install_dismissed_time');
-});
+    if (isIOS) {
+      alert(
+        'To install this app on your iPhone or iPad:\n\n' +
+        '1. Open this website in Safari.\n' +
+        '2. Tap the Share button.\n' +
+        '3. Select "Add to Home Screen".\n' +
+        '4. Tap "Add".'
+      );
+    } else if (isSamsung) {
+      alert(
+        'To install this app:\n\n' +
+        '1. Open your browser menu.\n' +
+        '2. Look for "Add page to" or "Install app".\n' +
+        '3. Follow the instructions.'
+      );
+    } else {
+      alert(
+        'Installation is not available yet.\n\n' +
+        'Try opening this website in Chrome, then use the browser menu ' +
+        'and select "Install app" or "Add to Home screen".\n\n' +
+        'If that option is missing, check that the website uses HTTPS ' +
+        'and that its manifest and service worker are valid.'
+      );
+    }
+  }
+
+  function schedulePopup() {
+    if (isStandalone() || wasDismissed()) return;
+    popupTimer = setTimeout(showPopup, 2500);
+  }
+
+  // Capture the native browser installation event.
+  window.addEventListener('beforeinstallprompt', function(event) {
+    event.preventDefault();
+    deferredPrompt = event;
+
+    if (popupTimer) clearTimeout(popupTimer);
+
+    if (!isStandalone() && !wasDismissed()) {
+      popupTimer = setTimeout(showPopup, 2000);
+    }
+  });
+
+  // Show the custom popup even if the native event is unavailable.
+  if (document.readyState === 'complete') {
+    schedulePopup();
+  } else {
+    window.addEventListener('load', schedulePopup, { once: true });
+  }
+
+  // Install button.
+  btnInstall.addEventListener('click', async function() {
+    if (isStandalone()) {
+      hidePopup();
+      return;
+    }
+
+    if (!deferredPrompt) {
+      showInstallInstructions();
+      return;
+    }
+
+    const installEvent = deferredPrompt;
+    deferredPrompt = null;
+    btnInstall.disabled = true;
+
+    try {
+      await installEvent.prompt();
+      const result = await installEvent.userChoice;
+
+      hidePopup();
+
+      if (result && result.outcome === 'accepted') {
+        try {
+          localStorage.removeItem(DISMISS_KEY);
+        } catch (error) {}
+      }
+    } catch (error) {
+      console.error('Installation prompt failed:', error);
+      showInstallInstructions();
+    } finally {
+      btnInstall.disabled = false;
+    }
+  });
+
+  // Later button.
+  btnClose.addEventListener('click', function() {
+    hidePopup();
+
+    try {
+      localStorage.setItem(DISMISS_KEY, Date.now().toString());
+    } catch (error) {}
+  });
+
+  // Hide popup after successful installation.
+  window.addEventListener('appinstalled', function() {
+    hidePopup();
+    deferredPrompt = null;
+
+    if (popupTimer) clearTimeout(popupTimer);
+
+    try {
+      localStorage.removeItem(DISMISS_KEY);
+    } catch (error) {}
+
+    console.log('App successfully installed.');
+  });
+
+  // Keep popup hidden while running as an installed app.
+  document.addEventListener('visibilitychange', function() {
+    if (isStandalone()) hidePopup();
+  });
+})();
 </script>
 
 </body>

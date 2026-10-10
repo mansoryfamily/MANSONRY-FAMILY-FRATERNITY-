@@ -1,12 +1,12 @@
 {
-  "name": "Mansory Family Heritage",
-  "short_name": "Mansory",
-  "start_url": "index.html",
+  "name": "MFF",
+  "short_name": "MFF",
+  "start_url": "/MANSONRY-FAMILY-FRATERNITY-/loader.html",
   "display": "standalone",
   "background_color": "#07111f",
   "theme_color": "#d4af37",
   "orientation": "portrait",
-  "scope": "/",
+  "scope": "/MANSONRY-FAMILY-FRATERNITY-/",
   "description": "Mansory Family Lodge - Private Members Brotherhood App",
   "categories": ["social", "lifestyle"],
   "lang": "en",
@@ -65,7 +65,7 @@
   "screenshots": [
     {
       "src": "icon-512.png",
-      "sizes": "512x512",
+      "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide"
     }
@@ -75,4 +75,15 @@
       "name": "Dashboard",
       "short_name": "Dashboard",
       "description": "Go directly to Dashboard",
-      "url": "dashboard
+      "url": "/MANSONRY-FAMILY-FRATERNITY-/dashboard.html",
+      "icons": [{ "src": "icon-512.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Members",
+      "short_name": "Members",
+      "description": "View Brotherhood Members",
+      "url": "/MANSONRY-FAMILY-FRATERNITY-/members.html",
+      "icons": [{ "src": "icon-512.png", "sizes": "192x192" }]
+    }
+  ]
+}

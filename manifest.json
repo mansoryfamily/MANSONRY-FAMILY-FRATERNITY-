@@ -1,7 +1,7 @@
 {
   "name": "Mansory Family Heritage",
   "short_name": "MFF",
-  "start_url": "./index.html",
+  "start_url": "./loader.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07111f",

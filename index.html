@@ -81,7 +81,7 @@
   <img src="./icon-512.png" alt="logo" onerror="this.src='./images.jpeg'">
   <div class="text">
     <h4>Install Mansory Family App</h4>
-    <p>Add to home screen for faster access</p>
+    <p id="installText">Add to home screen for faster access</p>
   </div>
   <div class="btns">
     <button class="btn-install" id="btnInstall">Install</button>
@@ -150,11 +150,11 @@
 // FIX 2: SERVICE WORKER
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('./sw.js').then(()=>console.log('SW registered')).catch(()=>{});
+    navigator.serviceWorker.register('./sw.js').then(()=>{}).catch(()=>{});
   });
 }
 
-// FIX 3: INSTALL POPUP - SHOWS EVERY 1.5 SEC AFTER LATER
+// FIX 3: INSTALL POPUP - NO SCARY ALERTS, EVERY 1.5 SEC LOOP
 (function() {
   let deferredPrompt = null;
   let popupTimer = null;
@@ -163,6 +163,7 @@ if ('serviceWorker' in navigator) {
   const popup = document.getElementById('installPopup');
   const btnInstall = document.getElementById('btnInstall');
   const btnClose = document.getElementById('btnClose');
+  const installText = document.getElementById('installText');
 
   function isStandalone() {
     return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -199,8 +200,8 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
     deferredPrompt = e;
-    console.log('beforeinstallprompt captured');
     if(!isStandalone()){
+      installText.textContent = "Add to home screen for faster access";
       schedulePopup(1500);
       startLoop();
     }
@@ -208,7 +209,6 @@ if ('serviceWorker' in navigator) {
 
   window.addEventListener('load', ()=>{
     if(isStandalone()) return;
-    // Fallback show even if beforeinstallprompt not fired yet
     schedulePopup(2000);
     startLoop();
   });
@@ -216,34 +216,32 @@ if ('serviceWorker' in navigator) {
   btnInstall.addEventListener('click', async function() {
     if (isStandalone()) { hidePopup(); stopLoop(); return; }
     
-    if (!deferredPrompt) {
-      alert('To install:\n1. Tap browser menu (3 dots)\n2. Tap Install app / Add to Home screen');
-      schedulePopup(1500);
-      return;
-    }
-    
-    try {
-      deferredPrompt.prompt();
-      const choice = await deferredPrompt.userChoice;
-      console.log(choice.outcome);
-      deferredPrompt = null;
-      hidePopup();
-      if(choice.outcome === 'accepted'){
-        stopLoop();
-      } else {
-        // If dismissed, show again in 1.5s
+    if (deferredPrompt) {
+      try {
+        deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        hidePopup();
+        if(choice.outcome === 'accepted'){
+          stopLoop();
+        } else {
+          schedulePopup(1500);
+          startLoop();
+        }
+      } catch(err){
         schedulePopup(1500);
-        startLoop();
       }
-    } catch(err){
-      console.error(err);
+    } else {
+      // No scary alert - just show inline instruction inside popup
+      installText.textContent = "Tap ⋮ menu > Install app / Add to Home screen";
+      // Keep popup visible, loop continues
       schedulePopup(1500);
     }
   });
 
   btnClose.addEventListener('click', function() {
     hidePopup();
-    // Later clicked = show again after 1.5 sec forever
+    installText.textContent = "Add to home screen for faster access";
     schedulePopup(1500);
     startLoop();
   });
@@ -251,7 +249,6 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('appinstalled', function() {
     hidePopup();
     stopLoop();
-    console.log('App installed');
   });
 })();
 </script>

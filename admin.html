@@ -56,7 +56,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
 </head><body>
 <header>
 <div class="logo">Freemasonry Heritage</div>
-<button id="enableNotifications" data-enable-notifications type="button" title="Enable chat notifications" style="background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.3);color:#d4af37;padding:9px 12px;border-radius:10px;cursor:pointer">Enable notifications</button>
 <button class="logout" id="logoutBtn" data-i18n="logout">Logout</button>
 </header>
 <main class="container">
@@ -277,6 +276,5 @@ deleteAllBtn.addEventListener("click", async()=>{
 });
 document.getElementById('logoutBtn').addEventListener('click',()=>{signOut(auth).then(()=>{window.location.href="login.html";});});
 </script>
-<script type="module" src="./firebase-init.js"></script>
 </body>
 </html>

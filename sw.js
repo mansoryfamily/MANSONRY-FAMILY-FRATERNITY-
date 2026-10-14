@@ -1,39 +1,5 @@
 // Mansory Family Lodge - Service Worker v4 - Android Reply Support
-importScripts("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js");
-importScripts("https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js");
-
 const CACHE_NAME = 'mff-v4';
-
-firebase.initializeApp({
-  apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
-  authDomain: "mansonry-family-fraternity.firebaseapp.com",
-  databaseURL: "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "mansonry-family-fraternity",
-  storageBucket: "mansonry-family-fraternity.firebasestorage.app",
-  messagingSenderId: "964415179161",
-  appId: "1:964415179161:web:cef44a38e4de304d7c6b08"
-});
-
-const messaging = firebase.messaging();
-messaging.onBackgroundMessage(payload => {
-  const data = payload.data || {};
-  const title = data.title || payload.notification?.title || 'MFF Lodge';
-  const body = data.body || payload.notification?.body || 'You have a new message.';
-  return self.registration.showNotification(title, {
-    body,
-    icon: './icon-512.png',
-    badge: './icon-192.png',
-    vibrate: [200, 100, 200],
-    tag: data.chatId || 'mff-message',
-    renotify: true,
-    requireInteraction: true,
-    data: {
-      url: data.url || './globaladmin.html',
-      chatId: data.chatId || '',
-      senderId: data.senderId || ''
-    }
-  });
-});
 
 const ASSETS = [
   "./",
@@ -80,16 +46,113 @@ self.addEventListener('fetch', event => {
   );
 });
 
+// PUSH NOTIFICATION WITH REPLY + VOICE
+self.addEventListener('push', event => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch (error) {
+    data = {
+      body: event.data ? event.data.text() : 'New message from Lodge'
+    };
+  }
+  const title = data.title || 'MFF Lodge';
+  const options = {
+    body: data.body || 'You have a new message',
+    icon: './icon-512.png',
+    badge: './icon-512.png',
+    vibrate: [200, 100, 200, 100, 200],
+    sound: 'https://cdn.pixabay.com/audio/2022/03/10/audio_4c1d5a8c3d.mp3',
+    tag: 'mff-message',
+    renotify: true,
+    requireInteraction: true,
+    data: {
+      url: data.url || './dashboard.html',
+      sender: data.sender || 'admin',
+      messageId: data.messageId || Date.now()
+    },
+    actions: [
+      {
+        action: 'reply',
+        title: 'Reply',
+        type: 'text',
+        placeholder: 'Type a message...'
+      },
+      {
+        action: 'open',
+        title: 'Open'
+      }
+    ]
+  };
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
+
+// CLICK + REPLY HANDLING
 self.addEventListener('notificationclick', event => {
   const notification = event.notification;
   const notificationData = notification.data || {};
   notification.close();
-  const urlToOpen = new URL(notificationData.url || './globaladmin.html', self.registration.scope);
+  if (event.action === 'reply') {
+    const replyText = typeof event.reply === 'string' ? event.reply.trim() : '';
+    if (!replyText) return;
+    event.waitUntil(
+      (async () => {
+        try {
+          const clientsList = await self.clients.matchAll({
+            type: 'window',
+            includeUncontrolled: true
+          });
+          if (clientsList.length > 0) {
+            clientsList.forEach(client => {
+              client.postMessage({
+                type: 'REPLY_FROM_NOTIFICATION',
+                reply: replyText,
+                sender: notificationData.sender || 'admin',
+                messageId: notificationData.messageId || null,
+                time: new Date().toISOString()
+              });
+            });
+          }
+          try {
+            await fetch('https://mansoryfamily.github.io/api/reply', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                reply: replyText,
+                sender: notificationData.sender || 'admin',
+                messageId: notificationData.messageId || null,
+                timestamp: Date.now()
+              })
+            });
+          } catch (error) {
+            console.log('Reply backend unavailable:', error);
+          }
+          await self.registration.showNotification('Reply sent', {
+            body: `"${replyText}"`,
+            icon: './icon-512.png',
+            badge: './icon-512.png',
+            tag: 'reply-confirm',
+            silent: true
+          });
+          setTimeout(() => {
+            self.registration.getNotifications({ tag: 'reply-confirm' }).then(notifications => {
+              notifications.forEach(item => item.close());
+            }).catch(() => {});
+          }, 2000);
+        } catch (error) {
+          console.log('Reply failed', error);
+        }
+      })()
+    );
+    return;
+  }
+  const urlToOpen = new URL(notificationData.url || './dashboard.html', self.registration.scope);
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(windowClients => {
       for (const client of windowClients) {
-        if (new URL(client.url).origin === urlToOpen.origin && typeof client.focus === 'function') {
-          client.navigate(urlToOpen.href);
+        if (client.url === urlToOpen.href && typeof client.focus === 'function') {
           return client.focus();
         }
       }

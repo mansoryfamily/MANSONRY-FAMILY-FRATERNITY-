@@ -39,6 +39,7 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 <div class="top">
 <div style="display:flex;align-items:center;gap:10px"><i class="fa fa-arrow-left" style="color:var(--gold)" onclick="location.href='help.html'"></i><div style="width:40px;height:40px;border-radius:12px;padding:2px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:grid;place-items:center"><div style="width:100%;height:100%;background:#0b1728;border-radius:10px;display:grid;place-items:center"><img src="masonic-icon.png" style="width:26px;height:26px"></div></div><div style="color:var(--gold);font-weight:800;font-size:12px"><span data-i18n="global_admin">GLOBAL ADMIN</span><br><small id="sub" style="color:#00ff88;font-size:9px">Connecting...</small></div></div>
 <div style="display:flex;gap:14px;align-items:center;">
+<button id="enableNotifications" data-enable-notifications type="button" title="Enable chat notifications" style="background:transparent;border:1px solid var(--border);color:var(--gold);padding:8px 10px;border-radius:8px;cursor:pointer">Enable notifications</button>
 <div id="notifIcon" style="position:relative;"><i class="fa fa-comments" style="color:var(--green);font-size:20px"></i><span id="notifCount" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:grid;place-items:center;">0</span><span id="globalChatBadge" style="position:absolute;top:-8px;right:-8px;background:var(--green);color:#000;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:none;place-items:center;padding:0 4px;">0</span></div>
 </div>
 </div>
@@ -74,10 +75,10 @@ document.addEventListener('DOMContentLoaded',applyLang); setInterval(applyLang,5
   </script><!-- YOUR EXACT FILES - RESPECTED -->
 <script src="notification-system.js"></script>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, push, set, remove, update, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue, push, set, remove, update, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -137,10 +138,19 @@ onAuthStateChanged(auth,async(u)=>{
   
   myInfo=usersCache[myId]||{fullName:u.displayName||'Member'};
   loadChats();
+  const requestedChat=new URLSearchParams(location.search).get('chatId');
+  const participants=requestedChat?.split('_')||[];
+  const isExpectedChat=isAdmin
+    ? participants.length===2&&participants[0]===ADMIN_UID
+    : participants.length===2&&participants[0]===ADMIN_UID&&participants[1]===myId;
+  if(isExpectedChat){
+    const otherUid=isAdmin?participants[1]:ADMIN_UID;
+    const displayName=usersCache[otherUid]?.fullName||(isAdmin?'Member':'Lodge Director');
+    openChat(otherUid,displayName);
+  }
 });
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').then(()=>console.log("SW registered"));}
-if('Notification' in window&&Notification.permission==="default"){Notification.requestPermission();}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').then(()=>console.log("SW registered"));}
 
 function loadChats(){
   const listEl=document.getElementById('membersList');
@@ -348,4 +358,5 @@ window.sendMsg=async()=>{
 
 window.closeChat=()=>{document.getElementById('chatPage').style.display='none';currentChatId=null;}
 </script>
+<script type="module" src="./firebase-init.js"></script>
 </body></html>

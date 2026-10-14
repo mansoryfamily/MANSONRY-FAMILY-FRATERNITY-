@@ -86,7 +86,7 @@ class LodgeNotifier {
     document.title=count>0?`(${count}) Freemasonry Heritage`:"Freemasonry Heritage";
   }
 
-  showPopup(title,message,type="admin_message"){
+  showPopup(title,message,type="admin_message",targetUrl=null){
     // FIXED: Show popup + voice EVEN in dashboard and all pages OUTSIDE globaladmin
     // If user is already inside globaladmin, don't spam popup (they are reading)
     if(this.isInGlobalChat()){
@@ -110,7 +110,7 @@ class LodgeNotifier {
         if(type==="announcement"){
           window.location.href="notifications.html";
         }else{
-          window.location.href="globaladmin.html";
+          window.location.href=targetUrl||"globaladmin.html";
         }
       };
     }
@@ -128,26 +128,6 @@ window.LodgeNotifier=notifier;
 if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged=()=>{ speechSynthesis.getVoices(); }; }
 const saved=localStorage.getItem("globalChatBadge_count");
 if(saved && parseInt(saved)>0){ setTimeout(()=>notifier.setAppIconBadge(parseInt(saved)),1000); }
-
-// SAVE ONESIGNAL ID TO FIREBASE - NEEDED FOR CLOSED-APP PUSH
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-OneSignalDeferred.push(async function(OneSignal) {
-  try{
-    const id = await OneSignal.User.PushSubscription.id;
-    if (!id) return;
-    // Try compat SDK first, then modular fallback
-    if(window.firebase && firebase.auth){
-      const user = firebase.auth().currentUser;
-      if (!user) return;
-      firebase.database().ref(`users/${user.uid}/oneSignalId`).set(id);
-      firebase.database().ref(`playerIds/${user.uid}/${id}`).set(true);
-      console.log("PlayerId saved compat", id);
-    } else if(window.firebaseAuthUser){
-      // modular will be handled in page module
-      localStorage.setItem("onesignal_pending_id", id);
-    }
-  }catch(e){ console.log("OneSignal save error", e); }
-});
 
 // Unlock voice on first interaction - required for dashboard voice
 document.addEventListener('click', ()=>{

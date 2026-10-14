@@ -7,13 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#d4af37">
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({ appId: "fd3193e3-77bb-4374-988d-4162b6fb5ab" });
-  });
-</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--gold:#d4af37;--gold-light:#f1ca52;--dark:#050c18;--card:#0f1a2e;}
@@ -97,6 +90,7 @@ header{position:sticky;top:0;width:100%;padding:20px 8%;background:rgba(5,12,24,
 <div class="header-actions" style="display:flex;align-items:center;gap:12px;position:relative;">
 <button id="langBtn" style="background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.3);width:42px;height:42px;border-radius:50%;cursor:pointer;color:#d4af37;font-size:20px;display:flex;align-items:center;justify-content:center;">🌐</button>
 <div id="langMenu" style="display:none;position:absolute;top:55px;right:110px;background:#0f1a2e;border:1px solid rgba(212,175,55,.3);border-radius:12px;padding:8px;z-index:2000;min-width:190px;box-shadow:0 10px 30px rgba(0,0,0,.5);"></div>
+<button id="enableNotifications" data-enable-notifications type="button" title="Enable chat notifications" style="background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.3);color:#d4af37;padding:9px 12px;border-radius:10px;cursor:pointer">Enable notifications</button>
 <button class="logout" id="logoutBtn" data-i18n="logout">Logout</button>
 </div>
 </header><main class="dashboard">
@@ -328,6 +322,7 @@ onValue(announcementsRef,(snap)=>{
   list.innerHTML=html;
 });
 </script>
+<script type="module" src="./firebase-init.js"></script>
 <script type="module" src="./notifications.js"></script>
 </body>
 </html>

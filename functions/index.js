@@ -3,7 +3,7 @@ const functions = require("firebase-functions/v1");
 
 admin.initializeApp();
 
-const SITE_BASE_URL = "https://mansoryfamily.github.io/MANSONRY-FAMILY-FRATERNITY-";
+const SITE_BASE_URL = "https://freemasonry-family.web.app";
 const ADMIN_UID = "DMeM2UuLgDOusNvmzRGZygBdxOG2";
 
 function messagePreview(message) {

@@ -137,8 +137,8 @@ exports.pushOnNewMessage = functions.database.ref("/chats/{chatId}/messages/{msg
     },
     webpush: {
       notification: {
-        icon: "https://mansoryfamily.github.io/Mansonry-Family-Fraternity/icon-512.png",
-        badge: "https://mansoryfamily.github.io/Mansonry-Family-Fraternity/icon-192.png",
+        icon: "https://freemasonry-family.web.app/icon-512.png",
+        badge: "https://freemasonry-family.web.app/icon-192.png",
         requireInteraction: true
       }
     },

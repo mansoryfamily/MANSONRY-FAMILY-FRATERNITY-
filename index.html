@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <title>Mansonry Family Fraternity | History & Heritage</title>
+  <title>Masonry Family Fraternity | History & Heritage</title>
 
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#d4af37">
@@ -60,11 +60,11 @@
 <div class="install-popup" id="installPopup">
   <img src="./icon-512.png" alt="logo" onerror="this.src='./images.jpeg'">
   <div class="text">
-    <h4>Install Mansory Family App</h4>
-    <p id="installText">Add to home screen for faster access</p>
+    <h4>Install Masonry Family App</h4>
+    <p id="installText">Download the official Android APK, then open it to install.</p>
   </div>
   <div class="btns">
-    <button class="btn-install" id="btnInstall">Install</button>
+    <button class="btn-install" id="btnInstall">Download APK</button>
     <button class="btn-close" id="btnClose">Later</button>
   </div>
 </div>
@@ -109,7 +109,7 @@
 </section>
 
 <footer>
-  <p>© 2026 Mansonry Family Fraternity. All Rights Reserved.</p>
+  <p>© 2026 Masonry Family Fraternity. All Rights Reserved.</p>
 </footer>
 
 <script>
@@ -130,109 +130,46 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// INSTALL POPUP - SILENT WHEN ALREADY INSTALLED
+// ANDROID APK INSTALL PROMPT
 (function() {
-  let deferredPrompt = null;
-  let popupTimer = null;
-  let loopTimer = null;
+  const APK_URL = 'https://freemasonry-family.web.app/download';
+  const DISMISS_KEY = 'mff_apk_prompt_dismissed';
   const popup = document.getElementById('installPopup');
   const btnInstall = document.getElementById('btnInstall');
   const btnClose = document.getElementById('btnClose');
-  const installText = document.getElementById('installText');
+  if (!popup || !/Android/i.test(navigator.userAgent)) return;
 
-  function isStandalone() {
-    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  const isStandalone = () =>
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true;
+  const recentlyDismissed = () => {
+    const last = Number(localStorage.getItem(DISMISS_KEY) || 0);
+    return Date.now() - last < 7 * 24 * 60 * 60 * 1000;
+  };
+
+  window.addEventListener('beforeinstallprompt', event => event.preventDefault());
+
+  if (isStandalone() || localStorage.getItem('mff_installed') === 'true' || recentlyDismissed()) {
+    return;
   }
 
-  async function isAppInstalled() {
-    if (isStandalone()) return true;
-    if (localStorage.getItem('mff_installed') === 'true') return true;
-    if ('getInstalledRelatedApps' in navigator) {
-      try {
-        const apps = await navigator.getInstalledRelatedApps();
-        if (apps && apps.length > 0) return true;
-      } catch(e) {}
-    }
-    return false;
-  }
+  setTimeout(() => popup.classList.add('show'), 2500);
 
-  function showPopup() { popup.classList.add('show'); }
-  function hidePopup() { popup.classList.remove('show'); }
+  const dismiss = () => {
+    localStorage.setItem(DISMISS_KEY, String(Date.now()));
+    popup.classList.remove('show');
+  };
 
-  function schedulePopup(delay){
-    if (popupTimer) clearTimeout(popupTimer);
-    popupTimer = setTimeout(async ()=>{
-      if (await isAppInstalled()) return;
-      showPopup();
-    }, delay || 1500);
-  }
-
-  function startLoop(){
-    if(loopTimer) clearInterval(loopTimer);
-    loopTimer = setInterval(async ()=>{
-      if (await isAppInstalled()) { stopLoop(); return; }
-      if(isStandalone()) { stopLoop(); return; }
-      if(!popup.classList.contains('show')){ showPopup(); }
-    }, 1500);
-  }
-
-  function stopLoop(){
-    if(loopTimer){ clearInterval(loopTimer); loopTimer = null; }
-    if(popupTimer){ clearTimeout(popupTimer); popupTimer = null; }
-  }
-
-  window.addEventListener('beforeinstallprompt', function(e) {
-    e.preventDefault();
-    deferredPrompt = e;
-    isAppInstalled().then(installed=>{
-      if(installed) return;
-      schedulePopup(1500);
-      startLoop();
-    });
+  btnInstall.addEventListener('click', () => {
+    dismiss();
+    window.location.href = APK_URL;
   });
 
-  window.addEventListener('load', async ()=>{
-    if (await isAppInstalled()) return;
-    schedulePopup(2500);
-    startLoop();
-  });
+  btnClose.addEventListener('click', dismiss);
 
-  btnInstall.addEventListener('click', async function() {
-    if (await isAppInstalled() || isStandalone()) { hidePopup(); stopLoop(); return; }
-    if (deferredPrompt) {
-      try {
-        deferredPrompt.prompt();
-        const choice = await deferredPrompt.userChoice;
-        deferredPrompt = null;
-        hidePopup();
-        if(choice.outcome === 'accepted'){
-          localStorage.setItem('mff_installed','true');
-          stopLoop();
-        } else {
-          schedulePopup(1500);
-          startLoop();
-        }
-      } catch(err){ schedulePopup(1500); }
-    } else {
-      installText.textContent = "Tap ⋮ menu > Install app / Add to Home screen";
-      schedulePopup(1500);
-    }
-  });
-
-  btnClose.addEventListener('click', function() {
-    hidePopup();
-    installText.textContent = "Add to home screen for faster access";
-    isAppInstalled().then(installed=>{
-      if(installed) return;
-      schedulePopup(1500);
-      startLoop();
-    });
-  });
-
-  window.addEventListener('appinstalled', function() {
-    hidePopup();
-    stopLoop();
-    localStorage.setItem('mff_installed','true');
+  window.addEventListener('appinstalled', () => {
+    localStorage.setItem('mff_installed', 'true');
+    popup.classList.remove('show');
   });
 })();
 </script>

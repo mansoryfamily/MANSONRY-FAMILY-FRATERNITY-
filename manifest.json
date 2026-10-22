@@ -1,5 +1,5 @@
 {
-  "name": "Mansory Family Heritage",
+  "name": "Masonry Family Heritage",
   "short_name": "MFF",
   "start_url": "./loader.html",
   "scope": "./",
@@ -7,7 +7,7 @@
   "background_color": "#07111f",
   "theme_color": "#d4af37",
   "orientation": "portrait",
-  "description": "Mansory Family Lodge - Private Members Brotherhood App",
+  "description": "Masonry Family Lodge - Private Members Brotherhood App",
   "categories": ["social", "lifestyle"],
   "lang": "en",
   "dir": "ltr",

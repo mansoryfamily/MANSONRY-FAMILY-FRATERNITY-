@@ -112,10 +112,18 @@ function clearPending(chatId,kind,id){
   const pending=readPending(chatId,kind);
   if(pending&&pending.id===id){try{localStorage.removeItem(pendingKey(chatId,kind));}catch(e){}}
 }
+async function publishChatEvent(chatId,pending){
+  const recipient=isAdmin?chatId.slice(ADMIN_UID.length+1):ADMIN_UID;
+  if(!recipient||recipient===myId)return;
+  const title=isAdmin?'MFF Administration':`${myInfo.fullName||'Member'} • MFF`;
+  const body=pending.payload.text||pending.preview||'New message';
+  await set(ref(db,`userEvents/${recipient}/${pending.id}`),{type:'chat',title,body,chatId,messageId:pending.id,senderId:myId,time:pending.payload.time||Date.now()}).catch(()=>{});
+}
 async function commitMessage(chatId,kind,pending){
   await set(ref(db,`chats/${chatId}/messages/${pending.id}`),pending.payload);
   await update(ref(db,`chats/${chatId}`),{lastTime:Date.now(),lastMessage:pending.preview,info:{fullName:myInfo.fullName||'Member',uid:myId},hiddenFor:{}}).catch(()=>{});
   if(isAdmin)await update(ref(db,`chats/${chatId}`),{seenByMember:0}).catch(()=>{});else await update(ref(db,`chats/${chatId}`),{seenByAdmin:0}).catch(()=>{});
+  await publishChatEvent(chatId,pending);
   clearPending(chatId,kind,pending.id);
 }
 

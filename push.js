@@ -1,6 +1,6 @@
 // Mansory Push + Badge + Sound - No layout change
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/MANSONRY-FAMILY-FRATERNITY-/sw.js')
+  navigator.serviceWorker.register('./sw.js')
   .then(reg => {
     console.log('Mansory SW registered for badges');
     
@@ -18,7 +18,7 @@ if ('serviceWorker' in navigator) {
 
 // Play sound for in-app notifications
 function playMansorySound() {
-  const audio = new Audio('/MANSONRY-FAMILY-FRATERNITY-/notification.mp3');
+  const audio = new Audio('./notification.mp3');
   audio.play().catch(()=>{});
   if ('setAppBadge' in navigator) {
     navigator.setAppBadge(1);

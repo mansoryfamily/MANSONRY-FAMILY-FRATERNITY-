@@ -18,7 +18,7 @@ if ('serviceWorker' in navigator) {
 
 // Play sound for in-app notifications
 function playMasonrySound() {
-  const audio = new Audio('./notification.mp3');
+  const audio = new Audio('./notification.wav');
   audio.play().catch(()=>{});
   if ('setAppBadge' in navigator) {
     navigator.setAppBadge(1);

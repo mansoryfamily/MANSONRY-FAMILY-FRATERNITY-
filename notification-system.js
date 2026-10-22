@@ -3,7 +3,7 @@
 class LodgeNotifier {
   constructor() {
     this.unreadCount=0;
-    this.audio=new Audio('/sounds/notification.mp3'); this.audio.volume=0.7;
+    this.audio=new Audio('./notification.wav'); this.audio.volume=0.7;
     this.ADMIN_EMAIL="mansoryfamilyn@gmail.com";
     window.speechSynthesis.getVoices();
     setTimeout(()=>window.speechSynthesis.getVoices(),500);

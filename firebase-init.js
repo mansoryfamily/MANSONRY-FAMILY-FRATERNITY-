@@ -34,5 +34,5 @@ onMessage(messaging, (payload) => {
     new Notification(payload.notification.title, { body: payload.notification.body, icon: './icon-512.png' });
   }
   if ('setAppBadge' in navigator) navigator.setAppBadge(1).catch(()=>{});
-  new Audio('./notification.mp3').play().catch(()=>{});
+  new Audio('./notification.wav').play().catch(()=>{});
 });

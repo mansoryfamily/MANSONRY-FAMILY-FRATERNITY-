@@ -31,8 +31,8 @@ navigator.serviceWorker.ready.then(async (reg) => {
 });
 onMessage(messaging, (payload) => {
   if (Notification.permission === 'granted') {
-    new Notification(payload.notification.title, { body: payload.notification.body, icon: '/MANSONRY-FAMILY-FRATERNITY-/icon-512.png' });
+    new Notification(payload.notification.title, { body: payload.notification.body, icon: './icon-512.png' });
   }
   if ('setAppBadge' in navigator) navigator.setAppBadge(1).catch(()=>{});
-  new Audio('/MANSONRY-FAMILY-FRATERNITY-/notification.mp3').play().catch(()=>{});
+  new Audio('./notification.mp3').play().catch(()=>{});
 });

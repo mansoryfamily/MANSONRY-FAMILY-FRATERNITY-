@@ -1,11 +1,33 @@
 {
   "hosting": {
+    "site": "freemasonry-family",
     "public": ".",
     "ignore": [
       "firebase.json",
+      ".git",
+      ".git/**",
       "**/.*",
       "**/node_modules/**",
-      "functions/**"
+      "functions/**",
+      "**/*.apk"
+    ],
+    "headers": [
+      {
+        "source": "/sw.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      }
+    ],
+    "redirects": [
+      {
+        "source": "/download",
+        "destination": "https://github.com/mansoryfamily/MANSONRY-FAMILY-FRATERNITY-/releases/latest/download/MFF-latest.apk",
+        "type": 302
+      }
     ]
   },
   "functions": {

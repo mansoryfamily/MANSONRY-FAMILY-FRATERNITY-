@@ -1373,13 +1373,13 @@ textarea{
 >
 
   <h3>
-    Install Freemasonry Heritage
+    Install Masonry Family App
   </h3>
 
 
   <p>
-    Install our website on your device
-    for quick and easy access.
+    Download the official Android APK,
+    then open it to install.
   </p>
 
 
@@ -1389,7 +1389,7 @@ textarea{
       type="button"
       id="btnInstall"
     >
-      Install
+      Download APK
     </button>
 
 
@@ -2574,158 +2574,119 @@ registerForm.addEventListener(
 
   }
 );/* =========================
-   PWA INSTALL
+   ANDROID APK INSTALL
    ========================= */
 
-let deferredPrompt = null;
+const APK_URL =
+  "https://freemasonry-family.web.app/download";
 
+const DISMISS_KEY =
+  "mff_apk_prompt_dismissed";
 
 const installPopup =
   document.getElementById(
     "installPopup"
   );
 
-
 const btnInstall =
   document.getElementById(
     "btnInstall"
   );
-
 
 const btnClose =
   document.getElementById(
     "btnClose"
   );
 
-
-/* =========================
-   INSTALL PROMPT
-   ========================= */
-
 window.addEventListener(
   "beforeinstallprompt",
-  (event) => {
+  (event) => event.preventDefault()
+);
 
-    event.preventDefault();
+const recentlyDismissed = () => {
 
-    deferredPrompt =
-      event;
+  const last =
+    Number(
+      localStorage.getItem(
+        DISMISS_KEY
+      ) || 0
+    );
 
+  return (
+    Date.now() - last <
+    7 * 24 * 60 * 60 * 1000
+  );
 
-    setTimeout(
-      () => {
+};
 
-        if(installPopup){
+if(
+  installPopup &&
+  /Android/i.test(navigator.userAgent) &&
+  localStorage.getItem(
+    "mff_installed"
+  ) !== "true" &&
+  !recentlyDismissed()
+){
 
-          installPopup.classList.add(
-            "show"
-          );
+  setTimeout(
+    () => installPopup.classList.add(
+      "show"
+    ),
+    2500
+  );
 
-        }
+}
 
-      },
-      1500
+const dismissInstallPrompt = () => {
+
+  localStorage.setItem(
+    DISMISS_KEY,
+    String(Date.now())
+  );
+
+  if(installPopup){
+
+    installPopup.classList.remove(
+      "show"
     );
 
   }
-);
 
-
-/* =========================
-   INSTALL BUTTON
-   ========================= */
+};
 
 if(btnInstall){
 
   btnInstall.addEventListener(
     "click",
-    async () => {
+    () => {
 
-      if(!deferredPrompt){
+      dismissInstallPrompt();
 
-        showToast(
-          "Install is not available on this device.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      deferredPrompt.prompt();
-
-
-      const choice =
-        await deferredPrompt.userChoice;
-
-
-      if(
-        choice.outcome ===
-        "accepted"
-      ){
-
-        showToast(
-          "Installing Freemasonry Heritage...",
-          "success"
-        );
-
-      }
-
-
-      deferredPrompt =
-        null;
-
-
-      if(installPopup){
-
-        installPopup.classList.remove(
-          "show"
-        );
-
-      }
+      window.location.href =
+        APK_URL;
 
     }
   );
 
 }
-
-
-/* =========================
-   CLOSE INSTALL POPUP
-   ========================= */
 
 if(btnClose){
 
   btnClose.addEventListener(
     "click",
-    () => {
-
-      if(installPopup){
-
-        installPopup.classList.remove(
-          "show"
-        );
-
-      }
-
-    }
+    dismissInstallPrompt
   );
 
 }
-
-
-/* =========================
-   APP INSTALLED
-   ========================= */
 
 window.addEventListener(
   "appinstalled",
   () => {
 
-    deferredPrompt =
-      null;
-
+    localStorage.setItem(
+      "mff_installed",
+      "true"
+    );
 
     if(installPopup){
 
@@ -2734,12 +2695,6 @@ window.addEventListener(
       );
 
     }
-
-
-    showToast(
-      "Freemasonry Heritage installed successfully.",
-      "success"
-    );
 
   }
 );

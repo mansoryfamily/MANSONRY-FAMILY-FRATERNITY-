@@ -211,7 +211,7 @@ sendBtn.addEventListener('click', async () => {
             await set(ref(database, `notifications/${recipient}/${key}`), annData);
         }
         const broadcastRef = push(ref(database, 'broadcasts'));
-        await set(broadcastRef, { title, body: message, url: "/MANSONRY-FAMILY-FRATERNITY-/dashboard.html", time: timestamp, recipient });
+        await set(broadcastRef, { title, body: message, url: "./dashboard.html", time: timestamp, recipient });
         showSuccess("✅ Announcement sent! Badge + sound enabled for all devices.");
         document.getElementById('notificationTitle').value = "";
         document.getElementById('notificationMessage').value = "";

@@ -6,7 +6,9 @@ const JWKS = createRemoteJWKSet(
 
 const ALLOWED_ORIGINS = new Set([
   "https://freemasonry-family.web.app",
+  "https://freemasonry-family.firebaseapp.com",
   "https://mansonry-family-fraternity.web.app",
+  "https://mansonry-family-fraternity.firebaseapp.com",
   "https://mansonryfamily.github.io",
   "http://localhost:5000",
   "http://127.0.0.1:5000"

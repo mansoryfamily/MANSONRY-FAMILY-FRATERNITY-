@@ -1,5 +1,5 @@
-// Mansory Family Lodge - Service Worker v4 - Android Reply Support
-const CACHE_NAME = 'mff-v4';
+// Mansory Family Lodge - Service Worker v5 - Android Reply Support
+const CACHE_NAME = 'mff-v5';
 
 const ASSETS = [
   "./",

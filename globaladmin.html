@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded',applyLang); setInterval(applyLang,5
 <script src="notification-system.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, push, set, remove, update, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, remove, update, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 
@@ -95,6 +95,29 @@ const ADMIN_EMAIL="mansoryfamilyn@gmail.com";
 const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
 let myId=null,myEmail="",isAdmin=false,currentChatId=null,myInfo={fullName:'Member'},usersCache={},selId=null,selText=null,selIsMine=false,replyData=null,selChatId=null,selMediaUrl=null;
 let isSending=false;
+
+const PENDING_PREFIX='mff_pending_chat_';
+function newMessageId(){
+  try{if(crypto.randomUUID)return crypto.randomUUID();}catch(e){}
+  return Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,12);
+}
+function pendingKey(chatId,kind){return PENDING_PREFIX+chatId+'_'+kind;}
+function readPending(chatId,kind){
+  try{const raw=localStorage.getItem(pendingKey(chatId,kind));return raw?JSON.parse(raw):null;}catch(e){return null;}
+}
+function writePending(chatId,kind,pending){
+  try{localStorage.setItem(pendingKey(chatId,kind),JSON.stringify(pending));}catch(e){}
+}
+function clearPending(chatId,kind,id){
+  const pending=readPending(chatId,kind);
+  if(pending&&pending.id===id){try{localStorage.removeItem(pendingKey(chatId,kind));}catch(e){}}
+}
+async function commitMessage(chatId,kind,pending){
+  await set(ref(db,`chats/${chatId}/messages/${pending.id}`),pending.payload);
+  await update(ref(db,`chats/${chatId}`),{lastTime:Date.now(),lastMessage:pending.preview,info:{fullName:myInfo.fullName||'Member',uid:myId},hiddenFor:{}}).catch(()=>{});
+  if(isAdmin)await update(ref(db,`chats/${chatId}`),{seenByMember:0}).catch(()=>{});else await update(ref(db,`chats/${chatId}`),{seenByAdmin:0}).catch(()=>{});
+  clearPending(chatId,kind,pending.id);
+}
 
 function showToast(msg){document.getElementById('toastText').innerText=msg;const el=document.getElementById('toast');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
 function attachItemEvents(){document.querySelectorAll('.member-item').forEach(el=>{let timer;const showM=(e)=>{e.preventDefault();selChatId=el.dataset.chatid;const menu=document.getElementById('chatMenu');menu.style.left=((e.touches?e.touches[0].clientX:e.clientX)-120)+'px';menu.style.top=(e.touches?e.touches[0].clientY:e.clientY)+'px';menu.style.display='flex';};el.addEventListener('contextmenu',showM);el.addEventListener('touchstart',e=>{timer=setTimeout(()=>showM(e),700);});el.addEventListener('touchend',()=>clearTimeout(timer));el.addEventListener('click',()=>openChat(el.dataset.other,el.querySelector('b').innerText));});}
@@ -137,6 +160,15 @@ onAuthStateChanged(auth,async(u)=>{
   
   myInfo=usersCache[myId]||{fullName:u.displayName||'Member'};
   loadChats();
+
+  const requestedChat=new URLSearchParams(location.search).get('chatId');
+  const participants=requestedChat?requestedChat.split('_'):[];
+  const isExpectedChat=participants.length===2&&participants[0]===ADMIN_UID&&(isAdmin||participants[1]===myId);
+  if(isExpectedChat){
+    const otherUid=isAdmin?participants[1]:ADMIN_UID;
+    const displayName=usersCache[otherUid]?.fullName||usersCache[otherUid]?.name||(isAdmin?'Member':'Lodge Director');
+    setTimeout(()=>openChat(otherUid,displayName),0);
+  }
 });
 
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').then(()=>console.log("SW registered"));}
@@ -313,34 +345,42 @@ window.downloadMedia=()=>{if(selMediaUrl)window.downloadUrl(selMediaUrl,selMedia
 document.getElementById('mediaInput').addEventListener('change',async(e)=>{
   if(isSending) return;
   const file=e.target.files[0];if(!file||!currentChatId)return;
+  const chatId=currentChatId;
+  const fileKey=[file.name,file.size,file.lastModified].join(':');
   isSending=true;
   const box=document.getElementById('messages');const tempId='temp_'+Date.now();const localUrl=URL.createObjectURL(file);const isVideo=file.type.startsWith('video');
   const wrap=document.createElement('div');wrap.id=tempId;wrap.className='msg-wrap';wrap.style.justifyContent='flex-end';wrap.innerHTML=`<div class="msg my-msg"><div class="media-box">${isVideo?`<video src="${localUrl}" style="max-width:260px;border-radius:12px" muted></video>`:`<img src="${localUrl}" style="max-width:260px;border-radius:12px">`}</div><span style="font-size:8px;opacity:.6;float:right">Uploading...</span><span class="tick tick-sent">✓</span></div>`;box.appendChild(wrap);box.scrollTop=box.scrollHeight;
   try{
-    let finalUrl='';let mediaType=isVideo?'video':'image';
-    if(isVideo){if(file.size>15*1024*1024){showToast('Video max 15MB');document.getElementById(tempId)?.remove();isSending=false;return;}const ext=file.name.split('.').pop()||'mp4';const refS=sRef(storage,`chats/${currentChatId}/${Date.now()}_${myId}.${ext}`);const up=await uploadBytes(refS,file);finalUrl=await getDownloadURL(up.ref);}
-    else{finalUrl=await new Promise((res,rej)=>{const rd=new FileReader();rd.onload=ev=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;const MAX=700;if(w>MAX||h>MAX){if(w>h){h=h*(MAX/w);w=MAX;}else{w=w*(MAX/h);h=MAX;}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',0.55));};img.onerror=()=>res(ev.target.result);img.src=ev.target.result;};rd.onerror=rej;rd.readAsDataURL(file);});}
-    const payload={senderId:myId,senderEmail:myEmail,text:document.getElementById('msgInput').value.trim(),mediaUrl:finalUrl,mediaType,time:Date.now(),status:'sent'};if(replyData)payload.replyTo=replyData;
-    const r=push(ref(db,`chats/${currentChatId}/messages`));await set(r,payload);
-    await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(),lastMessage:mediaType==='video'?'🎥 Video':'📷 Photo',info:{fullName:myInfo.fullName||'Member',uid:myId},hiddenFor:{}}).catch(()=>{});
-    if(isAdmin)await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}).catch(()=>{});else await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}).catch(()=>{});
+    let pending=readPending(chatId,'media');
+    if(!(pending&&pending.fileKey===fileKey&&pending.payload?.senderId===myId)){
+      let finalUrl='';let mediaType=isVideo?'video':'image';
+      if(isVideo){if(file.size>15*1024*1024){showToast('Video max 15MB');document.getElementById(tempId)?.remove();isSending=false;return;}const ext=file.name.split('.').pop()||'mp4';const refS=sRef(storage,`chats/${chatId}/${Date.now()}_${myId}.${ext}`);const up=await uploadBytes(refS,file);finalUrl=await getDownloadURL(up.ref);}
+      else{finalUrl=await new Promise((res,rej)=>{const rd=new FileReader();rd.onload=ev=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;const MAX=700;if(w>MAX||h>MAX){if(w>h){h=h*(MAX/w);w=MAX;}else{w=w*(MAX/h);h=MAX;}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',0.55));};img.onerror=()=>res(ev.target.result);img.src=ev.target.result;};rd.onerror=rej;rd.readAsDataURL(file);});}
+      const payload={senderId:myId,senderEmail:myEmail,text:document.getElementById('msgInput').value.trim(),mediaUrl:finalUrl,mediaType,time:Date.now(),status:'sent'};if(replyData)payload.replyTo=replyData;
+      pending={id:newMessageId(),fileKey,payload,preview:mediaType==='video'?'🎥 Video':'📷 Photo'};
+      writePending(chatId,'media',pending);
+    }
+    await commitMessage(chatId,'media',pending);
     document.getElementById(tempId)?.remove();document.getElementById('msgInput').value='';cancelReply();
   }catch(err){showToast('Failed: '+err.message);document.getElementById(tempId)?.remove();}
   finally{isSending=false;}
   e.target.value='';
 });
 
-// Single message transmission guard against triple sends
+// Single message transmission guard + retry-safe message IDs
 window.sendMsg=async()=>{
   if(isSending) return;
   const i=document.getElementById('msgInput');const txt=i.value.trim();if(!txt||!currentChatId)return;
+  const chatId=currentChatId;
   isSending=true;
   try{
-    const payload={text:txt,senderId:myId,senderEmail:myEmail,time:Date.now(),status:'sent'};if(replyData)payload.replyTo=replyData;
-    const r=push(ref(db,`chats/${currentChatId}/messages`));
-    await set(r,payload);
-    await update(ref(db,`chats/${currentChatId}`),{lastTime:Date.now(),lastMessage:txt,info:{fullName:myInfo.fullName||'Member',uid:myId},hiddenFor:{}}).catch(()=>{});
-    if(isAdmin)await update(ref(db,`chats/${currentChatId}`),{seenByMember:0}).catch(()=>{});else await update(ref(db,`chats/${currentChatId}`),{seenByAdmin:0}).catch(()=>{});
+    let pending=readPending(chatId,'text');
+    if(!(pending&&pending.payload?.text===txt&&pending.payload?.senderId===myId)){
+      const payload={text:txt,senderId:myId,senderEmail:myEmail,time:Date.now(),status:'sent'};if(replyData)payload.replyTo=replyData;
+      pending={id:newMessageId(),payload,preview:txt};
+      writePending(chatId,'text',pending);
+    }
+    await commitMessage(chatId,'text',pending);
     i.value="";cancelReply();
   }catch(e){showToast('Failed to send');}
   finally{isSending=false;}

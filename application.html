@@ -137,6 +137,7 @@ document.addEventListener('DOMContentLoaded',applyLang);
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, set, get, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { sendTelegramUpdate } from "./telegram-notify.js";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -210,6 +211,15 @@ form.addEventListener("submit", async (e) => {
   };
   try{
     await set(ref(database, "applications/" + currentUser.uid), applicationData);
+    currentUser.getIdToken()
+      .then(token => sendTelegramUpdate(token, {
+        type: "application",
+        name: applicationData.fullName,
+        phone: applicationData.phone,
+        country: applicationData.country,
+        lodge: applicationData.nearestLodge
+      }))
+      .catch(() => {});
     showToast('success', isEditMode? 'Application Updated!' : 'Application Submitted!');
     form.classList.add('submitted');
     setTimeout(() => {window.location.href = "help.html";}, 1500);
@@ -220,5 +230,6 @@ form.addEventListener("submit", async (e) => {
 });
 document.querySelector(".logout").addEventListener("click",(e)=>{e.preventDefault();signOut(auth).then(()=>{window.location.href="login.html";});});
 </script>
+<script src="./apk-update.js"></script>
 </body>
 </html>

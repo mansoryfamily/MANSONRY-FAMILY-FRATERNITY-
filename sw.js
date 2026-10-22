@@ -1,5 +1,5 @@
-// Masonry Family Lodge - Service Worker v6 - Android Reply Support
-const CACHE_NAME = 'mff-v6';
+// Masonry Family Lodge - Service Worker v7 - Android Reply Support
+const CACHE_NAME = 'mff-v7';
 
 const ASSETS = [
   "./",

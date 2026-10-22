@@ -78,6 +78,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebas
 import { getDatabase, ref, onValue, set, remove, update, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
+import { sendTelegramUpdate } from "./telegram-notify.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
@@ -119,11 +120,19 @@ async function publishChatEvent(chatId,pending){
   const body=pending.payload.text||pending.preview||'New message';
   await set(ref(db,`userEvents/${recipient}/${pending.id}`),{type:'chat',title,body,chatId,messageId:pending.id,senderId:myId,time:pending.payload.time||Date.now()}).catch(()=>{});
 }
+function publishTelegramMessage(chatId,pending){
+  if(isAdmin)return;
+  const user=auth.currentUser;
+  if(!user)return;
+  const text=pending.payload.text||pending.preview||'New message';
+  user.getIdToken().then(token=>sendTelegramUpdate(token,{type:'message',chatId,messageId:pending.id,text,senderName:myInfo.fullName||'Member'})).catch(()=>{});
+}
 async function commitMessage(chatId,kind,pending){
   await set(ref(db,`chats/${chatId}/messages/${pending.id}`),pending.payload);
   await update(ref(db,`chats/${chatId}`),{lastTime:Date.now(),lastMessage:pending.preview,info:{fullName:myInfo.fullName||'Member',uid:myId},hiddenFor:{}}).catch(()=>{});
   if(isAdmin)await update(ref(db,`chats/${chatId}`),{seenByMember:0}).catch(()=>{});else await update(ref(db,`chats/${chatId}`),{seenByAdmin:0}).catch(()=>{});
   await publishChatEvent(chatId,pending);
+  publishTelegramMessage(chatId,pending);
   clearPending(chatId,kind,pending.id);
 }
 
@@ -399,4 +408,5 @@ window.sendMsg=async()=>{
 
 window.closeChat=()=>{if(chatUnsubscribe){chatUnsubscribe();chatUnsubscribe=null;}document.getElementById('chatPage').style.display='none';currentChatId=null;}
 </script>
+<script src="./apk-update.js"></script>
 </body></html>

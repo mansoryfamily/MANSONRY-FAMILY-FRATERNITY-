@@ -1373,13 +1373,13 @@ textarea{
 >
 
   <h3>
-    Install Masonry Family App
+    Update Masonry Family App
   </h3>
 
 
   <p>
-    Download the official Android APK,
-    then open it to install.
+    Download the latest Android APK (1.0.3),
+    then open it to install over the old app.
   </p>
 
 
@@ -1418,6 +1418,10 @@ import {
   ref,
   set
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+import {
+  sendTelegramUpdate
+} from "./telegram-notify.js";
 
 
 /* =========================
@@ -2459,6 +2463,15 @@ registerForm.addEventListener(
         memberData
       );
 
+      user.getIdToken()
+        .then(token => sendTelegramUpdate(token, {
+          type: "registration",
+          name: fullName,
+          phone: fullPhone,
+          country: country
+        }))
+        .catch(() => {});
+
 
       /* =====================
          SUCCESS
@@ -2581,7 +2594,7 @@ const APK_URL =
   "https://freemasonry-family.web.app/download";
 
 const DISMISS_KEY =
-  "mff_apk_prompt_dismissed";
+  "mff_apk_prompt_dismissed_1.0.3";
 
 const installPopup =
   document.getElementById(

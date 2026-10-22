@@ -1,3 +1,7 @@
 MFF-latest.apk
 .firebase/
 firebase-debug.log
+telegram-worker/node_modules/
+telegram-worker/.wrangler/
+telegram-worker/.dev.vars
+telegram-worker/dist/

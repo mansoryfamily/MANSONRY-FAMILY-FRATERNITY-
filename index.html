@@ -60,8 +60,8 @@
 <div class="install-popup" id="installPopup">
   <img src="./icon-512.png" alt="logo" onerror="this.src='./images.jpeg'">
   <div class="text">
-    <h4>Install Masonry Family App</h4>
-    <p id="installText">Download the official Android APK, then open it to install.</p>
+    <h4>Update Masonry Family App</h4>
+    <p id="installText">Download the latest Android APK (1.0.3), then open it to install over the old app.</p>
   </div>
   <div class="btns">
     <button class="btn-install" id="btnInstall">Download APK</button>
@@ -133,7 +133,7 @@ if ('serviceWorker' in navigator) {
 // ANDROID APK INSTALL PROMPT
 (function() {
   const APK_URL = 'https://freemasonry-family.web.app/download';
-  const DISMISS_KEY = 'mff_apk_prompt_dismissed';
+  const DISMISS_KEY = 'mff_apk_prompt_dismissed_1.0.3';
   const popup = document.getElementById('installPopup');
   const btnInstall = document.getElementById('btnInstall');
   const btnClose = document.getElementById('btnClose');

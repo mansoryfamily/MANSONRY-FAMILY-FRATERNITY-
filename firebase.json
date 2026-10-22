@@ -9,6 +9,7 @@
       "**/.*",
       "**/node_modules/**",
       "functions/**",
+      "telegram-worker/**",
       "**/*.apk"
     ],
     "headers": [

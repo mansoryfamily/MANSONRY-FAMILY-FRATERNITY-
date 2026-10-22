@@ -52,7 +52,7 @@ exports.pushOnNewMessage = functions.database
     if (devices.length === 0) return null;
 
     const sender = senderSnapshot.val() || {};
-    const senderName = sender.fullName || sender.name || "A member";
+    const senderName = sender.fullName || sender.name || message.senderEmail || "A member";
     const url = `${SITE_BASE_URL}/globaladmin.html?chatId=${encodeURIComponent(chatId)}`;
     const title = `Message from ${senderName}`;
     const body = messagePreview(message);
@@ -79,7 +79,9 @@ exports.pushOnNewMessage = functions.database
             channelId: "mff_chat",
             sound: "default",
             color: "#D4AF37",
-            tag: chatId
+            icon: "ic_stat_mff",
+            tag: chatId,
+            clickAction: "org.freemasony.heritage.ke.OPEN_CHAT"
           }
         },
         webpush: {

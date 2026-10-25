@@ -1,4 +1,5 @@
 name = "mff-telegram-bridge"
+account_id = "88a0a2b168252ff808f84f75707a9909"
 main = "src/index.js"
 compatibility_date = "2026-10-22"
 workers_dev = true

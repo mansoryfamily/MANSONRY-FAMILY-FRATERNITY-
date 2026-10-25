@@ -211,15 +211,16 @@ form.addEventListener("submit", async (e) => {
   };
   try{
     await set(ref(database, "applications/" + currentUser.uid), applicationData);
-    currentUser.getIdToken()
-      .then(token => sendTelegramUpdate(token, {
+    try {
+      const token = await currentUser.getIdToken();
+      await sendTelegramUpdate(token, {
         type: "application",
         name: applicationData.fullName,
         phone: applicationData.phone,
         country: applicationData.country,
         lodge: applicationData.nearestLodge
-      }))
-      .catch(() => {});
+      });
+    } catch (error) {}
     showToast('success', isEditMode? 'Application Updated!' : 'Application Submitted!');
     form.classList.add('submitted');
     setTimeout(() => {window.location.href = "help.html";}, 1500);

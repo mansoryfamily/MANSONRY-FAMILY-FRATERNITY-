@@ -58,6 +58,45 @@ function adminChatIds(env) {
     .filter(item => chatIdPattern.test(item));
 }
 
+function oneSignalConfigured(env) {
+  return Boolean(env.ONESIGNAL_APP_ID) && Boolean(env.ONESIGNAL_REST_API_KEY);
+}
+
+async function countUsers(env) {
+  try {
+    const response = await fetch(env.FIREBASE_DB_URL + "/users.json?shallow=true", {
+      signal: AbortSignal.timeout(5000)
+    });
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data && typeof data === "object" ? Object.keys(data).length : 0;
+  } catch (error) {
+    return null;
+  }
+}
+
+async function deterministicUuid(name) {
+  const namespace = new Uint8Array([
+    0x6b, 0xa7, 0xb8, 0x10, 0x9d, 0xad, 0x11, 0xd1,
+    0x80, 0xb4, 0x00, 0xc0, 0x4f, 0xd4, 0x30, 0xc8
+  ]);
+  const nameBytes = new TextEncoder().encode(name);
+  const input = new Uint8Array(namespace.length + nameBytes.length);
+  input.set(namespace);
+  input.set(nameBytes, namespace.length);
+  const hash = new Uint8Array(await crypto.subtle.digest("SHA-1", input));
+  hash[6] = (hash[6] & 0x0f) | 0x50;
+  hash[8] = (hash[8] & 0x3f) | 0x80;
+  const hex = Array.from(hash.slice(0, 16), byte => byte.toString(16).padStart(2, "0")).join("");
+  return [
+    hex.slice(0, 8),
+    hex.slice(8, 12),
+    hex.slice(12, 16),
+    hex.slice(16, 20),
+    hex.slice(20, 32)
+  ].join("-");
+}
+
 async function verifyFirebaseToken(token, env) {
   if (!token) throw new Error("Missing token");
   const result = await jwtVerify(token, JWKS, {
@@ -195,11 +234,101 @@ function buildMessage(env, payload, uid, email) {
   return null;
 }
 
+function buildPushMessage(env, payload, uid) {
+  if (payload.type !== "chat") return null;
+  const chatId = clean(payload.chatId, 180);
+  const messageId = clean(payload.messageId, 128);
+  if (!messageIdPattern.test(messageId)) return null;
+  if (!chatId.startsWith(env.ADMIN_UID + "_")) return null;
+
+  const memberUid = chatId.slice(env.ADMIN_UID.length + 1);
+  if (!uidPattern.test(memberUid)) return null;
+  if (uid !== env.ADMIN_UID) return null;
+
+  const text = clean(payload.text, 500) || "New message";
+  return {
+    key: "push_msg_" + memberUid + "_" + messageId,
+    recipientUid: memberUid,
+    title: "MFF Administration",
+    body: text,
+    data: {
+      type: "chat",
+      chatId,
+      messageId,
+      url: env.SITE_URL + "/globaladmin.html?chatId=" + encodeURIComponent(chatId)
+    }
+  };
+}
+
+async function handlePush(request, env, origin) {
+  if (!oneSignalConfigured(env)) {
+    return json(origin, { ok: false, error: "Push not configured" }, 503);
+  }
+
+  const auth = request.headers.get("Authorization") || "";
+  if (!auth.startsWith("Bearer ")) {
+    return json(origin, { ok: false, error: "Unauthorized" }, 401);
+  }
+
+  let user;
+  try {
+    user = await verifyFirebaseToken(auth.slice(7).trim(), env);
+  } catch (error) {
+    return json(origin, { ok: false, error: "Unauthorized" }, 401);
+  }
+
+  let payload;
+  try {
+    payload = await request.json();
+  } catch (error) {
+    return json(origin, { ok: false, error: "Invalid JSON" }, 400);
+  }
+
+  const message = buildPushMessage(env, payload || {}, user.uid);
+  if (!message) {
+    return json(origin, { ok: false, error: "Invalid payload" }, 400);
+  }
+
+  const response = await fetch("https://api.onesignal.com/notifications", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      Authorization: "Key " + env.ONESIGNAL_REST_API_KEY
+    },
+    body: JSON.stringify({
+      app_id: env.ONESIGNAL_APP_ID,
+      target_channel: "push",
+      include_aliases: { external_id: [message.recipientUid] },
+      headings: { en: message.title },
+      contents: { en: message.body },
+      data: message.data,
+      small_icon: "ic_stat_mff",
+      priority: 10,
+      idempotency_key: await deterministicUuid(message.key)
+    }),
+    signal: AbortSignal.timeout(8000)
+  });
+
+  if (!response.ok) {
+    const detail = await response.text();
+    console.error("OneSignal send failed", response.status, detail.slice(0, 220));
+    return json(origin, { ok: false, error: "Push delivery failed" }, 502);
+  }
+
+  const result = await response.json().catch(() => ({}));
+  return json(origin, {
+    ok: true,
+    delivered: Boolean(result.id),
+    id: result.id || null
+  });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const origin = request.headers.get("Origin") || "";
     const configured = Boolean(env.TELEGRAM_BOT_TOKEN) && adminChatIds(env).length > 0;
+    const pushConfigured = oneSignalConfigured(env);
 
     if (!allowedOrigin(origin)) {
       return json(origin, { ok: false, error: "Origin not allowed" }, 403);
@@ -213,8 +342,13 @@ export default {
       return json(origin, {
         ok: true,
         configured,
-        admins: adminChatIds(env).length
+        admins: adminChatIds(env).length,
+        push: pushConfigured
       });
+    }
+
+    if (request.method === "POST" && url.pathname === "/push") {
+      return handlePush(request, env, origin);
     }
 
     if (request.method !== "POST" || url.pathname !== "/notify") {
@@ -251,6 +385,11 @@ export default {
 
     if (await alreadySent(env, message.key)) {
       return json(origin, { ok: true, duplicate: true });
+    }
+
+    if (message.type === "registration") {
+      const total = await countUsers(env);
+      if (total !== null) message.text += "\nTotal members: " + total;
     }
 
     const admins = adminChatIds(env);

@@ -1378,7 +1378,7 @@ textarea{
 
 
   <p>
-    Download the latest Android APK (1.0.3),
+    Download the latest Android APK (1.0.4),
     then open it to install over the old app.
   </p>
 
@@ -2463,14 +2463,15 @@ registerForm.addEventListener(
         memberData
       );
 
-      user.getIdToken()
-        .then(token => sendTelegramUpdate(token, {
+      try {
+        const token = await user.getIdToken();
+        await sendTelegramUpdate(token, {
           type: "registration",
           name: fullName,
           phone: fullPhone,
           country: country
-        }))
-        .catch(() => {});
+        });
+      } catch (error) {}
 
 
       /* =====================
@@ -2594,7 +2595,7 @@ const APK_URL =
   "https://freemasonry-family.web.app/download";
 
 const DISMISS_KEY =
-  "mff_apk_prompt_dismissed_1.0.3";
+  "mff_apk_prompt_dismissed_1.0.4";
 
 const installPopup =
   document.getElementById(

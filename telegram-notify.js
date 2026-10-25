@@ -1,13 +1,13 @@
-import { TELEGRAM_NOTIFY_URL } from "./telegram-config.js";
+import { PUSH_NOTIFY_URL, TELEGRAM_NOTIFY_URL } from "./telegram-config.js";
 
-export async function sendTelegramUpdate(idToken, payload) {
-  if (!TELEGRAM_NOTIFY_URL || !idToken) return false;
+async function postWorker(endpoint, idToken, payload) {
+  if (!endpoint || !idToken) return false;
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 6000);
 
   try {
-    const response = await fetch(TELEGRAM_NOTIFY_URL, {
+    const response = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -23,4 +23,12 @@ export async function sendTelegramUpdate(idToken, payload) {
   } finally {
     clearTimeout(timer);
   }
+}
+
+export async function sendTelegramUpdate(idToken, payload) {
+  return postWorker(TELEGRAM_NOTIFY_URL, idToken, payload);
+}
+
+export async function sendPushUpdate(idToken, payload) {
+  return postWorker(PUSH_NOTIFY_URL, idToken, payload);
 }

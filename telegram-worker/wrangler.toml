@@ -8,3 +8,6 @@ FIREBASE_PROJECT_ID = "mansonry-family-fraternity"
 FIREBASE_DB_URL = "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app"
 ADMIN_UID = "DMeM2UuLgDOusNvmzRGZygBdxOG2"
 SITE_URL = "https://freemasonry-family.web.app"
+ONESIGNAL_APP_ID = "96d2c92d-9fa2-4abe-82a4-74a3f0dbee34"
+# Set the REST key without committing it:
+# npx wrangler secret put ONESIGNAL_REST_API_KEY

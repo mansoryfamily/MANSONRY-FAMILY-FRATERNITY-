@@ -1,5 +1,5 @@
 (function () {
-  var VERSION = "1.0.3";
+  var VERSION = "1.0.4";
   var APK_URL = "https://freemasonry-family.web.app/download";
   var DISMISS_KEY = "mff_apk_update_dismissed_" + VERSION;
   var POPUP_ID = "mffApkUpdatePrompt";

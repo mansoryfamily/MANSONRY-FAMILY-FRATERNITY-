@@ -95,7 +95,7 @@ const app=initializeApp(firebaseConfig);const db=getDatabase(app);const auth=get
 const ADMIN_EMAIL="mansoryfamilyn@gmail.com";
 const ADMIN_UID="DMeM2UuLgDOusNvmzRGZygBdxOG2";
 let myId=null,myEmail="",isAdmin=false,currentChatId=null,myInfo={fullName:'Member'},usersCache={},selId=null,selText=null,selIsMine=false,replyData=null,selChatId=null,selMediaUrl=null;
-let isSending=false,chatUnsubscribe=null;
+let isSending=false,chatUnsubscribe=null,lastSendSig='',lastSendAt=0;
 
 const PENDING_PREFIX='mff_pending_chat_';
 function newMessageId(){
@@ -400,6 +400,10 @@ window.sendMsg=async()=>{
   const i=document.getElementById('msgInput');const txt=i.value.trim();if(!txt||!currentChatId)return;
   const chatId=currentChatId;
   const replyKey=JSON.stringify(replyData||null);
+  const sendSig=chatId+'|'+txt+'|'+replyKey;
+  const now=Date.now();
+  if(sendSig===lastSendSig&&now-lastSendAt<2500)return;
+  lastSendSig=sendSig;lastSendAt=now;
   isSending=true;
   try{
     let pending=readPending(chatId,'text');

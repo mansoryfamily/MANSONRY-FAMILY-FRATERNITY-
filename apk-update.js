@@ -57,13 +57,13 @@
     popup.innerHTML =
       '<div class="mff-apk-card">' +
         '<img src="./icon-192.png" alt="Masonry Family">' +
-        '<h3>Masonry Family ' + VERSION + " update</h3>" +
-        "<p>Download the latest Android APK and install it over the old app. Your chats and account stay the same.</p>" +
+        "<h3>Update available</h3>" +
+        "<p>An improved version of Masonry Family is ready. Update to keep your chats and notifications working smoothly.</p>" +
         '<div class="mff-apk-actions">' +
-          '<button type="button" class="mff-apk-download">Download update</button>' +
+          '<button type="button" class="mff-apk-download">Update</button>' +
           '<button type="button" class="mff-apk-later">Later</button>' +
         "</div>" +
-        "<small>If the download does not start, open this page in Chrome.</small>" +
+        "<small>Your account and chats stay exactly the same.</small>" +
       "</div>";
     document.body.appendChild(popup);
 

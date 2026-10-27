@@ -172,7 +172,9 @@ async function commitMessage(chatId,kind,pending){
   // Some older accounts have no users/ record, so chat.info is the admin's
   // only way to know who is writing.
   const realName=String(myInfo.fullName||myInfo.name||'').trim();
-  if(realName&&realName.toLowerCase()!=='member') patch.info={fullName:realName,uid:myId};
+  // Only a member writes their own profile here. When the admin replies, keep
+  // the member's name instead of replacing it with the admin's name.
+  if(!isAdmin&&realName&&realName.toLowerCase()!=='member') patch.info={fullName:realName,uid:myId};
   await update(ref(db,`chats/${chatId}`),patch).catch(()=>{});
   // Do NOT reset seenByAdmin/seenByMember to 0 here. That marked every old
   // message as unread and inflated the badges. The recipient's seen timestamp
@@ -262,7 +264,10 @@ function emailToName(email){
 // sources left. Without this the admin list showed a uid or "Member".
 function memberName(uid,chat){
   const u=usersCache[uid]||{};
-  const info=(chat&&chat.info)||{};
+  // chat.info belongs to the member only. Older admin replies overwrote it
+  // with the admin's own name, so ignore it when info.uid is somebody else.
+  const rawInfo=(chat&&chat.info)||{};
+  const info=(!rawInfo.uid||rawInfo.uid===uid)?rawInfo:{};
   const candidates=[u.fullName,u.name,info.fullName,info.name];
   for(const n of candidates){
     const name=String(n==null?'':n).trim();
@@ -282,13 +287,15 @@ function memberName(uid,chat){
 
 function memberPhone(uid,chat){
   const u=usersCache[uid]||{};
-  const info=(chat&&chat.info)||{};
+  const rawInfo=(chat&&chat.info)||{};
+  const info=(!rawInfo.uid||rawInfo.uid===uid)?rawInfo:{};
   return u.phone||u.phoneNumber||info.phone||info.phoneNumber||'No phone';
 }
 
 function memberCountry(uid,chat){
   const u=usersCache[uid]||{};
-  const info=(chat&&chat.info)||{};
+  const rawInfo=(chat&&chat.info)||{};
+  const info=(!rawInfo.uid||rawInfo.uid===uid)?rawInfo:{};
   return u.country||info.country||'';
 }
 

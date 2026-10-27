@@ -17,6 +17,7 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 .msg-wrap{position:relative;width:100%;display:flex;align-items:center}
 .reply-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%) scale(0.6);width:32px;height:32px;background:var(--gold);border-radius:50%;display:grid;place-items:center;color:#000;opacity:0;transition:all.2s ease;z-index:1}
 .msg{max-width:78%;padding:10px 13px;border-radius:14px;margin:4px 0;font-size:13px;cursor:pointer;transition:transform.22s ease;position:relative;z-index:2;touch-action:pan-y;user-select:none}
+.msg-sender{font-size:10px;font-weight:800;color:var(--gold);margin-bottom:5px;letter-spacing:.3px;opacity:.95}
 .msg.swiping{transition:none}
 .my-msg{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#000;margin-left:auto}
 .other-msg{background:var(--card);border:1px solid var(--border);margin-right:auto}.reply-preview{border-left:3px solid var(--gold);background:rgba(212,177,106,.15);padding:6px 8px;border-radius:6px;margin-bottom:6px;font-size:11px}
@@ -166,7 +167,13 @@ async function commitMessage(chatId,kind,pending){
   // Keep the other side's "deleted chat" flag intact: only unhide the chat for
   // the person who is sending. Resetting hiddenFor:{} used to make a chat the
   // other member had deleted pop back up.
-  await update(ref(db,`chats/${chatId}`),{lastTime:Date.now(),lastMessage:pending.preview,info:{fullName:myInfo.fullName||'Member',uid:myId},['hiddenFor/'+myId]:null}).catch(()=>{});
+  const patch={lastTime:Date.now(),lastMessage:pending.preview,['hiddenFor/'+myId]:null};
+  // Never overwrite a good stored name with the generic "Member" fallback.
+  // Some older accounts have no users/ record, so chat.info is the admin's
+  // only way to know who is writing.
+  const realName=String(myInfo.fullName||myInfo.name||'').trim();
+  if(realName&&realName.toLowerCase()!=='member') patch.info={fullName:realName,uid:myId};
+  await update(ref(db,`chats/${chatId}`),patch).catch(()=>{});
   // Do NOT reset seenByAdmin/seenByMember to 0 here. That marked every old
   // message as unread and inflated the badges. The recipient's seen timestamp
   // stays in the past, so only the new message counts as unread.
@@ -213,6 +220,10 @@ onAuthStateChanged(auth,async(u)=>{
   try{
     const s=await get(ref(db,'users'));if(s.exists()){Object.values(s.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}
     const s2=await get(ref(db,'members'));if(s2.exists()){Object.values(s2.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}
+    // Many older members no longer have a users/ record, but their join
+    // application still carries their real name and phone. Load it so the
+    // admin always sees who is writing instead of a uid or "Member".
+    const s3=await get(ref(db,'applications'));if(s3.exists()){Object.values(s3.val()).forEach(v=>{const id=v&&(v.uid||v.submittedBy);if(id){usersCache[id]=Object.assign({},v,usersCache[id]||{});}});}
   }catch(e){console.log('User cache load issue:', e);}
   
   myInfo=usersCache[myId]||{fullName:u.displayName||'Member'};
@@ -230,6 +241,56 @@ onAuthStateChanged(auth,async(u)=>{
 
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=11').then(()=>console.log("SW registered"));}
 if('Notification' in window&&Notification.permission==="default"){Notification.requestPermission();}
+
+// Firebase stores "seen" as a timestamp, but a few old chats have `true` in
+// that field. Treat true as "everything read" so those chats stop showing
+// permanent unread counts.
+function seenTime(value){
+  if(value===true) return Number.MAX_SAFE_INTEGER;
+  const n=Number(value);
+  return Number.isFinite(n)?n:0;
+}
+
+function emailToName(email){
+  const local=String(email||'').split('@')[0].replace(/[._\-]+/g,' ').trim();
+  if(!local||local.length<2) return '';
+  return local.replace(/\b\w/g,c=>c.toUpperCase());
+}
+
+// Resolve the member's real name from every place we have it. Older accounts
+// have no users/ record, so chat.info and the join application are the only
+// sources left. Without this the admin list showed a uid or "Member".
+function memberName(uid,chat){
+  const u=usersCache[uid]||{};
+  const info=(chat&&chat.info)||{};
+  const candidates=[u.fullName,u.name,info.fullName,info.name];
+  for(const n of candidates){
+    const name=String(n==null?'':n).trim();
+    if(name&&name.toLowerCase()!=='member'&&name.toLowerCase()!=='no name') return name;
+  }
+  const msgs=(chat&&chat.messages)||{};
+  const keys=Object.keys(msgs).sort((a,b)=>(msgs[b].time||0)-(msgs[a].time||0));
+  for(const k of keys){
+    const m=msgs[k];
+    if(m&&m.senderId===uid&&m.senderEmail){
+      const fromEmail=emailToName(m.senderEmail);
+      if(fromEmail) return fromEmail;
+    }
+  }
+  return uid?('Member '+uid.slice(0,4)):'Member';
+}
+
+function memberPhone(uid,chat){
+  const u=usersCache[uid]||{};
+  const info=(chat&&chat.info)||{};
+  return u.phone||u.phoneNumber||info.phone||info.phoneNumber||'No phone';
+}
+
+function memberCountry(uid,chat){
+  const u=usersCache[uid]||{};
+  const info=(chat&&chat.info)||{};
+  return u.country||info.country||'';
+}
 
 function loadChats(){
   const listEl=document.getElementById('membersList');
@@ -258,7 +319,9 @@ function loadChats(){
         if(!chatId.includes(myId)&&!isAdmin) return;
         if(isAdmin&&!chatId.includes(ADMIN_UID)) return;
         const otherUid=isAdmin?chatId.replace(ADMIN_UID+"_","").replace("_"+ADMIN_UID,""):ADMIN_UID;
-        if(isAdmin&&otherUid===ADMIN_UID) return;
+        // Skip the admin's own chat and the old unauthenticated "guest" chat:
+        // neither can be replied to from the inbox.
+        if(isAdmin&&(otherUid===ADMIN_UID||otherUid==='guest')) return;
         const msgs=chat.messages||{};
         
         // Detect deleted messages or ghost messages
@@ -277,20 +340,19 @@ function loadChats(){
           lastMsg={text:tr('tap_admin'),time:chat.lastTime||0,isGhost:true};
         }
         if(lastMsg.isGhost) lastMsg.text=tr('tap_admin');
-        const userInfo=usersCache[otherUid]||{};
-        const name=userInfo.fullName||userInfo.name||otherUid.slice(0,6);
-        const phone=userInfo.phone||"No phone";
-        const country=userInfo.country||"";
+        const name=memberName(otherUid,chat);
+        const phone=memberPhone(otherUid,chat);
+        const country=memberCountry(otherUid,chat);
+        const seenAdmin=seenTime(chat.seenByAdmin);
+        const seenMember=seenTime(chat.seenByMember);
         
         // Badge logic: count strictly UNREAD messages
         let unread=0;
         if(currentChatId !== chatId){
           if(isAdmin){
-            const seen=chat.seenByAdmin||0;
-            visibleKeys.forEach(mid=>{const m=msgs[mid];if(m.senderId!==ADMIN_UID&&(m.time||0)>seen) unread++;});
+            visibleKeys.forEach(mid=>{const m=msgs[mid];if(m.senderId!==ADMIN_UID&&(m.time||0)>seenAdmin) unread++;});
           }else{
-            const seen=chat.seenByMember||0;
-            visibleKeys.forEach(mid=>{const m=msgs[mid];if(m.senderId===ADMIN_UID&&(m.time||0)>seen) unread++;});
+            visibleKeys.forEach(mid=>{const m=msgs[mid];if(m.senderId===ADMIN_UID&&(m.time||0)>seenMember) unread++;});
           }
         }
         
@@ -299,8 +361,8 @@ function loadChats(){
           const sortedKeys=visibleKeys.sort((a,b)=>(msgs[a].time||0)-(msgs[b].time||0));
           for(let i=sortedKeys.length-1;i>=0;i--){
             const m=msgs[sortedKeys[i]];
-            if(isAdmin&&m.senderId!==ADMIN_UID&&(m.time||0)>(chat.seenByAdmin||0)){newForMe={msg:m,mid:sortedKeys[i],other:otherUid,isFromAdmin:false};break;}
-            if(!isAdmin&&m.senderId===ADMIN_UID&&(m.time||0)>(chat.seenByMember||0)){newForMe={msg:m,mid:sortedKeys[i],other:ADMIN_UID,isFromAdmin:true};break;}
+            if(isAdmin&&m.senderId!==ADMIN_UID&&(m.time||0)>seenAdmin){newForMe={msg:m,mid:sortedKeys[i],other:otherUid,isFromAdmin:false,name};break;}
+            if(!isAdmin&&m.senderId===ADMIN_UID&&(m.time||0)>seenMember){newForMe={msg:m,mid:sortedKeys[i],other:ADMIN_UID,isFromAdmin:true,name};break;}
           }
         }
         let preview=lastMsg.text;
@@ -314,7 +376,7 @@ function loadChats(){
       
       if(newForMe){
         const txt=newForMe.msg.text||(newForMe.msg.mediaType==='audio'?'🎤 Voice note':newForMe.msg.mediaType==='video'?'🎥 Video':'📷 Photo');
-        const otherName=usersCache[newForMe.other]?.fullName||"Member";
+        const otherName=newForMe.name||memberName(newForMe.other,null)||"Member";
         if(newForMe.isFromAdmin){
           if(!isAdmin){window.LodgeNotifier?.showPopup("Director",txt,"admin_message",{id:newForMe.mid});}
         }else{
@@ -341,7 +403,15 @@ function loadChats(){
 window.openChat=async(otherUid,displayName)=>{
   const chatId=isAdmin?(ADMIN_UID+"_"+otherUid):(ADMIN_UID+"_"+(myId||'guest'));
   currentChatId=chatId;
-  document.getElementById('chatName').innerText=displayName;
+  // The list passes the real name. URL opens and older callers can still pass
+  // "Member" or a uid, so fall back to the stored chat profile.
+  let peerName=String(displayName||'').trim();
+  if(!peerName||peerName==='Member'||peerName===otherUid||/^Member [A-Za-z0-9]{4}$/.test(peerName)){
+    let chatData=null;
+    try{const cs=await get(ref(db,'chats/'+chatId));chatData=cs.exists()?cs.val():null;}catch(e){}
+    peerName=memberName(otherUid,chatData);
+  }
+  document.getElementById('chatName').innerText=peerName;
   document.getElementById('chatPage').style.display='flex';
   const box=document.getElementById('messages');
   
@@ -393,6 +463,14 @@ window.openChat=async(otherUid,displayName)=>{
       let tick='';if(isMe){if(m.status==='read')tick=`<span class="tick tick-read">✓✓</span>`;else if(m.status==='delivered')tick=`<span class="tick tick-delivered">✓✓</span>`;else tick=`<span class="tick tick-sent">✓</span>`;}
       html+=`${m.text||''}<span style="font-size:8px;opacity:.6;float:right;margin-left:6px;margin-top:4px">${new Date(m.time||Date.now()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>${tick}`;
       div.innerHTML=html;
+      // In the admin inbox every incoming bubble carries the member's name, so
+      // there is never a question about who wrote it.
+      if(isAdmin&&!isMe){
+        const sender=document.createElement('div');
+        sender.className='msg-sender';
+        sender.textContent=peerName;
+        div.insertBefore(sender,div.firstChild);
+      }
       div.dataset.mid=mid;
 
       // Tap a bubble to translate it in place. Long-press and swipe are

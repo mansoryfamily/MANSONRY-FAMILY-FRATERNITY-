@@ -47,6 +47,19 @@
   btn.style.display = 'none';
   btn.setAttribute('aria-hidden', 'true');
   var currentUid = '';
+  var latestAdminChatId = '';
+
+  function seenValue(value) {
+    if (value === true) return Number.MAX_SAFE_INTEGER;
+    var n = Number(value);
+    return isFinite(n) ? n : 0;
+  }
+
+  function emailToName(email) {
+    var local = String(email || '').split('@')[0].replace(/[._\-]+/g, ' ').trim();
+    if (!local || local.length < 2) return '';
+    return local.replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+  }
 
   function showIcon() {
     btn.style.display = 'grid';
@@ -90,11 +103,19 @@
 
   btn.addEventListener('click', function () {
     var uid = currentUid || storedUid();
-    if (uid) {
-      location.href = './globaladmin.html?chatId=' + encodeURIComponent(ADMIN_UID + '_' + uid);
-    } else {
+    if (!uid) {
       location.href = './globaladmin.html';
+      return;
     }
+    // The admin's shortcut opens the member who wrote last, so replying takes
+    // one tap. Members always land in their own Administration chat.
+    if (uid === ADMIN_UID) {
+      location.href = latestAdminChatId
+        ? './globaladmin.html?chatId=' + encodeURIComponent(latestAdminChatId)
+        : './globaladmin.html';
+      return;
+    }
+    location.href = './globaladmin.html?chatId=' + encodeURIComponent(ADMIN_UID + '_' + uid);
   });
 
   // Show a remembered count instantly, then replace it with live data.
@@ -141,37 +162,94 @@
         if (notifUnsubscribe) { try { notifUnsubscribe(); } catch (e) {} notifUnsubscribe = null; }
         baseline = 0;
         firstSnapshot = true;
-        unsubscribe = dbMod.onValue(dbMod.ref(db, 'chats/' + ADMIN_UID + '_' + uid), function (snap) {
-          var chat = snap.val() || {};
-          if (chat.hiddenFor && chat.hiddenFor[uid]) { setBadge(0); return; }
-          var msgs = chat.messages || {};
-          var seen = Number(chat.seenByMember || 0);
-          var count = 0;
-          var latest = null;
-          Object.keys(msgs).forEach(function (mid) {
-            var m = msgs[mid];
-            if (!m || typeof m !== 'object') return;
-            if (m.deletedFor && m.deletedFor[uid]) return;
-            if (m.senderId !== ADMIN_UID) return;
-            if (Number(m.time || 0) > seen) {
-              count += 1;
-              if (!latest || Number(m.time || 0) > Number(latest.time || 0)) {
-                latest = { id: mid, text: m.text || '', mediaType: m.mediaType || '', time: Number(m.time || 0) };
+        latestAdminChatId = '';
+        if (uid === ADMIN_UID) {
+          // Admin inbox: one chat per member, all stored under
+          // chats/<ADMIN_UID>_<memberUid>. Count every unread member message
+          // and remember the newest chat so the shortcut can open it directly.
+          unsubscribe = dbMod.onValue(dbMod.ref(db, 'chats'), function (snap) {
+            var count = 0;
+            var latest = null;
+            var latestChatId = '';
+            snap.forEach(function (child) {
+              var chatId = child.key || '';
+              if (chatId.indexOf(ADMIN_UID + '_') !== 0) return;
+              var otherUid = chatId.slice(ADMIN_UID.length + 1);
+              if (!otherUid || otherUid === ADMIN_UID || otherUid === 'guest') return;
+              var chat = child.val() || {};
+              if (chat.hiddenFor && chat.hiddenFor[ADMIN_UID]) return;
+              var seen = seenValue(chat.seenByAdmin);
+              var msgs = chat.messages || {};
+              Object.keys(msgs).forEach(function (mid) {
+                var m = msgs[mid];
+                if (!m || typeof m !== 'object') return;
+                if (m.deletedFor && m.deletedFor[ADMIN_UID]) return;
+                if (m.senderId === ADMIN_UID) return;
+                if (Number(m.time || 0) > seen) {
+                  count += 1;
+                  if (!latest || Number(m.time || 0) > Number(latest.time || 0)) {
+                    var info = chat.info || {};
+                    var name = String(info.fullName || info.name || '').trim();
+                    if (name.toLowerCase() === 'member') name = '';
+                    latest = {
+                      id: mid,
+                      text: m.text || '',
+                      mediaType: m.mediaType || '',
+                      senderEmail: m.senderEmail || '',
+                      time: Number(m.time || 0),
+                      name: name || emailToName(m.senderEmail) || 'Member'
+                    };
+                    latestChatId = chatId;
+                  }
+                }
+              });
+            });
+            latestAdminChatId = latestChatId;
+            setBadge(count);
+            if (latest) {
+              if (!firstSnapshot && latest.time > baseline && Date.now() - latest.time < 120000 && window.LodgeNotifier) {
+                var body = latest.text || (latest.mediaType === 'video' ? '🎥 Video' : latest.mediaType === 'audio' ? '🎤 Audio' : '📷 Photo');
+                try { window.LodgeNotifier.showPopup(latest.name, body, 'member_message', { id: latest.id }); } catch (e) {}
               }
+              if (!baseline || latest.time > baseline) baseline = latest.time;
             }
+            firstSnapshot = false;
+          }, function () {
+            // Keep the last known badge on a transient read error.
           });
-          setBadge(count);
-          if (latest) {
-            if (!firstSnapshot && latest.time > baseline && Date.now() - latest.time < 120000 && window.LodgeNotifier) {
-              var body = latest.text || (latest.mediaType === 'audio' ? '🎤 Voice note' : latest.mediaType === 'video' ? '🎥 Video' : '📷 Photo');
-              try { window.LodgeNotifier.showPopup('Director', body, 'admin_message', { id: latest.id }); } catch (e) {}
+        } else {
+          unsubscribe = dbMod.onValue(dbMod.ref(db, 'chats/' + ADMIN_UID + '_' + uid), function (snap) {
+            var chat = snap.val() || {};
+            if (chat.hiddenFor && chat.hiddenFor[uid]) { setBadge(0); return; }
+            var msgs = chat.messages || {};
+            var seen = seenValue(chat.seenByMember);
+            var count = 0;
+            var latest = null;
+            Object.keys(msgs).forEach(function (mid) {
+              var m = msgs[mid];
+              if (!m || typeof m !== 'object') return;
+              if (m.deletedFor && m.deletedFor[uid]) return;
+              if (m.senderId !== ADMIN_UID) return;
+              if (Number(m.time || 0) > seen) {
+                count += 1;
+                if (!latest || Number(m.time || 0) > Number(latest.time || 0)) {
+                  latest = { id: mid, text: m.text || '', mediaType: m.mediaType || '', time: Number(m.time || 0) };
+                }
+              }
+            });
+            setBadge(count);
+            if (latest) {
+              if (!firstSnapshot && latest.time > baseline && Date.now() - latest.time < 120000 && window.LodgeNotifier) {
+                var body = latest.text || (latest.mediaType === 'audio' ? '🎤 Audio' : latest.mediaType === 'video' ? '🎥 Video' : '📷 Photo');
+                try { window.LodgeNotifier.showPopup('Director', body, 'admin_message', { id: latest.id }); } catch (e) {}
+              }
+              if (!baseline || latest.time > baseline) baseline = latest.time;
             }
-            if (!baseline || latest.time > baseline) baseline = latest.time;
-          }
-          firstSnapshot = false;
-        }, function () {
-          // Keep the last known badge on a transient read error.
-        });
+            firstSnapshot = false;
+          }, function () {
+            // Keep the last known badge on a transient read error.
+          });
+        }
 
         // Announcement inbox: the admin writes one record per member under
         // notifications/<uid>/<announcementId>. Show the newest unseen one as

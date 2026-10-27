@@ -629,7 +629,7 @@ window.translateSelected=()=>{
 };
 
 // ---------- VOICE NOTES ----------
-let mediaRecorder=null,recordedChunks=[],recordStart=0,recordTimer=null,isRecording=false;
+let mediaRecorder=null,recordStart=0,recordTimer=null,isRecording=false,activeStream=null,startingRecording=false;
 function hideMicHelp(){const m=document.getElementById('micHelp');if(m)m.classList.remove('show');}
 function showMicHelp(kind){
   const modal=document.getElementById('micHelp');if(!modal)return;
@@ -649,8 +649,8 @@ function showMicHelp(kind){
     if(settings)settings.style.display=native?'flex':'none';
     if(allow)allow.innerHTML='<i class="fa fa-microphone"></i> Try again';
   }else if(kind==='busy'){
-    if(text)text.innerHTML='The microphone is busy in another app. Close the other app and try again.';
-    if(note)note.style.display='none';
+    if(text)text.innerHTML='The microphone is still busy. Wait a second, close any app using the mic, then tap <b>Try again</b>.';
+    if(note){note.style.display='block';note.innerHTML='Your phone may still be releasing the microphone after the permission prompt.';}
     if(settings)settings.style.display='none';
     if(allow)allow.innerHTML='<i class="fa fa-microphone"></i> Try again';
   }else if(kind==='missing'){
@@ -675,18 +675,101 @@ async function micPermissionState(){
   }catch(e){}
   return 'prompt';
 }
+// Ask Android for RECORD_AUDIO before getUserMedia. The native layer replies
+// through window.mffMicPermissionResult so the WebView request never gets
+// cancelled while the system permission dialog is on screen.
+function nativeMicPermission(){
+  return new Promise(resolve=>{
+    if(!window.MffNative||typeof window.MffNative.requestMicPermission!=='function'){resolve('unsupported');return;}
+    let settled=false;
+    const done=state=>{
+      if(settled)return;
+      settled=true;
+      try{delete window.mffMicPermissionResult;}catch(e){window.mffMicPermissionResult=null;}
+      resolve(state);
+    };
+    window.mffMicPermissionResult=ok=>done(ok?'granted':'denied');
+    try{window.MffNative.requestMicPermission();}catch(e){done('unsupported');return;}
+    setTimeout(()=>done('timeout'),15000);
+  });
+}
+function releaseStream(stream){
+  try{ if(stream&&stream.getTracks)stream.getTracks().forEach(t=>{try{t.stop();}catch(e){}}); }catch(e){}
+  if(!stream||stream===activeStream)activeStream=null;
+}
+function stopActiveStream(){const s=activeStream;activeStream=null;releaseStream(s);}
+function createRecorder(stream){
+  const types=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];
+  for(const t of types){
+    try{
+      if(!MediaRecorder.isTypeSupported||MediaRecorder.isTypeSupported(t))return new MediaRecorder(stream,{mimeType:t});
+    }catch(e){}
+  }
+  return new MediaRecorder(stream);
+}
+function wireRecorder(rec,stream){
+  const chunks=[];
+  rec._mffChunks=chunks;
+  rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
+  rec.onerror=()=>{
+    if(isRecording)stopRecording(false);
+    showToast('Recording stopped - please try again');
+  };
+  rec.onstop=()=>releaseStream(stream);
+  return rec;
+}
+async function openMicStream(){
+  stopActiveStream();
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    const e=new Error('Voice notes are not supported here');e.name='NotSupportedError';throw e;
+  }
+  // Try the best audio constraints first, then fall back to plain audio. Some
+  // Android WebViews reject echoCancellation/channelCount even though the mic
+  // itself is perfectly fine.
+  const attempts=[
+    {audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1}},
+    {audio:{echoCancellation:true,noiseSuppression:true}},
+    {audio:true}
+  ];
+  let lastErr=null;
+  for(let a=0;a<attempts.length;a++){
+    for(let attempt=0;attempt<2;attempt++){
+      try{
+        const stream=await navigator.mediaDevices.getUserMedia(attempts[a]);
+        const track=stream.getAudioTracks&&stream.getAudioTracks()[0];
+        if(track&&track.readyState==='live'){activeStream=stream;return stream;}
+        releaseStream(stream);
+        const e=new Error('Microphone did not start');e.name='NotReadableError';throw e;
+      }catch(e){
+        lastErr=e;
+        const name=(e&&e.name)||'';
+        if(name==='NotAllowedError'||name==='PermissionDeniedError'||name==='SecurityError'||name==='NotFoundError'||name==='DevicesNotFoundError'||name==='NotSupportedError')throw e;
+        if(name==='OverconstrainedError'&&a<attempts.length-1)break;
+        // Give Android a moment to release the mic after the permission dialog.
+        await new Promise(r=>setTimeout(r,300+attempt*400));
+      }
+    }
+  }
+  throw lastErr||new Error('Microphone unavailable');
+}
 async function startVoiceRecording(){
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){showMicHelp('missing');return;}
+  if(startingRecording||isRecording)return;
+  startingRecording=true;
   try{
-    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    recordedChunks=[];
-    let mime='';
-    const types=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];
-    for(const t of types){try{if(MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t)){mime=t;break;}}catch(e){}}
-    mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);
-    mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)recordedChunks.push(e.data);};
-    mediaRecorder.onstop=()=>{try{stream.getTracks().forEach(t=>t.stop());}catch(e){}};
-    mediaRecorder.start();
+    const stream=await openMicStream();
+    let rec=wireRecorder(createRecorder(stream),stream);
+    try{
+      rec.start(250);
+    }catch(e){
+      // The chosen MIME type can be advertised but still fail on some phones.
+      // Rebuild the recorder with the browser default and try once more.
+      try{rec.stop();}catch(_){}
+      releaseStream(stream);
+      const stream2=await openMicStream();
+      rec=wireRecorder(createRecorder(stream2),stream2);
+      try{rec.start(250);}catch(e2){releaseStream(stream2);throw e2;}
+    }
+    mediaRecorder=rec;
     recordStart=Date.now();isRecording=true;
     const btn=document.getElementById('recBtn');
     if(btn){btn.classList.add('recording');btn.innerHTML='<i class="fa fa-stop"></i>';btn.title='Tap to stop and send';}
@@ -698,29 +781,31 @@ async function startVoiceRecording(){
     },500);
     showToast('🎤 Recording... tap the mic again to send');
   }catch(e){
-    isRecording=false;
+    isRecording=false;mediaRecorder=null;stopActiveStream();
     const name=(e&&e.name)||'';
-    if(name==='NotAllowedError'||name==='PermissionDeniedError'||/permission|denied/i.test(e.message||''))showMicHelp('blocked');
-    else if(name==='NotFoundError'||name==='DevicesNotFoundError')showMicHelp('missing');
+    if(name==='NotAllowedError'||name==='PermissionDeniedError'||name==='SecurityError'||/permission|denied/i.test(e.message||''))showMicHelp('blocked');
+    else if(name==='NotFoundError'||name==='DevicesNotFoundError'||name==='NotSupportedError')showMicHelp('missing');
     else if(name==='NotReadableError'||name==='TrackStartError')showMicHelp('busy');
-    else{showToast('Could not start recording');showMicHelp('blocked');}
+    else{showToast('Could not start recording');showMicHelp('busy');}
+  }finally{
+    startingRecording=false;
   }
 }
 window.toggleRecording=async()=>{
   if(isRecording){stopRecording(true);return;}
+  if(startingRecording)return;
   if(!currentChatId){showToast('Open a chat first');return;}
-  // Inside the Android app the native layer shows the real runtime prompt via
-  // onPermissionRequest, so go straight to getUserMedia there. In a browser,
-  // check first so a previously blocked mic shows helpful instructions instead
-  // of silently failing.
-  if(!window.MffNative){
+  if(window.MffNative&&typeof window.MffNative.requestMicPermission==='function'){
+    const state=await nativeMicPermission();
+    if(state==='denied'){showMicHelp('blocked');return;}
+  }else if(!window.MffNative){
     const state=await micPermissionState();
     if(state==='denied'){showMicHelp('blocked');return;}
   }
   await startVoiceRecording();
 };
 document.getElementById('micCancelBtn')?.addEventListener('click',hideMicHelp);
-document.getElementById('micAllowBtn')?.addEventListener('click',()=>{hideMicHelp();setTimeout(()=>startVoiceRecording(),120);});
+document.getElementById('micAllowBtn')?.addEventListener('click',()=>{hideMicHelp();setTimeout(()=>window.toggleRecording(),160);});
 document.getElementById('micSettingsBtn')?.addEventListener('click',()=>{
   try{
     if(window.MffNative&&typeof window.MffNative.openMicSettings==='function')window.MffNative.openMicSettings();
@@ -736,16 +821,24 @@ function stopRecording(send){
   document.getElementById('msgInput').disabled=false;
   const duration=Math.max(1,Math.round((Date.now()-recordStart)/1000));
   const rec=mediaRecorder;mediaRecorder=null;
-  rec.onstop=async()=>{
-    try{rec.stream.getTracks().forEach(t=>t.stop());}catch(e){}
+  const chunks=rec._mffChunks||[];
+  const stream=rec.stream;
+  let finished=false;
+  const finish=async()=>{
+    if(finished)return;
+    finished=true;
+    releaseStream(stream);
     if(!send){showToast('Recording cancelled');return;}
-    const blob=new Blob(recordedChunks,{type:rec.mimeType||'audio/webm'});
-    recordedChunks=[];
+    const blob=new Blob(chunks,{type:rec.mimeType||'audio/webm'});
     if(blob.size<1200){showToast('Recording too short');return;}
     if(blob.size>12*1024*1024){showToast('Voice note max 12MB');return;}
     await sendVoiceNote(blob,duration);
   };
-  try{rec.stop();}catch(e){}
+  rec.onstop=finish;
+  try{ if(rec.state==='recording'&&rec.requestData)rec.requestData(); }catch(e){}
+  try{
+    if(rec.state!=='inactive')rec.stop();else finish();
+  }catch(e){finish();}
 }
 async function sendVoiceNote(blob,duration){
   if(!currentChatId||isSending)return;

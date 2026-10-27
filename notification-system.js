@@ -118,16 +118,18 @@ class LodgeNotifier {
   async playSound(type="admin_message",message="",opts={}){
     try{ this.audio.currentTime=0; await this.audio.play(); }catch(e){}
     if(navigator.vibrate) navigator.vibrate([200,100,200]);
-    const fallback = type==="member_message"
-      ? "Hello director, you got a new message please reply."
+    const body=String(message||'').trim();
+    // Speak a clear, consistent alert. Chat alerts use the wording the lodge
+    // asked for; announcements still include the announcement text.
+    const phrase = type==="member_message"
+      ? "Hello admin, you got a new message from a member."
       : type==="announcement"
-        ? "New announcement from Lodge Director, please check."
-        : "Hello member, you got a new message from director please reply.";
-    const body=String(message||'').trim()||fallback;
-    const spoken=type==="announcement" ? ("New announcement. "+body) : body;
+        ? "Hello member, you got a new announcement from Administration."
+        : "Hello member, you got a new message from Administration.";
+    const spoken = type==="announcement" && body ? (phrase+" "+body) : phrase;
     setTimeout(()=>{
       this.speak(spoken,opts);
-      this.showSystemNotification(type==="announcement"?"MFF Announcement":"MFF Lodge",body).catch(()=>{});
+      this.showSystemNotification(type==="announcement"?"MFF Announcement":"MFF Lodge",body||phrase).catch(()=>{});
     },250);
   }
 

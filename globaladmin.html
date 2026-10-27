@@ -164,10 +164,13 @@ function publishPushMessage(chatId,pending){
 }
 async function commitMessage(chatId,kind,pending){
   await set(ref(db,`chats/${chatId}/messages/${pending.id}`),pending.payload);
-  // Keep the other side's "deleted chat" flag intact: only unhide the chat for
-  // the person who is sending. Resetting hiddenFor:{} used to make a chat the
-  // other member had deleted pop back up.
+  // A new message always brings the conversation back for the person who
+  // receives it. Only unhiding the sender is what silently lost member
+  // messages: if the admin had removed a chat, the member's next message stayed
+  // invisible and never raised the unread badge.
+  const recipient=isAdmin?chatId.slice(ADMIN_UID.length+1):ADMIN_UID;
   const patch={lastTime:Date.now(),lastMessage:pending.preview,['hiddenFor/'+myId]:null};
+  if(recipient&&recipient!==myId) patch['hiddenFor/'+recipient]=null;
   // Never overwrite a good stored name with the generic "Member" fallback.
   // Some older accounts have no users/ record, so chat.info is the admin's
   // only way to know who is writing.
@@ -236,7 +239,9 @@ onAuthStateChanged(auth,async(u)=>{
   const isExpectedChat=participants.length===2&&participants[0]===ADMIN_UID&&(isAdmin||participants[1]===myId);
   if(isExpectedChat){
     const otherUid=isAdmin?participants[1]:ADMIN_UID;
-    const displayName=usersCache[otherUid]?.fullName||usersCache[otherUid]?.name||(isAdmin?'Member':'Lodge Director');
+    // Members must always see the channel name, never the admin's personal
+    // name that is stored in users/<ADMIN_UID>.
+    const displayName=isAdmin?(usersCache[otherUid]?.fullName||usersCache[otherUid]?.name||'Member'):tr('admin_channel');
     setTimeout(()=>openChat(otherUid,displayName),0);
   }
 });
@@ -410,13 +415,19 @@ function loadChats(){
 window.openChat=async(otherUid,displayName)=>{
   const chatId=isAdmin?(ADMIN_UID+"_"+otherUid):(ADMIN_UID+"_"+(myId||'guest'));
   currentChatId=chatId;
-  // The list passes the real name. URL opens and older callers can still pass
-  // "Member" or a uid, so fall back to the stored chat profile.
-  let peerName=String(displayName||'').trim();
-  if(!peerName||peerName==='Member'||peerName===otherUid||/^Member [A-Za-z0-9]{4}$/.test(peerName)){
-    let chatData=null;
-    try{const cs=await get(ref(db,'chats/'+chatId));chatData=cs.exists()?cs.val():null;}catch(e){}
-    peerName=memberName(otherUid,chatData);
+  let peerName;
+  if(isAdmin){
+    // The admin must see who wrote: the list passes the real member name, and
+    // URL opens fall back to the stored profile.
+    peerName=String(displayName||'').trim();
+    if(!peerName||peerName==='Member'||peerName===otherUid||/^Member [A-Za-z0-9]{4}$/.test(peerName)){
+      let chatData=null;
+      try{const cs=await get(ref(db,'chats/'+chatId));chatData=cs.exists()?cs.val():null;}catch(e){}
+      peerName=memberName(otherUid,chatData);
+    }
+  }else{
+    // Members talk to the channel, never to the admin as a person.
+    peerName=tr('admin_channel');
   }
   document.getElementById('chatName').innerText=peerName;
   document.getElementById('chatPage').style.display='flex';
@@ -441,7 +452,7 @@ window.openChat=async(otherUid,displayName)=>{
     if(ids.length===0){
       const empty=document.createElement('div');
       empty.style.cssText='text-align:center;padding:60px 20px;color:#aaa';
-      empty.innerHTML=`<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(145deg,#121D33,#0b1728);border:2px solid var(--gold);display:grid;place-items:center;margin:0 auto 20px"><i class="fa fa-comments" style="font-size:32px;color:var(--gold)"></i></div><div style="color:var(--gold);font-weight:700;font-size:16px">${tr('no_messages')}</div><div style="font-size:12px;margin-top:8px;color:#666">Start your conversation with ${displayName}<br>Your messages are secured</div><div style="margin-top:20px;color:#333;font-size:11px"><i class="fa fa-lock"></i> End-to-end encrypted</div>`;
+      empty.innerHTML=`<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(145deg,#121D33,#0b1728);border:2px solid var(--gold);display:grid;place-items:center;margin:0 auto 20px"><i class="fa fa-comments" style="font-size:32px;color:var(--gold)"></i></div><div style="color:var(--gold);font-weight:700;font-size:16px">${tr('no_messages')}</div><div style="font-size:12px;margin-top:8px;color:#666">Start your conversation with ${peerName}<br>Your messages are secured</div><div style="margin-top:20px;color:#333;font-size:11px"><i class="fa fa-lock"></i> End-to-end encrypted</div>`;
       box.replaceChildren(empty);
       return;
     }

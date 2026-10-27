@@ -1,6 +1,6 @@
 {
-  "versionCode": 2007,
-  "versionName": "1.0.5",
+  "versionCode": 2008,
+  "versionName": "1.0.6",
   "url": "https://freemasonry-family.web.app/download",
-  "notes": "Fixes notifications when the app is closed and the page that got stuck on the main screen."
+  "notes": "Fixes the home page buttons inside the app and adds a native update check."
 }

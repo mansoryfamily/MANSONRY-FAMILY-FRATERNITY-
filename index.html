@@ -42,14 +42,20 @@
   .card h3{color:#d4af37;font-size:22px;margin-bottom:15px;}
   .card p{color:#ddd;line-height:1.8;font-size:15px;}
   footer{background:#020509;padding:40px;text-align:center;color:#999;}
-  .install-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(20,34,56,.98);backdrop-filter:blur(20px);padding:30px 25px;border-radius:20px;border:2px solid #d4af37;z-index:100000;display:none;flex-direction:column;align-items:center;gap:20px;width:90%;max-width:380px;box-shadow:0 20px 60px rgba(212,175,55,.4);text-align:center;opacity:0;transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);}
-  .install-popup.show{display:flex;opacity:1;transform:translate(-50%,-50%) scale(1);}
-  .install-popup img{width:70px;height:70px;border-radius:18px;border:2px solid #d4af37;object-fit:cover;}
-  .install-popup .text h4{color:#d4af37;margin-bottom:8px;font-size:18px;}
-  .install-popup .text p{color:#ccc;font-size:14px;}
-  .install-popup .btns{display:flex;gap:12px;width:100%;}
-  .install-popup .btn-install{flex:1;background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;border:none;padding:12px 18px;border-radius:25px;font-weight:bold;cursor:pointer;}
-  .install-popup .btn-close{flex:1;background:transparent;color:#ccc;border:1px solid #39485f;padding:12px 18px;border-radius:25px;cursor:pointer;}
+  .install-popup{position:fixed;top:calc(78px + env(safe-area-inset-top));left:50%;transform:translate(-50%,-14px);width:94%;max-width:460px;display:none;flex-direction:row;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;background:rgba(20,34,56,.97);border:1px solid rgba(212,175,55,.55);z-index:100000;opacity:0;box-shadow:0 14px 34px rgba(0,0,0,.5);transition:opacity .28s ease, transform .28s ease;}
+  .install-popup.show{display:flex;opacity:1;transform:translate(-50%,0);}
+  .install-popup img{width:36px;height:36px;border-radius:10px;flex:none;border:1px solid rgba(212,175,55,.6);object-fit:cover;}
+  .install-popup .text{flex:1;min-width:0;text-align:left;}
+  .install-popup .text h4{font-size:13.5px;margin-bottom:2px;color:#f0d185;}
+  .install-popup .text p{font-size:11.5px;line-height:1.35;color:#a9b8cc;margin:0;}
+  .install-popup .btns{flex:none;display:flex;flex-direction:column;gap:5px;width:auto;}
+  .install-popup .btn-install{flex:none;padding:8px 14px;font-size:12px;border-radius:999px;}
+  .install-popup .btn-close{flex:none;padding:6px 12px;font-size:11px;border-radius:999px;}
+  .install-backdrop{position:fixed;inset:0;background:rgba(3,8,18,.7);backdrop-filter:blur(6px);z-index:99999;display:none;}
+  .install-backdrop.show{display:block;}
+  header .get-app{background:linear-gradient(135deg,#f0d185,#d4af37);color:#111;text-decoration:none;font-weight:800;font-size:13px;padding:9px 16px;border-radius:999px;white-space:nowrap;}
+  .install-popup .btn-install{background:linear-gradient(135deg,#d4af37,#b8941f);color:#111;border:none;font-weight:bold;cursor:pointer;}
+  .install-popup .btn-close{background:transparent;color:#ccc;border:1px solid #39485f;cursor:pointer;}
   header nav{display:none;}
   @media(min-width:901px){header nav{display:block;}}
   @media(max-width:900px){.join-btn{margin-left:0;}}
@@ -57,15 +63,16 @@
 </head>
 <body>
 
+<div class="install-backdrop" id="installBackdrop"></div>
 <div class="install-popup" id="installPopup">
   <img src="./icon-512.png" alt="logo" onerror="this.src='./images.jpeg'">
   <div class="text">
-    <h4>Update available</h4>
-    <p id="installText">An improved version of Masonry Family is ready. Update to keep your chats and notifications working smoothly.</p>
+    <h4 id="installTitle">Get the MFF app</h4>
+    <p id="installText">Install the official Masonry Family app for chat, alerts and offline access.</p>
   </div>
   <div class="btns">
-    <button class="btn-install" id="btnInstall">Update</button>
-    <button class="btn-close" id="btnClose">Later</button>
+    <button class="btn-install" id="btnInstall">Download APK</button>
+    <button class="btn-close" id="btnClose">Not now</button>
   </div>
 </div>
 
@@ -78,6 +85,7 @@
     <a href="#values">Values</a>
     <a href="#gallery">Gallery</a>
   </nav>
+  <a class="get-app" id="getAppBtn" href="./download">Get the App</a>
 </header>
 
 <section class="hero" id="home">
@@ -130,14 +138,33 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// ANDROID APK INSTALL PROMPT
+// ANDROID APK PROMPT
+// New visitors get "Download APK". Users who already have the app never see
+// this prompt - native-update.js shows the update dialog instead.
 (function() {
   const APK_URL = 'https://freemasonry-family.web.app/download';
-  const DISMISS_KEY = 'mff_apk_prompt_dismissed_1.0.5';
+  const DISMISS_KEY = 'mff_apk_prompt_dismissed_1.0.6';
   const popup = document.getElementById('installPopup');
+  const backdrop = document.getElementById('installBackdrop');
   const btnInstall = document.getElementById('btnInstall');
   const btnClose = document.getElementById('btnClose');
-  if (!popup || !/Android/i.test(navigator.userAgent)) return;
+  const title = document.getElementById('installTitle');
+  const text = document.getElementById('installText');
+  const getAppBtn = document.getElementById('getAppBtn');
+
+  if (!/Android/i.test(navigator.userAgent)) {
+    if (getAppBtn) getAppBtn.style.display = 'none';
+    return;
+  }
+  if (!popup) return;
+
+  const appVersion = (navigator.userAgent.match(/MFFAndroid\/([\d.]+)/i) || [])[1] || '';
+  if (appVersion) {
+    if (getAppBtn) getAppBtn.style.display = 'none';
+    if (backdrop) backdrop.remove();
+    popup.remove();
+    return;
+  }
 
   const isStandalone = () =>
     window.matchMedia('(display-mode: standalone)').matches ||
@@ -153,12 +180,20 @@ if ('serviceWorker' in navigator) {
     return;
   }
 
-  setTimeout(() => popup.classList.add('show'), 2500);
+  title.textContent = 'Get the MFF app';
+  text.textContent = 'Install the official Masonry Family app for chat, alerts and offline access.';
+  btnInstall.textContent = 'Download APK';
+  btnClose.textContent = 'Not now';
 
+  const open = () => {
+    popup.classList.add('show');
+  };
   const dismiss = () => {
     localStorage.setItem(DISMISS_KEY, String(Date.now()));
     popup.classList.remove('show');
   };
+
+  setTimeout(open, 2500);
 
   btnInstall.addEventListener('click', () => {
     dismiss();
@@ -166,10 +201,14 @@ if ('serviceWorker' in navigator) {
   });
 
   btnClose.addEventListener('click', dismiss);
+  if (backdrop) backdrop.addEventListener('click', dismiss);
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') dismiss();
+  });
 
   window.addEventListener('appinstalled', () => {
     localStorage.setItem('mff_installed', 'true');
-    popup.classList.remove('show');
+    dismiss();
   });
 })();
 </script>

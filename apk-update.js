@@ -1,9 +1,14 @@
 (function () {
-  var VERSION = "1.0.5";
+  // Site-wide Android app prompt.
+  // - New visitors: "Download APK".
+  // - Visitors already inside the native app: no prompt here. native-update.js
+  //   shows the update dialog only when a newer build is published.
   var APK_URL = "https://freemasonry-family.web.app/download";
-  var DISMISS_KEY = "mff_apk_update_dismissed_" + VERSION;
+  var VERSION = "1.0.6";
+  var DISMISS_KEY = "mff_apk_prompt_dismissed_" + VERSION;
   var POPUP_ID = "mffApkUpdatePrompt";
   var isAndroid = /Android/i.test(navigator.userAgent);
+  var appVersion = (navigator.userAgent.match(/MFFAndroid\/([\d.]+)/i) || [])[1] || "";
   var isInstalled = false;
   var isStandalone = false;
   var dismissed = false;
@@ -18,6 +23,8 @@
     isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   } catch (error) {}
 
+  // Already inside the app - never nag with a download prompt.
+  if (appVersion) return;
   if (!isAndroid || isInstalled || isStandalone || dismissed) return;
   if (document.getElementById("installPopup") || document.getElementById(POPUP_ID)) return;
 
@@ -57,13 +64,13 @@
     popup.innerHTML =
       '<div class="mff-apk-card">' +
         '<img src="./icon-192.png" alt="Masonry Family">' +
-        "<h3>Update available</h3>" +
-        "<p>An improved version of Masonry Family is ready. Update to keep your chats and notifications working smoothly.</p>" +
+        "<h3>Get the MFF app</h3>" +
+        "<p>Install the official Masonry Family app for chat, alerts and offline access.</p>" +
         '<div class="mff-apk-actions">' +
-          '<button type="button" class="mff-apk-download">Update</button>' +
-          '<button type="button" class="mff-apk-later">Later</button>' +
+          '<button type="button" class="mff-apk-download">Download APK</button>' +
+          '<button type="button" class="mff-apk-later">Not now</button>' +
         "</div>" +
-        "<small>Your account and chats stay exactly the same.</small>" +
+        "<small>Free download. Works on Android 7 and newer.</small>" +
       "</div>";
     document.body.appendChild(popup);
 
@@ -72,6 +79,9 @@
       window.location.href = APK_URL;
     });
     popup.querySelector(".mff-apk-later").addEventListener("click", dismiss);
+    popup.addEventListener("click", function (event) {
+      if (event.target === popup) dismiss();
+    });
 
     setTimeout(function () {
       popup.classList.add("show");

@@ -1373,14 +1373,13 @@ textarea{
 >
 
   <h3>
-    Update available
+    Get the MFF app
   </h3>
 
 
   <p>
-    An improved version of Masonry Family is ready.
-    Update to keep your chats and notifications
-    working smoothly.
+    Install the official Masonry Family app for chat,
+    alerts and offline access.
   </p>
 
 
@@ -1390,7 +1389,7 @@ textarea{
       type="button"
       id="btnInstall"
     >
-      Update
+      Download APK
     </button>
 
 
@@ -1398,7 +1397,7 @@ textarea{
       type="button"
       id="btnClose"
     >
-      Later
+      Not now
     </button>
 
   </div>
@@ -2596,7 +2595,7 @@ const APK_URL =
   "https://freemasonry-family.web.app/download";
 
 const DISMISS_KEY =
-  "mff_apk_prompt_dismissed_1.0.4";
+  "mff_apk_prompt_dismissed_1.0.6";
 
 const installPopup =
   document.getElementById(
@@ -2637,6 +2636,7 @@ const recentlyDismissed = () => {
 if(
   installPopup &&
   /Android/i.test(navigator.userAgent) &&
+  !/MFFAndroid\//i.test(navigator.userAgent) &&
   localStorage.getItem(
     "mff_installed"
   ) !== "true" &&

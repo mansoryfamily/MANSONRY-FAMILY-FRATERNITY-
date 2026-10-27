@@ -508,7 +508,7 @@ window.openChat=async(otherUid,displayName)=>{
           chip.className='msg-lang';
           chip.textContent='🌐 '+langLabel(detected);
           chip.title='Tap to translate to English or Kiswahili';
-          chip.addEventListener('click',e=>{e.stopPropagation();translateBubble(div,m.text);});
+          chip.addEventListener('click',e=>{e.stopPropagation();translateBubble(div,m.text,'auto');});
           div.insertBefore(chip,langAnchor);
         }
       }

@@ -42,6 +42,21 @@
   btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.2 12 12.6l9-6.4V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v.2ZM3 8.6V18a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.6l-9 6.4-9-6.4Z"/></svg><span id="mffFloatBadge" aria-live="polite">0</span>';
   document.body.appendChild(btn);
   var badge = document.getElementById('mffFloatBadge');
+  // Hidden until Firebase confirms a signed-in member. Guests and people who
+  // have not registered must not see the Administration shortcut.
+  btn.style.display = 'none';
+  btn.setAttribute('aria-hidden', 'true');
+  var currentUid = '';
+
+  function showIcon() {
+    btn.style.display = 'grid';
+    btn.removeAttribute('aria-hidden');
+  }
+
+  function hideIcon() {
+    btn.style.display = 'none';
+    btn.setAttribute('aria-hidden', 'true');
+  }
 
   function storedUid() {
     try {
@@ -66,7 +81,7 @@
   }
 
   btn.addEventListener('click', function () {
-    var uid = storedUid();
+    var uid = currentUid || storedUid();
     if (uid) {
       location.href = './globaladmin.html?chatId=' + encodeURIComponent(ADMIN_UID + '_' + uid);
     } else {
@@ -87,6 +102,7 @@
       // The dashboard writes the profile cache a moment after the module
       // boots, so give it a few short chances before treating this as a guest.
       if (attempt < 10) { setTimeout(function () { startLive(attempt + 1); }, 400); return; }
+      hideIcon();
       setBadge(0);
       return;
     }
@@ -180,11 +196,19 @@
       }
 
       authMod.onAuthStateChanged(auth, function (user) {
-        if (user && user.uid) subscribe(user.uid);
-        else stop();
+        if (user && user.uid) {
+          currentUid = user.uid;
+          showIcon();
+          subscribe(user.uid);
+        } else {
+          currentUid = '';
+          hideIcon();
+          stop();
+        }
       });
     }).catch(function () {
-      // The icon still works as a shortcut even if Firebase cannot load.
+      // Never show the Administration shortcut to a guest if auth cannot load.
+      hideIcon();
     });
   }
 

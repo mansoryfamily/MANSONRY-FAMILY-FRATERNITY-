@@ -40,6 +40,20 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 #micHelp button{border:none;border-radius:24px;padding:12px 16px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
 #micHelp .mic-primary{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#111}
 #micHelp .mic-secondary{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(212,177,106,.3)}
+#recOverlay{position:fixed;left:0;right:0;bottom:0;padding:0 12px calc(14px + env(safe-area-inset-bottom));z-index:100000;display:none;justify-content:center;pointer-events:none}
+#recOverlay.show{display:flex}
+#recSheet{pointer-events:auto;width:100%;max-width:430px;background:linear-gradient(145deg,#142238,#0b1728);border:1.5px solid var(--gold);border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 18px 50px rgba(0,0,0,.7);transition:transform .15s ease,border-color .15s ease,background .15s ease;touch-action:none;user-select:none}
+#recSheet.armed{border-color:#00e676;background:linear-gradient(145deg,#0e3324,#0b1728)}
+#recSheet .rec-dot{width:10px;height:10px;border-radius:50%;background:#ff5252;flex:0 0 auto;animation:recPulse 1s infinite}
+#recSheet.armed .rec-dot{background:#00e676;animation:none}
+#recSheet .rec-copy{display:flex;flex-direction:column;flex:1;min-width:0;line-height:1.2}
+#recSheet #recTime{font-weight:800;font-size:15px;color:#fff;letter-spacing:.5px}
+#recSheet #recHint{font-size:11px;color:#9fb2c8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#recSheet.armed #recHint{color:#00e676;font-weight:700}
+#recSheet button{border:none;border-radius:20px;padding:9px 13px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+#recSheet #recCancelBtn{background:rgba(255,255,255,.09);color:#fff;border:1px solid rgba(212,177,106,.3)}
+#recSheet #recSendBtn{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#111}
+@keyframes recPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
 .media-box{border-radius:12px;overflow:hidden;margin-bottom:6px;position:relative;background:#000}
 .media-box img,.media-box video{width:100%;max-width:260px;max-height:320px;border-radius:12px;display:block;object-fit:cover}
 .media-down{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.85);border:1px solid var(--gold);color:var(--gold);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:5}
@@ -70,6 +84,14 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 <div id="messages"></div>
 <div class="reply-bar" id="replyBar"><div><small id="replyToName" style="color:var(--gold);font-weight:800"></small><div id="replyToText" style="color:#aaa;font-size:11px"></div></div><i class="fa fa-times" style="color:#fff;cursor:pointer" onclick="cancelReply()"></i></div>
 <div class="input-area"><input type="file" id="mediaInput" accept="image/*,video/*" style="display:none"><button class="icon-btn" style="background:var(--card);border:1px solid var(--border);color:var(--gold);min-width:42px" onclick="document.getElementById('mediaInput').click()"><i class="fa fa-paperclip"></i></button><input id="msgInput" data-i18n-placeholder="type_message" placeholder="Type message..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="icon-btn" id="recBtn" title="Voice note" style="background:var(--card);border:1px solid var(--border);color:var(--gold);min-width:42px" onclick="toggleRecording()"><i class="fa fa-microphone"></i></button><button class="icon-btn" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button></div>
+<div id="recOverlay">
+  <div id="recSheet">
+    <span class="rec-dot"></span>
+    <div class="rec-copy"><span id="recTime">0:00</span><small id="recHint">Swipe up to send</small></div>
+    <button id="recCancelBtn" type="button">Cancel</button>
+    <button id="recSendBtn" type="button">Send</button>
+  </div>
+</div>
 </div>
 <div id="msgMenu" class="menu"><button onclick="replyMsg()"><i class="fa fa-reply"></i> <span data-i18n="reply">Reply</span></button><button onclick="translateSelected()"><i class="fa fa-language"></i> <span data-i18n="translate">Translate</span></button><button onclick="copyMsg()"><i class="fa fa-copy"></i> <span data-i18n="copy">Copy</span></button><button id="editBtn" onclick="editMsg()"><i class="fa fa-pen"></i> <span data-i18n="edit">Edit</span></button><button onclick="downloadMedia()" id="downBtn" style="display:none"><i class="fa fa-download"></i> Download</button><button onclick="deleteForMe()" class="danger"><i class="fa fa-eye-slash"></i> <span data-i18n="delete_me">Delete for me</span></button><button onclick="deleteForEveryone()" class="danger"><i class="fa fa-trash"></i> <span data-i18n="delete_all">Delete for everyone</span></button></div>
 <div id="chatMenu" class="menu"><button onclick="deleteChatForMe()" class="danger"><i class="fa fa-trash"></i> <span data-i18n="delete">Delete</span></button><button onclick="cancelChatDelete()"><i class="fa fa-times"></i> <span data-i18n="cancel">Cancel</span></button></div>
@@ -698,6 +720,23 @@ function releaseStream(stream){
   if(!stream||stream===activeStream)activeStream=null;
 }
 function stopActiveStream(){const s=activeStream;activeStream=null;releaseStream(s);}
+function showRecOverlay(){
+  const o=document.getElementById('recOverlay');
+  if(o)o.classList.add('show');
+  updateRecTimer(0);
+}
+function hideRecOverlay(){
+  const o=document.getElementById('recOverlay');
+  if(o)o.classList.remove('show');
+  const sheet=document.getElementById('recSheet');
+  if(sheet){sheet.style.transform='';sheet.classList.remove('armed');}
+  const hint=document.getElementById('recHint');
+  if(hint)hint.textContent='Swipe up to send';
+}
+function updateRecTimer(seconds){
+  const t=document.getElementById('recTime');
+  if(t)t.textContent=`${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;
+}
 function createRecorder(stream){
   const types=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];
   for(const t of types){
@@ -776,10 +815,12 @@ async function startVoiceRecording(){
     document.getElementById('msgInput').disabled=true;
     recordTimer=setInterval(()=>{
       const s=Math.floor((Date.now()-recordStart)/1000);
+      updateRecTimer(s);
       const btn2=document.getElementById('recBtn');
       if(btn2)btn2.title=`Recording ${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')} - tap to send`;
     },500);
-    showToast('🎤 Recording... tap the mic again to send');
+    showRecOverlay();
+    showToast('🎤 Recording... swipe up or release to send');
   }catch(e){
     isRecording=false;mediaRecorder=null;stopActiveStream();
     const name=(e&&e.name)||'';
@@ -812,10 +853,50 @@ document.getElementById('micSettingsBtn')?.addEventListener('click',()=>{
     else showToast('Open Settings > Apps > MFF > Permissions > Microphone');
   }catch(e){showToast('Open Settings > Apps > MFF > Permissions > Microphone');}
 });
+// Swipe-up-to-send recording sheet. The sheet follows the finger, turns green
+// when armed, and releasing sends immediately. Cancel or Send also work.
+(function(){
+  const sheet=document.getElementById('recSheet');
+  if(!sheet)return;
+  let startY=0,dragging=false,armed=false;
+  const reset=()=>{
+    sheet.style.transform='';
+    sheet.classList.remove('armed');
+    const hint=document.getElementById('recHint');
+    if(hint)hint.textContent='Swipe up to send';
+  };
+  sheet.addEventListener('pointerdown',e=>{
+    if(!isRecording||(e.target.closest&&e.target.closest('button')))return;
+    dragging=true;armed=false;startY=e.clientY;
+    try{sheet.setPointerCapture(e.pointerId);}catch(_){}
+    e.preventDefault();
+  });
+  sheet.addEventListener('pointermove',e=>{
+    if(!dragging)return;
+    const dy=Math.max(0,startY-e.clientY);
+    sheet.style.transform=`translateY(${-Math.min(dy,90)}px)`;
+    armed=dy>55;
+    sheet.classList.toggle('armed',armed);
+    const hint=document.getElementById('recHint');
+    if(hint)hint.textContent=armed?'Release to send':'Swipe up to send';
+  });
+  const finish=()=>{
+    if(!dragging)return;
+    dragging=false;
+    const send=armed&&isRecording;
+    reset();
+    if(send)stopRecording(true);
+  };
+  sheet.addEventListener('pointerup',finish);
+  sheet.addEventListener('pointercancel',finish);
+})();
+document.getElementById('recSendBtn')?.addEventListener('click',e=>{e.stopPropagation();if(isRecording)stopRecording(true);});
+document.getElementById('recCancelBtn')?.addEventListener('click',e=>{e.stopPropagation();if(isRecording)stopRecording(false);});
 function stopRecording(send){
   if(!isRecording||!mediaRecorder)return;
   isRecording=false;
   clearInterval(recordTimer);recordTimer=null;
+  hideRecOverlay();
   const btn=document.getElementById('recBtn');
   if(btn){btn.classList.remove('recording');btn.innerHTML='<i class="fa fa-microphone"></i>';btn.title='Voice note';}
   document.getElementById('msgInput').disabled=false;

@@ -44,6 +44,13 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 .msg-translation .tr-text{font-style:italic;opacity:.95;white-space:pre-wrap}
 .my-msg .msg-translation{border-top-color:rgba(0,0,0,.3)}
 .my-msg .msg-translation select{background:rgba(255,255,255,.4);color:#111}
+.msg-translation .tr-actions{display:flex;gap:6px;margin:6px 0 2px;flex-wrap:wrap}
+.msg-translation .tr-actions button{background:rgba(212,177,106,.16);color:inherit;border:1px solid rgba(212,177,106,.55);border-radius:999px;padding:3px 11px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer}
+.msg-translation .tr-actions button.active{background:var(--gold);color:#111;border-color:var(--gold)}
+.my-msg .msg-translation .tr-actions button{background:rgba(255,255,255,.35);border-color:rgba(0,0,0,.25);color:#111}
+.my-msg .msg-translation .tr-actions button.active{background:#111;color:#f0d185;border-color:#111}
+.msg-lang{display:inline-flex;align-items:center;gap:4px;margin:2px 0 5px;padding:2px 8px;border-radius:999px;border:1px solid rgba(212,177,106,.55);background:rgba(212,177,106,.14);color:inherit;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;opacity:.9}
+.msg-lang:hover{opacity:1}
 .msg audio{max-width:250px;width:100%;border-radius:10px;display:block;margin-bottom:4px}
 </style>
 </head><body>
@@ -483,11 +490,27 @@ window.openChat=async(otherUid,displayName)=>{
       div.innerHTML=html;
       // In the admin inbox every incoming bubble carries the member's name, so
       // there is never a question about who wrote it.
+      let langAnchor=div.firstChild;
       if(isAdmin&&!isMe){
         const sender=document.createElement('div');
         sender.className='msg-sender';
         sender.textContent=peerName;
         div.insertBefore(sender,div.firstChild);
+        langAnchor=sender.nextSibling;
+      }
+      // Automatically label a foreign-language message so the admin knows what
+      // it is before tapping. No network call is needed for this hint.
+      if(isAdmin&&!isMe&&m.text){
+        const detected=heuristicLang(m.text);
+        if(detected&&detected!=='en'){
+          const chip=document.createElement('button');
+          chip.type='button';
+          chip.className='msg-lang';
+          chip.textContent='🌐 '+langLabel(detected);
+          chip.title='Tap to translate to English or Kiswahili';
+          chip.addEventListener('click',e=>{e.stopPropagation();translateBubble(div,m.text);});
+          div.insertBefore(chip,langAnchor);
+        }
       }
       div.dataset.mid=mid;
 
@@ -585,12 +608,67 @@ window.sendMsg=async()=>{
 
 // ---------- TAP-TO-TRANSLATE (any language <-> any language) ----------
 const LANG_MAP={en:'en',sw:'sw',lg:'lg',rw:'rw',pt:'pt',fr:'fr',zu:'zu',ha:'ha',tw:'ak',am:'am',sn:'sn',bem:'bem',tn:'tn',ng:'ny',hi:'hi'};
-const LANG_NAMES={en:'English',sw:'Kiswahili',lg:'Luganda',rw:'Kinyarwanda',fr:'Français',pt:'Português',zu:'isiZulu',ha:'Hausa',am:'Amharic',hi:'Hindi',ar:'العربية',es:'Español',ak:'Akan',sn:'Shona',bem:'Bemba',tn:'Setswana',ny:'Chichewa'};
-const TRANSLATE_TARGETS=[['en','English'],['sw','Kiswahili'],['lg','Luganda'],['rw','Kinyarwanda'],['fr','Français'],['pt','Português'],['zu','isiZulu'],['ha','Hausa'],['am','Amharic'],['hi','Hindi'],['ar','العربية'],['es','Español']];
+const LANG_NAMES={en:'English',sw:'Kiswahili',lg:'Luganda',rw:'Kinyarwanda',fr:'Français',pt:'Português',zu:'isiZulu',ha:'Hausa',am:'Amharic',hi:'Hindi',ar:'العربية',es:'Español',ak:'Akan',sn:'Shona',bem:'Bemba',tn:'Setswana',ny:'Chichewa',it:'Italiano',de:'Deutsch',ru:'Русский',el:'Ελληνικά',he:'עברית',th:'ไทย',ja:'日本語','zh-CN':'中文',ko:'한국어',uk:'Українська',tr:'Türkçe',nl:'Nederlands'};
+const QUICK_TARGETS=[['en','English'],['sw','Kiswahili']];
 function targetLang(){const l=getLang();return LANG_MAP[l]||l||'en';}
 function getTranslateTarget(){
   try{const saved=localStorage.getItem('mffTranslateTarget');if(saved)return saved;}catch(e){}
   return targetLang();
+}
+function langLabel(code){
+  const c=String(code||'').toLowerCase();
+  if(!c||c==='auto')return '';
+  return LANG_NAMES[c]||c.toUpperCase();
+}
+
+// Google's auto-detect is unreliable for short messages ("gracias" is often
+// called English). Script checks + distinctive stop-words give us a solid
+// source language before we translate, so Spanish/Luganda/etc. stay correct.
+const SCRIPT_LANGS=[
+  [/[\u0600-\u06FF]/, 'ar'],
+  [/[\u0900-\u097F]/, 'hi'],
+  [/[\u1200-\u137F]/, 'am'],
+  [/[\u0400-\u04FF]/, 'ru'],
+  [/[\u0370-\u03FF]/, 'el'],
+  [/[\u0590-\u05FF]/, 'he'],
+  [/[\u0E00-\u0E7F]/, 'th'],
+  [/[\u3040-\u30FF]/, 'ja'],
+  [/[\u4E00-\u9FFF]/, 'zh-CN'],
+  [/[\uAC00-\uD7AF]/, 'ko']
+];
+const LANG_WORDS={
+  es:'gracias hola buenos buenas dias noches amigo amiga hermano hermana como estas esta que tal hasta luego adios bienvenido senor senora donde cuando porque pero mucho muy tambien usted nosotros ellos ella necesito quiero puedes ayuda mensaje iglesia familia',
+  fr:'bonjour merci salut vous plait comment allez frere soeur bienvenue oui avec pour mais tres aussi nous ils elle besoin aider message eglise famille revoir',
+  pt:'obrigado obrigada ola voce voces nao sim bom boa dia noite irmao irma bemvindo como esta tudo bem ate logo porque mas muito tambem nos eles ela preciso quero pode ajuda mensagem igreja familia',
+  it:'grazie ciao buongiorno buonasera come stai fratello sorella chiesa famiglia messaggio favore scusa bene molto anche noi loro bisogno aiuto',
+  de:'danke hallo guten tag wie geht bruder schwester kirche familie nachricht bitte entschuldigung sehr auch wir sie hilfe',
+  sw:'asante sana habari karibu ndiyo hapana mimi wewe yeye sisi nyinyi wao nzuri vizuri salama rafiki ndugu dada kaka kanisa familia ujumbe tafadhali samahani pole sawa nini lakini pia',
+  lg:'webale weebale nyo oli otya kiki nze ggwe ffe mmwe bulungi mirembe mukama owange ssebo nyabo kino kiri naye ate era nnyo kusiima ekkanisa amaka obubaka',
+  rw:'murakoze mwaramutse mwiriwe amakuru meza ndabyemeye yego oya ndumva ubwo ariko kandi cyane umuryango ubutumwa itorero murakaza neza',
+  zu:'ngiyabonga sawubona unjani yebo cha ngiyaphila wena mina thina nina bona kahle kakhulu umzalwane udade umfowethu ibandla umndeni umyalezo ngicela uxolo',
+  ha:'gode sannu yaya lafiya barka zuwa gida coci iyali sako allah ina kwana yini'
+};
+function normalizeWord(w){
+  return String(w||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9']/g,'');
+}
+function heuristicLang(text){
+  const raw=String(text||'');
+  for(const [re,lang] of SCRIPT_LANGS){ if(re.test(raw)) return lang; }
+  const words=raw.toLowerCase().replace(/[^\p{L}\s']/gu,' ').split(/\s+/).filter(Boolean);
+  if(!words.length) return '';
+  let best='',bestScore=0,second=0;
+  for(const lang of Object.keys(LANG_WORDS)){
+    const set=new Set(LANG_WORDS[lang].split(/\s+/).map(normalizeWord));
+    let score=0;
+    for(const w of words){ if(set.has(normalizeWord(w))) score++; }
+    if(score>bestScore){second=bestScore;best=lang;bestScore=score;}
+    else if(score>second){second=score;}
+  }
+  if(!bestScore||bestScore<=second) return '';
+  const ratio=bestScore/words.length;
+  if(bestScore>=2) return best;
+  if(words.length<=2) return best;
+  return ratio>=0.5?best:'';
 }
 function decodeEntities(s){const t=document.createElement('textarea');t.innerHTML=String(s||'');return t.value;}
 function sameText(a,b){return String(a||'').replace(/\s+/g,' ').trim().toLowerCase()===String(b||'').replace(/\s+/g,' ').trim().toLowerCase();}
@@ -617,44 +695,67 @@ async function myMemoryTranslate(q,sl,tl){
 async function translateText(text,tl){
   const q=String(text||'').trim();
   if(!q)return {text:'',source:''};
-  // Google detects the source language itself, so this covers Luganda or
-  // Kiswahili -> English, English -> Luganda/Kiswahili, and every other pair.
+  const guessed=heuristicLang(q);
+
+  // If we know the source, translate with it explicitly. This is what makes
+  // short words like "gracias" reliably come out as Spanish, not English.
+  if(guessed&&guessed!==tl){
+    const g=await googleTranslate(q,guessed,tl);
+    if(g.text&&!sameText(g.text,q))return {text:g.text,source:guessed};
+  }
+
   const g=await googleTranslate(q,'auto',tl);
   if(g.text){
-    if(g.source&&g.source===tl)return {text:q,source:g.source};
-    if(!sameText(g.text,q))return {text:g.text,source:g.source};
-    if(g.source)return {text:g.text,source:g.source};
+    const source=guessed||g.source||'';
+    if(source===tl)return {text:q,source};
+    if(!sameText(g.text,q))return {text:g.text,source};
+    if(source)return {text:g.text,source};
   }
-  // Fallbacks when Google is unreachable or cannot detect the source.
-  const m=await myMemoryTranslate(q,'auto',tl);
-  if(m&&!sameText(m,q))return {text:m,source:''};
-  if(tl==='en'){
-    for(const sl of ['lg','sw','rw']){
-      const t=await myMemoryTranslate(q,sl,'en');
-      if(t&&!sameText(t,q))return {text:t,source:sl};
-    }
-  }else{
-    for(const sl of ['lg','sw','en']){
-      if(sl===tl)continue;
-      const t=await myMemoryTranslate(q,sl,tl);
-      if(t&&!sameText(t,q))return {text:t,source:sl};
-    }
+
+  // Fallbacks when Google is unreachable or cannot handle the pair.
+  const candidates=guessed?[guessed]:['lg','sw','rw','es','fr','pt'];
+  for(const sl of candidates){
+    if(sl===tl)continue;
+    const t=await myMemoryTranslate(q,sl,tl);
+    if(t&&!sameText(t,q))return {text:t,source:sl};
   }
-  return {text:g.text||m||'',source:g.source||''};
+  return {text:g.text||'',source:guessed||g.source||''};
 }
 async function runBubbleTranslation(div,text,tl){
   const block=div.querySelector('.msg-translation');
   if(!block)return;
   const body=block.querySelector('.tr-text');
   const label=block.querySelector('.tr-source');
-  if(body)body.textContent='Translating...';
+  const actions=block.querySelector('.tr-actions');
+  if(body)body.textContent='Detecting language…';
   if(label)label.textContent='';
   div.dataset.translating='1';
   try{
-    const res=await translateText(text,tl);
-    const targetName=LANG_NAMES[tl]||tl;
-    if(label)label.textContent=(res.source&&res.source!==tl)?((LANG_NAMES[res.source]||res.source)+' → '+targetName):targetName;
+    let res;
+    let target=tl;
+    if(!target||target==='auto'){
+      // Translating to English also tells us the detected source language.
+      res=await translateText(text,'en');
+      const source=String(res.source||'').toLowerCase();
+      // Foreign message -> English. English message -> Kiswahili.
+      target=(source==='en')?'sw':'en';
+      if(target==='sw')res=await translateText(text,'sw');
+    }else{
+      res=await translateText(text,target);
+    }
+    const source=String(res.source||'').toLowerCase();
+    block.dataset.target=target;
+    const sourceName=langLabel(source);
+    const targetName=langLabel(target);
+    if(label){
+      if(sourceName&&source===target)label.textContent=sourceName;
+      else if(sourceName)label.textContent='Detected: '+sourceName+' → '+targetName;
+      else label.textContent='Translate to '+targetName;
+    }
     if(body)body.textContent=res.text||'Translation unavailable';
+    if(actions){
+      actions.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.lang===target));
+    }
   }catch(e){
     if(body)body.textContent='Translation unavailable';
   }finally{
@@ -672,26 +773,25 @@ async function translateBubble(div,text,targetOverride){
     block.className='msg-translation';
     const head=document.createElement('div');head.className='tr-head';
     const icon=document.createElement('span');icon.textContent='🌐';
-    const sel=document.createElement('select');sel.className='tr-target';
-    TRANSLATE_TARGETS.forEach(([code,name])=>{const o=document.createElement('option');o.value=code;o.textContent=name;sel.appendChild(o);});
-    sel.value=getTranslateTarget();
-    sel.addEventListener('click',e=>e.stopPropagation());
-    sel.addEventListener('change',()=>{
-      try{localStorage.setItem('mffTranslateTarget',sel.value);}catch(e){}
-      runBubbleTranslation(div,text,sel.value);
-    });
     const label=document.createElement('span');label.className='tr-source';
     const close=document.createElement('span');close.className='tr-close';close.textContent='×';close.title='Close translation';
     close.addEventListener('click',e=>{e.stopPropagation();block.remove();});
-    head.appendChild(icon);head.appendChild(sel);head.appendChild(label);head.appendChild(close);
+    head.appendChild(icon);head.appendChild(label);head.appendChild(close);
+
+    // Only the two languages the lodge needs. The first translation is
+    // chosen automatically from the detected source language.
+    const actions=document.createElement('div');actions.className='tr-actions';
+    QUICK_TARGETS.forEach(([code,name])=>{
+      const b=document.createElement('button');b.type='button';b.dataset.lang=code;b.textContent=name;
+      b.addEventListener('click',e=>{e.stopPropagation();runBubbleTranslation(div,text,code);});
+      actions.appendChild(b);
+    });
+
     const body=document.createElement('div');body.className='tr-text';
-    block.appendChild(head);block.appendChild(body);
+    block.appendChild(head);block.appendChild(actions);block.appendChild(body);
     div.appendChild(block);
   }
-  const sel=block.querySelector('.tr-target');
-  const tl=targetOverride||(sel&&sel.value)||getTranslateTarget();
-  if(sel&&sel.value!==tl)sel.value=tl;
-  await runBubbleTranslation(div,text,tl);
+  await runBubbleTranslation(div,text,targetOverride||'auto');
 }
 window.translateSelected=()=>{
   const div=selId?document.querySelector(`.msg[data-mid="${selId}"]`):null;

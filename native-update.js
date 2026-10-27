@@ -4,6 +4,8 @@
   var DOWNLOAD_URL = "https://freemasonry-family.web.app/download";
   var FALLBACK_VERSION = "1.0.5";
   var BANNER_ID = "mffNativeUpdate";
+  var SNOOZE_KEY = "mff_native_update_later";
+  var SNOOZE_MS = 6 * 60 * 60 * 1000;
 
   // The native shell appends "MFFAndroid/<version>" to the WebView user agent.
   // This lets the hosted site prompt users on old APKs, including 1.0.4 which
@@ -66,11 +68,25 @@
     document.body.appendChild(wrap);
 
     document.getElementById("mffNativeUpdateGo").onclick = function () {
+      try {
+        localStorage.removeItem(SNOOZE_KEY);
+      } catch (error) {}
       window.location.href = DOWNLOAD_URL;
     };
     document.getElementById("mffNativeUpdateLater").onclick = function () {
+      try {
+        localStorage.setItem(SNOOZE_KEY, String(Date.now()));
+      } catch (error) {}
       wrap.remove();
     };
+  }
+
+  function snoozed() {
+    try {
+      return Date.now() - Number(localStorage.getItem(SNOOZE_KEY) || 0) < SNOOZE_MS;
+    } catch (error) {
+      return false;
+    }
   }
 
   function boot() {
@@ -78,7 +94,7 @@
     var notes = "";
 
     function finish() {
-      if (isOlder(current, latest)) show(latest, notes);
+      if (isOlder(current, latest) && !snoozed()) show(latest, notes);
     }
 
     try {

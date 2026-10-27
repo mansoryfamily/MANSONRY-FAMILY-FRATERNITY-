@@ -4,6 +4,9 @@ main = "src/index.js"
 compatibility_date = "2026-10-22"
 workers_dev = true
 
+[triggers]
+crons = ["* * * * *"]
+
 [vars]
 FIREBASE_PROJECT_ID = "mansonry-family-fraternity"
 FIREBASE_DB_URL = "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app"

@@ -234,30 +234,141 @@ function buildMessage(env, payload, uid, email) {
   return null;
 }
 
-function buildPushMessage(env, payload, uid) {
+function chatMemberUid(env, chatId) {
+  if (!chatId.startsWith(env.ADMIN_UID + "_")) return null;
+  const memberUid = chatId.slice(env.ADMIN_UID.length + 1);
+  return uidPattern.test(memberUid) ? memberUid : null;
+}
+
+function buildPushMessage(env, payload, senderUid) {
   if (payload.type !== "chat") return null;
   const chatId = clean(payload.chatId, 180);
   const messageId = clean(payload.messageId, 128);
   if (!messageIdPattern.test(messageId)) return null;
-  if (!chatId.startsWith(env.ADMIN_UID + "_")) return null;
 
-  const memberUid = chatId.slice(env.ADMIN_UID.length + 1);
-  if (!uidPattern.test(memberUid)) return null;
-  if (uid !== env.ADMIN_UID) return null;
+  const memberUid = chatMemberUid(env, chatId);
+  if (!memberUid) return null;
+
+  // Push works in both directions: admin -> member and member -> admin.
+  let recipientUid;
+  let title;
+  if (senderUid === env.ADMIN_UID) {
+    recipientUid = memberUid;
+    title = "MFF Administration";
+  } else if (senderUid === memberUid) {
+    recipientUid = env.ADMIN_UID;
+    title = clean(payload.senderName, 80) || "Member";
+  } else {
+    return null;
+  }
+  if (recipientUid === senderUid) return null;
 
   const text = clean(payload.text, 500) || "New message";
   return {
-    key: "push_msg_" + memberUid + "_" + messageId,
-    recipientUid: memberUid,
-    title: "MFF Administration",
+    key: "push_msg_" + recipientUid + "_" + messageId,
+    recipientUid,
+    title,
     body: text,
     data: {
       type: "chat",
       chatId,
       messageId,
+      senderId: senderUid,
       url: env.SITE_URL + "/globaladmin.html?chatId=" + encodeURIComponent(chatId)
     }
   };
+}
+
+// OneSignal subscriptions registered by the Android app / PWA.
+// Targeting these IDs directly is far more reliable than external_id alone,
+// because external_id is only present after the user signs in.
+async function oneSignalSubscriptions(env, uid) {
+  const ids = new Set();
+  const base = env.FIREBASE_DB_URL;
+  const read = async (path) => {
+    try {
+      const response = await fetch(base + path, { signal: AbortSignal.timeout(5000) });
+      if (!response.ok) return null;
+      return await response.json();
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const [players, single] = await Promise.all([
+    read("/playerIds/" + encodeURIComponent(uid) + ".json?shallow=true"),
+    read("/users/" + encodeURIComponent(uid) + "/oneSignalId.json")
+  ]);
+
+  if (players && typeof players === "object") {
+    Object.keys(players).forEach(id => {
+      if (id) ids.add(id);
+    });
+  }
+  if (typeof single === "string" && single.trim()) ids.add(single.trim());
+
+  return [...ids];
+}
+
+async function sendOneSignal(env, message) {
+  if (!oneSignalConfigured(env)) {
+    return { ok: false, error: "Push not configured" };
+  }
+
+  const subscriptions = await oneSignalSubscriptions(env, message.recipientUid);
+  const body = {
+    app_id: env.ONESIGNAL_APP_ID,
+    target_channel: "push",
+    headings: { en: message.title },
+    contents: { en: message.body },
+    data: message.data,
+    small_icon: "ic_stat_mff",
+    priority: 10,
+    idempotency_key: await deterministicUuid(message.key)
+  };
+
+  // Prefer real subscription IDs when we have them; fall back to the
+  // external_id (Firebase uid) that OneSignal.login() sets on the app.
+  if (subscriptions.length) {
+    body.include_subscription_ids = subscriptions;
+  } else {
+    body.include_aliases = { external_id: [message.recipientUid] };
+  }
+
+  const response = await fetch("https://api.onesignal.com/notifications", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      Authorization: "Key " + env.ONESIGNAL_REST_API_KEY
+    },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(8000)
+  });
+
+  if (!response.ok) {
+    const detail = await response.text();
+    console.error("OneSignal send failed", response.status, detail.slice(0, 220));
+    return { ok: false, error: "Push delivery failed" };
+  }
+
+  const result = await response.json().catch(() => ({}));
+  return {
+    ok: true,
+    delivered: Boolean(result.id),
+    recipients: result.recipients === undefined ? null : Number(result.recipients),
+    id: result.id || null
+  };
+}
+
+async function clearQueuedEvent(env, recipientUid, eventId) {
+  try {
+    await fetch(
+      env.FIREBASE_DB_URL +
+        "/userEvents/" + encodeURIComponent(recipientUid) +
+        "/" + encodeURIComponent(eventId) + ".json",
+      { method: "DELETE", signal: AbortSignal.timeout(5000) }
+    );
+  } catch (error) {}
 }
 
 async function handlePush(request, env, origin) {
@@ -289,41 +400,99 @@ async function handlePush(request, env, origin) {
     return json(origin, { ok: false, error: "Invalid payload" }, 400);
   }
 
-  const response = await fetch("https://api.onesignal.com/notifications", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      Authorization: "Key " + env.ONESIGNAL_REST_API_KEY
-    },
-    body: JSON.stringify({
-      app_id: env.ONESIGNAL_APP_ID,
-      target_channel: "push",
-      include_aliases: { external_id: [message.recipientUid] },
-      headings: { en: message.title },
-      contents: { en: message.body },
-      data: message.data,
-      small_icon: "ic_stat_mff",
-      priority: 10,
-      idempotency_key: await deterministicUuid(message.key)
-    }),
-    signal: AbortSignal.timeout(8000)
-  });
-
-  if (!response.ok) {
-    const detail = await response.text();
-    console.error("OneSignal send failed", response.status, detail.slice(0, 220));
-    return json(origin, { ok: false, error: "Push delivery failed" }, 502);
+  const result = await sendOneSignal(env, message);
+  if (!result.ok) {
+    return json(origin, { ok: false, error: result.error }, 502);
   }
 
-  const result = await response.json().catch(() => ({}));
+  await clearQueuedEvent(env, message.recipientUid, clean(payload.messageId, 128));
   return json(origin, {
     ok: true,
-    delivered: Boolean(result.id),
+    delivered: Boolean(result.delivered),
+    recipients: result.recipients,
     id: result.id || null
   });
 }
 
+// Fallback for projects without Cloud Functions (Spark plan):
+// drain the userEvents queue every minute and push it through OneSignal.
+async function pushQueuedEvents(env) {
+  if (!oneSignalConfigured(env)) {
+    return { ok: false, error: "Push not configured" };
+  }
+
+  let queue;
+  try {
+    const response = await fetch(env.FIREBASE_DB_URL + "/userEvents.json", {
+      signal: AbortSignal.timeout(10000)
+    });
+    if (!response.ok) return { ok: false, error: "Queue read failed" };
+    queue = await response.json();
+  } catch (error) {
+    return { ok: false, error: "Queue read failed" };
+  }
+
+  if (!queue || typeof queue !== "object") {
+    return { ok: true, scanned: 0, sent: 0 };
+  }
+
+  const now = Date.now();
+  const jobs = [];
+  for (const [recipientUid, events] of Object.entries(queue)) {
+    if (!uidPattern.test(recipientUid) || !events || typeof events !== "object") continue;
+    for (const [eventId, event] of Object.entries(events)) {
+      if (!event || event.type !== "chat" || event.pushedAt) continue;
+      if (!messageIdPattern.test(eventId)) continue;
+      // Give an open app a moment to render it in-app first.
+      if (!event.time || now - Number(event.time) < 2000) continue;
+      jobs.push({ recipientUid, eventId, event });
+    }
+  }
+
+  jobs.sort((a, b) => Number(a.event.time || 0) - Number(b.event.time || 0));
+
+  let sent = 0;
+  let expired = 0;
+  for (const job of jobs.slice(0, 50)) {
+    const age = now - Number(job.event.time || 0);
+    if (age > 24 * 60 * 60 * 1000) {
+      await clearQueuedEvent(env, job.recipientUid, job.eventId);
+      expired += 1;
+      continue;
+    }
+
+    const chatId = clean(job.event.chatId, 180);
+    const message = {
+      key: "push_msg_" + job.recipientUid + "_" + job.eventId,
+      recipientUid: job.recipientUid,
+      title: clean(job.event.title, 80) || "MFF Lodge",
+      body: clean(job.event.body, 500) || "New message",
+      data: {
+        type: "chat",
+        chatId,
+        messageId: job.eventId,
+        senderId: clean(job.event.senderId, 128),
+        url: env.SITE_URL + "/globaladmin.html?chatId=" + encodeURIComponent(chatId)
+      }
+    };
+
+    const result = await sendOneSignal(env, message);
+    if (!result.ok) continue;
+    sent += 1;
+    // Keep the event when OneSignal reached zero devices (for example the
+    // member has not installed the updated app yet) so it retries next minute.
+    if (result.recipients === 0) continue;
+    await clearQueuedEvent(env, job.recipientUid, job.eventId);
+  }
+
+  return { ok: true, scanned: jobs.length, sent, expired };
+}
+
 export default {
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(pushQueuedEvents(env));
+  },
+
   async fetch(request, env) {
     const url = new URL(request.url);
     const origin = request.headers.get("Origin") || "";

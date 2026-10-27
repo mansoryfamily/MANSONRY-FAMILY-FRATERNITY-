@@ -1,5 +1,5 @@
-// Masonry Family Lodge - Service Worker v7 - Android Reply Support
-const CACHE_NAME = 'mff-v8';
+// Masonry Family Lodge - Service Worker v9 - safe offline fallback
+const CACHE_NAME = 'mff-v9';
 
 const ASSETS = [
   "./",
@@ -10,10 +10,27 @@ const ASSETS = [
   "./images.jpeg"
 ];
 
+const OFFLINE_HTML = `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Masonry Family - Offline</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#07111f;color:#fff;text-align:center;padding:24px}
+.box{max-width:360px}
+h1{color:#d4af37;font-size:22px;margin-bottom:12px}
+p{color:#9fb0c5;line-height:1.6;font-size:14px;margin-bottom:22px}
+button{background:#d4af37;color:#111;border:0;border-radius:30px;padding:13px 30px;font-weight:700;font-size:15px}
+</style></head><body><div class="box">
+<h1>You are offline</h1>
+<p>This page could not be reached. Check your connection and try again.</p>
+<button onclick="location.reload()">Retry</button>
+</div></body></html>`;
+
 self.addEventListener('install', event => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then(c => c.addAll(ASSETS).catch(()=>{}))
+    caches.open(CACHE_NAME).then(c => c.addAll(ASSETS).catch(() => {}))
   );
 });
 
@@ -31,21 +48,39 @@ self.addEventListener('activate', event => {
   );
 });
 
-// *** MISSING PART ADDED - REQUIRED FOR INSTALL ***
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-  event.respondWith(
-    fetch(event.request)
-      .then(r => {
-        if (r && r.ok) {
-          const clone = r.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        }
-        return r;
-      })
-      .catch(() => caches.match(event.request).then(m => m || caches.match("./index.html")))
-  );
+  const request = event.request;
+  if (request.method !== 'GET') return;
+
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+
+  event.respondWith((async () => {
+    try {
+      const response = await fetch(request);
+      if (response && response.ok) {
+        const cache = await caches.open(CACHE_NAME);
+        // Cache the exact request. Never serve index.html for a different
+        // page: that made the app look "stuck on the main page" whenever a
+        // navigation failed on a weak connection.
+        cache.put(request, response.clone()).catch(() => {});
+      }
+      return response;
+    } catch (error) {
+      const cached = await caches.match(request);
+      if (cached) return cached;
+
+      if (request.mode === 'navigate') {
+        return new Response(OFFLINE_HTML, {
+          status: 200,
+          headers: { 'Content-Type': 'text/html; charset=utf-8' }
+        });
+      }
+      return Response.error();
+    }
+  })());
 });
+
 
 // PUSH NOTIFICATION WITH REPLY + VOICE
 self.addEventListener('push', event => {

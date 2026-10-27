@@ -206,7 +206,7 @@ const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const database=getDatabase(app);
 await setPersistence(auth, browserLocalPersistence).catch(()=>{});
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js?v=9').catch(()=>{}); }
 
 function showToast(msg, type="success"){
   const cont=document.getElementById('toastContainer');
@@ -322,5 +322,6 @@ onValue(announcementsRef,(snap)=>{
 });
 </script>
 <script src="./apk-update.js"></script>
+<script src="./native-update.js"></script>
 </body>
 </html>

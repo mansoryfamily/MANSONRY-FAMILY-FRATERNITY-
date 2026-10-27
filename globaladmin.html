@@ -196,7 +196,7 @@ onAuthStateChanged(auth,async(u)=>{
   }
 });
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').then(()=>console.log("SW registered"));}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=9').then(()=>console.log("SW registered"));}
 if('Notification' in window&&Notification.permission==="default"){Notification.requestPermission();}
 
 function loadChats(){
@@ -421,4 +421,5 @@ window.sendMsg=async()=>{
 window.closeChat=()=>{if(chatUnsubscribe){chatUnsubscribe();chatUnsubscribe=null;}document.getElementById('chatPage').style.display='none';currentChatId=null;}
 </script>
 <script src="./apk-update.js"></script>
+<script src="./native-update.js"></script>
 </body></html>

@@ -126,14 +126,14 @@
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=9').catch(()=>{});
   });
 }
 
 // ANDROID APK INSTALL PROMPT
 (function() {
   const APK_URL = 'https://freemasonry-family.web.app/download';
-  const DISMISS_KEY = 'mff_apk_prompt_dismissed_1.0.4';
+  const DISMISS_KEY = 'mff_apk_prompt_dismissed_1.0.5';
   const popup = document.getElementById('installPopup');
   const btnInstall = document.getElementById('btnInstall');
   const btnClose = document.getElementById('btnClose');
@@ -174,5 +174,6 @@ if ('serviceWorker' in navigator) {
 })();
 </script>
 
+<script src="./native-update.js"></script>
 </body>
 </html>

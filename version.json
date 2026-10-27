@@ -1,0 +1,6 @@
+{
+  "versionCode": 2007,
+  "versionName": "1.0.5",
+  "url": "https://freemasonry-family.web.app/download",
+  "notes": "Fixes notifications when the app is closed and the page that got stuck on the main screen."
+}

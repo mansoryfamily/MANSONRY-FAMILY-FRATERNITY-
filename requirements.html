@@ -137,5 +137,6 @@ const logoutBtn=document.getElementById("logoutBtn");
 if(logoutBtn){logoutBtn.addEventListener("click",async function(){try{logoutBtn.disabled=true;logoutBtn.textContent="Logging out...";localStorage.removeItem(window.__MF_CURRENCY_CACHE__.LAST_UID_KEY);await signOut(auth);window.location.href="login.html";}catch(e){logoutBtn.disabled=false;logoutBtn.textContent="Logout";}});}
 </script>
 <script src="./apk-update.js"></script>
+<script src="./native-update.js"></script>
 </body>
 </html>

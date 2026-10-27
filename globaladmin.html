@@ -29,31 +29,6 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 .menu button.danger{color:#ff5a5a}
 #toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:#121D33;border:1px solid var(--gold);color:#fff;padding:12px 20px;border-radius:25px;display:flex;align-items:center;gap:10px;z-index:9999;opacity:0;transition:all.35s ease}
 #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-#micHelp{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);z-index:100001;display:none;align-items:center;justify-content:center;padding:22px}
-#micHelp.show{display:flex}
-#micHelp .mic-card{max-width:390px;width:100%;background:linear-gradient(145deg,#142238,#0b1728);border:1.5px solid var(--gold);border-radius:20px;padding:24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.65)}
-#micHelp .mic-icon{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;background:rgba(212,177,106,.15);border:1.5px solid var(--gold);display:grid;place-items:center;font-size:26px;color:var(--gold)}
-#micHelp h3{color:var(--gold);font-size:18px;margin-bottom:8px}
-#micHelp p{color:#c9d6e6;font-size:13px;line-height:1.6;margin-bottom:8px}
-#micHelp .mic-note{color:#8fa3ba;font-size:12px;background:rgba(255,255,255,.04);border:1px solid rgba(212,177,106,.2);border-radius:10px;padding:10px;margin:12px 0}
-#micHelp .mic-actions{display:flex;flex-direction:column;gap:8px;margin-top:16px}
-#micHelp button{border:none;border-radius:24px;padding:12px 16px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
-#micHelp .mic-primary{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#111}
-#micHelp .mic-secondary{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(212,177,106,.3)}
-#recOverlay{position:fixed;left:0;right:0;bottom:0;padding:0 12px calc(14px + env(safe-area-inset-bottom));z-index:100000;display:none;justify-content:center;pointer-events:none}
-#recOverlay.show{display:flex}
-#recSheet{pointer-events:auto;width:100%;max-width:430px;background:linear-gradient(145deg,#142238,#0b1728);border:1.5px solid var(--gold);border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 18px 50px rgba(0,0,0,.7);transition:transform .15s ease,border-color .15s ease,background .15s ease;touch-action:none;user-select:none}
-#recSheet.armed{border-color:#00e676;background:linear-gradient(145deg,#0e3324,#0b1728)}
-#recSheet .rec-dot{width:10px;height:10px;border-radius:50%;background:#ff5252;flex:0 0 auto;animation:recPulse 1s infinite}
-#recSheet.armed .rec-dot{background:#00e676;animation:none}
-#recSheet .rec-copy{display:flex;flex-direction:column;flex:1;min-width:0;line-height:1.2}
-#recSheet #recTime{font-weight:800;font-size:15px;color:#fff;letter-spacing:.5px}
-#recSheet #recHint{font-size:11px;color:#9fb2c8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#recSheet.armed #recHint{color:#00e676;font-weight:700}
-#recSheet button{border:none;border-radius:20px;padding:9px 13px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
-#recSheet #recCancelBtn{background:rgba(255,255,255,.09);color:#fff;border:1px solid rgba(212,177,106,.3)}
-#recSheet #recSendBtn{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#111}
-@keyframes recPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
 .media-box{border-radius:12px;overflow:hidden;margin-bottom:6px;position:relative;background:#000}
 .media-box img,.media-box video{width:100%;max-width:260px;max-height:320px;border-radius:12px;display:block;object-fit:cover}
 .media-down{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.85);border:1px solid var(--gold);color:var(--gold);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:5}
@@ -69,8 +44,6 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 .my-msg .msg-translation{border-top-color:rgba(0,0,0,.3)}
 .my-msg .msg-translation select{background:rgba(255,255,255,.4);color:#111}
 .msg audio{max-width:250px;width:100%;border-radius:10px;display:block;margin-bottom:4px}
-#recBtn.recording{background:#ff4d4d!important;color:#fff!important;border-color:#ff4d4d!important;animation:pulseRec 1s infinite}
-@keyframes pulseRec{0%,100%{box-shadow:0 0 0 0 rgba(255,77,77,.55)}50%{box-shadow:0 0 0 8px rgba(255,77,77,0)}}
 </style>
 </head><body>
 <div class="top">
@@ -83,32 +56,12 @@ body{background:var(--bg);color:#fff;height:100vh;display:flex;flex-direction:co
 <div style="background:var(--card);padding:10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)"><i class="fa fa-arrow-left" style="color:var(--gold);font-size:18px;cursor:pointer" onclick="closeChat()"></i><img src="masonic-icon.png" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--gold)"><div style="flex:1"><h4 id="chatName" style="color:var(--gold);font-size:13px"></h4><small style="color:#aaa" data-i18n="swipe_hint">Swipe right to reply</small></div></div>
 <div id="messages"></div>
 <div class="reply-bar" id="replyBar"><div><small id="replyToName" style="color:var(--gold);font-weight:800"></small><div id="replyToText" style="color:#aaa;font-size:11px"></div></div><i class="fa fa-times" style="color:#fff;cursor:pointer" onclick="cancelReply()"></i></div>
-<div class="input-area"><input type="file" id="mediaInput" accept="image/*,video/*" style="display:none"><button class="icon-btn" style="background:var(--card);border:1px solid var(--border);color:var(--gold);min-width:42px" onclick="document.getElementById('mediaInput').click()"><i class="fa fa-paperclip"></i></button><input id="msgInput" data-i18n-placeholder="type_message" placeholder="Type message..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="icon-btn" id="recBtn" title="Voice note" style="background:var(--card);border:1px solid var(--border);color:var(--gold);min-width:42px" onclick="toggleRecording()"><i class="fa fa-microphone"></i></button><button class="icon-btn" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button></div>
-<div id="recOverlay">
-  <div id="recSheet">
-    <span class="rec-dot"></span>
-    <div class="rec-copy"><span id="recTime">0:00</span><small id="recHint">Swipe up to send</small></div>
-    <button id="recCancelBtn" type="button">Cancel</button>
-    <button id="recSendBtn" type="button">Send</button>
-  </div>
-</div>
+<div class="input-area"><input type="file" id="mediaInput" accept="image/*,video/*" style="display:none"><button class="icon-btn" style="background:var(--card);border:1px solid var(--border);color:var(--gold);min-width:42px" onclick="document.getElementById('mediaInput').click()"><i class="fa fa-paperclip"></i></button><input id="msgInput" data-i18n-placeholder="type_message" placeholder="Type message..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="icon-btn" onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button></div>
 </div>
 <div id="msgMenu" class="menu"><button onclick="replyMsg()"><i class="fa fa-reply"></i> <span data-i18n="reply">Reply</span></button><button onclick="translateSelected()"><i class="fa fa-language"></i> <span data-i18n="translate">Translate</span></button><button onclick="copyMsg()"><i class="fa fa-copy"></i> <span data-i18n="copy">Copy</span></button><button id="editBtn" onclick="editMsg()"><i class="fa fa-pen"></i> <span data-i18n="edit">Edit</span></button><button onclick="downloadMedia()" id="downBtn" style="display:none"><i class="fa fa-download"></i> Download</button><button onclick="deleteForMe()" class="danger"><i class="fa fa-eye-slash"></i> <span data-i18n="delete_me">Delete for me</span></button><button onclick="deleteForEveryone()" class="danger"><i class="fa fa-trash"></i> <span data-i18n="delete_all">Delete for everyone</span></button></div>
 <div id="chatMenu" class="menu"><button onclick="deleteChatForMe()" class="danger"><i class="fa fa-trash"></i> <span data-i18n="delete">Delete</span></button><button onclick="cancelChatDelete()"><i class="fa fa-times"></i> <span data-i18n="cancel">Cancel</span></button></div>
 <div id="toast"><i class="fa fa-check-circle" style="color:#00ff88"></i><span id="toastText">Deleted successfully</span></div>
-<div id="micHelp">
-  <div class="mic-card">
-    <div class="mic-icon"><i class="fa fa-microphone"></i></div>
-    <h3>Microphone access needed</h3>
-    <p id="micHelpText">To send a voice note, allow microphone access when your phone asks. Tap <b>Allow microphone</b> below.</p>
-    <p id="micHelpNote" class="mic-note">If you blocked it earlier, open Settings and allow Microphone for this app, then try again.</p>
-    <div class="mic-actions">
-      <button id="micAllowBtn" class="mic-primary"><i class="fa fa-microphone"></i> Allow microphone</button>
-      <button id="micSettingsBtn" class="mic-secondary" style="display:none"><i class="fa fa-gear"></i> Open settings</button>
-      <button id="micCancelBtn" class="mic-secondary">Cancel</button>
-    </div>
-  </div>
-</div><script>const TRANSLATIONS={
+<script>const TRANSLATIONS={
 en:{global_admin:"GLOBAL ADMIN",loading_chats:"Loading chats...",swipe_hint:"Swipe right to reply",type_message:"Type message...",reply:"Reply",translate:"Translate",copy:"Copy",edit:"Edit",delete_me:"Delete for me",delete_all:"Delete for everyone",delete:"Delete",cancel:"Cancel",admin_channel:"ADMINISTRATION CHANNEL",tap_admin:"Tap to message Administration",no_members:"No members yet",no_messages:"No messages yet"},
 sw:{global_admin:"ADMIN Mkuu",loading_chats:"Inapakia chats...",swipe_hint:"Telezesha kulia kujibu",type_message:"Andika ujumbe...",reply:"Jibu",copy:"Nakili",edit:"Hariri",delete_me:"Futa kwangu",delete_all:"Futa kwa wote",delete:"Futa",cancel:"Ghairi",admin_channel:"NJIA YA UTAWALA",tap_admin:"Gusa kuandikia Utawala",no_members:"Hakuna wanachama bado",no_messages:"Hakuna ujumbe bado"},
 lg:{global_admin:"ADMIN Omukulu",loading_chats:"Eteekateeka chats...",swipe_hint:"Sembera ku ddyo okuddamu",type_message:"Wandiika obubaka...",reply:"Ddamu",copy:"Koppa",edit:"Kyusa",delete_me:"Sangula gye ndi",delete_all:"Sangula eri bonna",delete:"Sangula",cancel:"Sazaamu",admin_channel:"OMUKUTU GWA ADMINISTRATION",tap_admin:"Koonya okuwandiikira Administration",no_members:"Tewali bammemba",no_messages:"Tewali bubaka"},
@@ -275,7 +228,7 @@ onAuthStateChanged(auth,async(u)=>{
   }
 });
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=10').then(()=>console.log("SW registered"));}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=11').then(()=>console.log("SW registered"));}
 if('Notification' in window&&Notification.permission==="default"){Notification.requestPermission();}
 
 function loadChats(){
@@ -649,300 +602,6 @@ window.translateSelected=()=>{
   if(div&&selText)translateBubble(div,selText);
   hideMenus();
 };
-
-// ---------- VOICE NOTES ----------
-let mediaRecorder=null,recordStart=0,recordTimer=null,isRecording=false,activeStream=null,startingRecording=false;
-function hideMicHelp(){const m=document.getElementById('micHelp');if(m)m.classList.remove('show');}
-function showMicHelp(kind){
-  const modal=document.getElementById('micHelp');if(!modal)return;
-  const text=document.getElementById('micHelpText');
-  const note=document.getElementById('micHelpNote');
-  const settings=document.getElementById('micSettingsBtn');
-  const allow=document.getElementById('micAllowBtn');
-  const native=!!(window.MffNative&&typeof window.MffNative.openMicSettings==='function');
-  if(kind==='blocked'){
-    if(text)text.innerHTML='Microphone access is blocked. To record a voice note, enable Microphone for this app, then try again.';
-    if(note){
-      note.style.display='block';
-      note.innerHTML=native
-        ? 'Tap <b>Open settings</b>, then allow <b>Microphone</b> under Permissions. Come back and tap <b>Try again</b>.'
-        : 'Tap the lock or microphone icon in your browser address bar, set <b>Microphone</b> to <b>Allow</b>, then tap <b>Try again</b>.';
-    }
-    if(settings)settings.style.display=native?'flex':'none';
-    if(allow)allow.innerHTML='<i class="fa fa-microphone"></i> Try again';
-  }else if(kind==='busy'){
-    if(text)text.innerHTML='The microphone is still busy. Wait a second, close any app using the mic, then tap <b>Try again</b>.';
-    if(note){note.style.display='block';note.innerHTML='Your phone may still be releasing the microphone after the permission prompt.';}
-    if(settings)settings.style.display='none';
-    if(allow)allow.innerHTML='<i class="fa fa-microphone"></i> Try again';
-  }else if(kind==='missing'){
-    if(text)text.innerHTML='No microphone was found on this device. Connect a microphone and try again.';
-    if(note)note.style.display='none';
-    if(settings)settings.style.display='none';
-    if(allow)allow.innerHTML='<i class="fa fa-microphone"></i> Try again';
-  }else{
-    if(text)text.innerHTML='To send a voice note, allow microphone access when your phone asks. Tap <b>Allow microphone</b> below.';
-    if(note)note.style.display='none';
-    if(settings)settings.style.display=native?'flex':'none';
-    if(allow)allow.innerHTML='<i class="fa fa-microphone"></i> Allow microphone';
-  }
-  modal.classList.add('show');
-}
-async function micPermissionState(){
-  try{
-    if(navigator.permissions&&navigator.permissions.query){
-      const status=await navigator.permissions.query({name:'microphone'});
-      return status.state;
-    }
-  }catch(e){}
-  return 'prompt';
-}
-// Ask Android for RECORD_AUDIO before getUserMedia. The native layer replies
-// through window.mffMicPermissionResult so the WebView request never gets
-// cancelled while the system permission dialog is on screen.
-function nativeMicPermission(){
-  return new Promise(resolve=>{
-    if(!window.MffNative||typeof window.MffNative.requestMicPermission!=='function'){resolve('unsupported');return;}
-    let settled=false;
-    const done=state=>{
-      if(settled)return;
-      settled=true;
-      try{delete window.mffMicPermissionResult;}catch(e){window.mffMicPermissionResult=null;}
-      resolve(state);
-    };
-    window.mffMicPermissionResult=ok=>done(ok?'granted':'denied');
-    try{window.MffNative.requestMicPermission();}catch(e){done('unsupported');return;}
-    setTimeout(()=>done('timeout'),15000);
-  });
-}
-function releaseStream(stream){
-  try{ if(stream&&stream.getTracks)stream.getTracks().forEach(t=>{try{t.stop();}catch(e){}}); }catch(e){}
-  if(!stream||stream===activeStream)activeStream=null;
-}
-function stopActiveStream(){const s=activeStream;activeStream=null;releaseStream(s);}
-function showRecOverlay(){
-  const o=document.getElementById('recOverlay');
-  if(o)o.classList.add('show');
-  updateRecTimer(0);
-}
-function hideRecOverlay(){
-  const o=document.getElementById('recOverlay');
-  if(o)o.classList.remove('show');
-  const sheet=document.getElementById('recSheet');
-  if(sheet){sheet.style.transform='';sheet.classList.remove('armed');}
-  const hint=document.getElementById('recHint');
-  if(hint)hint.textContent='Swipe up to send';
-}
-function updateRecTimer(seconds){
-  const t=document.getElementById('recTime');
-  if(t)t.textContent=`${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;
-}
-function createRecorder(stream){
-  const types=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];
-  for(const t of types){
-    try{
-      if(!MediaRecorder.isTypeSupported||MediaRecorder.isTypeSupported(t))return new MediaRecorder(stream,{mimeType:t});
-    }catch(e){}
-  }
-  return new MediaRecorder(stream);
-}
-function wireRecorder(rec,stream){
-  const chunks=[];
-  rec._mffChunks=chunks;
-  rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
-  rec.onerror=()=>{
-    if(isRecording)stopRecording(false);
-    showToast('Recording stopped - please try again');
-  };
-  rec.onstop=()=>releaseStream(stream);
-  return rec;
-}
-async function openMicStream(){
-  stopActiveStream();
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    const e=new Error('Voice notes are not supported here');e.name='NotSupportedError';throw e;
-  }
-  // Try the best audio constraints first, then fall back to plain audio. Some
-  // Android WebViews reject echoCancellation/channelCount even though the mic
-  // itself is perfectly fine.
-  const attempts=[
-    {audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1}},
-    {audio:{echoCancellation:true,noiseSuppression:true}},
-    {audio:true}
-  ];
-  let lastErr=null;
-  for(let a=0;a<attempts.length;a++){
-    for(let attempt=0;attempt<2;attempt++){
-      try{
-        const stream=await navigator.mediaDevices.getUserMedia(attempts[a]);
-        const track=stream.getAudioTracks&&stream.getAudioTracks()[0];
-        if(track&&track.readyState==='live'){activeStream=stream;return stream;}
-        releaseStream(stream);
-        const e=new Error('Microphone did not start');e.name='NotReadableError';throw e;
-      }catch(e){
-        lastErr=e;
-        const name=(e&&e.name)||'';
-        if(name==='NotAllowedError'||name==='PermissionDeniedError'||name==='SecurityError'||name==='NotFoundError'||name==='DevicesNotFoundError'||name==='NotSupportedError')throw e;
-        if(name==='OverconstrainedError'&&a<attempts.length-1)break;
-        // Give Android a moment to release the mic after the permission dialog.
-        await new Promise(r=>setTimeout(r,300+attempt*400));
-      }
-    }
-  }
-  throw lastErr||new Error('Microphone unavailable');
-}
-async function startVoiceRecording(){
-  if(startingRecording||isRecording)return;
-  startingRecording=true;
-  try{
-    const stream=await openMicStream();
-    let rec=wireRecorder(createRecorder(stream),stream);
-    try{
-      rec.start(250);
-    }catch(e){
-      // The chosen MIME type can be advertised but still fail on some phones.
-      // Rebuild the recorder with the browser default and try once more.
-      try{rec.stop();}catch(_){}
-      releaseStream(stream);
-      const stream2=await openMicStream();
-      rec=wireRecorder(createRecorder(stream2),stream2);
-      try{rec.start(250);}catch(e2){releaseStream(stream2);throw e2;}
-    }
-    mediaRecorder=rec;
-    recordStart=Date.now();isRecording=true;
-    const btn=document.getElementById('recBtn');
-    if(btn){btn.classList.add('recording');btn.innerHTML='<i class="fa fa-stop"></i>';btn.title='Tap to stop and send';}
-    document.getElementById('msgInput').disabled=true;
-    recordTimer=setInterval(()=>{
-      const s=Math.floor((Date.now()-recordStart)/1000);
-      updateRecTimer(s);
-      const btn2=document.getElementById('recBtn');
-      if(btn2)btn2.title=`Recording ${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')} - tap to send`;
-    },500);
-    showRecOverlay();
-    showToast('🎤 Recording... swipe up or release to send');
-  }catch(e){
-    isRecording=false;mediaRecorder=null;stopActiveStream();
-    const name=(e&&e.name)||'';
-    if(name==='NotAllowedError'||name==='PermissionDeniedError'||name==='SecurityError'||/permission|denied/i.test(e.message||''))showMicHelp('blocked');
-    else if(name==='NotFoundError'||name==='DevicesNotFoundError'||name==='NotSupportedError')showMicHelp('missing');
-    else if(name==='NotReadableError'||name==='TrackStartError')showMicHelp('busy');
-    else{showToast('Could not start recording');showMicHelp('busy');}
-  }finally{
-    startingRecording=false;
-  }
-}
-window.toggleRecording=async()=>{
-  if(isRecording){stopRecording(true);return;}
-  if(startingRecording)return;
-  if(!currentChatId){showToast('Open a chat first');return;}
-  if(window.MffNative&&typeof window.MffNative.requestMicPermission==='function'){
-    const state=await nativeMicPermission();
-    if(state==='denied'){showMicHelp('blocked');return;}
-  }else if(!window.MffNative){
-    const state=await micPermissionState();
-    if(state==='denied'){showMicHelp('blocked');return;}
-  }
-  await startVoiceRecording();
-};
-document.getElementById('micCancelBtn')?.addEventListener('click',hideMicHelp);
-document.getElementById('micAllowBtn')?.addEventListener('click',()=>{hideMicHelp();setTimeout(()=>window.toggleRecording(),160);});
-document.getElementById('micSettingsBtn')?.addEventListener('click',()=>{
-  try{
-    if(window.MffNative&&typeof window.MffNative.openMicSettings==='function')window.MffNative.openMicSettings();
-    else showToast('Open Settings > Apps > MFF > Permissions > Microphone');
-  }catch(e){showToast('Open Settings > Apps > MFF > Permissions > Microphone');}
-});
-// Swipe-up-to-send recording sheet. The sheet follows the finger, turns green
-// when armed, and releasing sends immediately. Cancel or Send also work.
-(function(){
-  const sheet=document.getElementById('recSheet');
-  if(!sheet)return;
-  let startY=0,dragging=false,armed=false;
-  const reset=()=>{
-    sheet.style.transform='';
-    sheet.classList.remove('armed');
-    const hint=document.getElementById('recHint');
-    if(hint)hint.textContent='Swipe up to send';
-  };
-  sheet.addEventListener('pointerdown',e=>{
-    if(!isRecording||(e.target.closest&&e.target.closest('button')))return;
-    dragging=true;armed=false;startY=e.clientY;
-    try{sheet.setPointerCapture(e.pointerId);}catch(_){}
-    e.preventDefault();
-  });
-  sheet.addEventListener('pointermove',e=>{
-    if(!dragging)return;
-    const dy=Math.max(0,startY-e.clientY);
-    sheet.style.transform=`translateY(${-Math.min(dy,90)}px)`;
-    armed=dy>55;
-    sheet.classList.toggle('armed',armed);
-    const hint=document.getElementById('recHint');
-    if(hint)hint.textContent=armed?'Release to send':'Swipe up to send';
-  });
-  const finish=()=>{
-    if(!dragging)return;
-    dragging=false;
-    const send=armed&&isRecording;
-    reset();
-    if(send)stopRecording(true);
-  };
-  sheet.addEventListener('pointerup',finish);
-  sheet.addEventListener('pointercancel',finish);
-})();
-document.getElementById('recSendBtn')?.addEventListener('click',e=>{e.stopPropagation();if(isRecording)stopRecording(true);});
-document.getElementById('recCancelBtn')?.addEventListener('click',e=>{e.stopPropagation();if(isRecording)stopRecording(false);});
-function stopRecording(send){
-  if(!isRecording||!mediaRecorder)return;
-  isRecording=false;
-  clearInterval(recordTimer);recordTimer=null;
-  hideRecOverlay();
-  const btn=document.getElementById('recBtn');
-  if(btn){btn.classList.remove('recording');btn.innerHTML='<i class="fa fa-microphone"></i>';btn.title='Voice note';}
-  document.getElementById('msgInput').disabled=false;
-  const duration=Math.max(1,Math.round((Date.now()-recordStart)/1000));
-  const rec=mediaRecorder;mediaRecorder=null;
-  const chunks=rec._mffChunks||[];
-  const stream=rec.stream;
-  let finished=false;
-  const finish=async()=>{
-    if(finished)return;
-    finished=true;
-    releaseStream(stream);
-    if(!send){showToast('Recording cancelled');return;}
-    const blob=new Blob(chunks,{type:rec.mimeType||'audio/webm'});
-    if(blob.size<1200){showToast('Recording too short');return;}
-    if(blob.size>12*1024*1024){showToast('Voice note max 12MB');return;}
-    await sendVoiceNote(blob,duration);
-  };
-  rec.onstop=finish;
-  try{ if(rec.state==='recording'&&rec.requestData)rec.requestData(); }catch(e){}
-  try{
-    if(rec.state!=='inactive')rec.stop();else finish();
-  }catch(e){finish();}
-}
-async function sendVoiceNote(blob,duration){
-  if(!currentChatId||isSending)return;
-  const chatId=currentChatId;
-  isSending=true;
-  const box=document.getElementById('messages');
-  const tempId='temp_audio_'+Date.now();
-  const localUrl=URL.createObjectURL(blob);
-  const wrap=document.createElement('div');wrap.id=tempId;wrap.className='msg-wrap';wrap.style.justifyContent='flex-end';
-  wrap.innerHTML=`<div class="msg my-msg"><div class="media-box" style="background:transparent"><audio src="${localUrl}" controls style="max-width:250px;width:100%"></audio></div><span style="font-size:8px;opacity:.6;float:right">Uploading...</span><span class="tick tick-sent">✓</span></div>`;
-  box.appendChild(wrap);box.scrollTop=box.scrollHeight;
-  try{
-    const finalUrl=await uploadMediaBlob(blob);
-    const payload={senderId:myId,senderEmail:myEmail,text:'',mediaUrl:finalUrl,mediaType:'audio',duration,time:Date.now(),status:'sent'};
-    if(replyData)payload.replyTo=replyData;
-    const pending={id:newMessageId(),replyKey:JSON.stringify(replyData||null),payload,preview:'🎤 Voice note'};
-    writePending(chatId,'media',pending);
-    await commitMessage(chatId,'media',pending);
-    document.getElementById(tempId)?.remove();
-    cancelReply();
-  }catch(err){showToast('Voice note failed: '+err.message);document.getElementById(tempId)?.remove();}
-  finally{isSending=false;}
-}
 
 window.closeChat=()=>{if(chatUnsubscribe){chatUnsubscribe();chatUnsubscribe=null;}document.getElementById('chatPage').style.display='none';currentChatId=null;}
 </script>

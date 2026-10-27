@@ -1,6 +1,6 @@
 // Masonry Push + Badge + Sound - No layout change
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js?v=10')
+  navigator.serviceWorker.register('./sw.js?v=11')
   .then(reg => {
     console.log('Masonry SW registered for badges');
     

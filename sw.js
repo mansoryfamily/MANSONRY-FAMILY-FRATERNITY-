@@ -1,5 +1,5 @@
-// Masonry Family Lodge - Service Worker v9 - safe offline fallback
-const CACHE_NAME = 'mff-v10';
+// Masonry Family Lodge - Service Worker v11 - safe offline fallback
+const CACHE_NAME = 'mff-v11';
 
 const ASSETS = [
   "./",

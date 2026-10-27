@@ -67,6 +67,14 @@
     } catch (e) { return ''; }
   }
 
+  // Signed-in users get the shortcut immediately (with the remembered badge),
+  // then Firebase confirms the session. Guests never see it.
+  var cachedUid = storedUid();
+  if (cachedUid) {
+    currentUid = cachedUid;
+    showIcon();
+  }
+
   function setBadge(count) {
     var n = Math.max(0, Number(count) || 0);
     badge.textContent = n > 99 ? '99+' : String(n);
@@ -106,6 +114,7 @@
       setBadge(0);
       return;
     }
+    showIcon();
 
     Promise.all([
       import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),

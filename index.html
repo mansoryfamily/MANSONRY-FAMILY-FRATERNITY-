@@ -134,13 +134,13 @@
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('./sw.js?v=10').catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=11').catch(()=>{});
   });
 }
 
-// ANDROID APK PROMPT
-// New visitors get "Download APK". Users who already have the app never see
-// this prompt - native-update.js shows the update dialog instead.
+// APK PROMPT
+// Every visitor who has not dismissed the prompt in the last 24 hours sees the
+// "Download APK" popup. People already inside the app never see it.
 (function() {
   const APK_URL = 'https://freemasonry-family.web.app/download';
   const DISMISS_KEY = 'mff_apk_prompt_dismissed_1.0.7';
@@ -152,10 +152,6 @@ if ('serviceWorker' in navigator) {
   const text = document.getElementById('installText');
   const getAppBtn = document.getElementById('getAppBtn');
 
-  if (!/Android/i.test(navigator.userAgent)) {
-    if (getAppBtn) getAppBtn.style.display = 'none';
-    return;
-  }
   if (!popup) return;
 
   const appVersion = (navigator.userAgent.match(/MFFAndroid\/([\d.]+)/i) || [])[1] || '';
@@ -166,19 +162,14 @@ if ('serviceWorker' in navigator) {
     return;
   }
 
-  const isStandalone = () =>
-    window.matchMedia('(display-mode: standalone)').matches ||
-    window.navigator.standalone === true;
   const recentlyDismissed = () => {
     const last = Number(localStorage.getItem(DISMISS_KEY) || 0);
-    return Date.now() - last < 7 * 24 * 60 * 60 * 1000;
+    return Date.now() - last < 24 * 60 * 60 * 1000;
   };
 
   window.addEventListener('beforeinstallprompt', event => event.preventDefault());
 
-  if (isStandalone() || localStorage.getItem('mff_installed') === 'true' || recentlyDismissed()) {
-    return;
-  }
+  if (recentlyDismissed()) return;
 
   title.textContent = 'Get the MFF app';
   text.textContent = 'Install the official Masonry Family app for chat, alerts and offline access.';
@@ -207,7 +198,6 @@ if ('serviceWorker' in navigator) {
   });
 
   window.addEventListener('appinstalled', () => {
-    localStorage.setItem('mff_installed', 'true');
     dismiss();
   });
 })();

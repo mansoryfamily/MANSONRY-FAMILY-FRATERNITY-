@@ -2595,7 +2595,7 @@ const APK_URL =
   "https://freemasonry-family.web.app/download";
 
 const DISMISS_KEY =
-  "mff_apk_prompt_dismissed_1.0.6";
+  "mff_apk_prompt_dismissed_1.0.7";
 
 const installPopup =
   document.getElementById(
@@ -2628,18 +2628,14 @@ const recentlyDismissed = () => {
 
   return (
     Date.now() - last <
-    7 * 24 * 60 * 60 * 1000
+    24 * 60 * 60 * 1000
   );
 
 };
 
 if(
   installPopup &&
-  /Android/i.test(navigator.userAgent) &&
   !/MFFAndroid\//i.test(navigator.userAgent) &&
-  localStorage.getItem(
-    "mff_installed"
-  ) !== "true" &&
   !recentlyDismissed()
 ){
 
@@ -2731,7 +2727,7 @@ if(
       try{
 
         await navigator.serviceWorker.register(
-          "./sw.js?v=10"
+          "./sw.js?v=11"
         );
 
         console.log(

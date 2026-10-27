@@ -1,31 +1,24 @@
 (function () {
-  // Site-wide Android app prompt.
-  // - New visitors: "Download APK".
-  // - Visitors already inside the native app: no prompt here. native-update.js
+  // Site-wide APK install prompt.
+  // - Every visitor sees it, on phone or desktop, until they dismiss it.
+  // - Dismissing hides it for 24 hours across the whole site.
+  // - Visitors already inside the native app never see it; native-update.js
   //   shows the update dialog only when a newer build is published.
+  // - Pages with their own popup (index.html, register.html) handle it there,
+  //   so this script steps aside to avoid showing two prompts.
   var APK_URL = "https://freemasonry-family.web.app/download";
   var VERSION = "1.0.7";
   var DISMISS_KEY = "mff_apk_prompt_dismissed_" + VERSION;
   var POPUP_ID = "mffApkUpdatePrompt";
-  var isAndroid = /Android/i.test(navigator.userAgent);
   var appVersion = (navigator.userAgent.match(/MFFAndroid\/([\d.]+)/i) || [])[1] || "";
-  var isInstalled = false;
-  var isStandalone = false;
   var dismissed = false;
 
   try {
-    isInstalled = localStorage.getItem("mff_installed") === "true";
-    dismissed = Date.now() - Number(localStorage.getItem(DISMISS_KEY) || 0) < 7 * 24 * 60 * 60 * 1000;
+    dismissed = Date.now() - Number(localStorage.getItem(DISMISS_KEY) || 0) < 24 * 60 * 60 * 1000;
   } catch (error) {}
 
-  isInstalled = isInstalled || !!window.MffNative || !!window.__MFF_NATIVE_APP__;
-  try {
-    isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
-  } catch (error) {}
-
-  // Already inside the app - never nag with a download prompt.
   if (appVersion) return;
-  if (!isAndroid || isInstalled || isStandalone || dismissed) return;
+  if (dismissed) return;
   if (document.getElementById("installPopup") || document.getElementById(POPUP_ID)) return;
 
   function dismiss() {

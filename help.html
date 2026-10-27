@@ -183,8 +183,8 @@ onAuthStateChanged(auth, (user) => {
           if(m.senderId !== uid && (m.time || 0) > seen){
             total++;
             if(!latest || m.time > latest.time){
-              latest = m;
-              if(Date.now() - m.time < 20000) isNew = true;
+              latest = {...m, id: mid};
+              if(Date.now() - m.time < 60000) isNew = true;
             }
           }
         });
@@ -195,7 +195,7 @@ onAuthStateChanged(auth, (user) => {
       showBadge("globalChatBadge", total);
       if(isNew && latest && window.LodgeNotifier){
         const fromAdmin = (latest.senderEmail || "").toLowerCase() === ADMIN_EMAIL.toLowerCase();
-        if(fromAdmin) window.LodgeNotifier.showPopup("Director", latest.text || "📷 Photo", "admin_message");
+        if(fromAdmin) window.LodgeNotifier.showPopup("Director", latest.text || (latest.mediaType==='audio'?'🎤 Voice note':latest.mediaType==='video'?'🎥 Video':'📷 Photo'), "admin_message", {id: latest.id});
       }
     } else {
       hideBadgePermanent("globalChatBadge");

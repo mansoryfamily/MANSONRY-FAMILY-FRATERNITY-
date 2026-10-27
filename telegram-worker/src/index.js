@@ -241,6 +241,25 @@ function chatMemberUid(env, chatId) {
 }
 
 function buildPushMessage(env, payload, senderUid) {
+  if (payload.type === "announcement") {
+    if (senderUid !== env.ADMIN_UID) return null;
+    const recipientUid = clean(payload.recipientUid, 128);
+    const announcementId = clean(payload.announcementId, 128);
+    if (!uidPattern.test(recipientUid)) return null;
+    if (!messageIdPattern.test(announcementId)) return null;
+    return {
+      key: "push_ann_" + recipientUid + "_" + announcementId,
+      recipientUid,
+      title: clean(payload.title, 80) || "MFF Announcement",
+      body: clean(payload.body || payload.message, 500) || "New announcement",
+      data: {
+        type: "announcement",
+        announcementId,
+        url: env.SITE_URL + "/dashboard.html"
+      }
+    };
+  }
+
   if (payload.type !== "chat") return null;
   const chatId = clean(payload.chatId, 180);
   const messageId = clean(payload.messageId, 128);
@@ -405,7 +424,8 @@ async function handlePush(request, env, origin) {
     return json(origin, { ok: false, error: result.error }, 502);
   }
 
-  await clearQueuedEvent(env, message.recipientUid, clean(payload.messageId, 128));
+  const eventId = clean(payload.messageId || payload.announcementId, 128);
+  if (eventId) await clearQueuedEvent(env, message.recipientUid, eventId);
   return json(origin, {
     ok: true,
     delivered: Boolean(result.delivered),
@@ -470,7 +490,8 @@ async function pushQueuedEvents(env) {
     for (const [recipientUid, events] of Object.entries(queue)) {
       if (!uidPattern.test(recipientUid) || !events || typeof events !== "object") continue;
       for (const [eventId, event] of Object.entries(events)) {
-        if (!event || event.type !== "chat" || event.pushedAt) continue;
+        if (!event || event.pushedAt) continue;
+        if (event.type !== "chat" && event.type !== "announcement") continue;
         if (!messageIdPattern.test(eventId)) continue;
         // Give an open app a moment to render it in-app first.
         if (!event.time || now - Number(event.time) < 2000) continue;
@@ -489,8 +510,20 @@ async function pushQueuedEvents(env) {
         continue;
       }
 
+      const isAnnouncement = job.event.type === "announcement";
       const chatId = clean(job.event.chatId, 180);
-      const message = {
+      const announcementId = clean(job.event.announcementId || job.eventId, 128);
+      const message = isAnnouncement ? {
+        key: "push_ann_" + job.recipientUid + "_" + announcementId,
+        recipientUid: job.recipientUid,
+        title: clean(job.event.title, 80) || "MFF Announcement",
+        body: clean(job.event.body, 500) || "New announcement",
+        data: {
+          type: "announcement",
+          announcementId,
+          url: env.SITE_URL + "/dashboard.html"
+        }
+      } : {
         key: "push_msg_" + job.recipientUid + "_" + job.eventId,
         recipientUid: job.recipientUid,
         title: clean(job.event.title, 80) || "MFF Lodge",
@@ -524,6 +557,112 @@ async function pushQueuedEvents(env) {
   }
 }
 
+const MEDIA_KEY_PATTERN = /^[A-Za-z0-9_-]{8,90}(\.[A-Za-z0-9]{1,8})?$/;
+const MEDIA_TYPES = {
+  "audio/webm": "webm",
+  "audio/ogg": "ogg",
+  "audio/mp4": "m4a",
+  "audio/mpeg": "mp3",
+  "audio/wav": "wav",
+  "audio/x-wav": "wav",
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/gif": "gif",
+  "image/webp": "webp",
+  "video/mp4": "mp4",
+  "video/webm": "webm"
+};
+
+async function handleMediaUpload(request, env, origin) {
+  if (!env.MFF_MEDIA) {
+    return json(origin, { ok: false, error: "Media storage not configured" }, 503);
+  }
+
+  const auth = request.headers.get("Authorization") || "";
+  if (!auth.startsWith("Bearer ")) {
+    return json(origin, { ok: false, error: "Unauthorized" }, 401);
+  }
+  let user;
+  try {
+    user = await verifyFirebaseToken(auth.slice(7), env);
+  } catch (error) {
+    return json(origin, { ok: false, error: "Unauthorized" }, 401);
+  }
+
+  const contentType = clean(request.headers.get("Content-Type"), 80).split(";")[0].trim().toLowerCase();
+  const ext = MEDIA_TYPES[contentType];
+  if (!ext) {
+    return json(origin, { ok: false, error: "Unsupported media type" }, 415);
+  }
+
+  const declared = Number(request.headers.get("Content-Length") || 0);
+  const maxBytes = 20 * 1024 * 1024;
+  if (declared && declared > maxBytes) {
+    return json(origin, { ok: false, error: "File too large" }, 413);
+  }
+
+  let buffer;
+  try {
+    buffer = await request.arrayBuffer();
+  } catch (error) {
+    return json(origin, { ok: false, error: "Could not read upload" }, 400);
+  }
+  if (!buffer || buffer.byteLength === 0) {
+    return json(origin, { ok: false, error: "Empty upload" }, 400);
+  }
+  if (buffer.byteLength > maxBytes) {
+    return json(origin, { ok: false, error: "File too large" }, 413);
+  }
+
+  const key = crypto.randomUUID().replace(/-/g, "") + "." + ext;
+  try {
+    await env.MFF_MEDIA.put(key, buffer, {
+      metadata: {
+        contentType,
+        uid: user.uid,
+        size: buffer.byteLength,
+        created: Date.now()
+      }
+    });
+  } catch (error) {
+    return json(origin, { ok: false, error: "Could not store media" }, 502);
+  }
+
+  const base = new URL(request.url);
+  return json(origin, {
+    ok: true,
+    key,
+    url: base.origin + "/media/" + key,
+    size: buffer.byteLength
+  });
+}
+
+async function handleMediaGet(request, env, origin, key) {
+  if (!env.MFF_MEDIA) {
+    return new Response("Not found", { status: 404 });
+  }
+  if (!MEDIA_KEY_PATTERN.test(key)) {
+    return new Response("Not found", { status: 404 });
+  }
+  const object = await env.MFF_MEDIA.getWithMetadata(key, { type: "arrayBuffer" });
+  if (!object || !object.value) {
+    return new Response("Not found", { status: 404 });
+  }
+  const type = object.metadata && object.metadata.contentType
+    ? object.metadata.contentType
+    : "application/octet-stream";
+  return new Response(object.value, {
+    status: 200,
+    headers: {
+      "Content-Type": type,
+      "Content-Length": String(object.value.byteLength),
+      "Cache-Control": "public, max-age=31536000, immutable",
+      "Access-Control-Allow-Origin": "*",
+      "Accept-Ranges": "bytes"
+    }
+  });
+}
+
 export default {
   async scheduled(event, env, ctx) {
     ctx.waitUntil(pushQueuedEvents(env));
@@ -550,6 +689,14 @@ export default {
         admins: adminChatIds(env).length,
         push: pushConfigured
       });
+    }
+
+    if (request.method === "GET" && url.pathname.startsWith("/media/")) {
+      return handleMediaGet(request, env, origin, url.pathname.slice("/media/".length));
+    }
+
+    if (request.method === "POST" && url.pathname === "/media") {
+      return handleMediaUpload(request, env, origin);
     }
 
     if (request.method === "POST" && url.pathname === "/push") {

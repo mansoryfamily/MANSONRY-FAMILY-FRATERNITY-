@@ -2,7 +2,7 @@
   "use strict";
 
   var DOWNLOAD_URL = "https://freemasonry-family.web.app/download";
-  var FALLBACK_VERSION = "1.0.6";
+  var FALLBACK_VERSION = "1.0.7";
   var BANNER_ID = "mffNativeUpdate";
   var SNOOZE_KEY = "mff_native_update_later";
   var SNOOZE_MS = 6 * 60 * 60 * 1000;

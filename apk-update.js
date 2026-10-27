@@ -4,7 +4,7 @@
   // - Visitors already inside the native app: no prompt here. native-update.js
   //   shows the update dialog only when a newer build is published.
   var APK_URL = "https://freemasonry-family.web.app/download";
-  var VERSION = "1.0.6";
+  var VERSION = "1.0.7";
   var DISMISS_KEY = "mff_apk_prompt_dismissed_" + VERSION;
   var POPUP_ID = "mffApkUpdatePrompt";
   var isAndroid = /Android/i.test(navigator.userAgent);

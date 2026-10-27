@@ -206,7 +206,7 @@ const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const database=getDatabase(app);
 await setPersistence(auth, browserLocalPersistence).catch(()=>{});
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js?v=9').catch(()=>{}); }
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js?v=10').catch(()=>{}); }
 
 function showToast(msg, type="success"){
   const cont=document.getElementById('toastContainer');
@@ -283,6 +283,7 @@ function renderFromCache(uid, email){
     return true;
   }catch(e){return false;}
 }
+let announcementUid = null;
 onAuthStateChanged(auth, async (user)=>{
   if(!user){
     const logged = localStorage.getItem('mff_logged_in')==="true";
@@ -292,6 +293,8 @@ onAuthStateChanged(auth, async (user)=>{
   if(memberEmail) memberEmail.textContent=user.email;
   if(detailEmail) detailEmail.textContent=user.email;
   const uid=user.uid;
+  announcementUid=uid;
+  renderAnnouncements();
   const cached=renderFromCache(uid, user.email);
   if(!cached){
     if(memberName) memberName.textContent=user.email.split('@')[0];
@@ -311,17 +314,51 @@ onAuthStateChanged(auth, async (user)=>{
   }catch(e){ if(!cached){ renderProfile({fullName:user.email.split('@')[0], email:user.email, status:"pending", lodgeNumber:"NO:9701", timestamp:Date.now(), uid:uid}, user.email); } }
 });
 const announcementsRef=ref(database,'announcements');
-onValue(announcementsRef,(snap)=>{
+let latestAnnouncementData=undefined;
+function currentAnnouncementUid(){
+  if(announcementUid) return announcementUid;
+  try{ const u=JSON.parse(localStorage.getItem('mff_user')||'{}'); return u.uid||''; }catch(e){ return ''; }
+}
+function escAnn(value){return String(value==null?'':value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function dashboardAnnouncementRecords(data){
+  if(!data) return [];
+  const records=[];
+  const legacy=!!(data.title&&data.message&&!data.id&&!data.audience);
+  if(legacy) records.push(Object.assign({},data,{id:'legacy',audience:'all'}));
+  Object.keys(data).forEach(k=>{
+    const v=data[k];
+    if(v&&typeof v==='object'&&v.title&&v.message) records.push(Object.assign({},v,{id:v.id||k}));
+  });
+  if(records.length===0&&data.title&&data.message) records.push(Object.assign({},data,{id:data.id||'legacy',audience:data.audience||'all'}));
+  return records;
+}
+function renderAnnouncements(){
   const list=document.getElementById('announcementsList'); if(!list) return;
-  const data=snap.val();
+  const data=latestAnnouncementData;
+  const uid=currentAnnouncementUid();
   if(!data){list.innerHTML=`<p style="color:#a0b0c9;font-size:13px;">No announcements yet</p>`;return;}
-  let arr=data.title?[data]:Object.values(data).filter(i=>i&&i.title&&i.message);
+  let arr=dashboardAnnouncementRecords(data);
+  arr=arr.filter(a=>{
+    if(a.deletedFor&&uid&&a.deletedFor[uid]) return false;
+    if(!a.audience||a.audience==='all') return true;
+    return !!uid&&(a.audience===uid||a.audienceUid===uid);
+  });
   if(arr.length===0){list.innerHTML=`<p style="color:#a0b0c9;font-size:13px;">No announcements yet</p>`;return;}
-  let html="";arr.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).slice(0,5).forEach(a=>{const d=a.timestamp?new Date(a.timestamp).toLocaleString():'Just now';html+=`<div class="ann-item"><h4>${a.title}</h4><p>${a.message}</p><small>By: ${a.sentByEmail||'Admin'} • ${d}</small></div>`;});
+  let html="";
+  arr.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).slice(0,8).forEach(a=>{
+    const d=a.timestamp?new Date(a.timestamp).toLocaleString():'Just now';
+    const forYou=(a.audience&&a.audience!=='all')?' • For you':'';
+    html+=`<div class="ann-item"><h4>${escAnn(a.title)}</h4><p>${escAnn(a.message)}</p><small>By: ${escAnn(a.sentByEmail||'Admin')} • ${d}${forYou}</small></div>`;
+  });
   list.innerHTML=html;
+}
+onValue(announcementsRef,(snap)=>{
+  latestAnnouncementData=snap.val();
+  renderAnnouncements();
 });
 </script>
 <script src="./apk-update.js"></script>
 <script src="./native-update.js"></script>
+<script src="./floating-chat.js"></script>
 </body>
 </html>

@@ -136,11 +136,48 @@ const deleteAllBtn = document.getElementById('deleteAllBtn');
 const sendBtn = document.getElementById('sendNotificationBtn');
 function showError(msg){errorBox.innerHTML = `<div class="error-box">❌ ${msg}</div>`;setTimeout(()=>{errorBox.innerHTML = ""}, 8000);}
 function showSuccess(msg){successBox.innerHTML = `<div class="success-box">✅ ${msg}</div>`;setTimeout(()=>{successBox.innerHTML = ""}, 4000);}
+function escHtml(value){return String(value==null?'':value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+const ANNOUNCEMENTS_PATH='announcements';
+let lastAnnouncements=null;
+function announcementKeyOf(record){return record&&(record._key||record.id)||'';}
+function isLegacyAnnouncement(data){
+  return !!data && typeof data==='object' && !!data.title && !!data.message && !data.id && !data.audience;
+}
+function announcementRecords(data){
+  if(!data) return [];
+  const records=[];
+  const legacy = !!(data.title && data.message && !data.id && !data.audience);
+  if(legacy) records.push(Object.assign({},data,{id:'legacy',_key:'legacy',audience:'all'}));
+  Object.keys(data).forEach(key=>{
+    const value=data[key];
+    if(value && typeof value==='object' && value.title && value.message){
+      records.push(Object.assign({},value,{id:value.id||key,_key:key}));
+    }
+  });
+  if(records.length===0 && data.title && data.message){
+    records.push(Object.assign({},data,{id:data.id||'legacy',_key:data.id||'legacy',audience:data.audience||'all'}));
+  }
+  return records;
+}
+// Convert the old single `announcements` object into a real per-announcement
+// record, so `deletedFor/<uid>` can work without hiding it from everyone else.
+async function migrateLegacyAnnouncement(){
+  try{
+    const snap=await get(ref(database,ANNOUNCEMENTS_PATH));
+    const data=snap.val();
+    if(!isLegacyAnnouncement(data)) return;
+    const id='legacy_'+(data.timestamp||Date.now());
+    const updates={};
+    updates[`${ANNOUNCEMENTS_PATH}/${id}`]=Object.assign({},data,{id,audience:'all'});
+    Object.keys(data).forEach(key=>{updates[`${ANNOUNCEMENTS_PATH}/${key}`]=null;});
+    await update(ref(database),updates);
+  }catch(e){}
+}
 onAuthStateChanged(auth, async (user) => {
   if(!user){window.location.href = "login.html";return;}
   const userSnap = await get(ref(database, "users/" + user.uid));
   if(!userSnap.exists() || userSnap.val().role!== "admin"){showError("Access Denied. You are not an admin.");setTimeout(()=>{window.location.href = "dashboard.html";}, 3000);return;}
-  loadUsers();loadRecipients();loadCurrentAnnouncement();loadTokenCount();
+  loadUsers();loadRecipients();await migrateLegacyAnnouncement();loadCurrentAnnouncement();loadTokenCount();
 });
 function loadTokenCount(){
   onValue(ref(database, 'tokens'), (snap)=>{
@@ -150,13 +187,28 @@ function loadTokenCount(){
   });
 }
 function loadCurrentAnnouncement(){
-  onValue(ref(database, 'announcements'), (snapshot) => {
-    const data = snapshot.val();
-    const previewDiv = document.getElementById('currentAnnouncementPreview');
-    if(!data){previewDiv.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No current announcement</p>`;return;}
-    const date = data.timestamp? new Date(data.timestamp).toLocaleString() : 'Just now';
-    previewDiv.innerHTML = `<div class="current-ann"><h4>Current: ${data.title}</h4><p>${data.message}</p><small>By: ${data.sentByEmail} • ${date}</small></div>`;
+  onValue(ref(database, ANNOUNCEMENTS_PATH), (snapshot) => {
+    lastAnnouncements = snapshot.val();
+    renderAnnouncementPreview();
+    renderMemberNotifications();
   });
+}
+function renderAnnouncementPreview(){
+  const previewDiv = document.getElementById('currentAnnouncementPreview');
+  if(!previewDiv) return;
+  const records = announcementRecords(lastAnnouncements)
+    .sort((a,b)=>(b.timestamp||0)-(a.timestamp||0))
+    .slice(0,5);
+  if(records.length===0){
+    previewDiv.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No announcements yet</p>`;
+    return;
+  }
+  previewDiv.innerHTML = records.map(a=>{
+    const date = a.timestamp? new Date(a.timestamp).toLocaleString() : 'Just now';
+    const audience = (!a.audience || a.audience==='all') ? 'All members' : ('Only '+(a.audienceName||a.audience));
+    const hiddenCount = Object.keys(a.deletedFor||{}).length;
+    return `<div class="current-ann"><h4>${escHtml(a.title)}</h4><p>${escHtml(a.message)}</p><small>${escHtml(audience)} • By ${escHtml(a.sentByEmail||'Admin')} • ${date}${hiddenCount?` • hidden for ${hiddenCount}`:''}</small></div>`;
+  }).join('');
 }
 function loadUsers(){
   onValue(ref(database, "users"), (snapshot) => {
@@ -195,51 +247,120 @@ sendBtn.addEventListener('click', async () => {
     sendBtn.disabled = true;sendBtn.textContent = "Sending...";
     try {
         const timestamp = Date.now();
-        const annData = {title: title,message: message,sentBy: admin.uid,sentByEmail: admin.email,timestamp: timestamp};
-        await set(ref(database, 'announcements'), annData);
+        const id = push(ref(database, ANNOUNCEMENTS_PATH)).key;
+        const selectedText = (recipientSelect.options[recipientSelect.selectedIndex]?.textContent || '').replace(/^📢\s*/,'').trim();
+        const annData = {
+          id: id,
+          title: title,
+          message: message,
+          sentBy: admin.uid,
+          sentByEmail: admin.email,
+          timestamp: timestamp,
+          audience: recipient === "all" ? "all" : recipient,
+          audienceUid: recipient === "all" ? null : recipient,
+          audienceName: recipient === "all" ? "All members" : (selectedText || recipient)
+        };
+        await set(ref(database, `${ANNOUNCEMENTS_PATH}/${id}`), annData);
+
+        const usersSnap = await get(ref(database, "users"));
+        const uids = [];
         if(recipient === "all"){
-            const usersSnap = await get(ref(database, "users"));
-            const updates = {};
-            usersSnap.forEach(child => {
-                const uid = child.key;
-                const key = push(ref(database, `notifications/${uid}`)).key;
-                updates[`notifications/${uid}/${key}`] = annData;
-            });
-            await update(ref(database), updates);
+            usersSnap.forEach(child => uids.push(child.key));
         } else {
-            const key = push(ref(database, `notifications/${recipient}`)).key;
-            await set(ref(database, `notifications/${recipient}/${key}`), annData);
+            uids.push(recipient);
         }
-        const broadcastRef = push(ref(database, 'broadcasts'));
-        await set(broadcastRef, { title, body: message, url: "./dashboard.html", time: timestamp, recipient });
-        showSuccess("✅ Announcement sent! Badge + sound enabled for all devices.");
+
+        // One notification + one queued push event per member. The Cloudflare
+        // cron drains userEvents even when the app is closed.
+        const updates = {};
+        uids.forEach(uid => {
+            updates[`notifications/${uid}/${id}`] = {
+              title, message, timestamp, announcementId: id,
+              sentByEmail: admin.email, audience: annData.audience
+            };
+            updates[`userEvents/${uid}/${id}`] = {
+              type: 'announcement', title, body: message,
+              announcementId: id, time: timestamp
+            };
+        });
+        if(Object.keys(updates).length) await update(ref(database), updates);
+
+        await set(push(ref(database, 'broadcasts')), {
+          title, body: message, url: "./dashboard.html",
+          time: timestamp, recipient, announcementId: id
+        });
+        showSuccess(`Announcement sent to ${uids.length} member${uids.length===1?'':'s'}. It will push even if the app is closed.`);
         document.getElementById('notificationTitle').value = "";
         document.getElementById('notificationMessage').value = "";
     } catch (error) {showError("Error sending: " + error.message);}
     finally {sendBtn.disabled = false;sendBtn.textContent = "📢 Send to All Members";}
 });
-deleteRecipientSelect.addEventListener("change", (e) => {
-  const uid = e.target.value;
+deleteRecipientSelect.addEventListener("change", () => { renderMemberNotifications(); });
+
+function visibleAnnouncementsFor(uid){
+  return announcementRecords(lastAnnouncements).filter(a=>{
+    if(a.audience && a.audience!=='all' && a.audience!==uid) return false;
+    if(a.deletedFor && a.deletedFor[uid]) return false;
+    return true;
+  }).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+}
+function renderMemberNotifications(){
+  const uid = deleteRecipientSelect.value;
   if(!uid){memberNotifList.style.display = "none";deleteAllBtn.style.display = "none";return;}
   deleteAllBtn.style.display = "block";
-  if(uid === "all"){memberNotifList.style.display = "none";deleteAllBtn.textContent = "Delete ALL Notifications for EVERYONE";return;}
-  deleteAllBtn.textContent = "Delete ALL Notifications for Selected Member";
-  memberNotifList.style.display = "block";
-  onValue(ref(database, `notifications/${uid}`), (snapshot) => {
-    const data = snapshot.val();
-    if(!data){memberNotifList.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No notifications</p>`;return;}
-    let html = "";Object.keys(data).reverse().forEach(key => {
-      const n = data[key];const date = n.timestamp? new Date(n.timestamp).toLocaleString() : '';
-      html += `<div class="notif-item"><div><h5>${n.title}</h5><p>${n.message}</p><small style="color:#8a9bb0;font-size:10px;">${date}</small></div><button class="delete-one-btn" onclick="deleteSpecificNotification('${uid}','${key}')">Delete</button></div>`;
-    });
-    memberNotifList.innerHTML = html;
-  });
-});
-window.deleteSpecificNotification = function(uid, key){
-  if(confirm("Delete this notification?")){
-    remove(ref(database, `notifications/${uid}/${key}`)).then(() => showSuccess("Deleted")).catch(err => showError(err.message));
+  if(uid === "all"){
+    memberNotifList.style.display = "none";
+    deleteAllBtn.textContent = "Delete ALL announcements for EVERYONE";
+    return;
   }
+  deleteAllBtn.textContent = "Delete ALL announcements for selected member";
+  memberNotifList.style.display = "block";
+  const records = visibleAnnouncementsFor(uid);
+  if(records.length===0){
+    memberNotifList.innerHTML = `<p style="color:#a0b0c9;font-size:13px;">No announcements for this member</p>`;
+    return;
+  }
+  memberNotifList.innerHTML = records.map(a=>{
+    const date = a.timestamp? new Date(a.timestamp).toLocaleString() : '';
+    const audience = (!a.audience || a.audience==='all') ? 'All members' : 'This member only';
+    const key = announcementKeyOf(a);
+    return `<div class="notif-item"><div><h5>${escHtml(a.title)}</h5><p>${escHtml(a.message)}</p><small style="color:#8a9bb0;font-size:10px;">${escHtml(audience)} • ${date}</small></div><div style="display:flex;flex-direction:column;gap:6px;flex:none;"><button class="delete-one-btn" onclick="deleteAnnouncementForMember('${key}','${uid}')">Delete for member</button><button class="delete-one-btn" style="background:#7a1f1f" onclick="deleteAnnouncementEverywhere('${key}')">Delete for all</button></div></div>`;
+  }).join('');
 }
+window.deleteAnnouncementForMember = async function(key, uid){
+  if(!confirm("Delete this announcement for this member? It will disappear from their board.")) return;
+  try{
+    if(key==='legacy'){
+      await migrateLegacyAnnouncement();
+      showSuccess("Legacy announcement migrated - please delete it again");
+      return;
+    }
+    const updates = {};
+    updates[`${ANNOUNCEMENTS_PATH}/${key}/deletedFor/${uid}`] = true;
+    updates[`notifications/${uid}/${key}`] = null;
+    updates[`userEvents/${uid}/${key}`] = null;
+    await update(ref(database), updates);
+    showSuccess("Deleted for this member");
+  }catch(e){showError(e.message);}
+};
+window.deleteAnnouncementEverywhere = async function(key){
+  if(!confirm("Delete this announcement for everyone? This cannot be undone.")) return;
+  try{
+    const usersSnap = await get(ref(database, "users"));
+    const updates = {};
+    if(key==='legacy' || isLegacyAnnouncement(lastAnnouncements)){
+      updates[ANNOUNCEMENTS_PATH] = null;
+    }else{
+      updates[`${ANNOUNCEMENTS_PATH}/${key}`] = null;
+    }
+    usersSnap.forEach(child => {
+      updates[`notifications/${child.key}/${key}`] = null;
+      updates[`userEvents/${child.key}/${key}`] = null;
+    });
+    await update(ref(database), updates);
+    showSuccess("Announcement deleted for everyone");
+  }catch(e){showError(e.message);}
+};
 window.deleteMember = function(uid, name){
   if(confirm(`Delete ${name}? This cannot be undone.`)){
     remove(ref(database, `users/${uid}`)).then(()=>showSuccess("Member deleted")).catch(err=>showError(err.message));
@@ -260,17 +381,31 @@ window.onclick = function(event) {
 deleteAllBtn.addEventListener("click", async()=>{
   const uid = deleteRecipientSelect.value;
   if(!uid){showError("Select member");return;}
-  if(!confirm("Are you sure? This will delete ALL notifications.")) return;
+  const question = uid==="all"
+    ? "Delete ALL announcements for EVERYONE? This cannot be undone."
+    : "Delete all announcements for this member?";
+  if(!confirm(question)) return;
   try{
+    const usersSnap = await get(ref(database, "users"));
+    const uids = [];
+    usersSnap.forEach(child => uids.push(child.key));
+    const records = announcementRecords(lastAnnouncements);
+    const updates = {};
     if(uid==="all"){
-      await remove(ref(database, "announcements"));
-      const usersSnap = await get(ref(database, "users"));
-      const updates={};
-      usersSnap.forEach(child=>{updates[`notifications/${child.key}`]=null});
-      await update(ref(database), updates);
+      updates[ANNOUNCEMENTS_PATH] = null;
+      uids.forEach(memberUid => {
+        updates[`notifications/${memberUid}`] = null;
+        records.forEach(a => { updates[`userEvents/${memberUid}/${announcementKeyOf(a)}`] = null; });
+      });
     } else {
-      await remove(ref(database, `notifications/${uid}`));
+      records.forEach(a => {
+        if(a.audience && a.audience!=='all' && a.audience!==uid) return;
+        updates[`${ANNOUNCEMENTS_PATH}/${announcementKeyOf(a)}/deletedFor/${uid}`] = true;
+        updates[`userEvents/${uid}/${announcementKeyOf(a)}`] = null;
+      });
+      updates[`notifications/${uid}`] = null;
     }
+    await update(ref(database), updates);
     showSuccess("Deleted successfully");
   }catch(e){showError(e.message);}
 });

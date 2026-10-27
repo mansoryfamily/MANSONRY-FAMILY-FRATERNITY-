@@ -1,6 +1,6 @@
 {
-  "versionCode": 2008,
-  "versionName": "1.0.6",
+  "versionCode": 2009,
+  "versionName": "1.0.7",
   "url": "https://freemasonry-family.web.app/download",
-  "notes": "Fixes the home page buttons inside the app and adds a native update check."
+  "notes": "Adds the floating chat shortcut, tap-to-translate, voice notes, spoken notifications and reliable announcement delivery."
 }

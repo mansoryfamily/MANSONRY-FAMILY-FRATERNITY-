@@ -1,5 +1,5 @@
 // Masonry Family Lodge - Service Worker v9 - safe offline fallback
-const CACHE_NAME = 'mff-v9';
+const CACHE_NAME = 'mff-v10';
 
 const ASSETS = [
   "./",
@@ -92,33 +92,42 @@ self.addEventListener('push', event => {
       body: event.data ? event.data.text() : 'New message from Lodge'
     };
   }
-  const title = data.title || 'MFF Lodge';
+  // OneSignal web push wraps our `data` object in `custom`; the plain
+  // Firebase/raw shape keeps it at the top level. Support both.
+  const extra = data.custom || data.data || {};
+  const type = extra.type || data.type || 'chat';
+  const title = data.title || data.heading || (type === 'announcement' ? 'MFF Announcement' : 'MFF Lodge');
   const options = {
-    body: data.body || 'You have a new message',
+    body: data.body || data.message || (type === 'announcement' ? 'New announcement from Lodge' : 'You have a new message'),
     icon: './icon-512.png',
     badge: './icon-512.png',
     vibrate: [200, 100, 200, 100, 200],
     sound: 'https://cdn.pixabay.com/audio/2022/03/10/audio_4c1d5a8c3d.mp3',
-    tag: 'mff-message',
+    tag: type === 'announcement' ? ('mff-ann-' + (extra.announcementId || Date.now())) : 'mff-message',
     renotify: true,
     requireInteraction: true,
     data: {
-      url: data.url || './dashboard.html',
-      sender: data.sender || 'admin',
-      messageId: data.messageId || Date.now()
+      type,
+      url: extra.url || data.url || (type === 'announcement' ? './dashboard.html' : './dashboard.html'),
+      sender: extra.sender || data.sender || 'admin',
+      chatId: extra.chatId || data.chatId || '',
+      announcementId: extra.announcementId || data.announcementId || '',
+      messageId: extra.messageId || data.messageId || Date.now()
     },
-    actions: [
-      {
-        action: 'reply',
-        title: 'Reply',
-        type: 'text',
-        placeholder: 'Type a message...'
-      },
-      {
-        action: 'open',
-        title: 'Open'
-      }
-    ]
+    actions: type === 'announcement'
+      ? [{ action: 'open', title: 'Open' }]
+      : [
+          {
+            action: 'reply',
+            title: 'Reply',
+            type: 'text',
+            placeholder: 'Type a message...'
+          },
+          {
+            action: 'open',
+            title: 'Open'
+          }
+        ]
   };
   event.waitUntil(
     self.registration.showNotification(title, options)

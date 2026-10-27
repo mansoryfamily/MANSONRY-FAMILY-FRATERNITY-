@@ -7,6 +7,10 @@ workers_dev = true
 [triggers]
 crons = ["* * * * *"]
 
+[[kv_namespaces]]
+binding = "MFF_MEDIA"
+id = "9d71a5f945a441bbb7d3bfd56ba106b1"
+
 [vars]
 FIREBASE_PROJECT_ID = "mansonry-family-fraternity"
 FIREBASE_DB_URL = "https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app"

@@ -31,13 +31,17 @@ class LodgeNotifier {
   // the first tap/keypress so later background message voices are allowed.
   unlock(){
     try{
-      if(!('speechSynthesis' in window) || this.unlocked) return;
-      this.unlocked=true;
+      if(!('speechSynthesis' in window)) return;
       window.speechSynthesis.getVoices();
       if(window.speechSynthesis.paused) window.speechSynthesis.resume();
-      const u=new SpeechSynthesisUtterance(' ');
-      u.volume=0; u.rate=1; u.pitch=1;
-      window.speechSynthesis.speak(u);
+      // The silent primer only needs to run once per page load, but resume()
+      // must happen on every gesture because Android pauses the queue.
+      if(!this.unlocked){
+        this.unlocked=true;
+        const u=new SpeechSynthesisUtterance(' ');
+        u.volume=0; u.rate=1; u.pitch=1; u.lang='en-US';
+        window.speechSynthesis.speak(u);
+      }
       // Prime the notification sound too, so later background plays are allowed.
       try{ this.audio.play().then(()=>{ this.audio.pause(); this.audio.currentTime=0; }).catch(()=>{}); }catch(e){}
     }catch(e){}
@@ -45,7 +49,6 @@ class LodgeNotifier {
 
   speak(text,opts={}){
     try{
-      if(!('speechSynthesis' in window)) return;
       const clean=String(text==null?'':text)
         .replace(/🎤\s*/g,'Voice note. ')
         .replace(/📷\s*/g,'Photo. ')
@@ -71,22 +74,40 @@ class LodgeNotifier {
 
       // Android WebView has no usable speechSynthesis engine. The app exposes
       // a native TextToSpeech bridge, which also ignores autoplay restrictions.
+      // Pass the message/event id so the native side can dedupe with push.
       if(window.MffNative && typeof window.MffNative.speak==='function'){
-        try{ window.MffNative.speak(clean); return; }catch(e){}
+        try{ window.MffNative.speak(clean, opts.id ? String(opts.id) : ''); return; }catch(e){}
       }
 
+      if(!('speechSynthesis' in window)) return;
+
       try{ if(window.speechSynthesis.paused) window.speechSynthesis.resume(); }catch(e){}
-      window.speechSynthesis.cancel();
+      try{ window.speechSynthesis.cancel(); }catch(e){}
       const u=new SpeechSynthesisUtterance(clean);
       u.lang=opts.lang||'en-US'; u.rate=0.95; u.pitch=1.02; u.volume=1;
       const pref=this.pickVoice(); if(pref) u.voice=pref;
-      // Chrome sometimes drops an utterance queued immediately after cancel().
-      setTimeout(()=>{
+
+      // Chrome on Android can leave speechSynthesis.speaking === true forever
+      // after cancel(), so never gate on it. Instead track onstart and retry
+      // once if the utterance never actually starts.
+      let started=false;
+      u.onstart=()=>{ started=true; };
+      const start=()=>{
         try{
-          if(!window.speechSynthesis.speaking) window.speechSynthesis.speak(u);
-          setTimeout(()=>{ try{ if(window.speechSynthesis.paused) window.speechSynthesis.resume(); }catch(e){} },400);
+          if(window.speechSynthesis.paused) window.speechSynthesis.resume();
+          window.speechSynthesis.speak(u);
         }catch(e){}
-      },120);
+      };
+      setTimeout(()=>{
+        start();
+        setTimeout(()=>{
+          if(started) return;
+          try{
+            if(window.speechSynthesis.paused) window.speechSynthesis.resume();
+            window.speechSynthesis.speak(u);
+          }catch(e){}
+        },1200);
+      },180);
     }catch(e){}
   }
 
@@ -189,9 +210,16 @@ if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged=()=>{ try{ spee
 const saved=localStorage.getItem("globalChatBadge_count");
 if(saved && parseInt(saved)>0){ setTimeout(()=>notifier.setAppIconBadge(parseInt(saved)),1000); }
 
-// Unlock speech on the first real gesture (required on Android/iOS).
+// Unlock speech on real gestures (required on Android/iOS). unlock() only
+// primes once; repeat calls just resume a paused Android speech queue.
 ['pointerdown','touchstart','keydown'].forEach(evt=>{
-  document.addEventListener(evt,()=>notifier.unlock(),{once:true,passive:true});
+  document.addEventListener(evt,()=>notifier.unlock(),{passive:true});
+});
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'){
+    notifier.unlock();
+    try{ if(window.speechSynthesis && window.speechSynthesis.paused) window.speechSynthesis.resume(); }catch(e){}
+  }
 });
 
 // SAVE ONESIGNAL ID TO FIREBASE - NEEDED FOR CLOSED-APP PUSH

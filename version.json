@@ -2,5 +2,5 @@
   "versionCode": 2009,
   "versionName": "1.0.7",
   "url": "https://freemasonry-family.web.app/download",
-  "notes": "Adds the floating chat shortcut with a live unread badge, tap-to-translate, spoken notifications and reliable announcement delivery."
+  "notes": "Phone voice alerts now work: messages and announcements are spoken with the phone's native text-to-speech, including while the app is in the background or closed. Also fixes the admin/member chat inbox and unread badges. Reinstall this APK to get the phone voice update."
 }

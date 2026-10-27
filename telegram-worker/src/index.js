@@ -414,78 +414,114 @@ async function handlePush(request, env, origin) {
   });
 }
 
+// Records that the cron actually ran. Written on every invocation so we can
+// tell "cron is dead" apart from "cron ran but there was nothing to push".
+async function writeCronMarker(env, state) {
+  try {
+    await fetch(env.FIREBASE_DB_URL + "/pushCron.json", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        at: Date.now(),
+        ok: state.ok,
+        scanned: state.scanned,
+        sent: state.sent,
+        expired: state.expired,
+        error: state.error || null
+      }),
+      signal: AbortSignal.timeout(5000)
+    });
+  } catch (error) {}
+}
+
 // Fallback for projects without Cloud Functions (Spark plan):
 // drain the userEvents queue every minute and push it through OneSignal.
 async function pushQueuedEvents(env) {
-  if (!oneSignalConfigured(env)) {
-    return { ok: false, error: "Push not configured" };
-  }
+  const state = { ok: true, scanned: 0, sent: 0, expired: 0, error: null };
 
-  let queue;
   try {
-    const response = await fetch(env.FIREBASE_DB_URL + "/userEvents.json", {
-      signal: AbortSignal.timeout(10000)
-    });
-    if (!response.ok) return { ok: false, error: "Queue read failed" };
-    queue = await response.json();
-  } catch (error) {
-    return { ok: false, error: "Queue read failed" };
-  }
-
-  if (!queue || typeof queue !== "object") {
-    return { ok: true, scanned: 0, sent: 0 };
-  }
-
-  const now = Date.now();
-  const jobs = [];
-  for (const [recipientUid, events] of Object.entries(queue)) {
-    if (!uidPattern.test(recipientUid) || !events || typeof events !== "object") continue;
-    for (const [eventId, event] of Object.entries(events)) {
-      if (!event || event.type !== "chat" || event.pushedAt) continue;
-      if (!messageIdPattern.test(eventId)) continue;
-      // Give an open app a moment to render it in-app first.
-      if (!event.time || now - Number(event.time) < 2000) continue;
-      jobs.push({ recipientUid, eventId, event });
-    }
-  }
-
-  jobs.sort((a, b) => Number(a.event.time || 0) - Number(b.event.time || 0));
-
-  let sent = 0;
-  let expired = 0;
-  for (const job of jobs.slice(0, 50)) {
-    const age = now - Number(job.event.time || 0);
-    if (age > 24 * 60 * 60 * 1000) {
-      await clearQueuedEvent(env, job.recipientUid, job.eventId);
-      expired += 1;
-      continue;
+    if (!oneSignalConfigured(env)) {
+      state.ok = false;
+      state.error = "Push not configured";
+      return state;
     }
 
-    const chatId = clean(job.event.chatId, 180);
-    const message = {
-      key: "push_msg_" + job.recipientUid + "_" + job.eventId,
-      recipientUid: job.recipientUid,
-      title: clean(job.event.title, 80) || "MFF Lodge",
-      body: clean(job.event.body, 500) || "New message",
-      data: {
-        type: "chat",
-        chatId,
-        messageId: job.eventId,
-        senderId: clean(job.event.senderId, 128),
-        url: env.SITE_URL + "/globaladmin.html?chatId=" + encodeURIComponent(chatId)
+    let queue;
+    try {
+      const response = await fetch(env.FIREBASE_DB_URL + "/userEvents.json", {
+        signal: AbortSignal.timeout(10000)
+      });
+      if (!response.ok) {
+        state.ok = false;
+        state.error = "Queue read failed";
+        return state;
       }
-    };
+      queue = await response.json();
+    } catch (error) {
+      state.ok = false;
+      state.error = "Queue read failed";
+      return state;
+    }
 
-    const result = await sendOneSignal(env, message);
-    if (!result.ok) continue;
-    sent += 1;
-    // Keep the event when OneSignal reached zero devices (for example the
-    // member has not installed the updated app yet) so it retries next minute.
-    if (result.recipients === 0) continue;
-    await clearQueuedEvent(env, job.recipientUid, job.eventId);
+    if (!queue || typeof queue !== "object") return state;
+
+    const now = Date.now();
+    const jobs = [];
+    for (const [recipientUid, events] of Object.entries(queue)) {
+      if (!uidPattern.test(recipientUid) || !events || typeof events !== "object") continue;
+      for (const [eventId, event] of Object.entries(events)) {
+        if (!event || event.type !== "chat" || event.pushedAt) continue;
+        if (!messageIdPattern.test(eventId)) continue;
+        // Give an open app a moment to render it in-app first.
+        if (!event.time || now - Number(event.time) < 2000) continue;
+        jobs.push({ recipientUid, eventId, event });
+      }
+    }
+
+    jobs.sort((a, b) => Number(a.event.time || 0) - Number(b.event.time || 0));
+    state.scanned = jobs.length;
+
+    for (const job of jobs.slice(0, 50)) {
+      const age = now - Number(job.event.time || 0);
+      if (age > 24 * 60 * 60 * 1000) {
+        await clearQueuedEvent(env, job.recipientUid, job.eventId);
+        state.expired += 1;
+        continue;
+      }
+
+      const chatId = clean(job.event.chatId, 180);
+      const message = {
+        key: "push_msg_" + job.recipientUid + "_" + job.eventId,
+        recipientUid: job.recipientUid,
+        title: clean(job.event.title, 80) || "MFF Lodge",
+        body: clean(job.event.body, 500) || "New message",
+        data: {
+          type: "chat",
+          chatId,
+          messageId: job.eventId,
+          senderId: clean(job.event.senderId, 128),
+          url: env.SITE_URL + "/globaladmin.html?chatId=" + encodeURIComponent(chatId)
+        }
+      };
+
+      const result = await sendOneSignal(env, message);
+      if (!result.ok) continue;
+      state.sent += 1;
+      // Keep the event when OneSignal reached zero devices (for example the
+      // member has not installed the updated app yet) so it retries next minute.
+      if (result.recipients === 0) continue;
+      await clearQueuedEvent(env, job.recipientUid, job.eventId);
+    }
+
+    return state;
+  } catch (error) {
+    state.ok = false;
+    state.error = String((error && error.message) || error);
+    return state;
+  } finally {
+    await writeCronMarker(env, state);
+    console.log("push queue", JSON.stringify(state));
   }
-
-  return { ok: true, scanned: jobs.length, sent, expired };
 }
 
 export default {

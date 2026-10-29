@@ -14,6 +14,13 @@
   if (!match) return;
   var current = match[1];
 
+  // Version 1.0.7 was republished without the spoken narrator and with the
+  // closed-app notification fix. The version name did not change, so old
+  // installs are recognised by the missing/older MFFBuild token instead.
+  var MIN_BUILD = 2;
+  var buildMatch = navigator.userAgent.match(/MFFBuild\/(\d+)/i);
+  var currentBuild = buildMatch ? parseInt(buildMatch[1], 10) || 0 : 0;
+
   function parts(value) {
     return String(value || "").split(".").map(function (n) {
       return parseInt(n, 10) || 0;
@@ -52,7 +59,11 @@
           '<img src="./icon-192.png" alt="" style="width:52px;height:52px;border-radius:14px;' +
           "border:2px solid #d4af37;object-fit:cover;\" onerror=\"this.style.display='none'\">" +
           '<div><div style="color:#f0d185;font-weight:800;font-size:17px;">Update available</div>' +
-          '<div style="color:#9fb0c5;font-size:12px;">Version ' + current + " &rarr; " + latest + "</div></div>" +
+          '<div style="color:#9fb0c5;font-size:12px;">' +
+          (isOlder(current, latest)
+            ? "Version " + current + " &rarr; " + latest
+            : "Updated " + latest + " build &mdash; reinstall required") +
+          "</div></div>" +
         "</div>" +
         '<p style="margin:0 0 16px;color:#c8d2e0;font-size:13px;line-height:1.55;">' +
         (notes || "A newer version of Masonry Family is ready. Update now to keep chats and notifications working.") +
@@ -94,7 +105,8 @@
     var notes = "";
 
     function finish() {
-      if (isOlder(current, latest) && !snoozed()) show(latest, notes);
+      var outdated = isOlder(current, latest) || currentBuild < MIN_BUILD;
+      if (outdated && !snoozed()) show(latest, notes);
     }
 
     try {

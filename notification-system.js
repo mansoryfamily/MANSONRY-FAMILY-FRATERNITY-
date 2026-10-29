@@ -1,113 +1,24 @@
-// Freemasonry Heritage - notifier (sound + voice + popup + badge)
-// Voice works on dashboard/help and outside globaladmin, and now speaks the
-// actual incoming message instead of the same generic sentence every time.
+// Freemasonry Heritage - notifier (sound + popup + badge)
 class LodgeNotifier {
   constructor() {
     this.unreadCount=0;
     this.audio=new Audio('./notification.wav'); this.audio.volume=0.7;
     this.ADMIN_EMAIL="mansoryfamilyn@gmail.com";
-    this.lastVoiceTime=0;
-    this.spoken=new Map();
     this.unlocked=false;
-    try{ window.speechSynthesis.getVoices(); }catch(e){}
-    setTimeout(()=>{ try{ window.speechSynthesis.getVoices(); }catch(e){} },500);
   }
 
   isInGlobalChat(){
     return window.location.href.includes("globaladmin.html");
   }
 
-  pickVoice(){
-    try{
-      const voices=window.speechSynthesis.getVoices()||[];
-      return voices.find(v=>/Google UK English Female|Samantha|Zira|Aria|Jenny|Google US English/i.test(v.name)) ||
-             voices.find(v=>/^en(-|_)/i.test(v.lang) && /female/i.test(v.name)) ||
-             voices.find(v=>/^en(-|_)/i.test(v.lang)) ||
-             voices[0] || null;
-    }catch(e){ return null; }
-  }
-
-  // Mobile browsers only allow speech after a real user gesture. Call this from
-  // the first tap/keypress so later background message voices are allowed.
+  // Mobile browsers only allow audio after a real user gesture. Call this from
+  // the first tap/keypress so later notification sounds are allowed.
   unlock(){
     try{
-      if(!('speechSynthesis' in window)) return;
-      window.speechSynthesis.getVoices();
-      if(window.speechSynthesis.paused) window.speechSynthesis.resume();
-      // The silent primer only needs to run once per page load, but resume()
-      // must happen on every gesture because Android pauses the queue.
-      if(!this.unlocked){
-        this.unlocked=true;
-        const u=new SpeechSynthesisUtterance(' ');
-        u.volume=0; u.rate=1; u.pitch=1; u.lang='en-US';
-        window.speechSynthesis.speak(u);
-      }
-      // Prime the notification sound too, so later background plays are allowed.
+      if(this.unlocked) return;
+      this.unlocked=true;
+      // Prime the notification sound so later background plays are allowed.
       try{ this.audio.play().then(()=>{ this.audio.pause(); this.audio.currentTime=0; }).catch(()=>{}); }catch(e){}
-    }catch(e){}
-  }
-
-  speak(text,opts={}){
-    try{
-      const clean=String(text==null?'':text)
-        .replace(/🎤\s*/g,'Voice note. ')
-        .replace(/📷\s*/g,'Photo. ')
-        .replace(/🎥\s*/g,'Video. ')
-        .replace(/\s+/g,' ')
-        .trim();
-      if(!clean) return;
-
-      // Deduplicate by message id when we have one. Firebase re-renders the
-      // same message on every status change, and pages with their own chat
-      // listeners can call showPopup twice for the same message.
-      const key=opts.id?('id:'+opts.id):('text:'+clean.slice(0,120));
-      const now=Date.now();
-      const previous=this.spoken.get(key);
-      if(previous && now-previous<120000) return;
-      this.spoken.set(key,now);
-      if(this.spoken.size>60){
-        const cutoff=now-300000;
-        for(const [k,v] of this.spoken){ if(v<cutoff) this.spoken.delete(k); }
-      }
-      if(now-this.lastVoiceTime<600) return;
-      this.lastVoiceTime=now;
-
-      // Android WebView has no usable speechSynthesis engine. The app exposes
-      // a native TextToSpeech bridge, which also ignores autoplay restrictions.
-      // Pass the message/event id so the native side can dedupe with push.
-      if(window.MffNative && typeof window.MffNative.speak==='function'){
-        try{ window.MffNative.speak(clean, opts.id ? String(opts.id) : ''); return; }catch(e){}
-      }
-
-      if(!('speechSynthesis' in window)) return;
-
-      try{ if(window.speechSynthesis.paused) window.speechSynthesis.resume(); }catch(e){}
-      try{ window.speechSynthesis.cancel(); }catch(e){}
-      const u=new SpeechSynthesisUtterance(clean);
-      u.lang=opts.lang||'en-US'; u.rate=0.95; u.pitch=1.02; u.volume=1;
-      const pref=this.pickVoice(); if(pref) u.voice=pref;
-
-      // Chrome on Android can leave speechSynthesis.speaking === true forever
-      // after cancel(), so never gate on it. Instead track onstart and retry
-      // once if the utterance never actually starts.
-      let started=false;
-      u.onstart=()=>{ started=true; };
-      const start=()=>{
-        try{
-          if(window.speechSynthesis.paused) window.speechSynthesis.resume();
-          window.speechSynthesis.speak(u);
-        }catch(e){}
-      };
-      setTimeout(()=>{
-        start();
-        setTimeout(()=>{
-          if(started) return;
-          try{
-            if(window.speechSynthesis.paused) window.speechSynthesis.resume();
-            window.speechSynthesis.speak(u);
-          }catch(e){}
-        },1200);
-      },180);
     }catch(e){}
   }
 
@@ -140,17 +51,13 @@ class LodgeNotifier {
     try{ this.audio.currentTime=0; await this.audio.play(); }catch(e){}
     if(navigator.vibrate) navigator.vibrate([200,100,200]);
     const body=String(message||'').trim();
-    // Speak a clear, consistent alert. Chat alerts use the wording the lodge
-    // asked for; announcements still include the announcement text.
-    const phrase = type==="member_message"
-      ? "Hello admin, you got a new message from a member."
+    const fallback = type==="member_message"
+      ? "New message from a member."
       : type==="announcement"
-        ? "Hello member, you got a new announcement from Administration."
-        : "Hello member, you got a new message from Administration.";
-    const spoken = type==="announcement" && body ? (phrase+" "+body) : phrase;
+        ? "New announcement from Administration."
+        : "New message from Administration.";
     setTimeout(()=>{
-      this.speak(spoken,opts);
-      this.showSystemNotification(type==="announcement"?"MFF Announcement":"MFF Lodge",body||phrase).catch(()=>{});
+      this.showSystemNotification(type==="announcement"?"MFF Announcement":"MFF Lodge",body||fallback).catch(()=>{});
     },250);
   }
 
@@ -169,7 +76,7 @@ class LodgeNotifier {
   }
 
   showPopup(title,message,type="admin_message",opts={}){
-    // Inside globaladmin keep the popup out of the way, but still speak.
+    // Inside globaladmin keep the popup out of the way, but still sound the alert.
     if(this.isInGlobalChat()){
       this.playSound(type,message,opts);
       return;
@@ -206,20 +113,16 @@ const style=document.createElement("style");
 style.innerHTML=`@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}`;
 document.head.appendChild(style);
 window.LodgeNotifier=notifier;
-if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged=()=>{ try{ speechSynthesis.getVoices(); }catch(e){} }; }
 const saved=localStorage.getItem("globalChatBadge_count");
 if(saved && parseInt(saved)>0){ setTimeout(()=>notifier.setAppIconBadge(parseInt(saved)),1000); }
 
-// Unlock speech on real gestures (required on Android/iOS). unlock() only
-// primes once; repeat calls just resume a paused Android speech queue.
+// Unlock audio on real gestures (required on Android/iOS). unlock() only
+// primes the notification sound once per page load.
 ['pointerdown','touchstart','keydown'].forEach(evt=>{
   document.addEventListener(evt,()=>notifier.unlock(),{passive:true});
 });
 document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible'){
-    notifier.unlock();
-    try{ if(window.speechSynthesis && window.speechSynthesis.paused) window.speechSynthesis.resume(); }catch(e){}
-  }
+  if(document.visibilityState==='visible') notifier.unlock();
 });
 
 // SAVE ONESIGNAL ID TO FIREBASE - NEEDED FOR CLOSED-APP PUSH
@@ -233,7 +136,7 @@ OneSignalDeferred.push(async function(OneSignal) {
       const user = firebase.auth().currentUser;
       if (!user) return;
       firebase.database().ref(`users/${user.uid}/oneSignalId`).set(id);
-      firebase.database().ref(`playerIds/${user.uid}/${id}`).set(true);
+      firebase.database().ref(`playerIds/${user.uid}/${id}`).set({id:id,platform:'web',updatedAt:Date.now()});
       console.log("PlayerId saved compat", id);
     } else if(window.firebaseAuthUser){
       // modular will be handled in page module
@@ -241,3 +144,62 @@ OneSignalDeferred.push(async function(OneSignal) {
     }
   }catch(e){ console.log("OneSignal save error", e); }
 });
+
+// ---------- NATIVE NOTIFICATION HEALTH ----------
+// If the phone has notifications blocked (permission, app-level toggle or a
+// disabled channel) no push can ever appear. The Android app exposes the real
+// state through MffNative; show a clear, tappable warning instead of letting
+// the member/admin believe messages are simply not arriving.
+function mffRenderNotificationHealth(status){
+  const existing=document.getElementById('mffNotifHealth');
+  if(!status || !status.blocked){ if(existing) existing.remove(); return; }
+  if(existing) return;
+  const copy={
+    permission:'Notifications are off. Tap Fix to allow MFF alerts.',
+    app:'Notifications are blocked for MFF. Tap Fix to turn them on.',
+    channel:'The MFF message channel is turned off. Tap Fix to enable it.'
+  };
+  const bar=document.createElement('div');
+  bar.id='mffNotifHealth';
+  bar.style.cssText='position:fixed;left:10px;right:10px;bottom:14px;z-index:100000;display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:14px;background:#2a1c05;border:1px solid #d4b16a;color:#ffe9b0;font:600 12px/1.4 system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.55)';
+  const icon=document.createElement('span');icon.textContent='🔔';icon.style.fontSize='18px';
+  const text=document.createElement('span');text.style.flex='1';text.textContent=copy[status.blocked]||copy.app;
+  const fix=document.createElement('button');
+  fix.type='button';fix.textContent='Fix';
+  fix.style.cssText='flex:none;border:none;border-radius:999px;padding:7px 14px;background:#d4b16a;color:#111;font:800 12px system-ui,sans-serif;cursor:pointer';
+  fix.addEventListener('click',function(){
+    try{
+      if(status.blocked==='permission' && window.MffNative && typeof window.MffNative.requestNotificationPermission==='function'){
+        window.MffNative.requestNotificationPermission();
+      }else if(window.MffNative && typeof window.MffNative.openNotificationSettings==='function'){
+        window.MffNative.openNotificationSettings();
+      }
+    }catch(e){}
+  });
+  bar.appendChild(icon);bar.appendChild(text);bar.appendChild(fix);
+  document.body.appendChild(bar);
+}
+
+function mffCheckNotificationHealth(){
+  if(!window.MffNative || typeof window.MffNative.notificationStatus!=='function') return;
+  try{
+    const raw=window.MffNative.notificationStatus();
+    const status=typeof raw==='string' ? JSON.parse(raw) : raw;
+    if(status) mffRenderNotificationHealth(status);
+  }catch(e){}
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',function(){ setTimeout(mffCheckNotificationHealth,1200); });
+}else{
+  setTimeout(mffCheckNotificationHealth,1200);
+}
+// Re-check a few times: the user may grant permission or enable the channel
+// while the page is open, and the banner must disappear immediately.
+let mffHealthTicks=0;
+const mffHealthTimer=setInterval(function(){
+  mffHealthTicks++;
+  mffCheckNotificationHealth();
+  if(mffHealthTicks>=40) clearInterval(mffHealthTimer);
+},15000);
+

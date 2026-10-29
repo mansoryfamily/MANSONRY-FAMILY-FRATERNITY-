@@ -227,7 +227,6 @@ onAuthStateChanged(auth,async(u)=>{
   }
   myId=u.uid;myEmail=(u.email||"").toLowerCase();isAdmin=(myEmail===ADMIN_EMAIL);
   document.getElementById('sub').innerText=isAdmin?"ADMIN":"LODGE";
-  document.addEventListener('click',()=>{if(window.speechSynthesis){window.speechSynthesis.getVoices();}}, {once:true});
   
   try{
     const s=await get(ref(db,'users'));if(s.exists()){Object.values(s.val()).forEach(v=>{if(v&&v.uid)usersCache[v.uid]=v;});}

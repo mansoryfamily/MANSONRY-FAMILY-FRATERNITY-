@@ -302,7 +302,6 @@ function buildPushMessage(env, payload, senderUid) {
 // Targeting these IDs directly is far more reliable than external_id alone,
 // because external_id is only present after the user signs in.
 async function oneSignalSubscriptions(env, uid) {
-  const ids = new Set();
   const base = env.FIREBASE_DB_URL;
   const read = async (path) => {
     try {
@@ -315,18 +314,30 @@ async function oneSignalSubscriptions(env, uid) {
   };
 
   const [players, single] = await Promise.all([
-    read("/playerIds/" + encodeURIComponent(uid) + ".json?shallow=true"),
+    read("/playerIds/" + encodeURIComponent(uid) + ".json"),
     read("/users/" + encodeURIComponent(uid) + "/oneSignalId.json")
   ]);
 
+  const now = Date.now();
+  const maxAge = 45 * 24 * 60 * 60 * 1000;
+  const ranked = [];
   if (players && typeof players === "object") {
-    Object.keys(players).forEach(id => {
-      if (id) ids.add(id);
-    });
+    for (const [id, value] of Object.entries(players)) {
+      if (!id) continue;
+      const updatedAt = value && typeof value === "object" ? Number(value.updatedAt || 0) : 0;
+      // Skip ids that have not checked in for weeks; they only make
+      // OneSignal report partial failures for the whole send.
+      if (updatedAt && now - updatedAt > maxAge) continue;
+      ranked.push({ id, updatedAt });
+    }
   }
-  if (typeof single === "string" && single.trim()) ids.add(single.trim());
+  ranked.sort((a, b) => b.updatedAt - a.updatedAt);
 
-  return [...ids];
+  const ids = ranked.slice(0, 4).map(entry => entry.id);
+  if (typeof single === "string" && single.trim() && !ids.includes(single.trim())) {
+    ids.unshift(single.trim());
+  }
+  return [...new Set(ids)];
 }
 
 async function sendOneSignal(env, message) {
@@ -342,7 +353,11 @@ async function sendOneSignal(env, message) {
     contents: { en: message.body },
     data: message.data,
     small_icon: "ic_stat_mff",
+    large_icon: "ic_launcher",
+    android_channel_id: "mff_chat",
+    android_visibility: 1,
     priority: 10,
+    ttl: 86400,
     idempotency_key: await deterministicUuid(message.key)
   };
 

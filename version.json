@@ -2,5 +2,5 @@
   "versionCode": 2009,
   "versionName": "1.0.7",
   "url": "https://freemasonry-family.web.app/download",
-  "notes": "Notifications now arrive when the app is closed or in the background: messages and announcements pop up with sound and vibration on the MFF high-priority channel, and tapping opens the right chat. Also fixes the admin/member chat inbox and unread badges. The spoken narrator has been removed. Reinstall this APK to get the update."
+  "notes": "Notifications are now instant: new announcements and chat messages reach the website immediately and phones get the push in seconds, even when the app is closed. In-app alerts play the phone's own notification ringtone. The spoken narrator has been removed. Reinstall this APK to get the update."
 }

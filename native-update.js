@@ -17,7 +17,7 @@
   // Version 1.0.7 was republished without the spoken narrator and with the
   // closed-app notification fix. The version name did not change, so old
   // installs are recognised by the missing/older MFFBuild token instead.
-  var MIN_BUILD = 2;
+  var MIN_BUILD = 3;
   var buildMatch = navigator.userAgent.match(/MFFBuild\/(\d+)/i);
   var currentBuild = buildMatch ? parseInt(buildMatch[1], 10) || 0 : 0;
 

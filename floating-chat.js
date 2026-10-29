@@ -250,36 +250,6 @@
             // Keep the last known badge on a transient read error.
           });
         }
-
-        // Announcement inbox: the admin writes one record per member under
-        // notifications/<uid>/<announcementId>. Show the newest unseen one as
-        // a popup (the same record also drives the closed-app push).
-        notifUnsubscribe = dbMod.onValue(dbMod.ref(db, 'notifications/' + uid), function (snap) {
-          var data = snap.val() || {};
-          var ids = Object.keys(data).filter(function (id) {
-            var n = data[id];
-            return n && typeof n === 'object' && n.announcementId;
-          });
-          if (!ids.length) return;
-          ids.sort(function (a, b) { return Number(data[b].timestamp || 0) - Number(data[a].timestamp || 0); });
-          var latest = data[ids[0]];
-          var marker = 'mff_ann_seen_' + (latest.announcementId || ids[0]);
-          var already = false;
-          try { already = localStorage.getItem(marker) === '1'; } catch (e) {}
-          if (already) return;
-          try { localStorage.setItem(marker, '1'); } catch (e) {}
-          // Do not replay very old announcements on first launch.
-          if (latest.timestamp && Date.now() - Number(latest.timestamp) > 7 * 24 * 60 * 60 * 1000) return;
-          if (!window.LodgeNotifier) return;
-          try {
-            window.LodgeNotifier.showPopup(
-              'MFF Announcement',
-              latest.message || latest.title || 'New announcement',
-              'announcement',
-              { id: latest.announcementId || ids[0] }
-            );
-          } catch (e) {}
-        });
       }
 
       authMod.onAuthStateChanged(auth, function (user) {

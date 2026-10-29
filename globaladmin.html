@@ -163,11 +163,14 @@ function publishTelegramMessage(chatId,pending){
   user.getIdToken().then(token=>sendTelegramUpdate(token,{type:'message',chatId,messageId:pending.id,text,senderName:myInfo.fullName||'Member'})).catch(()=>{});
 }
 function publishPushMessage(chatId,pending){
-  if(!isAdmin)return;
+  // Push immediately in both directions. The Cloudflare cron still sweeps
+  // userEvents as a fallback, and OneSignal dedupes by messageId, so the
+  // admin no longer waits up to a minute for a member's message.
   const user=auth.currentUser;
   if(!user)return;
   const text=pending.payload.text||pending.preview||'New message';
-  user.getIdToken().then(token=>sendPushUpdate(token,{type:'chat',chatId,messageId:pending.id,text,senderName:'MFF Administration'})).catch(()=>{});
+  const senderName=isAdmin?'MFF Administration':(myInfo.fullName||'Member');
+  user.getIdToken().then(token=>sendPushUpdate(token,{type:'chat',chatId,messageId:pending.id,text,senderName})).catch(()=>{});
 }
 async function commitMessage(chatId,kind,pending){
   await set(ref(db,`chats/${chatId}/messages/${pending.id}`),pending.payload);

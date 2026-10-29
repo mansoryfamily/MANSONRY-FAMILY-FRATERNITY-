@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded',applyLang);
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, onValue, update, get, push, set, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { sendPushUpdate } from "./telegram-notify.js";
 const firebaseConfig = {
   apiKey: "AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
   authDomain: "mansonry-family-fraternity.firebaseapp.com",
@@ -262,16 +263,37 @@ sendBtn.addEventListener('click', async () => {
         };
         await set(ref(database, `${ANNOUNCEMENTS_PATH}/${id}`), annData);
 
-        const usersSnap = await get(ref(database, "users"));
-        const uids = [];
+        // Collect every real member uid we know about. Older members may only
+        // exist under members/ or applications/, and missing them here is why
+        // some phones never received an announcement.
+        const uidSet = new Set();
+        const addUid = (value) => {
+          const cleanUid = String(value || '').trim();
+          if (/^[A-Za-z0-9_-]{6,128}$/.test(cleanUid)) uidSet.add(cleanUid);
+        };
         if(recipient === "all"){
-            usersSnap.forEach(child => uids.push(child.key));
+            const [usersSnap, membersSnap, appsSnap] = await Promise.all([
+              get(ref(database, "users")).catch(()=>null),
+              get(ref(database, "members")).catch(()=>null),
+              get(ref(database, "applications")).catch(()=>null)
+            ]);
+            [usersSnap, membersSnap, appsSnap].forEach(snap => {
+              if(!snap || typeof snap.forEach !== 'function') return;
+              snap.forEach(child => {
+                const value = child.val() || {};
+                addUid(child.key);
+                addUid(value.uid);
+                addUid(value.submittedBy);
+              });
+            });
         } else {
-            uids.push(recipient);
+            addUid(recipient);
         }
+        const uids = [...uidSet];
 
         // One notification + one queued push event per member. The Cloudflare
-        // cron drains userEvents even when the app is closed.
+        // cron drains userEvents even when the app is closed, and OneSignal
+        // dedupes by announcementId so the instant push below cannot double.
         const updates = {};
         uids.forEach(uid => {
             updates[`notifications/${uid}/${id}`] = {
@@ -289,7 +311,31 @@ sendBtn.addEventListener('click', async () => {
           title, body: message, url: "./dashboard.html",
           time: timestamp, recipient, announcementId: id
         });
-        showSuccess(`Announcement sent to ${uids.length} member${uids.length===1?'':'s'}. It will push even if the app is closed.`);
+        showSuccess(`Announcement saved for ${uids.length} member${uids.length===1?'':'s'}. The website shows it now; phones get the push immediately.`);
+
+        // Instant push. The cron sweep is the durable fallback for phones that
+        // were offline; this call makes the alert arrive in seconds.
+        const pushTargets = uids.filter(uid => uid !== admin.uid);
+        if(pushTargets.length){
+          admin.getIdToken().then(token => {
+            const queue = pushTargets.slice();
+            const workers = Array.from({length: Math.min(6, queue.length)}, async () => {
+              while(queue.length){
+                const uid = queue.shift();
+                try{
+                  await sendPushUpdate(token, {
+                    type: 'announcement',
+                    recipientUid: uid,
+                    announcementId: id,
+                    title,
+                    body: message
+                  });
+                }catch(e){}
+              }
+            });
+            Promise.all(workers).catch(()=>{});
+          }).catch(()=>{});
+        }
         document.getElementById('notificationTitle').value = "";
         document.getElementById('notificationMessage').value = "";
     } catch (error) {showError("Error sending: " + error.message);}

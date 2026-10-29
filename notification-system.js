@@ -48,7 +48,17 @@ class LodgeNotifier {
   }
 
   async playSound(type="admin_message",message="",opts={}){
-    try{ this.audio.currentTime=0; await this.audio.play(); }catch(e){}
+    try{
+      // Inside the APK use the phone's own notification sound, so the alert is
+      // exactly the ringtone the member chose in Settings.
+      if(window.MffNative && typeof window.MffNative.playAlert==='function'){
+        window.MffNative.playAlert();
+      }else{
+        this.audio.currentTime=0; await this.audio.play();
+      }
+    }catch(e){
+      try{ this.audio.currentTime=0; await this.audio.play(); }catch(_){}
+    }
     if(navigator.vibrate) navigator.vibrate([200,100,200]);
     const body=String(message||'').trim();
     const fallback = type==="member_message"
@@ -76,8 +86,9 @@ class LodgeNotifier {
   }
 
   showPopup(title,message,type="admin_message",opts={}){
-    // Inside globaladmin keep the popup out of the way, but still sound the alert.
-    if(this.isInGlobalChat()){
+    // Inside globaladmin keep chat popups out of the way, but an announcement
+    // must still be visible there; only its sound used to play.
+    if(this.isInGlobalChat() && type!=="announcement"){
       this.playSound(type,message,opts);
       return;
     }
@@ -115,6 +126,101 @@ document.head.appendChild(style);
 window.LodgeNotifier=notifier;
 const saved=localStorage.getItem("globalChatBadge_count");
 if(saved && parseInt(saved)>0){ setTimeout(()=>notifier.setAppIconBadge(parseInt(saved)),1000); }
+
+// ---------- LIVE ANNOUNCEMENTS ----------
+// Every page that loads this script (including globaladmin.html and help.html)
+// watches notifications/<uid> so a new announcement appears immediately. It
+// used to live only in floating-chat.js, which those two pages do not load, so
+// an announcement pushed while the member was in chat was suppressed by the
+// native foreground rule and never shown at all.
+(function(){
+  const FIREBASE_CONFIG={
+    apiKey:"AIzaSyBSs3ekiR8vQ_1Ar5oZVBKGjuOQbwcgNEM",
+    authDomain:"mansonry-family-fraternity.firebaseapp.com",
+    databaseURL:"https://mansonry-family-fraternity-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId:"mansonry-family-fraternity",
+    storageBucket:"mansonry-family-fraternity.firebasestorage.app",
+    messagingSenderId:"964415179161",
+    appId:"1:964415179161:web:cef44a38e4de304d7c6b08"
+  };
+  let started=false;
+  let unsub=null;
+
+  function announcementKey(id){ return 'mff_ann_seen_'+id; }
+
+  function showAnnouncement(data,key){
+    if(!data || !window.LodgeNotifier) return;
+    const id=String(data.announcementId||key||'');
+    if(!id) return;
+    try{ if(localStorage.getItem(announcementKey(id))==='1') return; }catch(e){}
+    // Do not replay an old announcement after a fresh login.
+    const ts=Number(data.timestamp||0);
+    if(ts && Date.now()-ts>7*24*60*60*1000) return;
+    try{ localStorage.setItem(announcementKey(id),'1'); }catch(e){}
+    try{
+      window.LodgeNotifier.showPopup(
+        'MFF Announcement',
+        data.message||data.title||'New announcement',
+        'announcement',
+        {id}
+      );
+    }catch(e){}
+  }
+
+  function subscribe(dbMod,db,uid){
+    if(unsub){ try{ unsub(); }catch(e){} }
+    const baseline=Date.now();
+    let first=true;
+    unsub=dbMod.onValue(dbMod.ref(db,'notifications/'+uid),function(snap){
+      const data=snap.val()||{};
+      const keys=Object.keys(data).filter(function(k){
+        const n=data[k];
+        return n && typeof n==='object' && n.announcementId;
+      });
+      if(!keys.length){ first=false; return; }
+      keys.sort(function(a,b){ return Number(data[b].timestamp||0)-Number(data[a].timestamp||0); });
+      const latestKey=keys[0];
+      const latest=data[latestKey];
+      // The first snapshot is the backlog. Only show something created after
+      // this page opened; the dashboard board already lists older items.
+      if(first){
+        first=false;
+        if(Number(latest.timestamp||0)<baseline) return;
+      }
+      showAnnouncement(latest,latestKey);
+    });
+  }
+
+  function start(){
+    if(started) return;
+    started=true;
+    Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js')
+    ]).then(function(mods){
+      const appMod=mods[0],authMod=mods[1],dbMod=mods[2];
+      const app=appMod.getApps().length?appMod.getApp():appMod.initializeApp(FIREBASE_CONFIG);
+      const auth=authMod.getAuth(app);
+      const db=dbMod.getDatabase(app);
+      authMod.onAuthStateChanged(auth,function(user){
+        if(user && user.uid) subscribe(dbMod,db,user.uid);
+      });
+    }).catch(function(){
+      // A blocked SDK import must not break the rest of the notifier.
+      started=false;
+      setTimeout(start,4000);
+    });
+  }
+
+  function boot(){
+    // Let the page's own module initialize Firebase first, so we reuse its app
+    // instead of creating a duplicate default app.
+    setTimeout(start,1200);
+  }
+  if(document.readyState==='complete') boot();
+  else window.addEventListener('load',boot,{once:true});
+})();
 
 // Unlock audio on real gestures (required on Android/iOS). unlock() only
 // primes the notification sound once per page load.
